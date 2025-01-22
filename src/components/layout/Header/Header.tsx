@@ -1,16 +1,20 @@
-import React from 'react';
-import { Logo } from './components/Logo';
+import { FC } from 'react';
+import { cn } from '@/lib/utils';
 import { Search } from './components/Search';
 import { Filters } from './components/Filters';
 // import { Actions } from './components/Actions';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  className?: string;
+}
+
+export const Header: FC<HeaderProps> = ({ className }) => {
   return (
-    <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 z-50">
+    <header className={cn('h-16 bg-white border-b border-gray-200', className)}>
       <div className="h-full px-4 flex items-center justify-between gap-4">
         {/* Left section */}
         <div className="flex items-center gap-4">
-          <Logo />
+          {/* <Logo /> */}
         </div>
 
         {/* Center section */}

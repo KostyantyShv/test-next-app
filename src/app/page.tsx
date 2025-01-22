@@ -5,33 +5,34 @@ import { Player } from '@/components/layout/Player';
 
 export default function Home() {
   return (
-    <div className="h-screen bg-background flex flex-col">
-      {/* Header */}
-      <Header />
-      
-      {/* Main Content */}
-      <div className="flex flex-1 pt-16"> {/* pt-16 для відступу під header */}
+    <div className="h-screen bg-background">
+      <div className="flex h-full">
         {/* Left Sidebar */}
-        <aside className="w-64 hidden md:block">
-          <LeftSidebar />
-        </aside>
+        <LeftSidebar />
 
-        {/* Main Content */}
-        <main className="flex-1 p-4">
-          <div className="max-w-4xl mx-auto">
-            {/* Тут буде контент */}
-            <p>Main Content Area</p>
+        <div className="flex-1 flex flex-col">
+          {/* Header */}
+          <Header />
+          
+          {/* Main Content */}
+          <div className="flex flex-1">
+            {/* Main Content */}
+            <main className="flex-1 p-4">
+              <div className="max-w-4xl mx-auto">
+                <p>Main Content Area</p>
+              </div>
+            </main>
+
+            {/* Right Sidebar */}
+            <aside className="w-80 hidden lg:block border-l border-border">
+              <RightSidebar />
+            </aside>
           </div>
-        </main>
 
-        {/* Right Sidebar */}
-        <aside className="w-80 hidden lg:block">
-          <RightSidebar />
-        </aside>
+          {/* Player */}
+          <Player />
+        </div>
       </div>
-
-      {/* Player */}
-      <Player />
     </div>
   );
 }

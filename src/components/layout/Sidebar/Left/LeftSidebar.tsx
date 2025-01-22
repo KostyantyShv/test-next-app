@@ -1,7 +1,9 @@
 'use client';
 
-import { FC } from 'react';
+import { FC, useState, useLayoutEffect } from 'react';
 import { Icon, IconName } from '@/components/ui/Icon';
+import { Logo } from '@/components/ui/Logo';
+import { cn } from '@/lib/utils';
 
 interface NavItem {
   icon: IconName;
@@ -28,66 +30,126 @@ const bottomItems: NavItem[] = [
 ];
 
 export const LeftSidebar: FC = () => {
+  const [mounted, setMounted] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  useLayoutEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <aside className="h-screen bg-white border-r border-border w-64 shrink-0 sticky top-0 left-0">
+        <div className="flex h-full flex-col">
+          <div className="h-16 flex items-center justify-between px-4 border-b border-border">
+            <Logo />
+          </div>
+        </div>
+      </aside>
+    );
+  }
+
   return (
-    <aside className="w-64 h-full bg-white border-r border-gray-200 py-4">
-      <nav className="h-full flex flex-col">
-        {/* Explore Section */}
-        <div className="px-4 mb-8">
-          <h2 className="text-xs font-semibold text-gray-500 mb-4 uppercase tracking-wider">
-            Explore
-          </h2>
-          <ul className="space-y-1">
-            {exploreItems.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
-                  className="flex items-center gap-3 px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <Icon name={item.icon} className="w-5 h-5" />
-                  <span>{item.label}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
+    <aside 
+      className={cn(
+        'h-screen bg-white border-r border-border shrink-0 sticky top-0 left-0',
+        'transition-all duration-300 ease-in-out',
+        isCollapsed ? 'w-16' : 'w-64'
+      )}
+    >
+      <div className="flex h-full flex-col">
+        {/* Logo and Toggle */}
+        <div className="h-16 flex items-center justify-between px-4 border-b border-border">
+          {!isCollapsed && <Logo />}
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className={cn(
+              "p-2 rounded-lg hover:bg-gray-100 transition-colors",
+              isCollapsed && "ml-auto"
+            )}
+            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            <Icon 
+              name={isCollapsed ? 'expand' : 'collapse'} 
+              size="md"
+              className="text-gray-500"
+            />
+          </button>
         </div>
 
-        {/* Library Section */}
-        <div className="px-4 mb-8">
-          <h2 className="text-xs font-semibold text-gray-500 mb-4 uppercase tracking-wider">
-            Library
-          </h2>
-          <ul className="space-y-1">
-            {libraryItems.map((item) => (
-              <li key={item.href}>
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto py-4">
+          {/* Explore Section */}
+          <div>
+            {!isCollapsed && (
+              <div className="px-6 mb-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Explore
+              </div>
+            )}
+            <div className="space-y-1 px-3">
+              {exploreItems.map((item) => (
                 <a
+                  key={item.href}
                   href={item.href}
-                  className="flex items-center gap-3 px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors",
+                    "text-sm font-medium",
+                    isCollapsed && "justify-center"
+                  )}
                 >
-                  <Icon name={item.icon} className="w-5 h-5" />
-                  <span>{item.label}</span>
+                  <Icon name={item.icon} size="md" className="text-gray-500 shrink-0" />
+                  {!isCollapsed && <span>{item.label}</span>}
                 </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Library Section */}
+          <div className={cn(!isCollapsed && "mt-8")}>
+            {!isCollapsed && (
+              <div className="px-6 mb-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Library
+              </div>
+            )}
+            <div className="space-y-1 px-3">
+              {libraryItems.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors",
+                    "text-sm font-medium",
+                    isCollapsed && "justify-center"
+                  )}
+                >
+                  <Icon name={item.icon} size="md" className="text-gray-500 shrink-0" />
+                  {!isCollapsed && <span>{item.label}</span>}
+                </a>
+              ))}
+            </div>
+          </div>
+        </nav>
 
         {/* Bottom Items */}
-        <div className="mt-auto px-4">
-          <ul className="space-y-1">
+        <div className="mt-auto px-3 py-4 border-t border-border">
+          <div className="space-y-1">
             {bottomItems.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
-                  className="flex items-center gap-3 px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <Icon name={item.icon} className="w-5 h-5" />
-                  <span>{item.label}</span>
-                </a>
-              </li>
+              <a
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors",
+                  "text-sm font-medium",
+                  isCollapsed && "justify-center"
+                )}
+              >
+                <Icon name={item.icon} size="md" className="text-gray-500 shrink-0" />
+                {!isCollapsed && <span>{item.label}</span>}
+              </a>
             ))}
-          </ul>
+          </div>
         </div>
-      </nav>
+      </div>
     </aside>
   );
 }; 
