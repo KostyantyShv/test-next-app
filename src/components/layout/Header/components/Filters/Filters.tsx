@@ -1,7 +1,6 @@
 'use client';
 
 import { FC, useState } from 'react';
-import { cn } from '@/lib/utils';
 
 type Language = 'English' | 'Chinese' | 'Hindi' | 'Spanish' | 'French' | 'Russian' | 'German' | 'Japanese' | 'Korean' | 'Hebrew';
 type ContentType = 'Title' | 'Content';
