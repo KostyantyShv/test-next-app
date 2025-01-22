@@ -112,85 +112,93 @@ export const Filters: FC = () => {
       )}
 
       {/* Mobile Filters Panel */}
-      {isOpen && (
-        <div className="md:hidden">
-          <div 
-            className="fixed inset-0 bg-black/50 z-40"
-            onClick={() => setIsOpen(false)}
-          />
-          <div className="fixed inset-x-0 bottom-0 z-50 bg-white rounded-t-2xl max-h-[85vh]">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h3 className="text-lg font-medium">Filter & Sort</h3>
-              <div className="flex items-center gap-4">
-                <button 
-                  onClick={handleReset}
-                  className="flex items-center gap-1 px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded transition-colors"
-                >
-                  <span>↺</span> Reset
-                </button>
-                <button 
-                  onClick={() => setIsOpen(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg"
-                >
-                  <Icon name="close" size="sm" className="text-gray-500" />
-                </button>
-              </div>
+      <div className={cn(
+        "md:hidden fixed inset-0 z-40 transition-all duration-200 ease-in-out",
+        isOpen ? "visible opacity-100" : "invisible opacity-0"
+      )}>
+        {/* Overlay */}
+        <div 
+          className="absolute inset-0 bg-black/50"
+          onClick={() => setIsOpen(false)}
+        />
+        
+        {/* Panel */}
+        <div className={cn(
+          "fixed inset-x-0 bottom-0 z-50 bg-white rounded-t-2xl max-h-[85vh]",
+          "transform transition-transform duration-500 ease-in-out",
+          isOpen ? "translate-y-0" : "translate-y-full"
+        )}>
+          <div className="flex items-center justify-between p-4 border-b">
+            <h3 className="text-lg font-medium">Filter & Sort</h3>
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={handleReset}
+                className="flex items-center gap-1 px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded transition-colors"
+              >
+                <span>↺</span> Reset
+              </button>
+              <button 
+                onClick={() => setIsOpen(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg"
+              >
+                <Icon name="close" size="sm" className="text-gray-500" />
+              </button>
             </div>
+          </div>
 
-            <div className="p-4 overflow-y-auto">
-              <div className="space-y-4">
-                {/* Mobile Language Dropdown */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Language</label>
-                  <select
-                    value={filters.language}
-                    onChange={(e) => setFilters(prev => ({ ...prev, language: e.target.value as Language }))}
-                    className="w-full px-3 py-2 bg-gray-100 rounded-lg border-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="English">English</option>
-                    <option value="Chinese">Chinese</option>
-                    <option value="Hindi">Hindi</option>
-                    <option value="Spanish">Spanish</option>
-                    <option value="French">French</option>
-                    <option value="Russian">Russian</option>
-                    <option value="German">German</option>
-                    <option value="Japanese">Japanese</option>
-                    <option value="Korean">Korean</option>
-                    <option value="Hebrew">Hebrew</option>
-                  </select>
-                </div>
+          <div className="p-4 overflow-y-auto">
+            <div className="space-y-4">
+              {/* Mobile Language Dropdown */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Language</label>
+                <select
+                  value={filters.language}
+                  onChange={(e) => setFilters(prev => ({ ...prev, language: e.target.value as Language }))}
+                  className="w-full px-3 py-2 bg-gray-100 rounded-lg border-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="English">English</option>
+                  <option value="Chinese">Chinese</option>
+                  <option value="Hindi">Hindi</option>
+                  <option value="Spanish">Spanish</option>
+                  <option value="French">French</option>
+                  <option value="Russian">Russian</option>
+                  <option value="German">German</option>
+                  <option value="Japanese">Japanese</option>
+                  <option value="Korean">Korean</option>
+                  <option value="Hebrew">Hebrew</option>
+                </select>
+              </div>
 
-                {/* Mobile Content Type Dropdown */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Content Type</label>
-                  <select
-                    value={filters.contentType}
-                    onChange={(e) => setFilters(prev => ({ ...prev, contentType: e.target.value as ContentType }))}
-                    className="w-full px-3 py-2 bg-gray-100 rounded-lg border-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="Title">Title</option>
-                    <option value="Content">Content</option>
-                  </select>
-                </div>
+              {/* Mobile Content Type Dropdown */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Content Type</label>
+                <select
+                  value={filters.contentType}
+                  onChange={(e) => setFilters(prev => ({ ...prev, contentType: e.target.value as ContentType }))}
+                  className="w-full px-3 py-2 bg-gray-100 rounded-lg border-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="Title">Title</option>
+                  <option value="Content">Content</option>
+                </select>
+              </div>
 
-                {/* Mobile Sort Dropdown */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Sort By</label>
-                  <select
-                    value={filters.sortBy}
-                    onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value as SortType }))}
-                    className="w-full px-3 py-2 bg-gray-100 rounded-lg border-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="Popularity">Popularity</option>
-                    <option value="Newest">Newest</option>
-                    <option value="Oldest">Oldest</option>
-                  </select>
-                </div>
+              {/* Mobile Sort Dropdown */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Sort By</label>
+                <select
+                  value={filters.sortBy}
+                  onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value as SortType }))}
+                  className="w-full px-3 py-2 bg-gray-100 rounded-lg border-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="Popularity">Popularity</option>
+                  <option value="Newest">Newest</option>
+                  <option value="Oldest">Oldest</option>
+                </select>
               </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
