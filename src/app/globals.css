@@ -6,6 +6,8 @@
   --background: #F8FCFF;
   --foreground: #171717;
   --icon: #03314B;
+  --menu-hover: #F1F5F4;
+  --menu-active: #E9F6FF;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -13,6 +15,8 @@
     --background: #F8FCFF;
     --foreground: #171717;
     --icon: #03314B;
+    --menu-hover: #F1F5F4;
+    --menu-active: #E9F6FF;
   }
 }
 

@@ -1,15 +1,53 @@
-import React from 'react';
+import { FC, useEffect, useState } from 'react';
+import { Portal } from '../Portal';
+import { cn } from '@/lib/utils';
 
 interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
   children: React.ReactNode;
-  content: React.ReactNode;
+  className?: string;
 }
 
-export const Modal: React.FC<ModalProps> = ({ children, content }) => {
+export const Modal: FC<ModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  children, 
+  className 
+}) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  if (!isOpen) return null;
+
   return (
-    <div className="relative">
-      {children}
-      <div className="hidden group-hover:block">{content}</div>
-    </div>
+    <Portal>
+      <div className="fixed inset-0 z-50 overflow-y-auto">
+        {/* Backdrop */}
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-25 transition-opacity"
+          onClick={onClose}
+        />
+
+        {/* Modal */}
+        <div className="flex min-h-full items-center justify-center p-4">
+          <div 
+            className={cn(
+              "relative bg-white rounded-lg shadow-xl",
+              "w-full max-w-md p-6",
+              "transform transition-all",
+              className
+            )}
+          >
+            {children}
+          </div>
+        </div>
+      </div>
+    </Portal>
   );
 }; 

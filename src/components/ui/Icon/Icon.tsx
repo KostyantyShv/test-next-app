@@ -19,15 +19,21 @@ export type IconName =
   | 'lightbulb'
   | 'rating'
   | 'finished'
-  | 'search';
+  | 'search'
+  | 'plus'
+  | 'chevron-up'
+  | 'close'
+  | 'share'
+  | 'chevron-down';
 
 interface IconProps {
   name: IconName;
   className?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
 }
 
 const iconSizes = {
+  xs: 'w-3 h-3',
   sm: 'w-4 h-4',
   md: 'w-5 h-5',
   lg: 'w-6 h-6',
@@ -69,6 +75,16 @@ const iconPaths: Record<IconName, string> = {
   'finished': 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
   
   'search': 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
+
+  'plus': 'M12 4v16m8-8H4',
+
+  'chevron-up': 'M5 15l7-7 7 7',
+
+  'close': 'M6 18L18 6M6 6l12 12',
+
+  'share': 'M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z',
+
+  'chevron-down': 'M19 9l-7 7-7-7',
 };
 
 export const Icon: FC<IconProps> = ({ name, className, size = 'md' }) => {
