@@ -3,19 +3,32 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --background: #F8FCFF;
   --foreground: #171717;
+  --icon: #03314B;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #F8FCFF;
     --foreground: #ededed;
+    --icon: #03314B;
   }
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
+  overflow-x: hidden;
+  min-height: 100vh;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Для фіксованого header і player */
+.pt-header {
+  padding-top: 4rem; /* 64px */
+}
+
+.pb-player {
+  padding-bottom: 5rem; /* 80px */
 }

@@ -1,0 +1,14 @@
+{
+  "css.validate": false,
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "tailwindCSS.includeLanguages": {
+    "html": "html",
+    "javascript": "javascript",
+    "typescript": "typescript",
+    "css": "css"
+  },
+  "editor.suggest.showStatusBar": true,
+  "editor.hover.enabled": true
+}

@@ -11,6 +11,14 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        icon: "var(--icon)",
+        primary: "#356EF5",    // TASK text color
+        secondary: "#66DFD2",  // X text color
+        accent: "#FB7B4C",     // Underline color
+      },
+      fontFamily: {
+        inter: ['var(--font-inter)', 'sans-serif'],
+        montserrat: ['var(--font-montserrat)', 'sans-serif'],
       },
     },
   },
