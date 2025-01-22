@@ -5,16 +5,18 @@ import { cn } from '@/lib/utils';
 interface CollectionsDropdownProps {
   collections: Collection[];
   isOpen: boolean;
+  variant?: 'desktop' | 'mobile';
 }
 
 export const CollectionsDropdown: FC<CollectionsDropdownProps> = ({
   collections,
-  isOpen
+  isOpen,
+  variant = 'desktop'
 }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="pl-6 space-y-1">
+    <div className={cn("pl-6 space-y-1", variant === 'mobile' && 'bg-[var(--menu-hover)]')}>
       {collections.map((collection) => (
         <button
           key={collection.id}
@@ -24,8 +26,8 @@ export const CollectionsDropdown: FC<CollectionsDropdownProps> = ({
             "text-left text-sm text-gray-600"
           )}
         >
-          <span className="text-lg">{collection.emoji}</span>
-          <span>{collection.title}</span>
+          <span className={cn(variant === 'mobile' ? 'text-xl' : 'text-lg')}>{collection.emoji}</span>
+          <span className={cn(variant === 'mobile' ? 'text-md' : 'text-sm')}>{collection.title}</span>
         </button>
       ))}
     </div>

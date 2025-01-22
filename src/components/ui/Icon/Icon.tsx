@@ -31,7 +31,7 @@ export type IconName =
 interface IconProps {
   name: IconName;
   className?: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
 
 const iconSizes = {
@@ -39,6 +39,7 @@ const iconSizes = {
   sm: 'w-4 h-4',
   md: 'w-5 h-5',
   lg: 'w-6 h-6',
+  xl: 'w-8 h-8',
 };
 
 const iconPaths: Record<IconName, string> = {

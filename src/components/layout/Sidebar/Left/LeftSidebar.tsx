@@ -55,6 +55,12 @@ export const LeftSidebar: FC = () => {
     localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
   }, [isCollapsed]);
 
+  useLayoutEffect(() => {
+    if (isCollapsed) {
+      setIsCollectionsDropdownOpen(false);
+    }
+  }, [isCollapsed]);
+
   if (!mounted) {
     return (
       <aside className={cn(

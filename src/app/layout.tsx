@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Montserrat } from 'next/font/google';
+import { RootLayoutClient } from '@/components/layout/RootLayoutClient';
 import "./globals.css";
 
 const inter = Inter({
@@ -26,7 +27,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${montserrat.variable}`}>
-      <body>{children}</body>
+      <body>
+        <RootLayoutClient>
+          {children}
+        </RootLayoutClient>
+      </body>
     </html>
   );
 }
