@@ -62,6 +62,7 @@ export const SidebarContent: FC<SidebarContentProps> = ({
                     name={item.icon} 
                     size="lg"
                     className={cn(
+                      "shrink-0",
                       pathname === item.href ? "text-[var(--icon)]" : "text-gray-500"
                     )} 
                   />
