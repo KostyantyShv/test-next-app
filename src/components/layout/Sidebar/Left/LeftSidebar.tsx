@@ -123,7 +123,6 @@ export const LeftSidebar: FC = () => {
                       "flex items-center gap-3 px-3 py-2 text-gray-600 rounded-lg transition-colors",
                       "text-sm font-medium",
                       "hover:bg-[var(--menu-hover)]",
-                      "hover:bg-[var(--menu-active)]",
                       pathname === item.href && "bg-[var(--menu-active)]",
                       isCollapsed && "justify-center"
                     )}

@@ -89,7 +89,7 @@ export default function PlayerPage() {
     <div className="flex flex-col flex-1 bg-white">
       {/* Hero Image Container */}
       <div className="max-w-7xl mx-auto px-4 w-full">
-        <div className="w-full h-[400px] rounded-2xl overflow-hidden relative mt-4">
+        <div className="w-full z-0 h-[400px] rounded-2xl overflow-hidden relative mt-4">
           <img 
             src="/images/cat.png" 
             alt="Quantum Cat Visualization" 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Montserrat } from 'next/font/google';
 import { RootLayoutClient } from '@/components/layout/RootLayoutClient';
 import "./globals.css";
+import { ThemeProvider } from 'next-themes'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -26,11 +27,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${montserrat.variable}`}>
+    <html lang="en" className={`${inter.variable} ${montserrat.variable}`} suppressHydrationWarning>
       <body>
-        <RootLayoutClient>
-          {children}
-        </RootLayoutClient>
+        <ThemeProvider attribute="class">
+          <RootLayoutClient>
+            {children}
+          </RootLayoutClient>
+        </ThemeProvider>
       </body>
     </html>
   );

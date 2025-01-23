@@ -20,6 +20,16 @@
   }
 }
 
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0F172A;
+    --foreground: #E2E8F0;
+    --icon: #94A3B8;
+    --menu-hover: #1E293B;
+    --menu-active: #2D3B55;
+  }
+} */
+
 body {
   color: var(--foreground);
   background: var(--background);
@@ -28,7 +38,6 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Для фіксованого header і player */
 .pt-header {
   padding-top: 4rem; /* 64px */
 }

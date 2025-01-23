@@ -38,9 +38,8 @@ export const ChapterMeta: FC<ChapterMetaProps> = ({
         <Icon name="explore" className="w-4 h-4" />
         <span>Also in</span>
         {relatedBooks.map((book, index) => (
-          <>
+          <div key={book.title} className="flex items-center gap-2">
             <Link 
-              key={book.title}
               href={book.href}
               className="font-bold hover:underline"
             >
@@ -49,7 +48,7 @@ export const ChapterMeta: FC<ChapterMetaProps> = ({
             {index < relatedBooks.length - 1 && (
               <span>•</span>
             )}
-          </>
+          </div>
         ))}
         <span className="mx-2">|</span>
         <span>{sourcesCount} sources</span>

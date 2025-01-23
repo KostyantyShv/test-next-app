@@ -11,7 +11,7 @@ const navigationItems: { href: string; label: string; icon: IconName }[] = [
   { href: '/explore', label: 'Explore', icon: 'explore' },
   { href: '/library', label: 'Library', icon: 'library' },
   { href: '/playlist', label: 'Playlist', icon: 'playlist' },
-  { href: '/me', label: 'Me', icon: 'finished' },
+  { href: '/player', label: 'Me', icon: 'finished' },
 ];
 
 export const MobileNavigation: FC = () => {

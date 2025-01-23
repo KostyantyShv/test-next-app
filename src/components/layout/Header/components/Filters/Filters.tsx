@@ -44,7 +44,7 @@ export const Filters: FC = () => {
           viewBox="0 0 24 24" 
           fill="none" 
           stroke="currentColor" 
-          className="text-gray-600"
+          className="text-gray-500"
         >
           <path 
             strokeLinecap="round" 
@@ -57,7 +57,7 @@ export const Filters: FC = () => {
 
       {/* Desktop Filters Panel */}
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 w-[600px] hidden md:block">
+        <div className="absolute top-full right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 w-[600px] hidden md:block z-[100]">
           <div className="flex items-center gap-4 p-4">
             <h3 className="text-lg font-medium">Filter & Sort</h3>
             <button 
@@ -113,7 +113,7 @@ export const Filters: FC = () => {
 
       {/* Mobile Filters Panel */}
       <div className={cn(
-        "md:hidden fixed inset-0 z-40 transition-all duration-200 ease-in-out",
+        "md:hidden fixed inset-0 z-[100] transition-all duration-200 ease-in-out",
         isOpen ? "visible opacity-100" : "invisible opacity-0"
       )}>
         {/* Overlay */}

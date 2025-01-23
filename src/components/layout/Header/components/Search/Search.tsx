@@ -7,7 +7,7 @@ export const Search: FC = () => {
       <input
         type="text"
         placeholder="Search for anything..."
-        className="w-full h-10 px-4 pr-10 rounded-lg border border-gray-200 focus:outline-none focus:border-primary"
+        className="w-full h-10 px-4 pr-10 rounded-lg border border-gray-200 dark:bg-white dark:border-gray-200 focus:outline-none focus:border-primary"
       />
       <button 
         className="absolute right-3 top-1/2 -translate-y-1/2"
