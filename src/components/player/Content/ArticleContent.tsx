@@ -1,133 +1,64 @@
 'use client';
 
-import { FC, useCallback, useState } from 'react';
-import { Icon } from '@/components/ui/Icon';
-
-interface SelectionTooltipProps {
-  position: { x: number; y: number } | null;
-  onHighlight: () => void;
-  onCreateNote: () => void;
-  onCopy: () => void;
-  onSearch: () => void;
-}
-
-const SelectionTooltip: FC<SelectionTooltipProps> = ({ 
-  position, 
-  onHighlight,
-  onCreateNote,
-  onCopy,
-  onSearch
-}) => {
-  if (!position) return null;
-
-  return (
-    <div 
-      className="fixed z-50 bg-white rounded-lg shadow-lg py-2 px-1"
-      style={{ 
-        top: `${position.y}px`, 
-        left: `${position.x}px`,
-        transform: 'translate(-50%, -100%)'
-      }}
-    >
-      <div className="flex items-center gap-1">
-        <button 
-          onClick={onHighlight}
-          className="p-2 hover:bg-gray-100 rounded-lg"
-          title="Highlight"
-        >
-          <Icon name="highlight" size="sm" />
-        </button>
-        <button 
-          onClick={onCreateNote}
-          className="p-2 hover:bg-gray-100 rounded-lg"
-          title="Create Note"
-        >
-          <Icon name="note" size="sm" />
-        </button>
-        <button 
-          onClick={onCopy}
-          className="p-2 hover:bg-gray-100 rounded-lg"
-          title="Copy"
-        >
-          <Icon name="copy" size="sm" />
-        </button>
-        <button 
-          onClick={onSearch}
-          className="p-2 hover:bg-gray-100 rounded-lg"
-          title="Search"
-        >
-          <Icon name="search" size="sm" />
-        </button>
-      </div>
-    </div>
-  );
-};
+import { FC } from 'react';
+import { TextSelectionTooltip } from './TextSelectionTooltip';
 
 interface ArticleContentProps {
   content: string;
 }
 
 export const ArticleContent: FC<ArticleContentProps> = ({ content }) => {
-  const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
+  const handleHighlight = (text: string) => {
+    console.log('Highlight:', text);
+  };
 
-  const handleTextSelection = useCallback(() => {
-    const selection = window.getSelection();
+  const handleCreateHighlighter = (text: string) => {
+    console.log('Create Highlighter:', text);
+  };
+
+  const handleCreateNote = (text: string) => {
+    console.log('Create Note:', text);
+  };
+
+  const handleCopyText = (text: string) => {
+    navigator.clipboard.writeText(text);
+  };
+
+  const handleSearch = (text: string, type: 'punchline' | 'google' | 'perplexity') => {
+    console.log('Search:', type, text);
     
-    if (selection && selection.toString().length > 0) {
-      const range = selection.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-      
-      setTooltipPosition({
-        x: rect.left + rect.width / 2,
-        y: rect.top
-      });
-    } else {
-      setTooltipPosition(null);
+    // Implement different search behaviors based on type
+    switch (type) {
+      case 'punchline':
+        // Search within your app
+        break;
+      case 'google':
+        window.open(`https://www.google.com/search?q=${encodeURIComponent(text)}`, '_blank');
+        break;
+      case 'perplexity':
+        window.open(`https://www.perplexity.ai/search?q=${encodeURIComponent(text)}`, '_blank');
+        break;
     }
-  }, []);
-
-  const handleHighlight = () => {
-    // Implement highlight functionality
-    console.log('Highlight selected text');
-    setTooltipPosition(null);
   };
 
-  const handleCreateNote = () => {
-    // Implement note creation
-    console.log('Create note from selected text');
-    setTooltipPosition(null);
-  };
-
-  const handleCopy = () => {
-    const selection = window.getSelection();
-    if (selection) {
-      navigator.clipboard.writeText(selection.toString());
-    }
-    setTooltipPosition(null);
-  };
-
-  const handleSearch = () => {
-    // Implement search functionality
-    console.log('Search selected text');
-    setTooltipPosition(null);
+  const handlePostToX = (text: string) => {
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    window.open(tweetUrl, '_blank');
   };
 
   return (
     <div className="relative mb-4">
-      <div 
-        className="prose max-w-none"
-        onMouseUp={handleTextSelection}
-        onKeyUp={handleTextSelection}
-      >
+      <div className="prose max-w-none">
         <p>{content}</p>
       </div>
 
-      <SelectionTooltip 
-        position={tooltipPosition}
+      <TextSelectionTooltip
         onHighlight={handleHighlight}
+        onCreateHighlighter={handleCreateHighlighter}
         onCreateNote={handleCreateNote}
-        onCopy={handleCopy}
+        onCopyText={handleCopyText}
         onSearch={handleSearch}
+        onPostToX={handlePostToX}
       />
     </div>
   );
