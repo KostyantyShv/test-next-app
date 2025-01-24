@@ -24,9 +24,10 @@ export const ChapterActions: FC<ChapterActionsProps> = ({
 }) => {
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isQASectionOpen, setIsQASectionOpen] = useState(false);
+  const qaButtonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const [isQASectionOpen, setIsQASectionOpen] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -147,6 +148,7 @@ export const ChapterActions: FC<ChapterActionsProps> = ({
           </button>
 
           <button 
+            ref={qaButtonRef}
             className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-full text-sm text-gray-600 hover:bg-gray-100 transition-colors"
             onClick={() => setIsQASectionOpen(true)}
           >
@@ -207,6 +209,7 @@ export const ChapterActions: FC<ChapterActionsProps> = ({
         isOpen={isQASectionOpen}
         onClose={() => setIsQASectionOpen(false)}
         questions={questions}
+        anchorEl={qaButtonRef.current}
       />
     </>
   );

@@ -24,9 +24,9 @@ export const ArticleAuthor: FC<ArticleAuthorProps> = ({
   meta 
 }) => {
   return (
-    <div className="flex items-center justify-between mb-4">
+    <div className="flex items-center gap-2 justify-between mb-4">
       {/* Author Info */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 shrink-0">
         {avatar ? (
           <Image 
             src={avatar} 
@@ -45,8 +45,8 @@ export const ArticleAuthor: FC<ArticleAuthorProps> = ({
       </div>
 
       {/* Meta Info */}
-      <div className="flex items-center gap-4 text-sm text-gray-500">
-        <div className="flex items-center gap-1">
+      <div className="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
+        <div className="flex items-center gap-1 text-nowrap">
           <Icon name="clock" size="sm" />
           <span>{meta.duration}</span>
         </div>

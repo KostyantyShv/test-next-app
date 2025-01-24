@@ -115,6 +115,7 @@ export default function PlayerPage() {
             <ArticleAuthor 
               theme="REALITY IS NOT WHAT IT SEEMS"
               name="Leil Lowndes"
+              avatar="/images/avatar.png"
               meta={{
                 duration: "24 min",
                 views: 792,
@@ -174,13 +175,9 @@ export default function PlayerPage() {
           </div>
 
           {/* Table of Contents */}
-          <div className="w-60">
+          <div className="max-w-[30%]">
             <TableOfContents sections={sections} />
           </div>
-          {/* Right Sidebar */}
-          {/* <aside className="w-80 hidden lg:block border-l border-border">
-            <RightSidebar />
-          </aside> */}
         </div>
       </div>
     </div>

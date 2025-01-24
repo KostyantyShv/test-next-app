@@ -1,6 +1,6 @@
 'use client';
 
-import { FC } from 'react';
+import { FC, Fragment } from 'react';
 import Link from 'next/link';
 import { Icon } from '@/components/ui/Icon';
 
@@ -27,18 +27,18 @@ export const ChapterMeta: FC<ChapterMetaProps> = ({
             key={tag}
             className="px-3 py-1.5 bg-gray-50 rounded-full text-sm text-gray-600 hover:bg-gray-100 transition-colors flex items-center gap-2"
           >
-            <Icon name="check" className="w-4 h-4 text-primary" />
+            <Icon name="check" className="w-4 h-4 shrink-0 text-primary" />
             {tag}
           </button>
         ))}
       </div>
 
       {/* Right side - Related Sources */}
-      <div className="flex items-center gap-2 px-4 py-1.5 bg-gray-50 rounded-full text-sm text-gray-600">
-        <Icon name="explore" className="w-4 h-4" />
+      <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-gray-50 rounded-full text-sm text-gray-600 w-fit">
+        <Icon name="explore" className="w-4 h-4 shrink-0" />
         <span>Also in</span>
         {relatedBooks.map((book, index) => (
-          <div key={book.title} className="flex items-center gap-2">
+          <Fragment key={book.title}>
             <Link 
               href={book.href}
               className="font-bold hover:underline"
@@ -48,7 +48,7 @@ export const ChapterMeta: FC<ChapterMetaProps> = ({
             {index < relatedBooks.length - 1 && (
               <span>•</span>
             )}
-          </div>
+          </Fragment>
         ))}
         <span className="mx-2">|</span>
         <span>{sourcesCount} sources</span>

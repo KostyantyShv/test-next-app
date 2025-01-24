@@ -8,11 +8,6 @@ export default function Home() {
           <p>Main Content Area</p>
         </div>
       </div>
-
-      {/* Right Sidebar */}
-      <aside className="w-80 hidden lg:block border-l border-border">
-        <RightSidebar />
-      </aside>
     </div>
   );
 }

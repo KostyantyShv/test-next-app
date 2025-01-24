@@ -50,20 +50,29 @@ export const QuestionsList: FC<QuestionsListProps> = ({ questions }) => {
                 {question.text}
               </span>
               <Icon 
-                name={expandedId === question.id ? "chevron-up" : "chevron-down"} 
+                name="chevron-down"
                 size="sm"
                 className={cn(
-                  "text-gray-400 transition-transform",
-                  expandedId === question.id && "transform rotate-180"
+                  "text-gray-400 transition-transform duration-200",
+                  expandedId === question.id ? "rotate-180" : "rotate-0"
                 )}
               />
             </button>
             
-            {expandedId === question.id && question.answer && (
-              <div className="pb-2">
-                <p className="text-gray-600">{question.answer}</p>
+            <div className={cn(
+              "grid transition-all duration-200 ease-in-out",
+              expandedId === question.id 
+                ? "grid-rows-[1fr] opacity-100" 
+                : "grid-rows-[0fr] opacity-0"
+            )}>
+              <div className="overflow-hidden">
+                {question.answer && (
+                  <div className="pb-4">
+                    <p className="text-gray-600">{question.answer}</p>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
         ))}
       </div>

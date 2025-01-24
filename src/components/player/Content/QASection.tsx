@@ -18,16 +18,20 @@ interface QASectionProps {
   isOpen: boolean;
   onClose: () => void;
   questions: Question[];
+  anchorEl: HTMLButtonElement | null;
 }
 
-export const QASection: FC<QASectionProps> = ({ isOpen, onClose, questions }) => {
+export const QASection: FC<QASectionProps> = ({ isOpen, onClose, questions, anchorEl }) => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [questionsState, setQuestionsState] = useState(questions.map(q => ({
     ...q,
     rating: q.rating || { upvoted: false, downvoted: false }
   })));
 
-  if (!isOpen) return null;
+  if (!isOpen || !anchorEl) return null;
+
+  const rect = anchorEl.getBoundingClientRect();
+  const left = Math.max(0, rect.left - 200);
 
   const handleVote = (questionId: string, voteType: 'up' | 'down') => {
     setQuestionsState(prev => prev.map(q => {
@@ -55,7 +59,13 @@ export const QASection: FC<QASectionProps> = ({ isOpen, onClose, questions }) =>
   };
 
   return (
-    <div className="absolute right-0 top-full mt-2 z-50">
+    <div 
+      className="fixed z-50"
+      style={{
+        bottom: `${window.innerHeight - rect.top + 8}px`,
+        left: `${left}px`
+      }}
+    >
       <div className="w-[400px] bg-white shadow-xl border border-gray-200 rounded-xl">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200">

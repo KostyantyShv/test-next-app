@@ -5,6 +5,7 @@ import { Header } from '@/components/layout/Header';
 import { LeftSidebar } from '@/components/layout/Sidebar/Left';
 import { MobileNavigation } from '@/components/layout/MobileNavigation';
 import { MobileLeftSidebar } from '@/components/layout/Sidebar/Left/MobileLeftSidebar';
+import { RightSidebar } from './Sidebar/Right';
 
 export const RootLayoutClient = ({ children }: { children: React.ReactNode }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -28,13 +29,18 @@ export const RootLayoutClient = ({ children }: { children: React.ReactNode }) =>
           <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} />
           
           {/* Main Content */}
-          <main className="flex-1">
+          <main className="flex-1 pb-[72px] md:pb-0">
             {children}
           </main>
 
           {/* Mobile Navigation */}
           <MobileNavigation />
         </div>
+
+        {/* Right Sidebar */}
+        <aside className="hidden md:block">
+          <RightSidebar />
+        </aside>
       </div>
     </div>
   );

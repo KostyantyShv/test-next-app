@@ -48,7 +48,7 @@ export const TableOfContents: FC<TableOfContentsProps> = ({ sections }) => {
   };
 
   return (
-    <nav className="sticky top-4 p-4">
+    <nav className="sticky top-4 p-4 pr-0">
       <div className="flex flex-col gap-2">
         {sections.map((section) => (
           <div
