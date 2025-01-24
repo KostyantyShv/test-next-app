@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Icon } from '@/components/ui/Icon';
 import { ReportData, ReportModal } from './ReportModal';
 import { QASection } from './QASection';
+import { useSidebar } from '@/store/use-sidebar';
 
 interface ChapterActionsProps {
   sources: Array<{
@@ -28,6 +29,7 @@ export const ChapterActions: FC<ChapterActionsProps> = ({
   const qaButtonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const openWithTab = useSidebar(state => state.openWithTab);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -106,97 +108,121 @@ export const ChapterActions: FC<ChapterActionsProps> = ({
     },
   ];
 
+  const handleCommentClick = () => {
+    if (window.innerWidth < 768) { // MD breakpoint
+      openWithTab('qa');
+    } else {
+      setIsQASectionOpen(true);
+    }
+  };
+
+  const handleHighlightClick = () => {
+    if (window.innerWidth < 768) { // MD breakpoint
+      openWithTab('bigIdeas');
+    }
+  };
+
   return (
     <>
-      <div className="flex items-center justify-between mb-2">
-        {/* Left side - Sources */}
-        <div className="flex items-center gap-4">
-          <div className="flex items-center bg-gray-50 rounded-full px-3 py-1.5">
-            <div className="flex -space-x-2 mr-2">
-              {sources.slice(0, 3).map((source, index) => (
-                <div 
-                  key={index} 
-                  className="w-6 h-6 rounded-full bg-white overflow-hidden ring-2 ring-white"
-                >
-                  <Image
-                    src={source.logo}
-                    alt={source.alt}
-                    width={24}
-                    height={24}
-                    className="w-full h-full object-contain"
-                  />
+      <div className="relative w-full pb-4">
+        <div className="absolute inset-0">
+          <div className="overflow-x-auto h-full">
+            <div className="flex items-center justify-between w-max min-w-full">
+              {/* Left side - Sources */}
+              <div className="flex items-center gap-4">
+                <div className="flex items-center bg-gray-50 rounded-full px-3 py-1.5">
+                  <div className="flex -space-x-2 mr-2">
+                    {sources.slice(0, 3).map((source, index) => (
+                      <div 
+                        key={index} 
+                        className="w-6 h-6 rounded-full bg-white overflow-hidden ring-2 ring-white"
+                      >
+                        <Image
+                          src={source.logo}
+                          alt={source.alt}
+                          width={24}
+                          height={24}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <span className="text-sm text-gray-600">{sourceCount} sources</span>
                 </div>
-              ))}
-            </div>
-            <span className="text-sm text-gray-600">{sourceCount} sources</span>
-          </div>
 
-          <button className="p-2 hover:bg-gray-50 rounded-full transition-colors">
-            <Icon name="link" className="w-5 h-5 text-gray-600" />
-          </button>
-
-          <button className="p-2 hover:bg-gray-50 rounded-full transition-colors">
-            <Icon name="copy" className="w-5 h-5 text-gray-600" />
-          </button>
-        </div>
-
-        {/* Right side - Highlights & Comments */}
-        <div className="flex items-center gap-2">
-          <button className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-full text-sm text-gray-600 hover:bg-gray-100 transition-colors">
-            <Icon name="highlight" className="w-4 h-4" />
-            <span>{highlightCount}</span>
-          </button>
-
-          <button 
-            ref={qaButtonRef}
-            className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-full text-sm text-gray-600 hover:bg-gray-100 transition-colors"
-            onClick={() => setIsQASectionOpen(true)}
-          >
-            <Icon name="question-chat" className="w-4 h-4" />
-            <span>{commentCount}</span>
-          </button>
-
-          {/* More Menu Button */}
-          <div className="relative">
-            <button 
-              ref={buttonRef}
-              className="p-1.5 hover:bg-gray-50 rounded-full transition-colors"
-              onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
-            >
-              <Icon name="more" className="w-5 h-5 text-gray-600" />
-            </button>
-
-            {/* More Menu Dropdown */}
-            {isMoreMenuOpen && (
-              <div 
-                ref={menuRef}
-                className="absolute right-0 mt-1 py-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 z-50"
-              >
-                <button 
-                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                  onClick={() => {
-                    // Handle create note
-                    setIsMoreMenuOpen(false);
-                  }}
-                >
-                  <Icon name="note" className="w-4 h-4" />
-                  Create Note
+                <button className="p-2 hover:bg-gray-50 rounded-full transition-colors">
+                  <Icon name="link" className="w-5 h-5 text-gray-600" />
                 </button>
-                
-                <button 
-                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                  onClick={() => {
-                    setIsReportModalOpen(true);
-                    setIsMoreMenuOpen(false);
-                  }}
-                >
-                  <Icon name="flag" className="w-4 h-4" />
-                  Report
+
+                <button className="p-2 hover:bg-gray-50 rounded-full transition-colors">
+                  <Icon name="copy" className="w-5 h-5 text-gray-600" />
                 </button>
               </div>
-            )}
+
+              {/* Right side - Highlights & Comments */}
+              <div className="flex items-center gap-2">
+                <button 
+                  className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-full text-sm text-gray-600 hover:bg-gray-100 transition-colors"
+                  onClick={handleHighlightClick}
+                >
+                  <Icon name="highlight" className="w-4 h-4" />
+                  <span>{highlightCount}</span>
+                </button>
+
+                <button 
+                  ref={qaButtonRef}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-full text-sm text-gray-600 hover:bg-gray-100 transition-colors"
+                  onClick={handleCommentClick}
+                >
+                  <Icon name="question-chat" className="w-4 h-4" />
+                  <span>{commentCount}</span>
+                </button>
+
+                {/* More Menu Button */}
+                <div className="relative">
+                  <button 
+                    ref={buttonRef}
+                    className="p-1.5 hover:bg-gray-50 rounded-full transition-colors"
+                    onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
+                  >
+                    <Icon name="more" className="w-5 h-5 text-gray-600" />
+                  </button>
+
+                  {/* More Menu Dropdown */}
+                  {isMoreMenuOpen && (
+                    <div 
+                      ref={menuRef}
+                      className="absolute right-0 mt-1 py-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 z-50"
+                    >
+                      <button 
+                        className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                        onClick={() => {
+                          // Handle create note
+                          setIsMoreMenuOpen(false);
+                        }}
+                      >
+                        <Icon name="note" className="w-4 h-4" />
+                        Create Note
+                      </button>
+                      
+                      <button 
+                        className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                        onClick={() => {
+                          setIsReportModalOpen(true);
+                          setIsMoreMenuOpen(false);
+                        }}
+                      >
+                        <Icon name="flag" className="w-4 h-4" />
+                        Report
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+        <div className="h-[52px]" aria-hidden="true" />
       </div>
 
       <ReportModal 

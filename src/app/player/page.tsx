@@ -1,4 +1,3 @@
-import { RightSidebar } from '@/components/layout/Sidebar/Right';
 import { ArticleHeader } from '@/components/player/Content/ArticleHeader';
 import { ArticleAuthor } from '@/components/player/Content/ArticleAuthor';
 import { ArticleContent } from '@/components/player/Content/ArticleContent';
@@ -175,7 +174,7 @@ export default function PlayerPage() {
           </div>
 
           {/* Table of Contents */}
-          <div className="max-w-[30%]">
+          <div className="max-w-[30%] hidden md:block">
             <TableOfContents sections={sections} />
           </div>
         </div>

@@ -405,12 +405,11 @@ export const RightSidebar: FC = () => {
       <aside className={cn(
         'h-screen bg-white border-l border-border',
         'transition-all duration-300 ease-in-out',
-        'xl:sticky xl:top-0 xl:right-0',
-        ((windowWidth < 1200 && !isCollapsed && isExpanded) || 
-         (windowWidth < 1000 && !isCollapsed)) 
-          ? 'fixed top-0 right-0 z-50' 
-          : 'sticky top-0 right-0',
-        isCollapsed ? 'w-16' : isExpanded ? 'w-[520px]' : 'w-80'
+        'fixed top-0 right-0 z-50 md:sticky md:top-0 md:right-0',
+        isCollapsed ? 'w-16' : isExpanded ? 'w-[520px]' : 'w-80',
+        windowWidth < 768 && !isCollapsed && 'w-full',
+        windowWidth < 768 && isCollapsed && 'translate-x-full',
+        windowWidth >= 768 && 'transform-none',
       )}>
         <div className="flex flex-col h-full">
           {/* Header */}
@@ -431,29 +430,33 @@ export const RightSidebar: FC = () => {
                 <span className="font-medium">Sources</span>
               </div>
               <div className="flex items-center gap-2">
-                <button
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                  aria-label="More options"
-                >
-                  <Icon name="more" size="sm" className="text-gray-500" />
-                </button>
-                <button
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                  aria-label={isExpanded ? "Collapse width" : "Expand width"}
-                >
-                  <Icon 
-                    name={isExpanded ? "contract" : "square-expand"}
-                    size="sm" 
-                    className="text-gray-500"
-                  />
-                </button>
+                {windowWidth >= 768 && (
+                  <>
+                    <button
+                      className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                      aria-label="More options"
+                    >
+                      <Icon name="more" size="sm" className="text-gray-500" />
+                    </button>
+                    <button
+                      onClick={() => setIsExpanded(!isExpanded)}
+                      className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                      aria-label={isExpanded ? "Collapse width" : "Expand width"}
+                    >
+                      <Icon 
+                        name={isExpanded ? "contract" : "square-expand"}
+                        size="sm" 
+                        className="text-gray-500"
+                      />
+                    </button>
+                  </>
+                )}
                 <button
                   onClick={() => setIsCollapsed(true)}
                   className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
                   aria-label="Collapse sidebar"
                 >
-                  <Icon name="x" size="sm" className="text-gray-500" />
+                  <Icon name={windowWidth < 768 ? "x" : "x"} size="sm" className="text-gray-500" />
                 </button>
               </div>
             </div>

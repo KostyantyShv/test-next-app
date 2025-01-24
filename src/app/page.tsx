@@ -1,5 +1,3 @@
-import { RightSidebar } from '@/components/layout/Sidebar/Right';
-
 export default function Home() {
   return (
     <div className="flex flex-1">

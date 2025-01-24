@@ -38,7 +38,7 @@ export const RootLayoutClient = ({ children }: { children: React.ReactNode }) =>
         </div>
 
         {/* Right Sidebar */}
-        <aside className="hidden md:block">
+        <aside>
           <RightSidebar />
         </aside>
       </div>
