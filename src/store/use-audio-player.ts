@@ -61,7 +61,11 @@ export const useAudioPlayer = create<AudioPlayerStore>((set, get) => ({
   setIsPlaying: (playing) => {
     const { audioElement } = get();
     if (audioElement) {
-      playing ? audioElement.play() : audioElement.pause();
+      if (playing) {
+        audioElement.play();
+      } else {
+        audioElement.pause();
+      }
       set({ isPlaying: playing });
     }
   },
@@ -86,6 +90,7 @@ export const useAudioPlayer = create<AudioPlayerStore>((set, get) => ({
     const { audioElement, volume } = get();
     if (audioElement) {
       audioElement.muted = muted;
+      audioElement.volume = muted ? 0 : volume;
       set({ isMuted: muted });
     }
   },
