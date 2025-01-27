@@ -148,7 +148,7 @@ export const AudioPlayer: FC = () => {
             {/* Book Cover */}
             <div className="w-48 h-64 relative mb-6">
               <Image 
-                src={currentBook?.coverUrl || 'images/cat.png'} 
+                src={currentBook?.coverUrl || '/images/cat.png'} 
                 alt="Book cover" 
                 fill
                 className="rounded-lg shadow-lg object-cover"

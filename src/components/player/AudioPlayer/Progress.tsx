@@ -3,11 +3,12 @@ import * as Slider from '@radix-ui/react-slider';
 import { useAudioPlayer } from '@/store/use-audio-player';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import { Icon } from '@/components/ui/Icon';
 
 dayjs.extend(duration);
 
 export const Progress: FC<{ compact?: boolean }> = ({ compact }) => {
-  const { currentTime, duration, setCurrentTime } = useAudioPlayer();
+  const { currentTime, duration, setCurrentTime, setPlayerVisible } = useAudioPlayer();
 
   const formatTime = useCallback((seconds: number) => {
     return dayjs.duration(seconds, 'seconds').format('mm:ss');
@@ -21,8 +22,14 @@ export const Progress: FC<{ compact?: boolean }> = ({ compact }) => {
   if (compact) {
     return (
       <div className="w-full">
-        <div className="grid grid-cols-3 text-center mb-1">
-          <span className="text-white/80 text-sm text-left">0/13</span>
+        <div className="grid grid-cols-3 text-center mb-3">
+          <button 
+            onClick={() => setPlayerVisible(false)}
+            className="text-white/80 hover:text-white flex items-center gap-1"
+          >
+            <Icon name="chevron-down" className="w-4 h-4" />
+            <span className="text-sm">Close</span>
+          </button>
           <span className="text-white/80 text-sm">Player</span>
           <span className="text-white/80 text-sm text-right">{formatTimeLeft(currentTime)}</span>
         </div>
