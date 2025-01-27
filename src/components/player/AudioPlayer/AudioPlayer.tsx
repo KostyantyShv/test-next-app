@@ -9,6 +9,7 @@ import { Icon } from '@/components/ui/Icon';
 import Image from 'next/image';
 import { PlaybackRateControl } from './PlaybackRateControl';
 import { Playlist } from '../Playlist/Playlist';
+import { cn } from '@/lib/utils';
 
 export const AudioPlayer: FC = () => {
   const { 
@@ -211,19 +212,30 @@ export const AudioPlayer: FC = () => {
   return (
     <>
       <Playlist />
-      <div className="fixed bottom-0 left-0 right-0 bg-[#003366] z-50">
-        <div className="max-w-7xl mx-auto relative">
-          {/* Dragable handle */}
-          <div 
-            ref={dragRef}
-            className="absolute left-1/2 p-2 bg-white rounded-full -translate-x-1/2 -top-2 cursor-grab active:cursor-grabbing touch-none"
-          >
-            <div className="w-12 h-1 bg-blue-400 rounded-full" />
-          </div>
+      <div className="fixed bottom-0 left-0 right-0 z-50">
+        <div className={cn(
+          "bg-[#003366]",
+          "transition-all duration-300",
+          isExpanded 
+            ? "h-screen" 
+            : "h-[72px]",
+          "mr-0 md:mr-16",
+          "lg:mr-80",
+          "xl:mr-[520px]"
+        )}>
+          <div className="max-w-7xl mx-auto relative h-full">
+            {/* Dragable handle */}
+            <div 
+              ref={dragRef}
+              className="absolute left-1/2 p-2 bg-white rounded-full -translate-x-1/2 -top-2 cursor-grab active:cursor-grabbing touch-none"
+            >
+              <div className="w-12 h-1 bg-blue-400 rounded-full" />
+            </div>
 
-          {/* Main content */}
-          <div className="px-4 py-4">
-            <Progress compact />
+            {/* Main content */}
+            <div className="px-4 py-4">
+              <Progress compact />
+            </div>
           </div>
         </div>
       </div>

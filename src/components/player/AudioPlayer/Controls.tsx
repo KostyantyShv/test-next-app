@@ -30,7 +30,7 @@ export const Controls: FC<{ compact?: boolean }> = ({ compact }) => {
     return (
       <button onClick={togglePlay} className="p-2">
         <Icon 
-          name={isPlaying ? "play" : "pause"} 
+          name={isPlaying ? "pause" : "play"} 
           className="w-6 h-6 text-white" 
         />
       </button>
@@ -59,7 +59,7 @@ export const Controls: FC<{ compact?: boolean }> = ({ compact }) => {
         className="bg-white rounded-full p-4 hover:scale-105 transition-transform"
       >
         <Icon 
-          name={isPlaying ? "play" : "pause"} 
+          name={isPlaying ? "pause" : "play"} 
           className="w-8 h-8 text-[#003366]" 
         />
       </button>
