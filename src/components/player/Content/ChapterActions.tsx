@@ -192,7 +192,13 @@ export const ChapterActions: FC<ChapterActionsProps> = ({
                   {isMoreMenuOpen && (
                     <div 
                       ref={menuRef}
-                      className="absolute right-0 mt-1 py-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 z-50"
+                      className="fixed mt-1 py-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 z-[9999]"
+                      style={{
+                        top: buttonRef.current?.getBoundingClientRect().bottom ?? 0,
+                        left: buttonRef.current?.getBoundingClientRect().right 
+                          ? buttonRef.current.getBoundingClientRect().right - 144 // 36px * 4
+                          : 0
+                      }}
                     >
                       <button 
                         className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"

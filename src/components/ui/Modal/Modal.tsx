@@ -27,7 +27,7 @@ export const Modal: FC<ModalProps> = ({
 
   return (
     <Portal>
-      <div className="fixed inset-0 z-50 overflow-y-auto">
+      <div className="fixed inset-0 z-[9999] overflow-y-auto">
         {/* Backdrop */}
         <div 
           className="fixed inset-0 bg-black bg-opacity-25 transition-opacity"

@@ -10,11 +10,13 @@ import { CreateCollectionModal } from './CreateCollectionModal';
 import { mockCollections } from '@/lib/mocks/collections';
 import { CollectionsDropdown } from './CollectionsDropdown';
 import { useLeftSidebar } from '@/store/use-left-sidebar';
+import { useAudioPlayer } from '@/store/use-audio-player';
 
 interface NavItem {
   icon: IconName;
   label: string;
   href: string;
+  onClick?: (e: React.MouseEvent) => void;
 }
 
 const exploreItems: NavItem[] = [
@@ -30,7 +32,15 @@ const libraryItems: NavItem[] = [
 ];
 
 const bottomItems: NavItem[] = [
-  { icon: 'playlist', label: 'Playlist', href: '/playlist' },
+  { 
+    icon: 'playlist', 
+    label: 'Playlist', 
+    href: '#',
+    onClick: (e: React.MouseEvent) => {
+      e.preventDefault();
+      useAudioPlayer.getState().setPlaylistVisible(true);
+    }
+  },
   { icon: 'notifications', label: 'Notifications', href: '/notifications' },
   { icon: 'settings', label: 'Settings', href: '/settings' },
 ];
@@ -232,6 +242,7 @@ export const LeftSidebar: FC = () => {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={item.onClick}
                 className={cn(
                   "flex items-center gap-3 px-3 py-2 text-gray-600 rounded-lg transition-colors",
                   "text-sm font-medium",
