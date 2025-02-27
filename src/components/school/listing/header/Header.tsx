@@ -1,20 +1,44 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
+const Header = ({
+  setIsFixed,
+  classes,
+  isReference = false,
+  imageSizes = "w-16 h-16",
+}: {
+  setIsFixed: (entry: boolean) => void;
+  classes?: string;
+  isReference?: boolean;
+  imageSizes?: string;
+}) => {
   const [activeTab, setActiveTab] = useState("about");
+  const headerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
-    };
+    if (isReference && headerRef.current) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          setIsFixed(!entry.isIntersecting);
+        },
+        {
+          threshold: 0,
+          rootMargin: "-1px 0px 0px 0px",
+        }
+      );
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+      observer.observe(headerRef.current);
+
+      return () => {
+        if (headerRef.current) {
+          observer.unobserve(headerRef.current);
+        }
+        observer.disconnect();
+      };
+    }
+  }, [setIsFixed, isReference]);
 
   const navTabs = [
     { id: "about", label: "About" },
@@ -27,27 +51,30 @@ const Header = () => {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 min-h-[5.8rem] bg-white border-b border-gray-200/40 ${
-        isScrolled ? "shadow-md" : ""
+      ref={headerRef}
+      className={`z-50 transition-all duration-300 min-h-fit bg-white ${
+        classes || ""
       }`}
     >
-      <div className="max-w-[1220px] mx-auto p-0">
-        <div className="flex justify-between items-start p-4 md:p-8 gap-10 relative">
+      <div className="max-w-full">
+        <div className="px-3 sm:px-6 flex justify-between items-start gap-10 relative">
           {/* School Info */}
           <div className="flex gap-5 flex-1">
             {/* Thumbnail */}
-            <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200/60 shadow-sm">
+            <div
+              className={`${imageSizes} rounded-lg overflow-hidden flex-shrink-0 border border-gray-200/60 shadow-sm`}
+            >
               <Image
                 src="https://i.ibb.co/J8QjpbD/school1.webp"
                 alt="School Thumbnail"
-                width={64}
-                height={64}
+                width={40}
+                height={40}
                 className="object-cover w-full h-full"
               />
             </div>
 
             {/* School Details */}
-            <div className="flex-1 flex flex-col justify-between h-16 py-0.5">
+            <div className="flex-1 flex flex-col justify-between h-14 py-0.5">
               <div className="flex items-center gap-3">
                 <h1 className="text-xl font-semibold text-gray-700 leading-tight">
                   Lincoln Academy
@@ -99,7 +126,7 @@ const Header = () => {
           </div>
 
           {/* Add to List Button */}
-          <button className="flex items-center gap-2 bg-teal-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-teal-100 transition-colors mt-1">
+          <button className="flex items-center self-center gap-2 bg-teal-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-teal-600 transition-colors">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path
                 d="M16 9a7 7 0 1 1 0 14 7 7 0 1 1 0-14zm4-7a2 2 0 0 1 2 2v4h-1.5V3.5h-17v17H8V22H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16zm-3 10h-2v3h-3v2h3v3h2v-3h3v-2h-3v-3z"

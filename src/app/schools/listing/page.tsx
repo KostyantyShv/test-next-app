@@ -1,5 +1,4 @@
 import React from "react";
-import Header from "@/components/school/listing/header/Header";
 import ImagesGrig from "@/components/school/listing/images-grid/ImagesGrig";
 import SchoolInfo from "@/components/school/listing/school-info/SchoolInfo";
 import Content from "@/components/school/listing/content/Content";
@@ -39,9 +38,8 @@ const images = [
 const SchoolDirectory: React.FC = () => {
   return (
     <main>
-      <Header />
-      <div className="max-w-7xl mx-auto p-3 sm:p-5">
-        <div className="bg-white rounded-lg overflow-hidden">
+      <div className="max-w-[1200px] mx-auto p-3 sm:p-5">
+        <div className="bg-cardBackground rounded-cardBorderRadius overflow-hidden">
           <ImagesGrig images={images} />
           <SchoolInfo schoolInfo={schoolInfo} />
         </div>

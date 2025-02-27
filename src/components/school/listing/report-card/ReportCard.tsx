@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export default function ReportCard() {
+export default function ReportCard({ id }: { id: string }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = () => {
@@ -10,9 +10,12 @@ export default function ReportCard() {
   };
 
   return (
-    <div className="bg-white my-5 rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-100 overflow-hidden">
+    <div
+      className="bg-cardBackground my-cardMargin rounded-cardBorderRadius shadow-cardShadow overflow-hidden"
+      id={id}
+    >
       {/* Main Content */}
-      <div className="px-6 py-5">
+      <div className="p-cardPadding">
         <div className="flex flex-row">
           {/* Overall Grade Column */}
           <div className="flex flex-col items-center mr-12">

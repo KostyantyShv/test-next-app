@@ -180,7 +180,7 @@ const tags: string[] = [
   "Industry Collaboration",
 ];
 
-const AboutSection: React.FC = () => {
+const AboutSection = ({ id }: { id: string }) => {
   const [hoveredSocial, setHoveredSocial] = useState<string | null>(null);
 
   // Fixed click animation handlers
@@ -223,9 +223,8 @@ const AboutSection: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center py-5">
-      <main className="w-full max-w-full bg-white rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] p-8 border border-black/[0.08]">
-        {/* Profile Header */}
+    <div className="min-h-screen flex justify-center my-cardMargin" id={id}>
+      <div className="w-full max-w-full bg-cardBackground rounded-cardBorderRadius shadow-cardShadow p-cardPadding">
         <div className="flex gap-6 mb-8 items-center flex-col sm:flex-row">
           <div className="relative w-[120px] h-[120px]">
             <Image
@@ -254,7 +253,6 @@ const AboutSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Information Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {infoFields.map((field) => (
             <div key={field.id} className="flex items-center gap-3">
@@ -273,7 +271,6 @@ const AboutSection: React.FC = () => {
           ))}
         </div>
 
-        {/* Social Links */}
         <div className="flex gap-3 mb-8">
           {socialLinks.map((social) => (
             <a
@@ -298,7 +295,6 @@ const AboutSection: React.FC = () => {
           ))}
         </div>
 
-        {/* Followers Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-base font-semibold text-[#464646]">
@@ -330,7 +326,6 @@ const AboutSection: React.FC = () => {
           </a>
         </div>
 
-        {/* Tags Section */}
         <div className="mb-8">
           <div className="mb-4">
             <h2 className="text-base font-semibold text-[#464646]">
@@ -349,7 +344,7 @@ const AboutSection: React.FC = () => {
             ))}
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };

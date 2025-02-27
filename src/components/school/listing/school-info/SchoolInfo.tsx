@@ -1,8 +1,9 @@
 "use client";
 import { SchoolInfoInterface } from "@/app/schools/listing/page";
 import { Icon } from "@/components/ui/Icon";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ActionButton from "../action-button/ActionButton";
+import Header from "../header/Header";
 
 const LocationIcon = () => (
   <svg
@@ -29,10 +30,21 @@ const LocationIcon = () => (
 
 const SchoolInfo = ({ schoolInfo }: { schoolInfo: SchoolInfoInterface }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isFixed, setIsFixed] = useState(false);
+  const [showFixedHeader, setShowFixedHeader] = useState(false);
+
+  useEffect(() => {
+    if (isFixed) {
+      setShowFixedHeader(true);
+    } else {
+      const timeout = setTimeout(() => setShowFixedHeader(false), 300); // Match animation duration
+      return () => clearTimeout(timeout);
+    }
+  }, [isFixed]);
 
   return (
     <>
-      <div className="p-4 sm:p-6 flex flex-col sm:flex-row justify-between gap-4">
+      <div className="rounded-b-cardBorderRadius p-4 sm:p-6 flex flex-col sm:flex-row justify-between gap-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#464646]">
@@ -90,7 +102,7 @@ const SchoolInfo = ({ schoolInfo }: { schoolInfo: SchoolInfoInterface }) => {
         </div>
       </div>
       {isExpanded && (
-        <div className="bg-white p-4 sm:p-6 border-t border-gray-100 rounded-b-lg grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
+        <div className="flex flex-row bg-cardBackground p-4 sm:p-6 border-t border-gray-100 gap-2 sm:gap-3">
           <ActionButton icon={<LocationIcon />} text="Get directions" />
           <ActionButton icon={<Icon name="phone" />} text="Call now" />
           <ActionButton icon={<Icon name="globe" />} text="Website" />
@@ -98,6 +110,18 @@ const SchoolInfo = ({ schoolInfo }: { schoolInfo: SchoolInfoInterface }) => {
           <ActionButton icon={<Icon name="shield" />} text="Claim listing" />
           <ActionButton icon={<Icon name="warning" />} text="Report" />
         </div>
+      )}
+
+      <Header setIsFixed={setIsFixed} classes="my-5" isReference={true} />
+
+      {showFixedHeader && (
+        <Header
+          imageSizes="h-14 w-14"
+          classes={`fixed top-0 left-0 py-[3px] right-0 pl-16 w-full border z-50 transition-all duration-300 ${
+            isFixed ? "animate-slideDown" : "animate-slideUp"
+          }`}
+          setIsFixed={setIsFixed}
+        />
       )}
     </>
   );

@@ -1,9 +1,9 @@
 import Image from "next/image";
 
-export default function AnnouncementsCard() {
+export default function AnnouncementsCard({ id }: { id: string }) {
   return (
-    <div className="min-h-fit py-5 w-full">
-      <div className="w-full bg-white rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] p-8">
+    <div className="min-h-fit my-cardMargin w-full" id={id}>
+      <div className="w-full bg-cardBackground rounded-cardBorderRadius shadow-cardShadow p-cardPadding">
         {/* Header */}
         <div className="flex items-start  mb-6">
           <Image

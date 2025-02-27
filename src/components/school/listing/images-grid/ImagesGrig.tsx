@@ -57,10 +57,10 @@ const ImagesGrig = ({ images }: { images: Array<string> }) => {
           fill
           className="object-cover"
         />
-        <div className="absolute bottom-1 left-2 bg-white px-2 py-1 font-bold text-xs sm:text-sm">
+        <div className="absolute bottom-0 left-[10px] bg-white px-2 py-1 font-bold text-xs sm:text-sm">
           COLLEGE
         </div>
-        <div className="absolute bottom-1 left-20 sm:left-24 bg-gray-100 px-2 py-1 font-bold text-xs sm:text-sm text-gray-600">
+        <div className="absolute bottom-0 left-[87px] sm:left-24 bg-gray-100 px-2 py-1 font-bold text-xs sm:text-sm text-gray-600">
           GRAD SCHOOL
         </div>
       </div>

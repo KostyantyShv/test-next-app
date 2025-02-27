@@ -89,7 +89,7 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({
           onClick={() =>
             setActiveIndex((prev) => (prev - 1 + images.length) % images.length)
           }
-          className="absolute left-2 sm:left-6 text-white bg-black bg-opacity-40 p-2 sm:p-3 rounded-full hover:bg-opacity-60"
+          className="absolute left-2 sm:left-6 text-white bg-opacity-40 p-2 sm:p-3 rounded-full hover:bg-opacity-60"
         >
           <GalleryNavIcon className="rotate-180" />
         </button>
@@ -102,26 +102,26 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({
         />
         <button
           onClick={() => setActiveIndex((prev) => (prev + 1) % images.length)}
-          className="absolute right-2 sm:right-6 text-white bg-black bg-opacity-40 p-2 sm:p-3 rounded-full hover:bg-opacity-60"
+          className="absolute right-2 sm:right-6 bg-opacity-40 p-2 sm:p-3 rounded-full hover:bg-opacity-60"
         >
           <GalleryNavIcon />
         </button>
       </div>
-      <div className="absolute bottom-2 sm:bottom-4 left-0 right-0 px-2 sm:px-6 flex gap-2 overflow-x-auto justify-center">
+      <div className="absolute bottom-2 sm:bottom-4 left-0 right-0 px-2 sm:px-6 flex gap-2 overflow-x-auto">
         {images.map((img, idx) => (
           <button
             key={idx}
             onClick={() => setActiveIndex(idx)}
-            className={`w-16 sm:w-24 h-12 sm:h-16 flex-shrink-0 ${
+            className={`w-[120px] h-[80px] flex-shrink-0 ${
               activeIndex === idx ? "border-2 border-emerald-600" : ""
             }`}
           >
             <Image
               src={img}
               alt={`Thumbnail ${idx + 1}`}
-              width={96}
-              height={64}
-              className="object-cover rounded w-full h-full"
+              width={120}
+              height={80}
+              className="object-cover w-full h-full"
             />
           </button>
         ))}

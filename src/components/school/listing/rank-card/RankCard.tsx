@@ -13,7 +13,7 @@ interface RankingData {
   total: string;
 }
 
-export default function RankCard(): JSX.Element {
+export default function RankCard({ id }: { id: string }) {
   const [showAllRankings, setShowAllRankings] = useState<boolean>(false);
 
   const toggleRankings = (): void => {
@@ -57,10 +57,10 @@ export default function RankCard(): JSX.Element {
   ];
 
   return (
-    <div className="m-0 py-5 font-sans flex justify-center">
-      <div className="max-w-fit bg-white rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] overflow-hidden">
+    <div className="m-0 my-cardMargin font-sans flex justify-center" id={id}>
+      <div className="max-w-fit bg-cardBackground rounded-cardBorderRadius shadow-cardShadow overflow-hidden">
         <div className="h-[6px] bg-gradient-to-r from-[#016853] to-[#089E68] mb-7"></div>
-        <div className="px-9 pb-9">
+        <div className="px-cardPadding pb-cardPadding">
           <div className="mb-8 flex items-center gap-6">
             <div className="flex-shrink-0 filter drop-shadow-[0_2px_4px_rgba(3,239,98,0.2)]">
               <svg

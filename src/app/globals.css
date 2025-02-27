@@ -3,20 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --background: #F8FCFF;
+  --background: #f8fcff;
   --foreground: #171717;
-  --icon: #03314B;
-  --menu-hover: #F1F5F4;
-  --menu-active: #E9F6FF;
+  --icon: #03314b;
+  --menu-hover: #f1f5f4;
+  --menu-active: #e9f6ff;
+  --card-background-light: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #F8FCFF;
+    --background: #f8fcff;
     --foreground: #171717;
-    --icon: #03314B;
-    --menu-hover: #F1F5F4;
-    --menu-active: #E9F6FF;
+    --icon: #03314b;
+    --menu-hover: #f1f5f4;
+    --menu-active: #e9f6ff;
+    --card-background-light: #ffffff;
   }
 }
 
@@ -29,6 +31,10 @@
     --menu-active: #2D3B55;
   }
 } */
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   color: var(--foreground);
@@ -53,6 +59,36 @@ body {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.animate-slideDown {
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
 }
