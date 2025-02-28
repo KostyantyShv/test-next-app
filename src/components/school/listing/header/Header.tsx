@@ -1,44 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 
 const Header = ({
-  setIsFixed,
   classes,
-  isReference = false,
   imageSizes = "w-16 h-16",
 }: {
-  setIsFixed: (entry: boolean) => void;
   classes?: string;
-  isReference?: boolean;
   imageSizes?: string;
 }) => {
   const [activeTab, setActiveTab] = useState("about");
-  const headerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (isReference && headerRef.current) {
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          setIsFixed(!entry.isIntersecting);
-        },
-        {
-          threshold: 0,
-          rootMargin: "-1px 0px 0px 0px",
-        }
-      );
-
-      observer.observe(headerRef.current);
-
-      return () => {
-        if (headerRef.current) {
-          observer.unobserve(headerRef.current);
-        }
-        observer.disconnect();
-      };
-    }
-  }, [setIsFixed, isReference]);
 
   const navTabs = [
     { id: "about", label: "About" },
@@ -51,13 +23,12 @@ const Header = ({
 
   return (
     <header
-      ref={headerRef}
       className={`z-50 transition-all duration-300 min-h-fit bg-white ${
         classes || ""
       }`}
     >
-      <div className="max-w-full">
-        <div className="px-3 sm:px-6 flex justify-between items-start gap-10 relative">
+      <div className="max-w-full flex justify-center">
+        <div className="px-5 flex w-[1080px] max-w-[1080px] justify-between">
           {/* School Info */}
           <div className="flex gap-5 flex-1">
             {/* Thumbnail */}
@@ -126,15 +97,17 @@ const Header = ({
           </div>
 
           {/* Add to List Button */}
-          <button className="flex items-center self-center gap-2 bg-teal-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-teal-600 transition-colors">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M16 9a7 7 0 1 1 0 14 7 7 0 1 1 0-14zm4-7a2 2 0 0 1 2 2v4h-1.5V3.5h-17v17H8V22H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16zm-3 10h-2v3h-3v2h3v3h2v-3h3v-2h-3v-3z"
-                fillRule="nonzero"
-              />
-            </svg>
-            Add To List
-          </button>
+          <div className="flex items-center h-full">
+            <button className="flex items-center self-center gap-2 bg-teal-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-teal-600 transition-colors">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M16 9a7 7 0 1 1 0 14 7 7 0 1 1 0-14zm4-7a2 2 0 0 1 2 2v4h-1.5V3.5h-17v17H8V22H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16zm-3 10h-2v3h-3v2h3v3h2v-3h3v-2h-3v-3z"
+                  fillRule="nonzero"
+                />
+              </svg>
+              Add To List
+            </button>
+          </div>
         </div>
       </div>
     </header>

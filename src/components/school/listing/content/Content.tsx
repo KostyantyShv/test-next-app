@@ -112,7 +112,7 @@ const Content = () => {
           ))}
         </ul>
       </aside>
-      <div className="flex-1 max-w-[875px]">
+      <div className="flex-1 max-w-[760px]">
         <AnnouncementsCard id={SIDE_TABS.MONTHLY_UPDATE} />
         <ReportCard id={SIDE_TABS.REPORT_CARD} />
         <AboutSection id={SIDE_TABS.ABOUT} />

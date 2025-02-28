@@ -38,7 +38,7 @@ const images = [
 const SchoolDirectory: React.FC = () => {
   return (
     <main>
-      <div className="max-w-[1200px] mx-auto p-3 sm:p-5">
+      <div className="max-w-[1080px] mx-auto p-3 sm:p-5">
         <div className="bg-cardBackground rounded-cardBorderRadius overflow-hidden">
           <ImagesGrig images={images} />
           <SchoolInfo schoolInfo={schoolInfo} />

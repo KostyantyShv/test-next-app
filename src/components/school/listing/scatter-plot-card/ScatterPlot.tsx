@@ -28,6 +28,7 @@ class ScatterPlot {
   userPoint: UserPoint;
   tooltipEl: HTMLElement | null;
   padding: Padding;
+  pixelRatio: number;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -37,6 +38,7 @@ class ScatterPlot {
     this.data = [];
     this.userPoint = { sat: 1554, gpa: 4.0 };
     this.tooltipEl = document.querySelector(".tooltip");
+    this.pixelRatio = window.devicePixelRatio || 1;
 
     this.padding = {
       top: 30,
@@ -45,19 +47,33 @@ class ScatterPlot {
       left: 70,
     };
 
-    this.resize();
+    this.setupCanvas();
     this.setupInteractions();
     this.generateData();
-
-    // Call draw explicitly after generating data to ensure points appear initially
     this.draw();
   }
 
+  setupCanvas(): void {
+    const parent = this.canvas.parentElement;
+    if (!parent) return;
+
+    // Set canvas dimensions based on container size
+    const rect = parent.getBoundingClientRect();
+
+    // Logical size (CSS pixels)
+    this.canvas.style.width = `${rect.width}px`;
+    this.canvas.style.height = `${rect.height}px`;
+
+    // Physical pixels (for higher resolution)
+    this.canvas.width = Math.floor(rect.width * this.pixelRatio);
+    this.canvas.height = Math.floor(rect.height * this.pixelRatio);
+
+    // Scale all drawing operations by the pixel ratio
+    this.ctx.scale(this.pixelRatio, this.pixelRatio);
+  }
+
   resize(): void {
-    const rect = this.canvas.getBoundingClientRect();
-    this.canvas.width = rect.width * 2;
-    this.canvas.height = rect.height * 2;
-    this.ctx.scale(2, 2);
+    this.setupCanvas();
     this.draw();
   }
 
@@ -95,10 +111,13 @@ class ScatterPlot {
 
     this.canvas.addEventListener("mousemove", (e: MouseEvent) => {
       const rect = this.canvas.getBoundingClientRect();
-      const x = (e.clientX - rect.left) * 2;
-      const y = (e.clientY - rect.top) * 2;
+      const x = (e.clientX - rect.left) * this.pixelRatio;
+      const y = (e.clientY - rect.top) * this.pixelRatio;
 
-      const hoveredPoint = this.findClosestPoint(x, y);
+      const hoveredPoint = this.findClosestPoint(
+        x / this.pixelRatio,
+        y / this.pixelRatio
+      );
 
       if (hoveredPoint) {
         this.showTooltip(hoveredPoint, e.clientX, e.clientY);
@@ -191,20 +210,20 @@ class ScatterPlot {
   }
 
   satToX(sat: number): number {
-    const width = this.canvas.width / 2;
+    const width = this.canvas.width / this.pixelRatio;
     const plotWidth = width - this.padding.left - this.padding.right;
     return this.padding.left + ((sat - 720) / (1600 - 720)) * plotWidth;
   }
 
   gpaToY(gpa: number): number {
-    const height = this.canvas.height / 2;
+    const height = this.canvas.height / this.pixelRatio;
     const plotHeight = height - this.padding.top - this.padding.bottom;
     return this.padding.top + (1 - (gpa - 2.0) / 2.0) * plotHeight;
   }
 
   draw(): void {
-    const width = this.canvas.width / 2;
-    const height = this.canvas.height / 2;
+    const width = this.canvas.width / this.pixelRatio;
+    const height = this.canvas.height / this.pixelRatio;
 
     // Clear canvas
     this.ctx.clearRect(0, 0, width, height);
@@ -475,7 +494,7 @@ export default function AdmissionsScatterPlot({ id }: { id: string }) {
           </h1>
         </div>
 
-        <div className="flex gap-8 mb-5">
+        <div className="flex flex-col md:flex-row gap-8 mb-5">
           <div className="flex-1">
             <div className="flex flex-col gap-3 mb-5">
               <label className="checkbox-item flex items-center gap-2 cursor-pointer accepted">
@@ -508,7 +527,7 @@ export default function AdmissionsScatterPlot({ id }: { id: string }) {
             </div>
 
             <select
-              className="major-select w-[200px] p-2 border border-[#DFDDDB] rounded-md text-sm text-[#4A4A4A] bg-white"
+              className="major-select w-full md:w-[200px] p-2 border border-[#DFDDDB] rounded-md text-sm text-[#4A4A4A] bg-white"
               onChange={handleMajorChange}
             >
               <option value="all">All Majors</option>
@@ -518,7 +537,7 @@ export default function AdmissionsScatterPlot({ id }: { id: string }) {
             </select>
           </div>
 
-          <div className="stats-box bg-[#F8F9FA] rounded-lg p-5">
+          <div className="stats-box bg-[#F8F9FA] rounded-lg p-5 w-full md:w-auto">
             <div className="max-w-[250px]">
               <h3 className="text-[#464646] text-base mb-4 leading-[1.4] font-semibold">
                 Adjust the filters to see how you rank.
@@ -549,9 +568,13 @@ export default function AdmissionsScatterPlot({ id }: { id: string }) {
         </div>
 
         <div className="plot-area relative w-full h-[450px] mt-5 border border-[#DFDDDB] rounded-lg p-[20px_40px_40px_60px] bg-white box-border">
-          <canvas ref={canvasRef} className="w-full h-full bg-white"></canvas>
+          <canvas
+            ref={canvasRef}
+            className="max-w-[594px] max-h-[388px] w-full h-full bg-white"
+            style={{ display: "block" }}
+          ></canvas>
           <div
-            className="tooltip absolute bg-white border border-[#DFDDDB] rounded-md p-[10px_14px] text-xs pointer-events-none shadow-sm"
+            className="tooltip absolute bg-white border border-[#DFDDDB] rounded-md p-[10px_14px] text-xs pointer-events-none shadow-sm z-10"
             style={{ display: "none" }}
           >
             {/* Tooltip content will be generated dynamically */}
