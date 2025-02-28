@@ -65,15 +65,15 @@ const images = [
   "https://i.ibb.co/fzzhd5tf/school4.webp",
 ];
 
-interface SchoolDirectoryProps {
-  searchParams: { tab?: string };
-}
+type Props = {
+  params: Promise<{
+    tab: string;
+  }>;
+};
 
-export default function SchoolDirectory({
-  searchParams,
-}: SchoolDirectoryProps) {
-  const activeTab =
-    searchParams.tab === "gradSchool" ? "gradSchool" : "college";
+export default async function SchoolDirectory({ params }: Props) {
+  const { tab } = await params;
+  const activeTab = tab === "gradSchool" ? "gradSchool" : "college";
 
   const renderSchoolInfo = () => {
     switch (activeTab) {
