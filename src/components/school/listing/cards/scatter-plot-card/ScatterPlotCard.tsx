@@ -375,7 +375,7 @@ class ScatterPlot {
   }
 }
 
-export default function AdmissionsScatterPlot({ id }: { id: string }) {
+export default function AdmissionsScatterPlotCard({ id }: { id: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [plot, setPlot] = useState<ScatterPlot | null>(null);
 
@@ -485,7 +485,7 @@ export default function AdmissionsScatterPlot({ id }: { id: string }) {
   return (
     <div
       id={id}
-      className="flex justify-center items-center min-h-screen my-cardMargin font-sans"
+      className="flex justify-center items-center min-h-screen my-cardMargin"
     >
       <div className="w-full bg-cardBackground rounded-cardBorderRadius shadow-cardShadow p-cardPadding">
         <div className="mb-6">

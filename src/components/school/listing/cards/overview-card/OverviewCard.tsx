@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Image from "next/image";
 
-export default function Overview({ id }: { id: string }) {
+export default function OverviewCard({ id }: { id: string }) {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [arePointsExpanded, setArePointsExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState("instructor");

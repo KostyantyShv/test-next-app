@@ -180,7 +180,7 @@ const tags: string[] = [
   "Industry Collaboration",
 ];
 
-const AboutSection = ({ id }: { id: string }) => {
+const AboutCard = ({ id }: { id: string }) => {
   const [hoveredSocial, setHoveredSocial] = useState<string | null>(null);
 
   // Fixed click animation handlers
@@ -349,4 +349,4 @@ const AboutSection = ({ id }: { id: string }) => {
   );
 };
 
-export default AboutSection;
+export default AboutCard;

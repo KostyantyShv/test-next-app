@@ -1,13 +1,15 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import AnnouncementsCard from "../announcements-card/Announcements";
-import ReportCard from "../report-card/ReportCard";
-import RankCard from "../rank-card/RankCard";
-import AboutSection from "../about/About";
-import AdmissionsCard from "../admissions-card/AdmissionsCard";
-import AdmissionsScatterPlot from "../scatter-plot-card/ScatterPlot";
-import Overview from "../overview/Overview";
-import Testimonials from "../testimonials-card/Testimonials";
+import AdmissionsScatterPlotCard from "../cards/scatter-plot-card/ScatterPlotCard";
+import AnnouncementsCard from "../cards/announcements-card/AnnouncementsCard";
+import TestimonialsCard from "../cards/testimonials-card/TestimonialsCard";
+import AdmissionsCard from "../cards/admissions-card/AdmissionsCard";
+import OverviewCard from "../cards/overview-card/OverviewCard";
+import EventsCards from "../cards/events-card/EventsCard";
+import ReportCard from "../cards/report-card/ReportCard";
+import AboutCard from "../cards/about-card/AboutCard";
+import LinksCard from "../cards/links-card/LinksCard";
+import RankCard from "../cards/rank-card/RankCard";
 
 const SIDE_TABS = {
   MONTHLY_UPDATE: "Monthly Update",
@@ -18,6 +20,8 @@ const SIDE_TABS = {
   SCATTER_PLOT: "Scatter plot",
   OVERVIEW: "Overview",
   TESTIMONIALS: "Testimonials",
+  LINKS: "Links",
+  EVENTS: "Events",
 };
 
 const Content = () => {
@@ -57,6 +61,14 @@ const Content = () => {
       {
         id: SIDE_TABS.TESTIMONIALS,
         element: document.getElementById(SIDE_TABS.TESTIMONIALS),
+      },
+      {
+        id: SIDE_TABS.LINKS,
+        element: document.getElementById(SIDE_TABS.LINKS),
+      },
+      {
+        id: SIDE_TABS.EVENTS,
+        element: document.getElementById(SIDE_TABS.EVENTS),
       },
     ].filter((section) => section.element); // Filter out null elements
 
@@ -112,15 +124,17 @@ const Content = () => {
           ))}
         </ul>
       </aside>
-      <div className="flex-1 max-w-[760px]">
+      <div className="flex-1 max-w-[760px] font-['Inter',-apple-system,BlinkMacSystemFont,sans-serif]">
         <AnnouncementsCard id={SIDE_TABS.MONTHLY_UPDATE} />
         <ReportCard id={SIDE_TABS.REPORT_CARD} />
-        <AboutSection id={SIDE_TABS.ABOUT} />
+        <AboutCard id={SIDE_TABS.ABOUT} />
         <RankCard id={SIDE_TABS.RANKINGS} />
         <AdmissionsCard id={SIDE_TABS.ADMISSIONS} />
-        <AdmissionsScatterPlot id={SIDE_TABS.SCATTER_PLOT} />
-        <Overview id={SIDE_TABS.OVERVIEW} />
-        <Testimonials id={SIDE_TABS.TESTIMONIALS} />
+        <AdmissionsScatterPlotCard id={SIDE_TABS.SCATTER_PLOT} />
+        <OverviewCard id={SIDE_TABS.OVERVIEW} />
+        <TestimonialsCard id={SIDE_TABS.TESTIMONIALS} />
+        <LinksCard id={SIDE_TABS.LINKS} />
+        <EventsCards id={SIDE_TABS.EVENTS} />
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Image from "next/image";
 
-export default function Testimonials({ id }: { id: string }) {
+export default function TestimonialsCard({ id }: { id: string }) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const updateDots = (index: number) => {
@@ -19,7 +19,7 @@ export default function Testimonials({ id }: { id: string }) {
   return (
     <div
       id={id}
-      className="min-h-screen flex flex-col items-center my-cardMargin"
+      className="min-h-fit flex flex-col items-center my-cardMargin rounded-cardBorderRadius"
     >
       <div className="max-w-[875px] w-full mx-auto rounded-cardBorderRadius shadow-cardShadow bg-cardBackground p-cardPadding">
         <div className="text-center mb-10">
