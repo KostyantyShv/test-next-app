@@ -66,13 +66,14 @@ const images = [
 ];
 
 type Props = {
-  params: Promise<{
-    tab: string;
+  params: Promise<unknown>;
+  searchParams: Promise<{
+    tab?: string;
   }>;
 };
 
-export default async function SchoolDirectory({ params }: Props) {
-  const { tab } = await params;
+export default async function SchoolDirectory({ params, searchParams }: Props) {
+  const { tab } = await searchParams;
   const activeTab = tab === "gradSchool" ? "gradSchool" : "college";
 
   const renderSchoolInfo = () => {
