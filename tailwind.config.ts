@@ -49,6 +49,15 @@ export default {
       margin: {
         cardMargin: "1.25rem",
       },
+      utilities: {
+        ".scrollbar-hide": {
+          "-ms-overflow-style": "none", // IE and Edge
+          "scrollbar-width": "none", // Firefox
+          "&::-webkit-scrollbar": {
+            display: "none", // Chrome, Safari, and Opera
+          },
+        },
+      },
     },
   },
   plugins: [],

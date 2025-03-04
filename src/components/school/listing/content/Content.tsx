@@ -1,6 +1,10 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
+import dynamic from "next/dynamic";
+import { SIDE_TABS } from "./side-tabs.constant";
+import { useTabsObserver } from "./tabs-observer.hook";
 import AdmissionsScatterPlotCard from "../cards/scatter-plot-card/ScatterPlotCard";
+import ReviewHighlightsCard from "../cards/review-highlights-card/ReviewHighlightsCard";
 import AnnouncementsCard from "../cards/announcements-card/AnnouncementsCard";
 import TestimonialsCard from "../cards/testimonials-card/TestimonialsCard";
 import AdmissionsCard from "../cards/admissions-card/AdmissionsCard";
@@ -10,95 +14,34 @@ import ReportCard from "../cards/report-card/ReportCard";
 import AboutCard from "../cards/about-card/AboutCard";
 import LinksCard from "../cards/links-card/LinksCard";
 import RankCard from "../cards/rank-card/RankCard";
-
-const SIDE_TABS = {
-  MONTHLY_UPDATE: "Monthly Update",
-  REPORT_CARD: "Report Card",
-  ABOUT: "About",
-  RANKINGS: "Rankings",
-  ADMISSIONS: "Admissions",
-  SCATTER_PLOT: "Scatter plot",
-  OVERVIEW: "Overview",
-  TESTIMONIALS: "Testimonials",
-  LINKS: "Links",
-  EVENTS: "Events",
-};
+import Reviews from "../cards/reviews-card/ReviewsCard";
+import Similar from "../cards/similar/Similar";
+import CultureSafety from "../cards/culture-card/CultureCard";
+import CostSection from "../cards/cost-card/CostCard";
+import MajorsCard from "../cards/majors-card/MajorsCard";
+import StudentsCard from "../cards/students-card/StudentsCard";
+import AcademicsCard from "../cards/academics-card/AcademicsCard";
+import TeachersCard from "../cards/teachers-card/TeachersCard";
+import Activities from "../cards/Activities-card/ActivitiesCard";
+import SpotlightCard from "../cards/spotlight-card/SpotlightCard";
+import CaseStudyCard from "../cards/case-study-card/CaseStudyCard";
+const DynamicMapCard = dynamic(() => import("../cards/map-card/MapCard"), {
+  loading: () => <p>Loading...</p>,
+});
 
 const Content = () => {
-  const [activeTab, setActiveTab] = useState(SIDE_TABS.MONTHLY_UPDATE);
-  const observerRef = useRef<IntersectionObserver>(null);
+  const { activeTab, setActiveTab } = useTabsObserver();
 
-  useEffect(() => {
-    const sections = [
-      {
-        id: SIDE_TABS.MONTHLY_UPDATE,
-        element: document.getElementById(SIDE_TABS.MONTHLY_UPDATE),
-      },
-      {
-        id: SIDE_TABS.REPORT_CARD,
-        element: document.getElementById(SIDE_TABS.REPORT_CARD),
-      },
-      {
-        id: SIDE_TABS.ABOUT,
-        element: document.getElementById(SIDE_TABS.ABOUT),
-      },
-      {
-        id: SIDE_TABS.RANKINGS,
-        element: document.getElementById(SIDE_TABS.RANKINGS),
-      },
-      {
-        id: SIDE_TABS.ADMISSIONS,
-        element: document.getElementById(SIDE_TABS.ADMISSIONS),
-      },
-      {
-        id: SIDE_TABS.SCATTER_PLOT,
-        element: document.getElementById(SIDE_TABS.SCATTER_PLOT),
-      },
-      {
-        id: SIDE_TABS.OVERVIEW,
-        element: document.getElementById(SIDE_TABS.OVERVIEW),
-      },
-      {
-        id: SIDE_TABS.TESTIMONIALS,
-        element: document.getElementById(SIDE_TABS.TESTIMONIALS),
-      },
-      {
-        id: SIDE_TABS.LINKS,
-        element: document.getElementById(SIDE_TABS.LINKS),
-      },
-      {
-        id: SIDE_TABS.EVENTS,
-        element: document.getElementById(SIDE_TABS.EVENTS),
-      },
-    ].filter((section) => section.element); // Filter out null elements
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveTab(entry.target.id);
-          }
-        });
-      },
-      {
-        root: null,
-        rootMargin: "-100px 0px -50% 0px", // Adjust this to control when the switch happens
-        threshold: 0.1, // Trigger when 10% of the section is visible
-      }
-    );
-
-    sections.forEach((section) => {
-      if (section.element) observer.observe(section.element);
-    });
-
-    observerRef.current = observer;
-
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
-  }, []);
+  const reviewData = {
+    author: "Shuwang Y.",
+    avatar:
+      "https://i.ibb.co/87nXCrv/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
+    rating: 4.9,
+    date: "June 22, 2022",
+    content:
+      "Really impressed with the quality of service. The team went above and beyond to ensure everything was perfect. Would definitely recommend to anyone looking for a professional and reliable solution.",
+    helpfulCount: 24,
+  };
 
   return (
     <div className="py-5 flex flex-col md:flex-row gap-6">
@@ -135,6 +78,22 @@ const Content = () => {
         <TestimonialsCard id={SIDE_TABS.TESTIMONIALS} />
         <LinksCard id={SIDE_TABS.LINKS} />
         <EventsCards id={SIDE_TABS.EVENTS} />
+        <Reviews id={SIDE_TABS.REVIEWS} />
+        <ReviewHighlightsCard
+          {...reviewData}
+          id={SIDE_TABS.REVIEW_HIGHLIGHTS}
+        />
+        <Similar id={SIDE_TABS.SIMILAR} />
+        <DynamicMapCard id={SIDE_TABS.MAP} />
+        <CultureSafety id={SIDE_TABS.CULTURE} />
+        <CostSection id={SIDE_TABS.COST} />
+        <MajorsCard id={SIDE_TABS.MAJORS} />
+        <StudentsCard id={SIDE_TABS.STUDENTS} />
+        <AcademicsCard id={SIDE_TABS.ACADEMICS} />
+        <TeachersCard id={SIDE_TABS.TEACHERS} />
+        <Activities id={SIDE_TABS.ACTIVITIES} />
+        <SpotlightCard id={SIDE_TABS.SPOTLIGHT} />
+        <CaseStudyCard id={SIDE_TABS.CASE_STUDY} />
       </div>
     </div>
   );
