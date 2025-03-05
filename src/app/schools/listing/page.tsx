@@ -100,14 +100,14 @@ export default async function SchoolDirectory({ params, searchParams }: Props) {
 
   return (
     <main>
-      <div className="max-w-[1080px] mx-auto p-3 sm:p-5">
+      <div className="max-w-[1080px] mx-auto p-3 max-sm:p-5">
         <div className="bg-cardBackground rounded-cardBorderRadius overflow-hidden">
           <div className="relative">
             <ImagesGrid images={images} />
             <div className="flex">
               <Link
                 href="?tab=college"
-                className={`absolute bottom-0 left-[10px] px-2 py-1 font-bold text-xs sm:text-sm ${
+                className={`absolute bottom-0 left-[10px] px-2 py-1 font-bold text-xs max-sm:text-sm ${
                   activeTab === "college"
                     ? "bg-white"
                     : "bg-gray-100 text-gray-600"
@@ -117,7 +117,7 @@ export default async function SchoolDirectory({ params, searchParams }: Props) {
               </Link>
               <Link
                 href="?tab=gradSchool"
-                className={`absolute bottom-0 left-[97px] px-2 py-1 font-bold text-xs sm:text-sm ${
+                className={`absolute bottom-0 left-[97px] px-2 py-1 font-bold text-xs max-sm:text-sm ${
                   activeTab === "gradSchool"
                     ? "bg-white"
                     : "bg-gray-100 text-gray-600"

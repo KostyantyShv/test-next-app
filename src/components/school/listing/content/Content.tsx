@@ -25,6 +25,9 @@ import TeachersCard from "../cards/teachers-card/TeachersCard";
 import Activities from "../cards/Activities-card/ActivitiesCard";
 import SpotlightCard from "../cards/spotlight-card/SpotlightCard";
 import CaseStudyCard from "../cards/case-study-card/CaseStudyCard";
+import AfterCollege from "../cards/after-college-card/AfterCollegeCard";
+import ProgramsCard from "../cards/probrams-card/ProgramsCard";
+import ComparisonCard from "../cards/comparison-card/ComparisonCard";
 const DynamicMapCard = dynamic(() => import("../cards/map-card/MapCard"), {
   loading: () => <p>Loading...</p>,
 });
@@ -45,8 +48,8 @@ const Content = () => {
 
   return (
     <div className="py-5 flex flex-col md:flex-row gap-6">
-      <aside className="w-full md:w-64 flex-shrink-0 md:sticky md:top-20 self-start">
-        <ul className="flex flex-col pl-[40px]">
+      <aside className="w-full md:w-64 flex-shrink-0 md:sticky md:top-20 self-start max-sm:hidden h-[calc(100vh-5rem)]">
+        <ul className="flex flex-col pl-[40px] overflow-y-auto h-full scrollbar-hide">
           {Object.values(SIDE_TABS).map((value, index) => (
             <li
               key={index}
@@ -94,6 +97,9 @@ const Content = () => {
         <Activities id={SIDE_TABS.ACTIVITIES} />
         <SpotlightCard id={SIDE_TABS.SPOTLIGHT} />
         <CaseStudyCard id={SIDE_TABS.CASE_STUDY} />
+        <AfterCollege id={SIDE_TABS.AFTER_COLLEGE} />
+        <ProgramsCard id={SIDE_TABS.PROGRAMS} />
+        <ComparisonCard id={SIDE_TABS.COMPARISON} />
       </div>
     </div>
   );

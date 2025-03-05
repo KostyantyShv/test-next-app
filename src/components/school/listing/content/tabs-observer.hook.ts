@@ -99,6 +99,18 @@ export const useTabsObserver = () => {
         id: SIDE_TABS.CASE_STUDY,
         element: document.getElementById(SIDE_TABS.CASE_STUDY),
       },
+      {
+        id: SIDE_TABS.AFTER_COLLEGE,
+        element: document.getElementById(SIDE_TABS.AFTER_COLLEGE),
+      },
+      {
+        id: SIDE_TABS.PROGRAMS,
+        element: document.getElementById(SIDE_TABS.PROGRAMS),
+      },
+      {
+        id: SIDE_TABS.COMPARISON,
+        element: document.getElementById(SIDE_TABS.COMPARISON),
+      },
     ].filter((section) => section.element);
 
     const observer = new IntersectionObserver(

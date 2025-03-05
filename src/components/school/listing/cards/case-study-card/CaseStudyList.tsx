@@ -48,7 +48,7 @@ export default function CaseStudyList({ onViewClick }: CaseStudyListProps) {
   const currentStudy = caseStudies[currentIndex];
 
   return (
-    <div className="w-[827px] mx-auto bg-white rounded-xl shadow-md p-6 relative max-w-full">
+    <div className="w-full mx-auto bg-cardBackground rounded-cardBorderRadius shadow-cardShadow p-cardPadding relative max-w-full">
       <h2 className="text-[#464646] text-2xl font-semibold mb-20 font-system">
         Case Studies
       </h2>

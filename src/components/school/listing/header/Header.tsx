@@ -73,7 +73,7 @@ const Header = ({
                   <span className="text-green-600">★</span>
                   <span className="text-gray-500 text-sm">(9 reviews)</span>
                 </div>
-                <nav className="flex items-center gap-8 ml-6">
+                <nav className="flex items-center max-sm:hidden gap-8 ml-6">
                   {navTabs.map((tab) => (
                     <a
                       key={tab.id}
