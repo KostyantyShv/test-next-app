@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import CardWrapper from "../../card-wrapper/CardWrapper";
 
 interface DataPoint {
   sat: number;
@@ -483,121 +484,116 @@ export default function AdmissionsScatterPlotCard({ id }: { id: string }) {
   }, []);
 
   return (
-    <div
-      id={id}
-      className="flex justify-center items-center min-h-screen my-cardMargin"
-    >
-      <div className="w-full bg-cardBackground rounded-cardBorderRadius shadow-cardShadow p-cardPadding">
-        <div className="mb-6">
-          <h1 className="text-[#016853] text-2xl font-semibold mb-5">
-            Will You Get Into Lincoln University?
-          </h1>
-        </div>
+    <CardWrapper id={id}>
+      <div className="mb-6">
+        <h1 className="text-[#016853] text-2xl font-semibold mb-5">
+          Will You Get Into Lincoln University?
+        </h1>
+      </div>
 
-        <div className="flex flex-col md:flex-row gap-8 mb-5">
-          <div className="flex-1">
-            <div className="flex flex-col gap-3 mb-5">
-              <label className="checkbox-item flex items-center gap-2 cursor-pointer accepted">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  data-type="accepted"
-                  className="w-[18px] h-[18px] cursor-pointer accent-[#0B6333]"
-                />
-                <span className="text-[#0B6333] font-medium">Accepted</span>
-              </label>
-              <label className="checkbox-item flex items-center gap-2 cursor-pointer rejected">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  data-type="rejected"
-                  className="w-[18px] h-[18px] cursor-pointer accent-[#FF4B4B]"
-                />
-                <span className="text-[#FF4B4B] font-medium">Rejected</span>
-              </label>
-              <label className="checkbox-item flex items-center gap-2 cursor-pointer considering">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  data-type="considering"
-                  className="w-[18px] h-[18px] cursor-pointer accent-[#1D77BD]"
-                />
-                <span className="text-[#1D77BD] font-medium">Considering</span>
-              </label>
-            </div>
-
-            <select
-              className="major-select w-full md:w-[200px] p-2 border border-[#DFDDDB] rounded-md text-sm text-[#4A4A4A] bg-white"
-              onChange={handleMajorChange}
-            >
-              <option value="all">All Majors</option>
-              <option value="engineering">Engineering</option>
-              <option value="arts">Arts & Sciences</option>
-              <option value="business">Business</option>
-            </select>
+      <div className="flex flex-col md:flex-row gap-8 mb-5">
+        <div className="flex-1">
+          <div className="flex flex-col gap-3 mb-5">
+            <label className="checkbox-item flex items-center gap-2 cursor-pointer accepted">
+              <input
+                type="checkbox"
+                defaultChecked
+                data-type="accepted"
+                className="w-[18px] h-[18px] cursor-pointer accent-[#0B6333]"
+              />
+              <span className="text-[#0B6333] font-medium">Accepted</span>
+            </label>
+            <label className="checkbox-item flex items-center gap-2 cursor-pointer rejected">
+              <input
+                type="checkbox"
+                defaultChecked
+                data-type="rejected"
+                className="w-[18px] h-[18px] cursor-pointer accent-[#FF4B4B]"
+              />
+              <span className="text-[#FF4B4B] font-medium">Rejected</span>
+            </label>
+            <label className="checkbox-item flex items-center gap-2 cursor-pointer considering">
+              <input
+                type="checkbox"
+                defaultChecked
+                data-type="considering"
+                className="w-[18px] h-[18px] cursor-pointer accent-[#1D77BD]"
+              />
+              <span className="text-[#1D77BD] font-medium">Considering</span>
+            </label>
           </div>
 
-          <div className="stats-box bg-[#F8F9FA] rounded-lg p-5 w-full md:w-auto">
-            <div className="max-w-[250px]">
-              <h3 className="text-[#464646] text-base mb-4 leading-[1.4] font-semibold">
-                Adjust the filters to see how you rank.
-              </h3>
-              <div className="ranking-text text-sm text-[#0B6333] font-medium mb-4 text-center p-3 bg-[rgba(11,99,51,0.1)] rounded-md">
-                You rank higher than 75% of accepted students shown.
-              </div>
-              <div className="stat-item flex justify-between mb-3 text-sm text-[#5F5F5F] py-1">
-                <span>Your SAT:</span>
-                <span className="stat-value font-semibold text-[#089E68]">
-                  1554
-                </span>
-              </div>
-              <div className="stat-item flex justify-between mb-3 text-sm text-[#5F5F5F] py-1">
-                <span>Your ACT:</span>
-                <span className="stat-value font-semibold text-[#089E68]">
-                  33
-                </span>
-              </div>
-              <div className="stat-item flex justify-between mb-3 text-sm text-[#5F5F5F] py-1">
-                <span>Your GPA:</span>
-                <span className="stat-value font-semibold text-[#089E68]">
-                  4.0
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="plot-area relative w-full h-[450px] mt-5 border border-[#DFDDDB] rounded-lg p-[20px_40px_40px_60px] bg-white box-border">
-          <canvas
-            ref={canvasRef}
-            className="max-w-[594px] max-h-[388px] w-full h-full bg-white"
-            style={{ display: "block" }}
-          ></canvas>
-          <div
-            className="tooltip absolute bg-white border border-[#DFDDDB] rounded-md p-[10px_14px] text-xs pointer-events-none shadow-sm z-10"
-            style={{ display: "none" }}
+          <select
+            className="major-select w-full md:w-[200px] p-2 border border-[#DFDDDB] rounded-md text-sm text-[#4A4A4A] bg-white"
+            onChange={handleMajorChange}
           >
-            {/* Tooltip content will be generated dynamically */}
-          </div>
-          <div className="y-axis-title absolute top-1/2 left-0 transform -rotate-90 translate-x-1/2 origin-left font-semibold text-[#4A4A4A] whitespace-nowrap text-sm">
-            High School GPA
-          </div>
-          <div className="x-axis-title absolute bottom-3 left-1/2 transform -translate-x-1/2 font-semibold text-[#4A4A4A] text-sm">
-            SAT Score
-          </div>
+            <option value="all">All Majors</option>
+            <option value="engineering">Engineering</option>
+            <option value="arts">Arts & Sciences</option>
+            <option value="business">Business</option>
+          </select>
         </div>
 
-        <div className="data-source text-right text-[#5F5F5F] text-xs mt-5 pt-3 border-t border-[#DFDDDB]">
-          Data provided by 16,970 Niche users
-          <Image
-            height={14}
-            width={14}
-            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235F5F5F'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'/%3E%3C/svg%3E"
-            alt="info"
-            className="w-3.5 h-3.5 inline-block align-middle ml-1"
-          />
+        <div className="stats-box bg-[#F8F9FA] rounded-lg p-5 w-full md:w-auto">
+          <div className="max-w-[250px]">
+            <h3 className="text-[#464646] text-base mb-4 leading-[1.4] font-semibold">
+              Adjust the filters to see how you rank.
+            </h3>
+            <div className="ranking-text text-sm text-[#0B6333] font-medium mb-4 text-center p-3 bg-[rgba(11,99,51,0.1)] rounded-md">
+              You rank higher than 75% of accepted students shown.
+            </div>
+            <div className="stat-item flex justify-between mb-3 text-sm text-[#5F5F5F] py-1">
+              <span>Your SAT:</span>
+              <span className="stat-value font-semibold text-[#089E68]">
+                1554
+              </span>
+            </div>
+            <div className="stat-item flex justify-between mb-3 text-sm text-[#5F5F5F] py-1">
+              <span>Your ACT:</span>
+              <span className="stat-value font-semibold text-[#089E68]">
+                33
+              </span>
+            </div>
+            <div className="stat-item flex justify-between mb-3 text-sm text-[#5F5F5F] py-1">
+              <span>Your GPA:</span>
+              <span className="stat-value font-semibold text-[#089E68]">
+                4.0
+              </span>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+
+      <div className="plot-area relative w-full h-[450px] mt-5 border border-[#DFDDDB] rounded-lg p-[20px_40px_40px_60px] bg-white box-border">
+        <canvas
+          ref={canvasRef}
+          className="max-w-[594px] max-h-[388px] w-full h-full bg-white"
+          style={{ display: "block" }}
+        ></canvas>
+        <div
+          className="tooltip absolute bg-white border border-[#DFDDDB] rounded-md p-[10px_14px] text-xs pointer-events-none shadow-sm z-10"
+          style={{ display: "none" }}
+        >
+          {/* Tooltip content will be generated dynamically */}
+        </div>
+        <div className="y-axis-title absolute top-1/2 left-0 transform -rotate-90 translate-x-1/2 origin-left font-semibold text-[#4A4A4A] whitespace-nowrap text-sm">
+          High School GPA
+        </div>
+        <div className="x-axis-title absolute bottom-3 left-1/2 transform -translate-x-1/2 font-semibold text-[#4A4A4A] text-sm">
+          SAT Score
+        </div>
+      </div>
+
+      <div className="data-source text-right text-[#5F5F5F] text-xs mt-5 pt-3 border-t border-[#DFDDDB]">
+        Data provided by 16,970 Niche users
+        <Image
+          height={14}
+          width={14}
+          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235F5F5F'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'/%3E%3C/svg%3E"
+          alt="info"
+          className="w-3.5 h-3.5 inline-block align-middle ml-1"
+        />
+      </div>
+    </CardWrapper>
   );
 }

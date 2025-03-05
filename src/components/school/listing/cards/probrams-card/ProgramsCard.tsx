@@ -1,5 +1,6 @@
 // components/ProgramsSection.tsx
 import { useState, useRef, useEffect } from "react";
+import CardWrapper from "../../card-wrapper/CardWrapper";
 
 const ProgramsCard: React.FC<{ id: string }> = ({ id }) => {
   const gridRef = useRef<HTMLDivElement>(null);
@@ -34,116 +35,111 @@ const ProgramsCard: React.FC<{ id: string }> = ({ id }) => {
   }, []);
 
   return (
-    <div
-      id={id}
-      className="flex justify-center my-cardMargin text-[#4A4A4A] font-['Inter']"
-    >
-      <div className="max-w-[875px] w-full bg-cardBackground p-cardPadding rounded-cardBorderRadius shadow-cardShadow">
-        <h2 className="text-2xl font-semibold text-[#016853] mb-6">
-          Masters Programs
-        </h2>
+    <CardWrapper id={id}>
+      <h2 className="text-2xl font-semibold text-[#016853] mb-6">
+        Masters Programs
+      </h2>
 
-        <div
-          ref={gridRef}
-          className="flex gap-4 overflow-x-auto scroll-smooth p-1 relative 
+      <div
+        ref={gridRef}
+        className="flex gap-4 overflow-x-auto scroll-smooth p-1 relative 
             [mask-image:linear-gradient(to_right,black_calc(100%-48px),transparent_100%)]
             [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-48px),transparent_100%)]
             [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-        >
-          {/* Program Card 1 */}
-          <ProgramCard
-            universityName="Lincoln Academy College of Pharmacy"
-            programName="Lincoln Academy Forensic Science online grad program"
-            location="Gainesville, FL"
-            tags={["Online", "Full-time"]}
-            description="Established in fall of 2000, Lincoln Academy's award-winning forensic science master's degree is the world's largest and most comprehensive forensic science program. Students gain specialized knowledge in crime scene investigation, DNA analysis, and toxicology through a curriculum designed by leading experts in the field."
-            features={[
-              { label: "Program Length", value: "2 years", icon: ClockIcon },
-              { label: "Minimum Credits", value: "32", icon: CreditsIcon },
-              {
-                label: "Program Accreditation",
-                value: "—",
-                icon: AccreditationIcon,
-              },
-              { label: "Tuition Per Credit", value: "$575", icon: TuitionIcon },
-              { label: "Avg. Scholarship", value: "—", icon: ScholarshipIcon },
-            ]}
-          />
+      >
+        {/* Program Card 1 */}
+        <ProgramCard
+          universityName="Lincoln Academy College of Pharmacy"
+          programName="Lincoln Academy Forensic Science online grad program"
+          location="Gainesville, FL"
+          tags={["Online", "Full-time"]}
+          description="Established in fall of 2000, Lincoln Academy's award-winning forensic science master's degree is the world's largest and most comprehensive forensic science program. Students gain specialized knowledge in crime scene investigation, DNA analysis, and toxicology through a curriculum designed by leading experts in the field."
+          features={[
+            { label: "Program Length", value: "2 years", icon: ClockIcon },
+            { label: "Minimum Credits", value: "32", icon: CreditsIcon },
+            {
+              label: "Program Accreditation",
+              value: "—",
+              icon: AccreditationIcon,
+            },
+            { label: "Tuition Per Credit", value: "$575", icon: TuitionIcon },
+            { label: "Avg. Scholarship", value: "—", icon: ScholarshipIcon },
+          ]}
+        />
 
-          {/* Program Card 2 */}
-          <ProgramCard
-            universityName="Lincoln Academy College of Pharmacy"
-            programName="Lincoln Academy Pharmaceutical Outcomes & Policy online grad program"
-            location="Gainesville, FL"
-            tags={["Online", "Part-time"]}
-            description="The Online POP program is part of the Department of Pharmaceutical Outcomes and Policy at the Lincoln Academy. This innovative program prepares professionals to analyze healthcare systems, develop effective pharmaceutical policies, and implement evidence-based practices to improve patient outcomes across healthcare settings."
-            features={[
-              { label: "Program Length", value: "2 years", icon: ClockIcon },
-              { label: "Minimum Credits", value: "31", icon: CreditsIcon },
-              {
-                label: "Program Accreditation",
-                value: "—",
-                icon: AccreditationIcon,
-              },
-              { label: "Tuition Per Credit", value: "$750", icon: TuitionIcon },
-              { label: "Avg. Scholarship", value: "—", icon: ScholarshipIcon },
-            ]}
-          />
-        </div>
-
-        <div className="flex justify-center items-center mt-8 gap-2">
-          <div className="w-full h-1 bg-[#f0f0f0] rounded-sm relative overflow-hidden">
-            <div className="absolute left-0 top-0 h-full w-1/4 bg-[#016853] rounded-sm" />
-          </div>
-          <div className="text-sm text-[#5F5F5F] mx-4">1/4</div>
-          <button
-            className="w-9 h-9 rounded-full border border-[rgba(0,0,0,0.1)] bg-white text-[#5F5F5F] flex items-center justify-center transition-all hover:bg-[#f5f5f5] hover:text-[#346DC2] disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() => scrollGrid("prev")}
-            disabled={!canScrollPrev}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M15 18L9 12L15 6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-          <button
-            className="w-9 h-9 rounded-full border border-[rgba(0,0,0,0.1)] bg-white text-[#5F5F5F] flex items-center justify-center transition-all hover:bg-[#f5f5f5] hover:text-[#346DC2] disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() => scrollGrid("next")}
-            disabled={!canScrollNext}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M9 18L15 12L9 6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <div className="flex justify-end mt-6">
-          <a
-            href="#"
-            className="text-[#346DC2] font-medium flex items-center gap-1 hover:underline"
-          >
-            See All Masters Programs
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path
-                d="M8 3.33334L7.06 4.27334L10.78 8.00001L7.06 11.7267L8 12.6667L12.6667 8.00001L8 3.33334Z"
-                fill="currentColor"
-              />
-            </svg>
-          </a>
-        </div>
+        {/* Program Card 2 */}
+        <ProgramCard
+          universityName="Lincoln Academy College of Pharmacy"
+          programName="Lincoln Academy Pharmaceutical Outcomes & Policy online grad program"
+          location="Gainesville, FL"
+          tags={["Online", "Part-time"]}
+          description="The Online POP program is part of the Department of Pharmaceutical Outcomes and Policy at the Lincoln Academy. This innovative program prepares professionals to analyze healthcare systems, develop effective pharmaceutical policies, and implement evidence-based practices to improve patient outcomes across healthcare settings."
+          features={[
+            { label: "Program Length", value: "2 years", icon: ClockIcon },
+            { label: "Minimum Credits", value: "31", icon: CreditsIcon },
+            {
+              label: "Program Accreditation",
+              value: "—",
+              icon: AccreditationIcon,
+            },
+            { label: "Tuition Per Credit", value: "$750", icon: TuitionIcon },
+            { label: "Avg. Scholarship", value: "—", icon: ScholarshipIcon },
+          ]}
+        />
       </div>
-    </div>
+
+      <div className="flex justify-center items-center mt-8 gap-2">
+        <div className="w-full h-1 bg-[#f0f0f0] rounded-sm relative overflow-hidden">
+          <div className="absolute left-0 top-0 h-full w-1/4 bg-[#016853] rounded-sm" />
+        </div>
+        <div className="text-sm text-[#5F5F5F] mx-4">1/4</div>
+        <button
+          className="w-9 h-9 rounded-full border border-[rgba(0,0,0,0.1)] bg-white text-[#5F5F5F] flex items-center justify-center transition-all hover:bg-[#f5f5f5] hover:text-[#346DC2] disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={() => scrollGrid("prev")}
+          disabled={!canScrollPrev}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M15 18L9 12L15 6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+        <button
+          className="w-9 h-9 rounded-full border border-[rgba(0,0,0,0.1)] bg-white text-[#5F5F5F] flex items-center justify-center transition-all hover:bg-[#f5f5f5] hover:text-[#346DC2] disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={() => scrollGrid("next")}
+          disabled={!canScrollNext}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M9 18L15 12L9 6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div className="flex justify-end mt-6">
+        <a
+          href="#"
+          className="text-[#346DC2] font-medium flex items-center gap-1 hover:underline"
+        >
+          See All Masters Programs
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M8 3.33334L7.06 4.27334L10.78 8.00001L7.06 11.7267L8 12.6667L12.6667 8.00001L8 3.33334Z"
+              fill="currentColor"
+            />
+          </svg>
+        </a>
+      </div>
+    </CardWrapper>
   );
 };
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import FeaturedProject from "./FeaturedProject";
 import Thumbnails from "./Thumbnails";
+import CardWrapper from "../../card-wrapper/CardWrapper";
 
 const projects = [
   {
@@ -88,14 +89,11 @@ const SpotlightCard: React.FC<{ id: string }> = ({ id }) => {
   }, []);
 
   return (
-    <div
-      id={id}
-      className="w-full bg-cardBackground rounded-cardBorderRadius shadow-cardShadow p-cardPadding my-cardMargin"
-    >
+    <CardWrapper id={id}>
       <h2 className="text-[#1B1B1B] text-2xl font-semibold mb-6">Spotlight</h2>
       <FeaturedProject project={selectedProject} />
       <Thumbnails projects={projects} onSelectProject={setSelectedProject} />
-    </div>
+    </CardWrapper>
   );
 };
 

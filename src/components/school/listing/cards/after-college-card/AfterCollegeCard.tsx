@@ -1,15 +1,13 @@
 import { useState } from "react";
 import Modal from "./AfterCollegeModal";
+import CardWrapper from "../../card-wrapper/CardWrapper";
 
 const AfterCollege: React.FC<{ id: string }> = ({ id }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <>
-      <div
-        id={id}
-        className="w-full bg-cardBackground rounded-cardBorderRadius p-cardPadding shadow-cardShadow"
-      >
+      <CardWrapper id={id}>
         <h2 className="text-[#016853] text-2xl font-semibold mb-8 tracking-[-0.02em]">
           After College
         </h2>
@@ -96,7 +94,7 @@ const AfterCollege: React.FC<{ id: string }> = ({ id }) => {
             <path d="M9 18l6-6-6-6" />
           </svg>
         </a>
-      </div>
+      </CardWrapper>
       {isModalOpen && <Modal onClose={() => setIsModalOpen(false)} />}
     </>
   );

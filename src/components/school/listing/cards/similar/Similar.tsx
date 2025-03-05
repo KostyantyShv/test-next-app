@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import SchoolsGrid from "./SchoolsGrig";
 import ViewMoreButton from "./ViewMoreButtom";
+import CardWrapper from "../../card-wrapper/CardWrapper";
 
 const initialSchools = [
   {
@@ -54,23 +55,21 @@ const Similar: React.FC<{ id: string }> = ({ id }) => {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div id={id} className="flex justify-center my-cardMargin">
-      <div className="w-[875px] bg-cardBackground p-cardPadding rounded-cardBorderRadius shadow-cardShadow">
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-[#333] tracking-tight">
-            Colleges like Lincoln Academy
-          </h2>
-        </div>
-        <SchoolsGrid schools={initialSchools} />
-        <div className={`${expanded ? "block" : "hidden"}`}>
-          <SchoolsGrid schools={hiddenSchools} />
-        </div>
-        <ViewMoreButton
-          expanded={expanded}
-          onClick={() => setExpanded(!expanded)}
-        />
+    <CardWrapper id={id}>
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold text-[#333] tracking-tight">
+          Colleges like Lincoln Academy
+        </h2>
       </div>
-    </div>
+      <SchoolsGrid schools={initialSchools} />
+      <div className={`${expanded ? "block" : "hidden"}`}>
+        <SchoolsGrid schools={hiddenSchools} />
+      </div>
+      <ViewMoreButton
+        expanded={expanded}
+        onClick={() => setExpanded(!expanded)}
+      />
+    </CardWrapper>
   );
 };
 

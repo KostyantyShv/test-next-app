@@ -133,9 +133,7 @@ export default function CaseStudyModal({
           </div>
 
           <div className="relative w-full h-[600px] overflow-hidden rounded-2xl">
-            <Image
-              height={100}
-              width={100}
+            <img
               src="https://i.ibb.co/nMwVdhDY/hero1.webp"
               alt="Case Study Hero"
               className="w-full h-full object-cover"
@@ -262,9 +260,7 @@ export default function CaseStudyModal({
             </button>
           </div>
           <div className="flex-1 rounded-xl overflow-hidden">
-            <Image
-              height={100}
-              width={100}
+            <img
               src="https://i.ibb.co/GvnKvp2Z/image1.png"
               alt="Design Process"
               className="w-full h-full object-cover"
@@ -383,9 +379,7 @@ export default function CaseStudyModal({
               </button>
             </div>
             <div className="w-full h-[500px] rounded-xl overflow-hidden">
-              <Image
-                height={100}
-                width={100}
+              <img
                 src={galleryImages[currentImageIndex]}
                 alt="Active Gallery"
                 className="w-full h-full object-cover transition-all"
@@ -439,9 +433,7 @@ export default function CaseStudyModal({
               </div>
             </div>
             <div className="flex-[0_0_43%] relative rounded-xl overflow-hidden aspect-[16/9]">
-              <Image
-                height={100}
-                width={100}
+              <img
                 src="https://i.ibb.co/vcJmbRn/japan.webp"
                 alt="Client Interview"
                 className="w-full h-full object-cover"

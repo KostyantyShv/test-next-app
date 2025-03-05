@@ -1,5 +1,6 @@
 import { JSX, useState } from "react";
 import Image from "next/image";
+import CardWrapper from "../../card-wrapper/CardWrapper";
 
 // Type definitions
 interface SocialLink {
@@ -223,129 +224,125 @@ const AboutCard = ({ id }: { id: string }) => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center my-cardMargin" id={id}>
-      <div className="w-full max-w-full bg-cardBackground rounded-cardBorderRadius shadow-cardShadow p-cardPadding">
-        <div className="flex gap-6 mb-8 items-center flex-col sm:flex-row">
-          <div className="relative w-[120px] h-[120px]">
-            <Image
-              width={120}
-              height={120}
-              src="https://i.ibb.co/YP71Tb6/profile9.jpg"
-              alt="Lincoln Academy"
-              className="w-[120px] h-[120px] rounded-full object-cover border-4 border-white shadow-md"
-            />
-          </div>
-          <div className="flex-1">
-            <h1 className="text-2xl font-semibold text-[#464646] mb-2 text-center sm:text-left">
-              Lincoln Academy
-            </h1>
-            <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
-              <span className="bg-[#EBFCF4] text-[#016853] px-3 py-1.5 rounded-full text-sm font-medium">
-                Advanced Chemistry Expert
-              </span>
-              <span className="bg-[#EBFCF4] text-[#016853] px-3 py-1.5 rounded-full text-sm font-medium">
-                Research Publication Lead
-              </span>
-              <span className="bg-[#EBFCF4] text-[#016853] px-3 py-1.5 rounded-full text-sm font-medium">
-                Department Head
-              </span>
-            </div>
-          </div>
+    <CardWrapper id={id}>
+      <div className="flex gap-6 mb-8 items-center flex-col sm:flex-row">
+        <div className="relative w-[120px] h-[120px]">
+          <Image
+            width={120}
+            height={120}
+            src="https://i.ibb.co/YP71Tb6/profile9.jpg"
+            alt="Lincoln Academy"
+            className="w-[120px] h-[120px] rounded-full object-cover border-4 border-white shadow-md"
+          />
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {infoFields.map((field) => (
-            <div key={field.id} className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-[#F8F9FD] rounded-lg flex items-center justify-center text-[#4A4A4A]">
-                {field.icon}
-              </div>
-              <div className="flex-1">
-                <div className="text-xs text-[#5F5F5F] uppercase tracking-wider mb-1">
-                  {field.label}
-                </div>
-                <div className="text-sm text-[#4A4A4A] font-medium">
-                  {field.value}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex gap-3 mb-8">
-          {socialLinks.map((social) => (
-            <a
-              key={social.id}
-              href="#"
-              className="w-10 h-10 bg-[#F8F9FD] rounded-lg flex items-center justify-center text-[#4A4A4A] transition-all duration-200 ease-in-out hover:bg-[#EBFCF4] hover:text-[#016853] hover:-translate-y-0.5 relative"
-              onMouseEnter={() => setHoveredSocial(social.id)}
-              onMouseLeave={() => setHoveredSocial(null)}
-              onClick={handleSocialClick}
-            >
-              {social.icon}
-              <span
-                className={`absolute -bottom-8 left-1/2 -translate-x-1/2 bg-black/80 text-white py-1 px-2 rounded text-xs whitespace-nowrap transition-all duration-200 ${
-                  hoveredSocial === social.id
-                    ? "opacity-100 visible"
-                    : "opacity-0 invisible"
-                }`}
-              >
-                {social.tooltip}
-              </span>
-            </a>
-          ))}
-        </div>
-
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-semibold text-[#464646]">
-              Followers
-            </h2>
-            <span className="bg-[#EBFCF4] text-[#016853] px-3 py-1 rounded-full text-sm font-medium">
-              111
+        <div className="flex-1">
+          <h1 className="text-2xl font-semibold text-[#464646] mb-2 text-center sm:text-left">
+            Lincoln Academy
+          </h1>
+          <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+            <span className="bg-[#EBFCF4] text-[#016853] px-3 py-1.5 rounded-full text-sm font-medium">
+              Advanced Chemistry Expert
             </span>
-          </div>
-          <div className="flex flex-wrap gap-2 mb-3">
-            {avatarImages.map((src, index) => (
-              <div key={index} className="relative w-10 h-10 group">
-                <Image
-                  width={40}
-                  height={40}
-                  src={src}
-                  alt={`Follower ${index + 1}`}
-                  className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm transition-transform duration-200 group-hover:scale-110 group-hover:z-10"
-                />
-              </div>
-            ))}
-          </div>
-          <a
-            href="#"
-            onClick={handleMoreFollowersClick}
-            className="text-[#346DC2] text-sm font-medium hover:underline"
-          >
-            +97 followers
-          </a>
-        </div>
-
-        <div className="mb-8">
-          <div className="mb-4">
-            <h2 className="text-base font-semibold text-[#464646]">
-              Areas of Expertise
-            </h2>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {tags.map((tag, index) => (
-              <button
-                key={index}
-                onClick={handleTagClick}
-                className="bg-[#F8F9FD] text-[#4A4A4A] px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 hover:bg-[#EBFCF4] hover:text-[#016853] hover:-translate-y-0.5"
-              >
-                {tag}
-              </button>
-            ))}
+            <span className="bg-[#EBFCF4] text-[#016853] px-3 py-1.5 rounded-full text-sm font-medium">
+              Research Publication Lead
+            </span>
+            <span className="bg-[#EBFCF4] text-[#016853] px-3 py-1.5 rounded-full text-sm font-medium">
+              Department Head
+            </span>
           </div>
         </div>
       </div>
-    </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {infoFields.map((field) => (
+          <div key={field.id} className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-[#F8F9FD] rounded-lg flex items-center justify-center text-[#4A4A4A]">
+              {field.icon}
+            </div>
+            <div className="flex-1">
+              <div className="text-xs text-[#5F5F5F] uppercase tracking-wider mb-1">
+                {field.label}
+              </div>
+              <div className="text-sm text-[#4A4A4A] font-medium">
+                {field.value}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex gap-3 mb-8">
+        {socialLinks.map((social) => (
+          <a
+            key={social.id}
+            href="#"
+            className="w-10 h-10 bg-[#F8F9FD] rounded-lg flex items-center justify-center text-[#4A4A4A] transition-all duration-200 ease-in-out hover:bg-[#EBFCF4] hover:text-[#016853] hover:-translate-y-0.5 relative"
+            onMouseEnter={() => setHoveredSocial(social.id)}
+            onMouseLeave={() => setHoveredSocial(null)}
+            onClick={handleSocialClick}
+          >
+            {social.icon}
+            <span
+              className={`absolute -bottom-8 left-1/2 -translate-x-1/2 bg-black/80 text-white py-1 px-2 rounded text-xs whitespace-nowrap transition-all duration-200 ${
+                hoveredSocial === social.id
+                  ? "opacity-100 visible"
+                  : "opacity-0 invisible"
+              }`}
+            >
+              {social.tooltip}
+            </span>
+          </a>
+        ))}
+      </div>
+
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-semibold text-[#464646]">Followers</h2>
+          <span className="bg-[#EBFCF4] text-[#016853] px-3 py-1 rounded-full text-sm font-medium">
+            111
+          </span>
+        </div>
+        <div className="flex flex-wrap gap-2 mb-3">
+          {avatarImages.map((src, index) => (
+            <div key={index} className="relative w-10 h-10 group">
+              <Image
+                width={40}
+                height={40}
+                src={src}
+                alt={`Follower ${index + 1}`}
+                className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm transition-transform duration-200 group-hover:scale-110 group-hover:z-10"
+              />
+            </div>
+          ))}
+        </div>
+        <a
+          href="#"
+          onClick={handleMoreFollowersClick}
+          className="text-[#346DC2] text-sm font-medium hover:underline"
+        >
+          +97 followers
+        </a>
+      </div>
+
+      <div className="mb-8">
+        <div className="mb-4">
+          <h2 className="text-base font-semibold text-[#464646]">
+            Areas of Expertise
+          </h2>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {tags.map((tag, index) => (
+            <button
+              key={index}
+              onClick={handleTagClick}
+              className="bg-[#F8F9FD] text-[#4A4A4A] px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 hover:bg-[#EBFCF4] hover:text-[#016853] hover:-translate-y-0.5"
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      </div>
+    </CardWrapper>
   );
 };
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import CaseStudyList from "./CaseStudyList";
 import CaseStudyModal from "./CaseStudyModal";
+import CardWrapper from "../../card-wrapper/CardWrapper";
 
 const CaseStudyCard: React.FC<{ id: string }> = ({ id }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,7 +13,7 @@ const CaseStudyCard: React.FC<{ id: string }> = ({ id }) => {
   };
 
   return (
-    <div id={id} className="my-cardMargin">
+    <CardWrapper id={id}>
       <CaseStudyList onViewClick={handleViewClick} />
       {isModalOpen && selectedStudy && (
         <CaseStudyModal
@@ -20,7 +21,7 @@ const CaseStudyCard: React.FC<{ id: string }> = ({ id }) => {
           onClose={() => setIsModalOpen(false)}
         />
       )}
-    </div>
+    </CardWrapper>
   );
 };
 

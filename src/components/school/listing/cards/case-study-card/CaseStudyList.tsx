@@ -48,7 +48,7 @@ export default function CaseStudyList({ onViewClick }: CaseStudyListProps) {
   const currentStudy = caseStudies[currentIndex];
 
   return (
-    <div className="w-full mx-auto bg-cardBackground rounded-cardBorderRadius shadow-cardShadow p-cardPadding relative max-w-full">
+    <>
       <h2 className="text-[#464646] text-2xl font-semibold mb-20 font-system">
         Case Studies
       </h2>
@@ -148,7 +148,6 @@ export default function CaseStudyList({ onViewClick }: CaseStudyListProps) {
           </button>
         </div>
       </div>
-
       <div className="flex justify-center gap-2 mb-6">
         {caseStudies.map((_, i) => (
           <div
@@ -160,7 +159,6 @@ export default function CaseStudyList({ onViewClick }: CaseStudyListProps) {
           />
         ))}
       </div>
-
       <div className="mt-8 pt-6 border-t border-[#E0E0E0]">
         <div className="flex justify-end gap-6">
           <button
@@ -208,6 +206,6 @@ export default function CaseStudyList({ onViewClick }: CaseStudyListProps) {
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 // pages/index.tsx
 import { useState } from "react";
 import StudentModal from "./StudentsModal";
+import CardWrapper from "../../card-wrapper/CardWrapper";
 
 const StudentsCard: React.FC<{ id: string }> = ({ id }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -9,8 +10,8 @@ const StudentsCard: React.FC<{ id: string }> = ({ id }) => {
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <div id={id} className="flex justify-center my-cardMargin">
-      <div className="w-[875px] bg-cardBackground rounded-cardBorderRadius p-cardPadding shadow-cardShadow">
+    <>
+      <CardWrapper id={id}>
         <h2 className="text-[#016853] text-2xl font-semibold mb-8 tracking-tight">
           Students
         </h2>
@@ -98,9 +99,9 @@ const StudentsCard: React.FC<{ id: string }> = ({ id }) => {
             <path d="M9 18l6-6-6-6" />
           </svg>
         </a>
-      </div>
+      </CardWrapper>
       {isModalOpen && <StudentModal closeModal={closeModal} />}
-    </div>
+    </>
   );
 };
 
