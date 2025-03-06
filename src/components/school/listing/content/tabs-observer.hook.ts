@@ -104,12 +104,24 @@ export const useTabsObserver = () => {
         element: document.getElementById(SIDE_TABS.AFTER_COLLEGE),
       },
       {
+        id: SIDE_TABS.AREA,
+        element: document.getElementById(SIDE_TABS.AREA),
+      },
+      {
         id: SIDE_TABS.PROGRAMS,
         element: document.getElementById(SIDE_TABS.PROGRAMS),
       },
       {
+        id: SIDE_TABS.SOCIAL_MEDIA,
+        element: document.getElementById(SIDE_TABS.SOCIAL_MEDIA),
+      },
+      {
         id: SIDE_TABS.COMPARISON,
         element: document.getElementById(SIDE_TABS.COMPARISON),
+      },
+      {
+        id: SIDE_TABS.ARTICLES,
+        element: document.getElementById(SIDE_TABS.ARTICLES),
       },
     ].filter((section) => section.element);
 

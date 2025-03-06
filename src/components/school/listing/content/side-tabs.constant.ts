@@ -23,6 +23,9 @@ export const SIDE_TABS = {
   SPOTLIGHT: "Spotlight",
   CASE_STUDY: "Case study",
   AFTER_COLLEGE: "After College",
+  AREA: "Area",
   PROGRAMS: "Programs",
+  SOCIAL_MEDIA: "Social Media",
   COMPARISON: "Comparison",
+  ARTICLES: "Articles",
 };

@@ -28,6 +28,9 @@ import CaseStudyCard from "../cards/case-study-card/CaseStudyCard";
 import AfterCollege from "../cards/after-college-card/AfterCollegeCard";
 import ProgramsCard from "../cards/probrams-card/ProgramsCard";
 import ComparisonCard from "../cards/comparison-card/ComparisonCard";
+import AreaCard from "../cards/area-card/AreaCard";
+import SocialMediaCard from "../cards/social-media-card/SocialMediaCard";
+import ArticlesCard from "../cards/articles-card/ArticlesCard";
 const DynamicMapCard = dynamic(() => import("../cards/map-card/MapCard"), {
   loading: () => <p>Loading...</p>,
 });
@@ -98,8 +101,11 @@ const Content = () => {
         <SpotlightCard id={SIDE_TABS.SPOTLIGHT} />
         <CaseStudyCard id={SIDE_TABS.CASE_STUDY} />
         <AfterCollege id={SIDE_TABS.AFTER_COLLEGE} />
+        <AreaCard id={SIDE_TABS.AREA} />
         <ProgramsCard id={SIDE_TABS.PROGRAMS} />
+        <SocialMediaCard id={SIDE_TABS.SOCIAL_MEDIA} />
         <ComparisonCard id={SIDE_TABS.COMPARISON} />
+        <ArticlesCard id={SIDE_TABS.ARTICLES} />
       </div>
     </div>
   );
