@@ -81,7 +81,7 @@ export default function MapCard({ id }: { id: string }) {
 
     // Create markers and tooltips for each school
     schools.forEach((school) => {
-      // Create marker using custom overlay
+      // Create marker
       const marker = new google.maps.Marker({
         position: school.position,
         map: map,
@@ -89,43 +89,52 @@ export default function MapCard({ id }: { id: string }) {
           url:
             "data:image/svg+xml;charset=UTF-8," +
             encodeURIComponent(`
-            <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="20" cy="20" r="20" fill="${getMarkerColor(
-                school.grade
-              )}"/>
-              <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-weight="bold" font-size="16">${
-                school.grade
-              }</text>
-            </svg>
-          `),
+              <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="20" cy="20" r="20" fill="${getMarkerColor(
+                  school.grade
+                )}"/>
+                <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-weight="bold" font-size="16">${
+                  school.grade
+                }</text>
+              </svg>
+            `),
           scaledSize: new google.maps.Size(40, 40),
         },
       });
 
-      // Create tooltip element
-      const tooltipElement = document.createElement("div");
-      tooltipElement.className = "school-tooltip";
-      tooltipElement.innerHTML = `
-        <img src="${school.image}" alt="${school.name}" class="tooltip-image">
-        <div class="tooltip-content">
-          <h3 class="school-name">${school.name}</h3>
-          <p class="school-location">${school.location}</p>
-        </div>
-      `;
-      document.body.appendChild(tooltipElement);
+      // Create InfoWindow
+      const infoWindow = new google.maps.InfoWindow({
+        content: `
+          <div class="school-tooltip">
+            <img src="${school.image}" alt="${school.name}" class="tooltip-image">
+            <div class="tooltip-content">
+              <h3 class="school-name">${school.name}</h3>
+              <p class="school-location">${school.location}</p>
+            </div>
+          </div>
+        `,
+        pixelOffset: new google.maps.Size(0, -45), // Adjust position above marker
+      });
 
       // Add hover event listeners
       marker.addListener("mouseover", () => {
-        tooltipElement.style.display = "flex";
-        const point = map
-          .getProjection()
-          .fromLatLngToPoint(marker.getPosition()!);
-        tooltipElement.style.left = `${point.x}px`;
-        tooltipElement.style.top = `${point.y}px`;
+        infoWindow.open({
+          anchor: marker,
+          map: map,
+          shouldFocus: false,
+        });
       });
 
       marker.addListener("mouseout", () => {
-        tooltipElement.style.display = "none";
+        infoWindow.close();
+      });
+
+      // Optional: Add click event to keep tooltip open if desired
+      marker.addListener("click", () => {
+        infoWindow.open({
+          anchor: marker,
+          map: map,
+        });
       });
     });
   };

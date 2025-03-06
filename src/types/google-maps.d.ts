@@ -14,6 +14,13 @@ declare namespace google {
       addListener(eventName: string, handler: () => void): MapsEventListener;
     }
 
+    // Add InfoWindow class
+    class InfoWindow {
+      constructor(opts?: InfoWindowOptions);
+      open(options?: InfoWindowOpenOptions | Map, anchor?: Marker): void;
+      close(): void;
+    }
+
     class Size {
       constructor(
         width: number,
@@ -73,6 +80,19 @@ declare namespace google {
 
     interface MapsEventListener {
       remove(): void;
+    }
+
+    // Add InfoWindow-related interfaces
+    interface InfoWindowOptions {
+      content?: string | Node;
+      position?: LatLng | LatLngLiteral;
+      pixelOffset?: Size;
+    }
+
+    interface InfoWindowOpenOptions {
+      anchor?: Marker;
+      map?: Map;
+      shouldFocus?: boolean;
     }
   }
 }
