@@ -1,1 +1,1 @@
-export * from "./SchoolInfo";
+export * from "./SchoolInfoDesktop";

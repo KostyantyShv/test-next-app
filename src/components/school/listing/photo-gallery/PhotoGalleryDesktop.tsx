@@ -3,7 +3,7 @@ import { Icon } from "@/components/ui/Icon";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-interface PhotoGalleryProps {
+interface PhotoGalleryDesktopProps {
   isOpen: boolean;
   onClose: () => void;
   images: string[];
@@ -31,7 +31,7 @@ const GalleryNavIcon = ({ className = "" }) => (
   </svg>
 );
 
-const PhotoGallery: React.FC<PhotoGalleryProps> = ({
+const PhotoGalleryDesktop: React.FC<PhotoGalleryDesktopProps> = ({
   isOpen,
   onClose,
   images,
@@ -47,27 +47,6 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({
     }
     return () => document.body.classList.remove("overflow-hidden");
   }, [isOpen]);
-
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (!isOpen) return;
-
-    switch (e.key) {
-      case "Escape":
-        onClose();
-        break;
-      case "ArrowRight":
-        setActiveIndex((prev) => (prev + 1) % images.length);
-        break;
-      case "ArrowLeft":
-        setActiveIndex((prev) => (prev - 1 + images.length) % images.length);
-        break;
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [handleKeyDown, isOpen]);
 
   if (!isOpen) return null;
 
@@ -130,4 +109,4 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({
   );
 };
 
-export default PhotoGallery;
+export default PhotoGalleryDesktop;

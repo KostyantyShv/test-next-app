@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
-import PhotoGallery from "../photo-gallery/PhotoGallery";
+import PhotoGalleryDesktop from "../photo-gallery/PhotoGalleryDesktop";
 
 interface SchoolInfo {
   name: string;
@@ -45,7 +45,7 @@ const schoolInfo: SchoolInfo = {
   },
 };
 
-const ImagesGrig = ({ images }: { images: Array<string> }) => {
+const ImagesGrigDesktop = ({ images }: { images: Array<string> }) => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
   return (
@@ -97,7 +97,7 @@ const ImagesGrig = ({ images }: { images: Array<string> }) => {
           </div>
         ))}
       </div>
-      <PhotoGallery
+      <PhotoGalleryDesktop
         isOpen={isGalleryOpen}
         onClose={() => setIsGalleryOpen(false)}
         images={images}
@@ -107,4 +107,4 @@ const ImagesGrig = ({ images }: { images: Array<string> }) => {
   );
 };
 
-export default ImagesGrig;
+export default ImagesGrigDesktop;
