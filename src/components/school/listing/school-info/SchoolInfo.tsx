@@ -1,9 +1,9 @@
 "use client";
-import { SchoolInfoInterface } from "@/app/schools/listing/page";
 import React from "react";
 import SchoolInfoDesktop from "./SchoolInfoDesktop";
 import SchoolInfoMobile from "./SchoolInfoMobile";
 import useWindowWidth from "@/hooks/useWindowWidth";
+import { SchoolInfoInterface } from "@/types/school-listings";
 
 interface SchoolInfoProps {
   schoolInfo: SchoolInfoInterface;

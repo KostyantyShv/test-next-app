@@ -100,7 +100,7 @@ const SchoolInfoMobile: React.FC<SchoolInfoProps> = ({ images }) => {
         </div>
       </div>
 
-      <Header isFooterVisible={isFooterVisible} images={images} />
+      <Header isFooterVisible={isFooterVisible} />
       <Footer isFooterVisible={isFooterVisible} images={images} />
       <CTADrawer
         isCTADrawerOpen={isCTADrawerOpen}

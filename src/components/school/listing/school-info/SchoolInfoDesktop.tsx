@@ -1,9 +1,9 @@
 "use client";
-import { SchoolInfoInterface } from "@/app/schools/listing/page";
 import { Icon } from "@/components/ui/Icon";
 import React, { useEffect, useRef, useState } from "react";
 import ActionButton from "../action-button/ActionButton";
 import Header from "../header/Header";
+import { SchoolInfoInterface } from "@/types/school-listings";
 
 const LocationIcon = () => (
   <svg

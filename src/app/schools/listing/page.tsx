@@ -4,32 +4,6 @@
 // import ContentDesktop from "@/components/school/listing/content/ContentDesktop";
 // import ImagesGrigDesktop from "@/components/school/listing/images-grid/ImagesGrigDesktop";
 
-export interface SchoolInfoInterface {
-  name: string;
-  ranking: string;
-  grade: string;
-  type: string;
-  grades: string;
-  location: string;
-  reviews: {
-    rating: number;
-    count: number;
-  };
-}
-
-const schoolInfo: SchoolInfoInterface = {
-  name: "Lincoln Academy",
-  ranking: "#4 in Best Public Elementary Schools in Arizona",
-  grade: "A+",
-  type: "Public, Charter",
-  grades: "K-12",
-  location: "FLAGSTAFF, AZ",
-  reviews: {
-    rating: 4,
-    count: 73,
-  },
-};
-
 // const gradSchoolInfo: SchoolInfoInterface = {
 //   name: "Lincoln Graduate School",
 //   ranking: "#8 in Best Graduate Schools in Arizona",
@@ -139,26 +113,30 @@ const schoolInfo: SchoolInfoInterface = {
 //   );
 // }
 
-import Content from "@/components/school/listing/content/Content";
-import ImagesGrid from "@/components/school/listing/images-grid/ImagesGrid";
-import ImagesGridMobile from "@/components/school/listing/images-grid/ImagesGridMobile";
-import SchoolInfo from "@/components/school/listing/school-info/SchoolInfo";
-import SchoolInfoMobile from "@/components/school/listing/school-info/SchoolInfoMobile";
+import ListingPage from "@/components/school/listing/listing-page/ListingPage";
+import { SchoolInfoInterface } from "@/types/school-listings";
+
+const schoolInfo: SchoolInfoInterface = {
+  name: "Lincoln Academy",
+  ranking: "#4 in Best Public Elementary Schools in Arizona",
+  grade: "A+",
+  type: "Public, Charter",
+  grades: "K-12",
+  location: "FLAGSTAFF, AZ",
+  reviews: {
+    rating: 4,
+    count: 73,
+  },
+};
+
 const images = [
   "https://i.ibb.co/J8QjpbD/school1.webp",
   "https://i.ibb.co/fVRCnNZY/school2.webp",
   "https://i.ibb.co/fzzhd5tf/school4.webp",
 ];
+
 const SchoolDirectory: React.FC = () => {
-  return (
-    <div className="md:max-w-[1080px] md:mx-auto md:p-3">
-      <div className="bg-cardBackground md:rounded-cardBorderRadius md:overflow-hidden">
-        <ImagesGrid images={images} variant="mobile" />
-        <SchoolInfo variant="mobile" schoolInfo={schoolInfo} images={images} />
-      </div>
-      <Content variant="mobile" />
-    </div>
-  );
+  return <ListingPage images={images} schoolInfo={schoolInfo} />;
 };
 
 export default SchoolDirectory;
