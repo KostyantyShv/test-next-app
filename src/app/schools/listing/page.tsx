@@ -113,7 +113,9 @@
 //   );
 // }
 
-import ListingPage from "@/components/school/listing/listing-page/ListingPage";
+import Content from "@/components/school/listing/content/Content";
+import ImagesGrid from "@/components/school/listing/images-grid/ImagesGrid";
+import SchoolInfo from "@/components/school/listing/school-info/SchoolInfo";
 import { SchoolInfoInterface } from "@/types/school-listings";
 
 const schoolInfo: SchoolInfoInterface = {
@@ -136,7 +138,15 @@ const images = [
 ];
 
 const SchoolDirectory: React.FC = () => {
-  return <ListingPage images={images} schoolInfo={schoolInfo} />;
+  return (
+    <div className="md:max-w-[1080px] md:mx-auto md:p-3">
+      <div className="bg-cardBackground md:rounded-cardBorderRadius md:overflow-hidden">
+        <ImagesGrid images={images} />
+        <SchoolInfo schoolInfo={schoolInfo} images={images} />
+      </div>
+      <Content />
+    </div>
+  );
 };
 
 export default SchoolDirectory;

@@ -21,7 +21,6 @@ export default function WillYouGetInSection() {
     if (!ctx) return;
 
     const data: DataPoint[] = [];
-    const userPoint = { sat: 1400, gpa: 3.8 };
     const padding = { top: 20, right: 20, bottom: 30, left: 40 };
 
     const resize = () => {
@@ -108,9 +107,6 @@ export default function WillYouGetInSection() {
     };
 
     const drawDataPoints = () => {
-      const width = canvas.width / 2;
-      const height = canvas.height / 2;
-
       ctx.globalAlpha = 0.7;
       data.forEach((point) => {
         if (

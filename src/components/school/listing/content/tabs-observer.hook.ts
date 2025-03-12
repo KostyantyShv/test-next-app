@@ -1,127 +1,141 @@
 import { useEffect, useRef, useState } from "react";
-import { SIDE_TABS } from "./side-tabs.constant";
+import { SIDE_TABS_DESKTOP } from "./side-tabs.constant";
 
 export const useTabsObserver = () => {
-  const [activeTab, setActiveTab] = useState(SIDE_TABS.MONTHLY_UPDATE);
+  const [activeTab, setActiveTab] = useState(
+    SIDE_TABS_DESKTOP.MONTHLY_UPDATE_DESKTOP
+  );
   const observerRef = useRef<IntersectionObserver>(null);
 
   useEffect(() => {
     const sections = [
       {
-        id: SIDE_TABS.MONTHLY_UPDATE,
-        element: document.getElementById(SIDE_TABS.MONTHLY_UPDATE),
+        id: SIDE_TABS_DESKTOP.MONTHLY_UPDATE_DESKTOP,
+        element: document.getElementById(
+          SIDE_TABS_DESKTOP.MONTHLY_UPDATE_DESKTOP
+        ),
       },
       {
-        id: SIDE_TABS.REPORT_CARD,
-        element: document.getElementById(SIDE_TABS.REPORT_CARD),
+        id: SIDE_TABS_DESKTOP.REPORT_CARD_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.REPORT_CARD_DESKTOP),
       },
       {
-        id: SIDE_TABS.ABOUT,
-        element: document.getElementById(SIDE_TABS.ABOUT),
+        id: SIDE_TABS_DESKTOP.ABOUT_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.ABOUT_DESKTOP),
       },
       {
-        id: SIDE_TABS.RANKINGS,
-        element: document.getElementById(SIDE_TABS.RANKINGS),
+        id: SIDE_TABS_DESKTOP.RANKINGS_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.RANKINGS_DESKTOP),
       },
       {
-        id: SIDE_TABS.ADMISSIONS,
-        element: document.getElementById(SIDE_TABS.ADMISSIONS),
+        id: SIDE_TABS_DESKTOP.ADMISSIONS_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.ADMISSIONS_DESKTOP),
       },
       {
-        id: SIDE_TABS.SCATTER_PLOT,
-        element: document.getElementById(SIDE_TABS.SCATTER_PLOT),
+        id: SIDE_TABS_DESKTOP.SCATTER_PLOT_DESKTOP,
+        element: document.getElementById(
+          SIDE_TABS_DESKTOP.SCATTER_PLOT_DESKTOP
+        ),
       },
       {
-        id: SIDE_TABS.OVERVIEW,
-        element: document.getElementById(SIDE_TABS.OVERVIEW),
+        id: SIDE_TABS_DESKTOP.OVERVIEW_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.OVERVIEW_DESKTOP),
       },
       {
-        id: SIDE_TABS.TESTIMONIALS,
-        element: document.getElementById(SIDE_TABS.TESTIMONIALS),
+        id: SIDE_TABS_DESKTOP.TESTIMONIALS_DESKTOP,
+        element: document.getElementById(
+          SIDE_TABS_DESKTOP.TESTIMONIALS_DESKTOP
+        ),
       },
       {
-        id: SIDE_TABS.LINKS,
-        element: document.getElementById(SIDE_TABS.LINKS),
+        id: SIDE_TABS_DESKTOP.LINKS_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.LINKS_DESKTOP),
       },
       {
-        id: SIDE_TABS.EVENTS,
-        element: document.getElementById(SIDE_TABS.EVENTS),
+        id: SIDE_TABS_DESKTOP.EVENTS_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.EVENTS_DESKTOP),
       },
       {
-        id: SIDE_TABS.REVIEWS,
-        element: document.getElementById(SIDE_TABS.REVIEWS),
+        id: SIDE_TABS_DESKTOP.REVIEWS_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.REVIEWS_DESKTOP),
       },
       {
-        id: SIDE_TABS.REVIEW_HIGHLIGHTS,
-        element: document.getElementById(SIDE_TABS.REVIEW_HIGHLIGHTS),
+        id: SIDE_TABS_DESKTOP.REVIEW_HIGHLIGHTS_DESKTOP,
+        element: document.getElementById(
+          SIDE_TABS_DESKTOP.REVIEW_HIGHLIGHTS_DESKTOP
+        ),
       },
       {
-        id: SIDE_TABS.SIMILAR,
-        element: document.getElementById(SIDE_TABS.SIMILAR),
+        id: SIDE_TABS_DESKTOP.SIMILAR_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.SIMILAR_DESKTOP),
       },
       {
-        id: SIDE_TABS.MAP,
-        element: document.getElementById(SIDE_TABS.MAP),
+        id: SIDE_TABS_DESKTOP.MAP_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.MAP_DESKTOP),
       },
       {
-        id: SIDE_TABS.CULTURE,
-        element: document.getElementById(SIDE_TABS.CULTURE),
+        id: SIDE_TABS_DESKTOP.CULTURE_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.CULTURE_DESKTOP),
       },
       {
-        id: SIDE_TABS.COST,
-        element: document.getElementById(SIDE_TABS.COST),
+        id: SIDE_TABS_DESKTOP.COST_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.COST_DESKTOP),
       },
       {
-        id: SIDE_TABS.MAJORS,
-        element: document.getElementById(SIDE_TABS.MAJORS),
+        id: SIDE_TABS_DESKTOP.MAJORS_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.MAJORS_DESKTOP),
       },
       {
-        id: SIDE_TABS.STUDENTS,
-        element: document.getElementById(SIDE_TABS.STUDENTS),
+        id: SIDE_TABS_DESKTOP.STUDENTS_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.STUDENTS_DESKTOP),
       },
       {
-        id: SIDE_TABS.ACADEMICS,
-        element: document.getElementById(SIDE_TABS.ACADEMICS),
+        id: SIDE_TABS_DESKTOP.ACADEMICS_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.ACADEMICS_DESKTOP),
       },
       {
-        id: SIDE_TABS.TEACHERS,
-        element: document.getElementById(SIDE_TABS.TEACHERS),
+        id: SIDE_TABS_DESKTOP.TEACHERS_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.TEACHERS_DESKTOP),
       },
       {
-        id: SIDE_TABS.ACTIVITIES,
-        element: document.getElementById(SIDE_TABS.ACTIVITIES),
+        id: SIDE_TABS_DESKTOP.ACTIVITIES_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.ACTIVITIES_DESKTOP),
       },
       {
-        id: SIDE_TABS.SPOTLIGHT,
-        element: document.getElementById(SIDE_TABS.SPOTLIGHT),
+        id: SIDE_TABS_DESKTOP.SPOTLIGHT_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.SPOTLIGHT_DESKTOP),
       },
       {
-        id: SIDE_TABS.CASE_STUDY,
-        element: document.getElementById(SIDE_TABS.CASE_STUDY),
+        id: SIDE_TABS_DESKTOP.CASE_STUDY_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.CASE_STUDY_DESKTOP),
       },
       {
-        id: SIDE_TABS.AFTER_COLLEGE,
-        element: document.getElementById(SIDE_TABS.AFTER_COLLEGE),
+        id: SIDE_TABS_DESKTOP.AFTER_COLLEGE_DESKTOP,
+        element: document.getElementById(
+          SIDE_TABS_DESKTOP.AFTER_COLLEGE_DESKTOP
+        ),
       },
       {
-        id: SIDE_TABS.AREA,
-        element: document.getElementById(SIDE_TABS.AREA),
+        id: SIDE_TABS_DESKTOP.AREA_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.AREA_DESKTOP),
       },
       {
-        id: SIDE_TABS.PROGRAMS,
-        element: document.getElementById(SIDE_TABS.PROGRAMS),
+        id: SIDE_TABS_DESKTOP.PROGRAMS_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.PROGRAMS_DESKTOP),
       },
       {
-        id: SIDE_TABS.SOCIAL_MEDIA,
-        element: document.getElementById(SIDE_TABS.SOCIAL_MEDIA),
+        id: SIDE_TABS_DESKTOP.SOCIAL_MEDIA_DESKTOP,
+        element: document.getElementById(
+          SIDE_TABS_DESKTOP.SOCIAL_MEDIA_DESKTOP
+        ),
       },
       {
-        id: SIDE_TABS.COMPARISON,
-        element: document.getElementById(SIDE_TABS.COMPARISON),
+        id: SIDE_TABS_DESKTOP.COMPARISON_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.COMPARISON_DESKTOP),
       },
       {
-        id: SIDE_TABS.ARTICLES,
-        element: document.getElementById(SIDE_TABS.ARTICLES),
+        id: SIDE_TABS_DESKTOP.ARTICLES_DESKTOP,
+        element: document.getElementById(SIDE_TABS_DESKTOP.ARTICLES_DESKTOP),
       },
     ].filter((section) => section.element);
 

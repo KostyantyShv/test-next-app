@@ -2,16 +2,18 @@
 import React from "react";
 import ContentDesktop from "./ContentDesktop";
 import ContentMobile from "./ContentMobile";
-import useWindowWidth from "@/hooks/useWindowWidth";
 
-type variantType = "mobile" | "desktop";
-
-const Content: React.FC<{ variant: variantType }> = ({ variant }) => {
-  const isMobile = useWindowWidth();
-  if (isMobile) {
-    return <ContentMobile />;
-  }
-  return <ContentDesktop />;
+const Content: React.FC = () => {
+  return (
+    <>
+      <div className="block md:hidden">
+        <ContentMobile />
+      </div>
+      <div className="hidden md:block">
+        <ContentDesktop />
+      </div>
+    </>
+  );
 };
 
 export default Content;

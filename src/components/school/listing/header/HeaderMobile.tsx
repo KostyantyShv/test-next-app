@@ -1,4 +1,5 @@
-import { SIDE_TABS } from "../content/side-tabs.constant";
+import { removeLastWord } from "@/utils/removeLastWord";
+import { SIDE_TABS_MOBILE } from "../content/side-tabs.constant";
 
 interface HeaderProps {
   isFooterVisible: boolean;
@@ -13,7 +14,7 @@ const Header: React.FC<HeaderProps> = ({ isFooterVisible }) => {
         }`}
       >
         <div className="flex px-4">
-          {Object.values(SIDE_TABS).map((value, index) => (
+          {Object.values(SIDE_TABS_MOBILE).map((value, index) => (
             <a
               key={index}
               href={`#${value}`}
@@ -21,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({ isFooterVisible }) => {
                 index === 0 ? "text-[#0B6333] font-semibold" : ""
               } pointer-events-auto`}
             >
-              {value}
+              {removeLastWord(value)}
               {index === 0 && (
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#0B6333] rounded" />
               )}
