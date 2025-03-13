@@ -1,3 +1,4 @@
+import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 import React from "react";
 
 interface MobileDrawerProps {
@@ -86,18 +87,7 @@ const RankingModalMobile: React.FC<MobileDrawerProps> = ({
   return (
     <>
       {/* Full-screen overlay */}
-      <div
-        className={`fixed inset-0 bg-black/50 z-[2500] transition-all duration-300 ${
-          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
-        onClick={handleOverlayClick}
-      />
-      <div
-        className={`fixed bottom-0 left-0 w-full max-h-[70%] bg-white rounded-t-[20px] shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-[3000] transition-all duration-300 overflow-y-auto scrollbar-hide ${
-          isOpen ? "bottom-0 visible" : "bottom-[-100%] invisible"
-        }`}
-      >
-        <div className="w-10 h-[5px] bg-[#E5E5E5] rounded-[3px] my-[10px] mx-auto" />
+      <MobileDrawer isOpen={isOpen} onClose={onClose}>
         <div className="sticky top-0 bg-white z-10">
           <div className="p-5 border-b border-black/8 relative">
             <h1 className="text-[#016853] text-xl font-bold mb-2 flex items-center gap-3">
@@ -251,7 +241,7 @@ const RankingModalMobile: React.FC<MobileDrawerProps> = ({
             />
           </div>
         </div>
-      </div>
+      </MobileDrawer>
     </>
   );
 };

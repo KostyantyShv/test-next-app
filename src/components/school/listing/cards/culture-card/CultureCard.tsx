@@ -1,6 +1,7 @@
 // components/CultureSafety.tsx
 import { useState } from "react";
 import CardWrapper from "../../card-wrapper/CardWrapper";
+import { truncateText } from "@/utils/truncateText";
 
 const CultureSafety: React.FC<{ id: string }> = ({ id }) => {
   const [showMore, setShowMore] = useState(false);
@@ -15,11 +16,11 @@ const CultureSafety: React.FC<{ id: string }> = ({ id }) => {
         Culture & Safety
       </h2>
 
-      <div className="grid grid-cols-2 gap-10">
+      <div className="grid md:grid-cols-2 grid-cols-1 gap-10">
         {/* Left Column - Pie Charts */}
         <div>
           {/* Safety Assessment */}
-          <div className="bg-white rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[rgba(0,0,0,0.06)] mb-6">
+          <div className="bg-white rounded-cardBorderRadius p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[rgba(0,0,0,0.06)] mb-6">
             <div className="flex items-center mb-6">
               <div className="relative h-4 w-4 mr-3">
                 <div className="absolute bg-[#c5e4b8] shadow-[4px_4px_0_#f78f6a,-8px_4px_0_#9eddf8,0_0_0_transparent,-4px_2px_0_#6bbef2] h-[10px] w-[3px] left-2 top-[2px]" />
@@ -66,7 +67,7 @@ const CultureSafety: React.FC<{ id: string }> = ({ id }) => {
           </div>
 
           {/* Happiness Index */}
-          <div className="bg-white rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[rgba(0,0,0,0.06)]">
+          <div className="bg-white rounded-cardBorderRadius p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[rgba(0,0,0,0.06)]">
             <div className="flex items-center mb-6">
               <div className="relative h-4 w-4 mr-3">
                 <div className="absolute bg-[#c5e4b8] shadow-[4px_4px_0_#f78f6a,-8px_4px_0_#9eddf8,0_0_0_transparent,-4px_2px_0_#6bbef2] h-[10px] w-[3px] left-2 top-[2px]" />
@@ -114,7 +115,7 @@ const CultureSafety: React.FC<{ id: string }> = ({ id }) => {
         </div>
 
         {/* Right Column - Bar Chart */}
-        <div>
+        <div className="p-6 rounded-cardBorderRadius shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[rgba(0,0,0,0.06)]">
           <div className="relative">
             <div className="relative h-4 w-4 mb-5">
               <div className="absolute bg-[#c5e4b8] shadow-[4px_4px_0_#f78f6a,-8px_4px_0_#9eddf8,0_0_0_transparent,-4px_2px_0_#6bbef2] h-[10px] w-[3px] left-2 top-[2px]" />
@@ -162,7 +163,7 @@ const CultureSafety: React.FC<{ id: string }> = ({ id }) => {
                       style={{ width: `${item.percent}%` }}
                     />
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A4A4A] text-sm z-[1] font-medium tracking-[-0.01em]">
-                      {item.text}
+                      {truncateText(item.text, 27)}
                     </span>
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#089E68] font-semibold text-sm z-[1]">
                       {item.percent}%

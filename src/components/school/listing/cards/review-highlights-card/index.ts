@@ -1,1 +1,1 @@
-export * from "./ReviewHighlightsCard";
+export * from "./review-highlights-modal/ReviewHighlightsCard";

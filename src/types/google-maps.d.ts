@@ -1,4 +1,3 @@
-// types/google-maps.d.ts
 declare namespace google {
   namespace maps {
     class Map {
@@ -6,6 +5,9 @@ declare namespace google {
       getProjection(): Projection;
       getZoom(): number;
       getBounds(): LatLngBounds | undefined;
+      setZoom(zoom: number): void; // Added
+      setCenter(latLng: LatLng | LatLngLiteral): void; // Added
+      setMapTypeId(mapTypeId: MapTypeId): void; // Added for mapType toggle
     }
 
     class Marker {
@@ -14,7 +16,6 @@ declare namespace google {
       addListener(eventName: string, handler: () => void): MapsEventListener;
     }
 
-    // Add InfoWindow class
     class InfoWindow {
       constructor(opts?: InfoWindowOptions);
       open(options?: InfoWindowOpenOptions | Map, anchor?: Marker): void;
@@ -36,10 +37,21 @@ declare namespace google {
       y: number;
     }
 
+    enum MapTypeId { // Added for map type support
+      ROADMAP = "roadmap",
+      HYBRID = "hybrid",
+      SATELLITE = "satellite",
+      TERRAIN = "terrain",
+    }
+
     interface MapOptions {
       center?: LatLngLiteral;
       zoom?: number;
       styles?: Array<MapTypeStyle>;
+      disableDefaultUI?: boolean; // Added
+      zoomControl?: boolean; // Added
+      zoomControlOptions?: ZoomControlOptions; // Added
+      mapTypeId?: MapTypeId; // Added
     }
 
     interface LatLngLiteral {
@@ -82,7 +94,6 @@ declare namespace google {
       remove(): void;
     }
 
-    // Add InfoWindow-related interfaces
     interface InfoWindowOptions {
       content?: string | Node;
       position?: LatLng | LatLngLiteral;
@@ -93,6 +104,16 @@ declare namespace google {
       anchor?: Marker;
       map?: Map;
       shouldFocus?: boolean;
+    }
+
+    interface ZoomControlOptions {
+      // Added
+      position?: ControlPosition;
+    }
+
+    enum ControlPosition { // Added
+      RIGHT_BOTTOM = "RIGHT_BOTTOM",
+      // Add other positions as needed
     }
   }
 }

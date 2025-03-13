@@ -1,11 +1,13 @@
-// Reviews.tsx
+"use client";
 import Image from "next/image";
-import ReviewsModal from "./reviews-modal/ReviewsModal";
-import CardWrapper from "../../card-wrapper/CardWrapper";
+import { REVIEWS } from "../mock";
 import { useState } from "react";
-import { RATING_DISTRIBUTION, REVIEWS } from "./mock";
 
-export default function Reviews({ id }: { id: string }) {
+interface ReviewsModalContentProps {
+  onClose: () => void;
+}
+
+export function ReviewsModalContent({ onClose }: ReviewsModalContentProps) {
   const [expandedReplies, setExpandedReplies] = useState<
     Record<number, boolean>
   >({});
@@ -16,117 +18,123 @@ export default function Reviews({ id }: { id: string }) {
       [index]: !prev[index],
     }));
   };
+  const renderStars = (rating: number) => {
+    return "★".repeat(Math.floor(rating));
+  };
+
+  const averageRating =
+    REVIEWS.reduce((sum, review) => sum + review.rating, 0) / REVIEWS.length;
 
   return (
-    <CardWrapper id={id}>
-      <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-3 md:mb-4 text-center tracking-tight">
-        School Reviews
-      </h2>
-      <p className="text-center text-[#5F5F5F] text-sm md:text-base mb-6 md:mb-10 px-3 md:px-0">
-        Read what other users think about{" "}
-        <strong className="font-semibold text-[#464646]">
-          Lincoln Academy
-        </strong>
-      </p>
-
-      <div className="bg-[#EBFCF4] rounded-xl p-5 md:p-7 mb-6 md:mb-10 flex flex-col md:flex-row justify-between items-start border border-[#0B6333] border-opacity-10">
-        <div className="w-full md:w-auto text-center md:text-left mb-6 md:mb-0">
-          <div className="text-[42px] font-extrabold text-gray-800 mb-2 tracking-tight leading-none">
-            4.3
+    <>
+      {/* Header */}
+      <div className="p-4 md:p-6 border-b border-black/8 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-[#1B1B1B]">
+            <span className="text-2xl font-bold tracking-tight">
+              {averageRating.toFixed(1)}
+            </span>
+            <span className="text-[#5F5F5F] font-extrabold mx-1">·</span>
+            <span className="text-2xl font-bold text-[#5F5F5F]">
+              {REVIEWS.length} Reviews
+            </span>
           </div>
-          <div className="text-[#089E68] mb-2 font-semibold text-lg md:text-lg">
-            ★★★★☆
-          </div>
-          <div className="text-[#5F5F5F] text-sm md:text-sm font-medium mb-4">
-            73 Reviews
-          </div>
-          <div className="flex flex-wrap justify-center md:justify-start gap-4">
-            <a
-              href="#"
-              className="text-[#346DC2] no-underline text-sm flex items-center gap-1 font-medium hover:text-[#1D77BD] hover:underline transition-colors"
+          <button
+            className="w-8 h-8 flex items-center justify-center text-[#5F5F5F] rounded-full hover:bg-black/5 hover:text-[#1B1B1B] transition-all md:ml-2"
+            onClick={onClose}
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
             >
-              Write a review →
-            </a>
-            <a
-              href="#"
-              className="text-[#346DC2] no-underline text-sm flex items-center gap-1 font-medium hover:text-[#1D77BD] hover:underline transition-colors"
-            >
-              See all reviews →
-            </a>
-          </div>
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
         </div>
-
-        <div className="w-full md:flex-1 md:max-w-[400px] md:pl-10">
-          {RATING_DISTRIBUTION.map((rating, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3"
-            >
-              <span className="min-w-[45px] md:min-w-[80px] text-[#089E68] text-xs md:text-sm">
-                {rating.stars}
-              </span>
-              <span className="min-w-[60px] md:min-w-[70px] text-[#464646] text-xs md:text-sm font-medium">
-                {rating.label}
-              </span>
-              <div className="flex-1 h-1.5 md:h-2 bg-[#E1E7EE] rounded overflow-hidden">
-                <div
-                  className="h-full bg-[#00DF8B] rounded"
-                  style={{ width: rating.width }}
-                ></div>
-              </div>
-              <span className="min-w-[24px] md:min-w-[32px] text-[#5F5F5F] text-xs md:text-sm text-right font-medium">
-                {rating.count}
-              </span>
-            </div>
-          ))}
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-3">
+          <div className="flex flex-row gap-3 w-full md:w-auto">
+            <button className="flex-1 md:flex-none px-3 py-2 border border-black/10 rounded-lg bg-white text-[#464646] text-sm font-medium flex items-center justify-between gap-2 hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:text-[#0B6333] transition-all">
+              Rating
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+            <button className="flex-1 md:flex-none px-3 py-2 border border-black/10 rounded-lg bg-white text-[#464646] text-sm font-medium flex items-center justify-between gap-2 hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:text-[#0B6333] transition-all">
+              Most Relevant
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
+      {/* Content */}
+      <div className="p-4 md:p-6 overflow-y-auto">
         {REVIEWS.map((review, index) => (
           <div
-            key={index}
-            className="bg-white rounded-xl p-4 md:p-6 shadow-sm border border-black border-opacity-5"
+            key={review.author + review.date}
+            className="py-5 md:py-6 border-b border-black/8 last:border-b-0"
           >
-            <div className="flex gap-3 md:gap-4 mb-4">
+            <div className="flex gap-3 md:gap-4 mb-3 md:mb-4">
               <Image
                 src={review.avatar}
-                alt={review.author}
-                className="w-11 md:w-12 h-11 md:h-12 rounded-full object-cover"
-                width={48}
-                height={48}
+                alt={`${review.author} avatar`}
+                width={44}
+                height={44}
+                className="rounded-lg object-cover w-11 h-11 md:w-12 md:h-12"
               />
               <div className="flex-1">
-                <div className="text-[#016853] font-semibold mb-1 tracking-wide text-sm md:text-base">
+                <div className="text-[#016853] font-semibold mb-1 flex items-center flex-wrap gap-2">
                   {review.author}
                 </div>
-                <div className="flex items-center gap-1.5 md:gap-2 text-[#089E68] text-xs md:text-sm font-medium">
-                  <span className="font-bold text-[#00DF8B]">★</span>
-                  <span>{review.rating}</span>
-                  <span className="text-[#5F5F5F]">{review.date}</span>
+                <div className="flex items-center flex-wrap gap-2 text-[#089E68] text-xs md:text-sm font-medium">
+                  <span className="font-bold text-[#00DF8B]">
+                    {renderStars(review.rating)}
+                  </span>
+                  <span>{review.rating.toFixed(1)}</span>
+                  <span className="text-[#5F5F5F]">{review.published}</span>
                 </div>
               </div>
             </div>
-            <h3 className="font-semibold text-[#464646] mb-2 text-sm md:text-base">
+            <div className="font-medium text-[#464646] text-sm md:text-base mb-2 md:mb-3">
               {review.title}
-            </h3>
-            <p className="text-[#5F5F5F] text-xs md:text-sm leading-6 mb-3 md:mb-4">
+            </div>
+            <p className="text-[#5F5F5F] text-sm md:text-base leading-relaxed mb-3 md:mb-4">
               {review.content}
             </p>
-            <div className="text-gray-400 text-xs md:text-sm mb-3 md:mb-4">
-              {review.published}
-            </div>
-            <div className="flex gap-4 md:gap-6">
-              <button className="flex items-center gap-1.5 cursor-pointer transition-all duration-200 py-1.5 px-2 md:px-2.5 rounded-md text-[#5F5F5F] hover:bg-[#F8F9FA] hover:text-[#016853]">
+            <div className="flex gap-4 md:gap-6 mt-4">
+              <button className="flex items-center gap-1.5 md:gap-2 text-[#5F5F5F] hover:bg-[#F8F9FA] hover:text-[#016853] p-1.5 md:p-2 rounded-md transition-colors">
                 <svg
+                  width="14"
+                  height="14"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  className="w-3.5 h-3.5 stroke-2"
+                  strokeWidth="2"
+                  className="md:w-4 md:h-4"
                 >
-                  <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                  <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
                 </svg>
-                <span className="font-medium text-xs md:text-sm">
+                <span className="font-medium text-[13px] md:text-sm">
                   Helpful ({review.helpful})
                 </span>
               </button>
@@ -137,10 +145,11 @@ export default function Reviews({ id }: { id: string }) {
                     fill="currentColor"
                   />
                 </svg>
-                <span className="font-medium text-xs md:text-sm">Report</span>
+                <span className="font-medium text-xs md:text-sm">
+                  Not Helpful
+                </span>
               </button>
             </div>
-
             {review.hasReply && (
               <>
                 <div className="mt-4 h-px bg-[#E1E7EE] w-full"></div>
@@ -203,10 +212,6 @@ export default function Reviews({ id }: { id: string }) {
           </div>
         ))}
       </div>
-
-      <div className="flex justify-center mt-6 md:mt-8">
-        <ReviewsModal />
-      </div>
-    </CardWrapper>
+    </>
   );
 }

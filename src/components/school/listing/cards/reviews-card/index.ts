@@ -1,2 +1,2 @@
 export * from "./ReviewsCard";
-export * from "./ReviewsModal";
+export * from "./reviews-modal/ReviewsModal";

@@ -1,51 +1,20 @@
 // components/CostSection.tsx
-import React, { useEffect, useState, useRef } from "react";
-import CostModal from "./CostModal";
+import React, { useState } from "react";
 import CardWrapper from "../../card-wrapper/CardWrapper";
+import { DesktopModal } from "@/components/ui/DesktopModal/DesktopModal";
+import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
+import CostModalContent from "./cost-modal/CostModalContent";
+import { netPriceBreakdownData, valueSectionData } from "./mock";
 
 const CostSection: React.FC<{ id: string }> = ({ id }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const popupRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (popupRef.current && headerRef.current) {
-        if (popupRef.current.scrollTop > 0) {
-          headerRef.current.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.05)";
-        } else {
-          headerRef.current.style.boxShadow = "none";
-        }
-      }
-    };
-
-    const popup = popupRef.current;
-    if (popup) {
-      popup.addEventListener("scroll", handleScroll);
-    }
-
-    return () => {
-      if (popup) {
-        popup.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, [isOpen]);
-
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      setIsOpen(false);
-      document.body.style.overflow = "auto";
-    }
-  };
 
   const openPopup = () => {
     setIsOpen(true);
-    document.body.style.overflow = "hidden";
   };
 
   const closePopup = () => {
     setIsOpen(false);
-    document.body.style.overflow = "auto";
   };
 
   return (
@@ -54,13 +23,13 @@ const CostSection: React.FC<{ id: string }> = ({ id }) => {
         Cost
       </h2>
 
-      <div className="grid grid-cols-2 gap-12 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-8">
         {/* Left Section */}
-        <div className="border-r border-[rgba(0,0,0,0.1)] pr-12">
+        <div className="md:border-r max-md:border-b max-md:pb-10 border-[rgba(0,0,0,0.1)] pr-12">
           <div className="mb-6">
             <div className="text-[#4A4A4A] text-sm mb-2">Net Price</div>
             <div className="text-[#1B1B1B] text-[40px] font-bold mb-1 tracking-[-0.02em]">
-              $18,647
+              {netPriceBreakdownData.mainStats[0].value.split(" /")[0]}
               <span className="text-base font-medium text-[#5F5F5F]">
                 / year
               </span>
@@ -68,27 +37,26 @@ const CostSection: React.FC<{ id: string }> = ({ id }) => {
           </div>
 
           <div className="text-[#5F5F5F] text-sm mb-6">
-            National <span className="text-[#4A4A4A] font-medium">$15,523</span>
+            National{" "}
+            <span className="text-[#4A4A4A] font-medium">
+              {netPriceBreakdownData.mainStats[0].national}
+            </span>
           </div>
 
           <p className="text-[#4A4A4A] text-sm leading-6 mb-8">
-            Average cost after financial aid for students receiving grant or
-            scholarship aid, as reported by the college.
+            {valueSectionData.priceNote}
           </p>
 
           <div className="flex flex-col gap-3">
-            <a
-              href="#"
-              className="text-[#346DC2] text-[15px] font-medium hover:text-[#1D77BD] hover:underline transition-colors duration-200"
-            >
-              Find Private Student Loans
-            </a>
-            <a
-              href="#"
-              className="text-[#346DC2] text-[15px] font-medium hover:text-[#1D77BD] hover:underline transition-colors duration-200"
-            >
-              Find College Scholarships
-            </a>
+            {valueSectionData.links.map((link, index) => (
+              <a
+                key={index}
+                href={link.href}
+                className="text-[#346DC2] text-[15px] font-medium hover:text-[#1D77BD] hover:underline transition-colors duration-200"
+              >
+                {link.text}
+              </a>
+            ))}
           </div>
         </div>
 
@@ -96,7 +64,7 @@ const CostSection: React.FC<{ id: string }> = ({ id }) => {
         <div className="flex flex-col gap-6">
           <div className="mb-6">
             <div className="text-[#089E68] text-2xl font-semibold mb-1">
-              $63,523
+              {netPriceBreakdownData.mainStats[1].value.split(" /")[0]}
               <span className="text-base font-medium text-[#5F5F5F]">
                 / year
               </span>
@@ -104,22 +72,32 @@ const CostSection: React.FC<{ id: string }> = ({ id }) => {
             <div className="text-[#4A4A4A] text-[15px] leading-5">
               Average Total Aid Awarded
             </div>
-            <div className="text-[#5F5F5F] text-[13px] mt-1">Natl. $7,535</div>
+            <div className="text-[#5F5F5F] text-[13px] mt-1">
+              Natl. {netPriceBreakdownData.mainStats[1].national}
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="text-[#089E68] text-2xl font-semibold">59%</div>
+            <div className="text-[#089E68] text-2xl font-semibold">
+              {netPriceBreakdownData.mainStats[2].value}
+            </div>
             <div className="text-[#4A4A4A] text-[15px] leading-5">
               Students Receiving Financial Aid
             </div>
           </div>
-          <CostModal
-            isOpen={isOpen}
-            closePopup={closePopup}
-            handleOverlayClick={handleOverlayClick}
-            popupRef={popupRef}
-            headerRef={headerRef}
-          />
+
+          <div className="hidden md:block">
+            <DesktopModal isOpen={isOpen} onClose={closePopup}>
+              <CostModalContent closePopup={closePopup} />
+            </DesktopModal>
+          </div>
+
+          <div className="block md:hidden">
+            <MobileDrawer isOpen={isOpen} onClose={closePopup}>
+              <CostModalContent closePopup={closePopup} />
+            </MobileDrawer>
+          </div>
+
           <a
             href="#"
             className="flex items-center text-[#346DC2] text-sm font-medium mt-auto hover:text-[#1D77BD] hover:underline transition-colors duration-200"

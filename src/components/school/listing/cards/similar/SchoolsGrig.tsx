@@ -17,7 +17,9 @@ const SchoolsGrid: React.FC<SchoolsGridProps> = ({
   className = "",
 }) => {
   return (
-    <div className={`grid grid-cols-2 gap-6 mb-6 ${className}`}>
+    <div
+      className={`md:grid md:grid-cols-2 gap-6 mb-6 ${className} flex flex-col`}
+    >
       {schools.map((school, index) => (
         <SchoolCard
           key={index}

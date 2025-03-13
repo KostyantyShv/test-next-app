@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { SIDE_TABS_DESKTOP } from "./side-tabs.constant";
 import { useTabsObserver } from "./tabs-observer.hook";
 import AdmissionsScatterPlotCard from "../cards/scatter-plot-card/ScatterPlotCard";
-import ReviewHighlightsCard from "../cards/review-highlights-card/ReviewHighlightsCard";
+import ReviewHighlightsCard from "../cards/review-highlights-card/review-highlights-modal/ReviewHighlightsCard";
 import TestimonialsCard from "../cards/testimonials-card/TestimonialsCard";
 import AdmissionsCard from "../cards/admissions-card/AdmissionsCard";
 import OverviewCard from "../cards/overview-card/OverviewCard";
