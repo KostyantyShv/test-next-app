@@ -8,7 +8,7 @@ interface DesktopModalProps {
 
 export function DesktopModal({ children, isOpen, onClose }: DesktopModalProps) {
   return (
-    <>
+    <div className="hidden md:block">
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 flex justify-center items-center z-[2000]"
@@ -22,6 +22,6 @@ export function DesktopModal({ children, isOpen, onClose }: DesktopModalProps) {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

@@ -1,10 +1,12 @@
 import AboutSection from "../cards/about-card/AboutCard";
+import AcademicsCard from "../cards/academics-card/AcademicsCard";
 import Admissions from "../cards/admissions-card/AdmissionsCard";
 import Announcements from "../cards/announcements-card/AnnouncementsCard";
 import CostSection from "../cards/cost-card/CostCard";
 import CultureSafety from "../cards/culture-card/CultureCard";
 import EventsCards from "../cards/events-card/EventsCard";
 import LinksCard from "../cards/links-card/LinksCard";
+import MajorsCard from "../cards/majors-card/MajorsCard";
 import MapCard from "../cards/map-card/MapCard";
 import OverviewCard from "../cards/overview-card/OverviewCard";
 import Rankings from "../cards/rank-card/RankCard";
@@ -13,6 +15,8 @@ import ReviewHighlightsCard from "../cards/review-highlights-card/review-highlig
 import Reviews from "../cards/reviews-card/ReviewsCard";
 import AdmissionsScatterPlotCard from "../cards/scatter-plot-card/ScatterPlotCard";
 import Similar from "../cards/similar/Similar";
+import StudentsCard from "../cards/students-card/StudentsCard";
+import TeachersCard from "../cards/teachers-card/TeachersCard";
 import TestimonialsCard from "../cards/testimonials-card/TestimonialsCard";
 import { SIDE_TABS_MOBILE } from "./side-tabs.constant";
 
@@ -48,6 +52,10 @@ const ContentMobile: React.FC = () => {
       <MapCard id={SIDE_TABS_MOBILE.MAP_MOBILE} />
       <CultureSafety id={SIDE_TABS_MOBILE.CULTURE_MOBILE} />
       <CostSection id={SIDE_TABS_MOBILE.COST_MOBILE} />
+      <MajorsCard id={SIDE_TABS_MOBILE.MAJORS_MOBILE} />
+      <StudentsCard id={SIDE_TABS_MOBILE.STUDENTS_MOBILE} />
+      <AcademicsCard id={SIDE_TABS_MOBILE.ACADEMICS_MOBILE} />
+      <TeachersCard id={SIDE_TABS_MOBILE.TEACHERS_MOBILE} />
     </div>
   );
 };

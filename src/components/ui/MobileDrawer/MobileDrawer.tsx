@@ -14,7 +14,7 @@ export function MobileDrawer({ children, isOpen, onClose }: MobileDrawerProps) {
   };
 
   return (
-    <>
+    <div className="block md:hidden">
       {/* Full-screen overlay */}
       <div
         className={`fixed inset-0 bg-black/50 z-[2500] transition-all duration-300 ${
@@ -31,6 +31,6 @@ export function MobileDrawer({ children, isOpen, onClose }: MobileDrawerProps) {
         <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mt-3 mb-2" />
         {children}
       </div>
-    </>
+    </div>
   );
 }

@@ -111,7 +111,7 @@ const MajorsCard: React.FC<{ id: string }> = ({ id }) => {
         </div>
       </div>
 
-      <div className="flex justify-between items-center mt-6 pt-4">
+      <div className="w-full flex justify-between items-center mt-6 pt-4 max-w-full">
         <button
           onClick={toggleExpand}
           className="flex items-center gap-[6px] text-[#346DC2] text-sm font-medium bg-transparent border-none p-0 hover:text-[#1D77BD]"
