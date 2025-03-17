@@ -12,6 +12,7 @@ interface StatData {
   label: string;
   value: string;
   tooltip?: string;
+  nationalAvg?: string;
 }
 
 interface CardSection {
@@ -82,9 +83,16 @@ const UniversalSchoolCard: React.FC<UniversalSchoolCardProps> = ({
                     </div>
                   )}
                 </div>
-                <span className="text-[#089E68] text-[15px] font-semibold">
-                  {stat.value}
-                </span>
+                <div className="flex flex-col">
+                  <span className="text-[#089E68] text-[15px] font-semibold">
+                    {stat.value}
+                  </span>
+                  {stat.nationalAvg && (
+                    <span className="text-gray-500">
+                      Natl. {stat.nationalAvg}
+                    </span>
+                  )}
+                </div>
               </div>
             ))}
           </div>

@@ -17,13 +17,13 @@ export default function Thumbnails({
 
   const handleScrollLeft = () => {
     if (wrapperRef.current) {
-      wrapperRef.current.scrollBy({ left: -171, behavior: "smooth" });
+      wrapperRef.current.scrollBy({ left: -171, behavior: "smooth" }); // 155px width + 16px gap
     }
   };
 
   const handleScrollRight = () => {
     if (wrapperRef.current) {
-      wrapperRef.current.scrollBy({ left: 171, behavior: "smooth" });
+      wrapperRef.current.scrollBy({ left: 171, behavior: "smooth" }); // 155px width + 16px gap
     }
   };
 
@@ -39,19 +39,19 @@ export default function Thumbnails({
     };
 
     wrapper.addEventListener("scroll", updateButtonVisibility);
-    updateButtonVisibility(); // Initial check
+    updateButtonVisibility();
 
     return () => wrapper.removeEventListener("scroll", updateButtonVisibility);
   }, []);
 
   return (
-    <div className="relative">
+    <div className="relative w-full mt-2 md:mt-0">
       <button
-        className="absolute top-1/2 -translate-y-1/2 left-0 w-9 h-9 bg-white border-none rounded-full flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.1)] z-10"
+        className="absolute top-1/2 -translate-y-1/2 left-0 w-7 md:w-9 h-7 md:h-9 bg-white rounded-full flex items-center justify-center shadow-md z-10"
         onClick={handleScrollLeft}
         style={{ display: showLeftButton ? "flex" : "none" }}
       >
-        <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
+        <svg viewBox="0 0 24 24" fill="none" className="w-5 md:w-6 h-5 md:h-6">
           <path
             d="M14 18l-5-6 5-6"
             strokeWidth="1.5"
@@ -64,12 +64,12 @@ export default function Thumbnails({
       </button>
       <div
         ref={wrapperRef}
-        className="flex gap-4 overflow-x-scroll scroll-smooth px-9 scrollbar-hide"
+        className="flex gap-3 md:gap-4 overflow-x-scroll scroll-smooth px-7 md:px-9 scrollbar-hide"
       >
         {projects.map((project, index) => (
           <div
             key={project.id}
-            className={`relative w-[155px] h-[90px] rounded-lg overflow-hidden cursor-pointer flex-shrink-0 ${
+            className={`relative w-10 h-10 md:w-[155px] md:h-[90px] rounded-full md:rounded-lg overflow-hidden cursor-pointer flex-shrink-0 ${
               index === activeIndex ? "border-2 border-[#0B6333]" : ""
             }`}
             onClick={() => {
@@ -86,11 +86,11 @@ export default function Thumbnails({
         ))}
       </div>
       <button
-        className="absolute top-1/2 -translate-y-1/2 right-0 w-9 h-9 bg-white border-none rounded-full flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.1)] z-10"
+        className="absolute top-1/2 -translate-y-1/2 right-0 w-7 md:w-9 h-7 md:h-9 bg-white rounded-full flex items-center justify-center shadow-md z-10"
         onClick={handleScrollRight}
         style={{ display: showRightButton ? "flex" : "none" }}
       >
-        <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
+        <svg viewBox="0 0 24 24" fill="none" className="w-5 md:w-6 h-5 md:h-6">
           <path
             d="M9 6l5 6-5 6"
             strokeWidth="1.5"

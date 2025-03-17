@@ -90,9 +90,13 @@ const SpotlightCard: React.FC<{ id: string }> = ({ id }) => {
 
   return (
     <CardWrapper id={id}>
-      <h2 className="text-[#1B1B1B] text-2xl font-semibold mb-6">Spotlight</h2>
-      <FeaturedProject project={selectedProject} />
-      <Thumbnails projects={projects} onSelectProject={setSelectedProject} />
+      <h2 className="text-[#1B1B1B] text-2xl md:text-[24px] font-semibold mb-6">
+        Spotlight
+      </h2>
+      <div className="flex flex-col md:gap-6">
+        <FeaturedProject project={selectedProject} />
+        <Thumbnails projects={projects} onSelectProject={setSelectedProject} />
+      </div>
     </CardWrapper>
   );
 };

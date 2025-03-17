@@ -34,7 +34,9 @@ const caseStudies: CaseStudy[] = [
   },
 ];
 
-export default function CaseStudyList({ onViewClick }: CaseStudyListProps) {
+export default function CaseStudyListDesktop({
+  onViewClick,
+}: CaseStudyListProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {

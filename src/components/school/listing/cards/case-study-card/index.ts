@@ -1,1 +1,1 @@
-export * from "./CaseStudyList";
+export * from "./CaseStudyListDesktop";
