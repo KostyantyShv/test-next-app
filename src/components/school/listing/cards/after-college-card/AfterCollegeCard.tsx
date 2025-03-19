@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Modal from "./AfterCollegeModal";
 import CardWrapper from "../../card-wrapper/CardWrapper";
+import { DesktopModal } from "@/components/ui/DesktopModal/DesktopModal";
+import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 
 const AfterCollege: React.FC<{ id: string }> = ({ id }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,8 +14,8 @@ const AfterCollege: React.FC<{ id: string }> = ({ id }) => {
           After College
         </h2>
 
-        <div className="grid grid-cols-2 gap-8 mb-6">
-          <div className="pr-8 border-r border-[rgba(0,0,0,0.1)]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+          <div className="md:pr-8 max-md:pb-8 max-md:border-b md:border-r border-[rgba(0,0,0,0.1)]">
             <div className="text-[#4A4A4A] text-[15px] font-medium mb-3">
               Median Earnings 6 Years After Graduation
             </div>
@@ -79,7 +81,7 @@ const AfterCollege: React.FC<{ id: string }> = ({ id }) => {
             e.preventDefault();
             setIsModalOpen(true);
           }}
-          className="flex items-center text-[#346DC2] text-sm font-medium gap-1 justify-end hover:underline"
+          className="flex items-center md:text-[#346DC2] max-md:text-[#016853] max-md:p-4 max-md:bg-[#EBFCF4] rounded-lg text-sm font-medium gap-1 justify-end hover:underline"
         >
           Read More About Life After Graduation
           <svg
@@ -95,7 +97,22 @@ const AfterCollege: React.FC<{ id: string }> = ({ id }) => {
           </svg>
         </a>
       </CardWrapper>
-      {isModalOpen && <Modal onClose={() => setIsModalOpen(false)} />}
+      <div className="hidden md:block">
+        <DesktopModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        >
+          <Modal onClose={() => setIsModalOpen(false)} />
+        </DesktopModal>
+      </div>
+      <div className="block md:hidden">
+        <MobileDrawer
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        >
+          <Modal onClose={() => setIsModalOpen(false)} />
+        </MobileDrawer>
+      </div>
     </>
   );
 };

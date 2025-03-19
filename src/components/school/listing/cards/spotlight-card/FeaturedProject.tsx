@@ -2,12 +2,19 @@ import { Project } from "./project.type";
 
 interface FeaturedProjectProps {
   project: Project;
+  openModal: () => void;
 }
 
-export default function FeaturedProject({ project }: FeaturedProjectProps) {
+export default function FeaturedProject({
+  project,
+  openModal,
+}: FeaturedProjectProps) {
   return (
     <div className="flex flex-col md:flex-row md:gap-6 mb-6 md:mb-8 w-full">
-      <div className="relative w-full h-[200px] md:w-[400px] md:h-[280px] rounded-lg overflow-hidden mb-4 md:mb-0">
+      <div
+        onClick={openModal}
+        className="relative cursor-pointer w-full h-[200px] md:w-[400px] md:h-[280px] rounded-lg overflow-hidden mb-4 md:mb-0"
+      >
         <img
           className="w-full h-full object-cover"
           src={project.coverImage}
@@ -26,7 +33,10 @@ export default function FeaturedProject({ project }: FeaturedProjectProps) {
       </div>
       <div className="flex-1">
         <div className="text-[#5F5F5F] text-xs md:text-sm mb-2 md:mb-3">{`From: ${project.date}`}</div>
-        <h3 className="text-[#464646] text-xl md:text-2xl font-semibold mb-2 md:mb-3 leading-tight md:leading-[1.3]">
+        <h3
+          onClick={openModal}
+          className="text-[#464646] cursor-pointer hover:underline text-xl md:text-2xl font-semibold mb-2 md:mb-3 leading-tight md:leading-[1.3]"
+        >
           {project.title}
         </h3>
         <p className="text-[#4A4A4A] text-sm md:text-[15px] leading-relaxed md:leading-[1.6] mb-3 md:mb-4 line-clamp-3">

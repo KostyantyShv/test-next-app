@@ -32,7 +32,7 @@ const ReportCard: React.FC<{ id: string }> = ({ id }) => {
 
   return (
     <div id={id} className="flex items-center justify-center my-cardMargin">
-      <div className="w-full max-w-[375px] sm:max-w-[875px] rounded-cardBorderRadius bg-white shadow-cardShadow overflow-hidden">
+      <div className="w-full sm:max-w-[875px] rounded-cardBorderRadius bg-white shadow-cardShadow overflow-hidden">
         <div className="p-5 sm:p-6 sm:flex sm:gap-8">
           {/* Overall Grade Section */}
           <div className="flex-shrink-0 w-full sm:w-[200px] flex flex-col items-center border-b sm:border-b-0 pb-6 sm:pb-0 mb-5 sm:mb-0 border-gray-100">

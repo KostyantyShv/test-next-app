@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import AreaModal from "./AreaModal";
+import { DesktopModal } from "@/components/ui/DesktopModal/DesktopModal";
+import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 
 const AreaCard: React.FC<{ id: string }> = ({ id }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,7 +47,7 @@ const AreaCard: React.FC<{ id: string }> = ({ id }) => {
           </h1>
         </div>
 
-        <div className="p-8 flex gap-10">
+        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-10">
           <div className="flex-1">
             <div className="flex items-center gap-4 mb-7">
               <div className="w-16 h-16 rounded-full flex items-center justify-center text-3xl font-semibold text-white bg-[#4CAF50]">
@@ -120,7 +122,7 @@ const AreaCard: React.FC<{ id: string }> = ({ id }) => {
           </div>
         </div>
 
-        <div className="flex justify-end p-4 border-t border-[rgba(0,0,0,0.08)]">
+        <div className="flex justify-center md:justify-end p-4 border-t border-[rgba(0,0,0,0.08)]">
           <button
             onClick={() => setIsModalOpen(true)}
             className="flex items-center text-[#346DC2] text-[15px] font-medium gap-2 hover:underline transition duration-200 ease-in-out"
@@ -136,7 +138,22 @@ const AreaCard: React.FC<{ id: string }> = ({ id }) => {
           </button>
         </div>
       </div>
-      {isModalOpen && <AreaModal onClose={() => setIsModalOpen(false)} />}
+      <div className="hidden md:block">
+        <DesktopModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        >
+          <AreaModal onClose={() => setIsModalOpen(false)} />
+        </DesktopModal>
+      </div>
+      <div className="block md:hidden">
+        <MobileDrawer
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        >
+          <AreaModal onClose={() => setIsModalOpen(false)} />
+        </MobileDrawer>
+      </div>
     </>
   );
 };

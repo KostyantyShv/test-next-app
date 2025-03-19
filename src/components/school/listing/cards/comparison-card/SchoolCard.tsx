@@ -2,8 +2,13 @@
 "use client";
 
 import { useState } from "react";
+import { School } from "./types";
 
-const SchoolCard: React.FC = () => {
+interface SchoolCardProps {
+  school: School;
+}
+
+const SchoolCard: React.FC<SchoolCardProps> = ({ school }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -11,13 +16,13 @@ const SchoolCard: React.FC = () => {
       <div className="school-header flex flex-col gap-4 mb-4">
         <div className="header-main flex gap-4 pr-5 overflow-hidden">
           <img
-            src="https://i.ibb.co/J8QjpbD/school1.webp"
-            alt="Harvard University"
+            src={school.image}
+            alt={school.name}
             className="school-image w-16 h-16 rounded-lg object-cover"
           />
           <div>
             <h3 className="school-name text-lg font-semibold text-[#464646] mb-2 leading-[1.3]">
-              Harvard University
+              {school.name}
             </h3>
             <div className="rating-section flex items-center gap-2 mb-3">
               <svg className="star w-4 h-4 text-[#00DF8B]" viewBox="0 0 24 24">
@@ -26,21 +31,29 @@ const SchoolCard: React.FC = () => {
                   d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
                 />
               </svg>
-              <span className="rating font-semibold text-[#464646]">4.9</span>
-              <span className="review-count text-[#5F5F5F]">(5,347)</span>
+              <span className="rating font-semibold text-[#464646]">
+                {school.rating}
+              </span>
+              <span className="review-count text-[#5F5F5F]">
+                ({school.reviewCount.toLocaleString("en-US")})
+              </span>
             </div>
           </div>
         </div>
         <div className="tags flex flex-wrap gap-2 px-5 -mx-5 mb-3">
-          <span className="tag bg-[rgba(0,0,0,0.05)] px-3 py-1.5 rounded-2xl text-[13px] text-[#5F5F5F]">
-            Research
-          </span>
-          <span className="tag bg-[rgba(0,0,0,0.05)] px-3 py-1.5 rounded-2xl text-[13px] text-[#5F5F5F]">
-            Liberal Arts
-          </span>
-          <span className="more-tags text-[#346DC2] text-[13px] font-medium mt-[5px]">
-            + 2 more
-          </span>
+          {school.tags.map((tag, index) => (
+            <span
+              key={index}
+              className="tag bg-[rgba(0,0,0,0.05)] px-3 py-1.5 rounded-2xl text-[13px] text-[#5F5F5F]"
+            >
+              {tag}
+            </span>
+          ))}
+          {school.moreTags > 0 && (
+            <span className="more-tags text-[#346DC2] text-[13px] font-medium mt-[5px]">
+              + {school.moreTags} more
+            </span>
+          )}
         </div>
       </div>
       <div className="divider h-px bg-[rgba(0,0,0,0.08)] my-4"></div>
@@ -74,7 +87,7 @@ const SchoolCard: React.FC = () => {
               </div>
             </div>
             <span className="feature-value font-medium text-[#464646] text-sm">
-              4 yr
+              {school.duration}
             </span>
           </div>
 
@@ -104,7 +117,7 @@ const SchoolCard: React.FC = () => {
               </div>
             </div>
             <span className="feature-value font-medium text-[#464646] text-sm">
-              Cambridge, MA
+              {school.location}
             </span>
           </div>
 
@@ -137,7 +150,7 @@ const SchoolCard: React.FC = () => {
               </div>
             </div>
             <span className="grade-badge bg-[#00DF8B] text-white px-2 py-1 rounded text-[13px] font-semibold">
-              A+
+              {school.rank}
             </span>
           </div>
 
@@ -168,7 +181,7 @@ const SchoolCard: React.FC = () => {
               </div>
             </div>
             <span className="feature-value font-medium text-[#464646] text-sm">
-              89%
+              {school.chances}
             </span>
           </div>
 
@@ -199,7 +212,7 @@ const SchoolCard: React.FC = () => {
               </div>
             </div>
             <span className="feature-value font-medium text-[#464646] text-sm">
-              6,858
+              {school.enrollment}
             </span>
           </div>
 
@@ -230,7 +243,7 @@ const SchoolCard: React.FC = () => {
               </div>
             </div>
             <span className="feature-value font-medium text-[#464646] text-sm">
-              11%
+              {school.acceptanceRate}
             </span>
           </div>
 
@@ -264,7 +277,7 @@ const SchoolCard: React.FC = () => {
               </div>
             </div>
             <span className="feature-value font-medium text-[#464646] text-sm">
-              92%
+              {school.graduationRate}
             </span>
           </div>
 
@@ -304,7 +317,7 @@ const SchoolCard: React.FC = () => {
               </div>
             </div>
             <span className="feature-value font-medium text-[#464646] text-sm">
-              $33,499
+              {school.netPrice}
             </span>
           </div>
         </div>
@@ -338,7 +351,7 @@ const SchoolCard: React.FC = () => {
               </div>
             </div>
             <span className="feature-value font-medium text-[#464646] text-sm">
-              1490-1570
+              {school.satRange}
             </span>
           </div>
 
@@ -350,7 +363,7 @@ const SchoolCard: React.FC = () => {
               >
                 <path
                   fill="currentColor"
-                  d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 8c0 1.11-.9 2-2 2h-2v2h4v2H9v-4c0-1.11 .9-2 2-2h2V7h-4V9h6v2z"
+                  d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v2h4v2H7v-4h4v-2H7V7h10v6z"
                 />
               </svg>
               ACT Range
@@ -364,12 +377,12 @@ const SchoolCard: React.FC = () => {
                   <path d="M12 2C6.48969 2 2 6.48969 2 12C2 17.5103 6.48969 22 12 22C17.5103 22 22 17.5103 22 12C22 6.48969 17.5103 2 12 2ZM3.8439 12C3.8439 7.50056 7.50056 3.8439 12 3.8439C16.4994 3.8439 20.1561 7.50056 20.1561 12C20.1561 16.4994 16.4994 20.1561 12 20.1561C7.50056 20.1561 3.8439 16.4994 3.8439 12Z" />
                 </svg>
                 <span className="tooltip-text invisible bg-[#333] text-white text-center py-2 px-3 rounded-md absolute z-10 bottom-[125%] left-1/2 -translate-x-1/2 w-[200px] text-xs opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100">
-                  Middle 50% ACT score range of admitted students
+                  Range of ACT scores for admitted students
                 </span>
               </div>
             </div>
             <span className="feature-value font-medium text-[#464646] text-sm">
-              34-35
+              {school.actRange}
             </span>
           </div>
 
@@ -381,10 +394,10 @@ const SchoolCard: React.FC = () => {
               >
                 <path
                   fill="currentColor"
-                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4 .68-2.4 1.64 0 .84 .65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92c-.72.73-1.17 1.33-1.17 2.33h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"
                 />
               </svg>
-              In-state Tuition
+              In-State Tuition
               <div className="tooltip relative inline-block group">
                 <svg
                   className="help-icon w-[14px] h-[14px] text-[#5F5F5F] cursor-help"
@@ -395,12 +408,12 @@ const SchoolCard: React.FC = () => {
                   <path d="M12 2C6.48969 2 2 6.48969 2 12C2 17.5103 6.48969 22 12 22C17.5103 22 22 17.5103 22 12C22 6.48969 17.5103 2 12 2ZM3.8439 12C3.8439 7.50056 7.50056 3.8439 12 3.8439C16.4994 3.8439 20.1561 7.50056 20.1561 12C20.1561 16.4994 16.4994 20.1561 12 20.1561C7.50056 20.1561 3.8439 16.4994 3.8439 12Z" />
                 </svg>
                 <span className="tooltip-text invisible bg-[#333] text-white text-center py-2 px-3 rounded-md absolute z-10 bottom-[125%] left-1/2 -translate-x-1/2 w-[200px] text-xs opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100">
-                  Annual tuition for in-state students
+                  Annual tuition cost for in-state students
                 </span>
               </div>
             </div>
             <span className="feature-value font-medium text-[#464646] text-sm">
-              $62,260
+              {school.inStateTuition}
             </span>
           </div>
 
@@ -412,10 +425,10 @@ const SchoolCard: React.FC = () => {
               >
                 <path
                   fill="currentColor"
-                  d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92c-.72.73-1.17 1.33-1.17 2.33h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"
                 />
               </svg>
-              Out-of-state Tuition
+              Out-of-State Tuition
               <div className="tooltip relative inline-block group">
                 <svg
                   className="help-icon w-[14px] h-[14px] text-[#5F5F5F] cursor-help"
@@ -426,43 +439,12 @@ const SchoolCard: React.FC = () => {
                   <path d="M12 2C6.48969 2 2 6.48969 2 12C2 17.5103 6.48969 22 12 22C17.5103 22 22 17.5103 22 12C22 6.48969 17.5103 2 12 2ZM3.8439 12C3.8439 7.50056 7.50056 3.8439 12 3.8439C16.4994 3.8439 20.1561 7.50056 20.1561 12C20.1561 16.4994 16.4994 20.1561 12 20.1561C7.50056 20.1561 3.8439 16.4994 3.8439 12Z" />
                 </svg>
                 <span className="tooltip-text invisible bg-[#333] text-white text-center py-2 px-3 rounded-md absolute z-10 bottom-[125%] left-1/2 -translate-x-1/2 w-[200px] text-xs opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100">
-                  Annual tuition for out-of-state students
+                  Annual tuition cost for out-of-state students
                 </span>
               </div>
             </div>
             <span className="feature-value font-medium text-[#464646] text-sm">
-              $62,260
-            </span>
-          </div>
-
-          <div className="feature flex justify-between items-center pt-[10px]">
-            <div className="feature-label flex items-center gap-2 text-[#5F5F5F] text-sm">
-              <svg
-                className="feature-icon w-4 h-4 text-[#089E68]"
-                viewBox="0 0 576 512"
-              >
-                <path
-                  fill="currentColor"
-                  d="M312 24V34.5c6.4 1.2 12.6 2.7 18.2 4.2c12.8 3.4 20.4 16.6 17 29.4s-16.6 20.4-29.4 17c-10.9-2.9-21.1-4.9-30.2-5c-7.3-.1-14.7 1.7-19.4 4.4c-2.1 1.3-3.1 2.4-3.5 3c-.3 .5-.7 1.2-.7 2.8c0 .3 0 .5 0 .6c.2 .2 .9 1.2 3.3 2.6c5.8 3.5 14.4 6.2 27.4 10.1l.9 .3c11.1 3.3 25.9 7.8 37.9 15.3c13.7 8.6 26.1 22.9 26.4 44.9c.3 22.5-11.4 38.9-26.7 48.5c-6.7 4.1-13.9 7-21.3 8.8V232c0 13.3-10.7 24-24 24s-24-10.7-24-24V220.6c-9.5-2.3-18.2-5.3-25.6-7.8c-2.1-.7-4.1-1.4-6-2c-12.6-4.2-19.4-17.8-15.2-30.4s17.8-19.4 30.4-15.2c2.6 .9 5 1.7 7.3 2.5c13.6 4.6 23.4 7.9 33.9 8.3c8 .3 15.1-1.6 19.2-4.1c1.9-1.2 2.8-2.2 3.2-2.9c.4-.6 .9-1.8 .8-4.1l0-.2c0-1 0-2.1-4-4.6c-5.7-3.6-14.3-6.4-27.1-10.3l-1.9-.6c-10.8-3.2-25-7.5-36.4-14.4c-13.5-8.1-26.5-22-26.6-44.1c-.1-22.9 12.9-38.6 27.7-47.4c6.4-3.8 13.3-6.4 20.2-8.2V24c0-13.3 10.7-24 24-24s24 10.7 24 24zM568.2 336.3c13.1 17.8 9.3 42.8-8.5 55.9L433.1 485.5c-23.4 17.2-51.6 26.5-80.7 26.5H192 32c-17.7 0-32-14.3-32-32V416c0-17.7 14.3-32 32-32H68.8l44.9-36c22.7-18.2 50.9-28 80-28H272h16 64c17.7 0 32 14.3 32 32s-14.3 32-32 32H288 272c-8.8 0-16 7.2-16 16s7.2 16 16 16H392.6l119.7-88.2c17.8-13.1 42.8-9.3 55.9 8.5zM193.6 384l0 0-.9 0c.3 0 .6 0 .9 0z"
-                />
-              </svg>
-              6 yr Median Earnings
-              <div className="tooltip relative inline-block group">
-                <svg
-                  className="help-icon w-[14px] h-[14px] text-[#5F5F5F] cursor-help"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M11.961 7.19025C10.9071 7.1925 10.0724 7.55861 9.4967 7.98876C9.20858 8.20404 8.98273 8.43724 8.82543 8.65266C8.67602 8.85727 8.56436 9.07874 8.55632 9.26768L8.5561 9.27805C8.5561 9.60617 8.67937 9.83406 8.8129 9.96759C9.00138 10.1561 9.26165 10.2537 9.55122 10.2537C9.9432 10.2537 10.2167 9.97149 10.4099 9.76915C10.5689 9.60527 10.7399 9.43619 10.9807 9.30407C11.2186 9.17359 11.5364 9.07317 11.9902 9.07317C12.3037 9.07317 12.6935 9.15178 12.9967 9.30821C13.3039 9.46671 13.4634 9.66976 13.4634 9.90244C13.4634 9.94201 13.4476 9.99942 13.3899 10.0791C13.3318 10.1592 13.2413 10.2478 13.1175 10.3439C12.8694 10.5365 12.5258 10.7303 12.151 10.925C11.4834 11.2718 11.0976 11.687 10.8808 12.0765C10.665 12.4642 10.6244 12.8119 10.6244 13.0146C10.6244 13.2981 10.737 13.5642 10.9098 13.7601C11.0818 13.9552 11.3298 14.0976 11.6098 14.0976C12.08 14.0976 12.5999 13.7214 12.6048 13.1208C12.605 13.1205 12.6052 13.1198 12.6055 13.1188C12.6075 13.1125 12.6141 13.0923 12.6339 13.0568C12.6631 13.0044 12.7119 12.9357 12.7845 12.8578C12.9292 12.7025 13.1593 12.5207 13.4883 12.3674L13.5089 12.3578C14.0049 12.1247 15.4439 11.4484 15.4439 9.85366C15.4439 9.37659 15.2548 8.70854 14.7171 8.15873C14.1753 7.60477 13.301 7.19226 11.9707 7.19025L11.961 7.19025Z" />
-                  <path d="M11.6585 14.6829C10.8692 14.6829 10.3902 15.3007 10.3902 15.9024C10.3902 16.4825 10.8299 17.1805 11.6585 17.1805C12.0616 17.1805 12.3767 17.0174 12.587 16.7664C12.7924 16.521 12.8878 16.2046 12.8878 15.9024C12.8878 15.3143 12.4605 14.6829 11.6585 14.6829Z" />
-                  <path d="M12 2C6.48969 2 2 6.48969 2 12C2 17.5103 6.48969 22 12 22C17.5103 22 22 17.5103 22 12C22 6.48969 17.5103 2 12 2ZM3.8439 12C3.8439 7.50056 7.50056 3.8439 12 3.8439C16.4994 3.8439 20.1561 7.50056 20.1561 12C20.1561 16.4994 16.4994 20.1561 12 20.1561C7.50056 20.1561 3.8439 16.4994 3.8439 12Z" />
-                </svg>
-                <span className="tooltip-text invisible bg-[#333] text-white text-center py-2 px-3 rounded-md absolute z-10 bottom-[125%] left-1/2 -translate-x-1/2 w-[200px] text-xs opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100">
-                  Median earnings 6 years after graduation
-                </span>
-              </div>
-            </div>
-            <span className="feature-value font-medium text-[#464646] text-sm">
-              $83,600
+              {school.outOfStateTuition}
             </span>
           </div>
 
@@ -473,52 +455,11 @@ const SchoolCard: React.FC = () => {
                 viewBox="0 0 24 24"
               >
                 <path
-                  d="M19.28 21h-6.9a1.6 1.6 0 01-1.73-1.5v-4a1.6 1.6 0 011.73-1.5h6.9A1.59 1.59 0 0121 15.5v4a1.66 1.66 0 01-1.72 1.5z"
-                  strokeWidth="1.5"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  stroke="currentColor"
-                  fill="none"
-                />
-                <path
-                  d="M16.9 12h-2.15a.65.65 0 00-.72.66V14h3.59v-1.34a.65.65 0 00-.72-.66z"
-                  strokeWidth="1.5"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  stroke="currentColor"
-                  fill="none"
-                />
-                <line
-                  strokeWidth="1.5"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  stroke="currentColor"
-                  fill="none"
-                  y2="17.29"
-                  y1="17.29"
-                  x2="21"
-                  x1="10.65"
-                />
-                <circle
-                  strokeWidth="1.5"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  stroke="currentColor"
-                  fill="none"
-                  r="2.73"
-                  cy="5.73"
-                  cx="10.04"
-                />
-                <path
-                  d="M3 18.45v-.9a7 7 0 017-7h.09a6.73 6.73 0 011.91.27"
-                  strokeWidth="1.5"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  stroke="currentColor"
-                  fill="none"
+                  fill="currentColor"
+                  d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zm-6-2h2v-2h-2v2zm-4 0h2v-2h-2v2zm-4 0h2v-2H6v2z"
                 />
               </svg>
-              6 yr Employed
+              Median Earnings
               <div className="tooltip relative inline-block group">
                 <svg
                   className="help-icon w-[14px] h-[14px] text-[#5F5F5F] cursor-help"
@@ -529,47 +470,77 @@ const SchoolCard: React.FC = () => {
                   <path d="M12 2C6.48969 2 2 6.48969 2 12C2 17.5103 6.48969 22 12 22C17.5103 22 22 17.5103 22 12C22 6.48969 17.5103 2 12 2ZM3.8439 12C3.8439 7.50056 7.50056 3.8439 12 3.8439C16.4994 3.8439 20.1561 7.50056 20.1561 12C20.1561 16.4994 16.4994 20.1561 12 20.1561C7.50056 20.1561 3.8439 16.4994 3.8439 12Z" />
                 </svg>
                 <span className="tooltip-text invisible bg-[#333] text-white text-center py-2 px-3 rounded-md absolute z-10 bottom-[125%] left-1/2 -translate-x-1/2 w-[200px] text-xs opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100">
-                  Percentage employed 6 years after graduation
+                  Median earnings of graduates 10 years after enrollment
                 </span>
               </div>
             </div>
             <span className="feature-value font-medium text-[#464646] text-sm">
-              89%
+              {school.medianEarnings}
+            </span>
+          </div>
+
+          <div className="feature flex justify-between items-center pt-[10px]">
+            <div className="feature-label flex items-center gap-2 text-[#5F5F5F] text-sm">
+              <svg
+                className="feature-icon w-4 h-4 text-[#089E68]"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17v-2h2v2h-2zm2-4h-2v-6h2v6zm2-6h-4V7h4v2z"
+                />
+              </svg>
+              Employed Rate
+              <div className="tooltip relative inline-block group">
+                <svg
+                  className="help-icon w-[14px] h-[14px] text-[#5F5F5F] cursor-help"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M11.961 7.19025C10.9071 7.1925 10.0724 7.55861 9.4967 7.98876C9.20858 8.20404 8.98273 8.43724 8.82543 8.65266C8.67602 8.85727 8.56436 9.07874 8.55632 9.26768L8.5561 9.27805C8.5561 9.60617 8.67937 9.83406 8.8129 9.96759C9.00138 10.1561 9.26165 10.2537 9.55122 10.2537C9.9432 10.2537 10.2167 9.97149 10.4099 9.76915C10.5689 9.60527 10.7399 9.43619 10.9807 9.30407C11.2186 9.17359 11.5364 9.07317 11.9902 9.07317C12.3037 9.07317 12.6935 9.15178 12.9967 9.30821C13.3039 9.46671 13.4634 9.66976 13.4634 9.90244C13.4634 9.94201 13.4476 9.99942 13.3899 10.0791C13.3318 10.1592 13.2413 10.2478 13.1175 10.3439C12.8694 10.5365 12.5258 10.7303 12.151 10.925C11.4834 11.2718 11.0976 11.687 10.8808 12.0765C10.665 12.4642 10.6244 12.8119 10.6244 13.0146C10.6244 13.2981 10.737 13.5642 10.9098 13.7601C11.0818 13.9552 11.3298 14.0976 11.6098 14.0976C12.08 14.0976 12.5999 13.7214 12.6048 13.1208C12.605 13.1205 12.6052 13.1198 12.6055 13.1188C12.6075 13.1125 12.6141 13.0923 12.6339 13.0568C12.6631 13.0044 12.7119 12.9357 12.7845 12.8578C12.9292 12.7025 13.1593 12.5207 13.4883 12.3674L13.5089 12.3578C14.0049 12.1247 15.4439 11.4484 15.4439 9.85366C15.4439 9.37659 15.2548 8.70854 14.7171 8.15873C14.1753 7.60477 13.301 7.19226 11.9707 7.19025L11.961 7.19025Z" />
+                  <path d="M11.6585 14.6829C10.8692 14.6829 10.3902 15.3007 10.3902 15.9024C10.3902 16.4825 10.8299 17.1805 11.6585 17.1805C12.0616 17.1805 12.3767 17.0174 12.587 16.7664C12.7924 16.521 12.8878 16.2046 12.8878 15.9024C12.8878 15.3143 12.4605 14.6829 11.6585 14.6829Z" />
+                  <path d="M12 2C6.48969 2 2 6.48969 2 12C2 17.5103 6.48969 22 12 22C17.5103 22 22 17.5103 22 12C22 6.48969 17.5103 2 12 2ZM3.8439 12C3.8439 7.50056 7.50056 3.8439 12 3.8439C16.4994 3.8439 20.1561 7.50056 20.1561 12C20.1561 16.4994 16.4994 20.1561 12 20.1561C7.50056 20.1561 3.8439 16.4994 3.8439 12Z" />
+                </svg>
+                <span className="tooltip-text invisible bg-[#333] text-white text-center py-2 px-3 rounded-md absolute z-10 bottom-[125%] left-1/2 -translate-x-1/2 w-[200px] text-xs opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100">
+                  Percentage of graduates employed 2 years after graduation
+                </span>
+              </div>
+            </div>
+            <span className="feature-value font-medium text-[#464646] text-sm">
+              {school.employedRate}
             </span>
           </div>
         </div>
-
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="show-more-button w-full flex items-center gap-2 p-3 mt-2 border-none bg-none text-[#346DC2] font-medium cursor-pointer transition-colors duration-200 hover:text-[#2857a0]"
-        >
-          <span className="button-text">
-            {isExpanded ? "Show Less" : "Show More"}
-          </span>
-          <svg
-            className={`chevron-icon w-4 h-4 transition-transform duration-200 ${
-              isExpanded ? "rotate-180" : ""
-            }`}
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-          >
-            <path
-              d="M8 10.668L2.668 5.33599L3.33533 4.66866L8 9.33332L12.6647 4.66866L13.332 5.33599L8 10.668Z"
-              fill="currentColor"
-            />
-          </svg>
-        </button>
       </div>
 
-      <div className="footer flex justify-between items-center mt-5 pt-4 border-t border-[rgba(0,0,0,0.08)]">
-        <button className="apply-button text-[#016853] font-semibold text-sm bg-none border-none cursor-pointer hover:text-[#089E68]">
-          Apply Now
+      {/* Toggle Button */}
+      <button
+        className="toggle-btn w-full text-[#346DC2] text-sm font-medium mt-4 flex items-center gap-1"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        {isExpanded ? "Show Less" : "Show More"}
+        <svg
+          className={`w-4 h-4 transform transition-transform ${
+            isExpanded ? "rotate-180" : ""
+          }`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
+      <div className="flex justify-between pt-4 mt-5 border-t">
+        <button className="border-none text-[#016853] font-semibold text-sm cursor-pointer p-0">
+          Apply now
         </button>
-        <div className="footer-actions flex gap-4">
+        <div className="flex gap-4">
           <svg
-            className="action-icon w-5 h-5 text-[#5F5F5F] cursor-pointer transition-colors duration-200 hover:text-[#346DC2]"
+            className="text-[#5F5F5F] w-5 h-5 cursor-pointer"
             fill="none"
             viewBox="0 0 16 16"
           >
@@ -579,27 +550,31 @@ const SchoolCard: React.FC = () => {
               strokeWidth="1.5"
               stroke="currentColor"
               d="M10.7408 2C13.0889 2 14.6667 4.235 14.6667 6.32C14.6667 10.5425 8.11856 14 8.00004 14C7.88152 14 1.33337 10.5425 1.33337 6.32C1.33337 4.235 2.91115 2 5.2593 2C6.60745 2 7.48893 2.6825 8.00004 3.2825C8.51115 2.6825 9.39263 2 10.7408 2Z"
-            />
+            ></path>
           </svg>
+
           <svg
-            className="action-icon w-5 h-5 text-[#5F5F5F] cursor-pointer transition-colors duration-200 hover:text-[#346DC2]"
+            className="text-[#5F5F5F] w-5 h-5 cursor-pointer"
             fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
           >
-            <path d="M21.15 4.71H2.86C2.39 4.71 2 4.32 2 3.85C2 3.38 2.39 3 2.86 3H21.15C21.62 3 22 3.37 22 3.85C22 4.33 21.62 4.71 21.15 4.71Z" />
-            <path d="M17.4799 15.1463C17.7099 15.3664 17.7699 15.3664 17.9799 15.1463H17.9699C18.7699 14.2959 20.4199 14.556 21.2399 15.4165C21.6399 15.8267 22.0799 16.537 21.9799 17.6176C21.7931 19.8018 18.328 22.0441 18.1844 22.1371L18.1799 22.1399C18.0299 22.22 17.8599 22.27 17.7199 22.27C17.5799 22.27 17.3899 22.22 17.2599 22.1299C17.2399 22.1199 13.6699 19.8387 13.4699 17.6176C13.2399 15.1763 15.9199 13.6956 17.4799 15.1463ZM17.7299 20.389C18.9199 19.5386 20.1999 18.2279 20.2899 17.4875C20.3199 17.1173 20.2299 16.8272 20.0099 16.6071C19.7499 16.3369 19.2299 16.3469 19.0399 16.497C18.7296 16.7366 18.5608 17.0391 18.5126 17.1254C18.5064 17.1364 18.5022 17.144 18.4999 17.1474C18.4958 17.1536 18.489 17.1651 18.4802 17.18C18.4466 17.2369 18.3833 17.3441 18.3199 17.4075C18.2399 17.4875 18.0699 17.5876 18.0199 17.5976C17.9799 17.6176 17.8199 17.6476 17.7199 17.6476C17.6199 17.6476 17.4799 17.6176 17.4199 17.5976C17.3599 17.5776 17.2199 17.4975 17.1299 17.4075C17.0537 17.3397 17.0134 17.2647 16.9724 17.1886C16.965 17.1749 16.9576 17.1611 16.9499 17.1474L16.9391 17.1275C16.88 17.019 16.7282 16.7405 16.4099 16.497C16.3299 16.427 16.1799 16.387 16.0199 16.387C15.8099 16.387 15.5799 16.437 15.4399 16.5871C15.2199 16.8272 15.1299 17.0973 15.1599 17.4775C15.2299 18.1979 16.5199 19.5186 17.7299 20.389Z" />
-            <path d="M21.15 10.3138H2.86C2.39 10.3138 2 10.6938 2 11.1638C2 11.6338 2.39 12.0238 2.86 12.0238H21.15C21.62 12.0238 22 11.6438 22 11.1638C22 10.6838 21.62 10.3138 21.15 10.3138Z" />
-            <path d="M2.85 17.6276H11.27C11.74 17.6276 12.12 17.9976 12.12 18.4776C12.12 18.9576 11.74 19.3376 11.27 19.3376H2.85C2.38 19.3376 2 18.9476 2 18.4776C2 18.0076 2.38 17.6276 2.85 17.6276Z" />
+            <path d="M21.15 4.71H2.86C2.39 4.71 2 4.32 2 3.85C2 3.38 2.39 3 2.86 3H21.15C21.62 3 22 3.37 22 3.85C22 4.33 21.62 4.71 21.15 4.71Z"></path>
+            <path d="M17.4799 15.1463C17.7099 15.3664 17.7699 15.3664 17.9799 15.1463H17.9699C18.7699 14.2959 20.4199 14.556 21.2399 15.4165C21.6399 15.8267 22.0799 16.537 21.9799 17.6176C21.7931 19.8018 18.328 22.0441 18.1844 22.1371L18.1799 22.1399C18.0299 22.22 17.8599 22.27 17.7199 22.27C17.5799 22.27 17.3899 22.22 17.2599 22.1299C17.2399 22.1199 13.6699 19.8387 13.4699 17.6176C13.2399 15.1763 15.9199 13.6956 17.4799 15.1463ZM17.7299 20.389C18.9199 19.5386 20.1999 18.2279 20.2899 17.4875C20.3199 17.1173 20.2299 16.8272 20.0099 16.6071C19.7499 16.3369 19.2299 16.3469 19.0399 16.497C18.7296 16.7366 18.5608 17.0391 18.5126 17.1254C18.5064 17.1364 18.5022 17.144 18.4999 17.1474C18.4958 17.1536 18.489 17.1651 18.4802 17.18C18.4466 17.2369 18.3833 17.3441 18.3199 17.4075C18.2399 17.4875 18.0699 17.5876 18.0199 17.5976C17.9799 17.6176 17.8199 17.6476 17.7199 17.6476C17.6199 17.6476 17.4799 17.6176 17.4199 17.5976C17.3599 17.5776 17.2199 17.4975 17.1299 17.4075C17.0537 17.3397 17.0134 17.2647 16.9724 17.1886C16.965 17.1749 16.9576 17.1611 16.9499 17.1474L16.9391 17.1275C16.88 17.019 16.7282 16.7405 16.4099 16.497C16.3299 16.427 16.1799 16.387 16.0199 16.387C15.8099 16.387 15.5799 16.437 15.4399 16.5871C15.2199 16.8272 15.1299 17.0973 15.1599 17.4775C15.2299 18.1979 16.5199 19.5186 17.7299 20.389Z"></path>
+            <path d="M21.15 10.3138H2.86C2.39 10.3138 2 10.6938 2 11.1638C2 11.6338 2.39 12.0238 2.86 12.0238H21.15C21.62 12.0238 22 11.6438 22 11.1638C22 10.6838 21.62 10.3138 21.15 10.3138Z"></path>
+            <path d="M2.85 17.6276H11.27C11.74 17.6276 12.12 17.9976 12.12 18.4776C12.12 18.9576 11.74 19.3376 11.27 19.3376H2.85C2.38 19.3376 2 18.9476 2 18.4776C2 18.0076 2.38 17.6276 2.85 17.6276Z"></path>
           </svg>
+
           <svg
-            className="action-icon w-5 h-5 text-[#5F5F5F] cursor-pointer transition-colors duration-200 hover:text-[#346DC2]"
+            className="text-[#5F5F5F] w-5 h-5 cursor-pointer"
+            xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
             viewBox="0 0 32 32"
           >
             <path
               fill="currentColor"
               d="M24.7994 11.2C26.9202 11.2 28.6555 12.8505 28.7909 14.937L28.7994 15.2V24.7994C28.7994 26.9202 27.149 28.6555 25.0625 28.7909L24.7994 28.7994H15.2C13.0792 28.7994 11.344 27.149 11.2085 25.0625L11.2 24.7994V15.2C11.2 13.0792 12.8505 11.344 14.937 11.2085L15.2 11.2H24.7994ZM19.9997 14.4C19.607 14.4 19.2804 14.683 19.2126 15.0562L19.1997 15.2L19.1984 19.2H15.2L15.0562 19.2129C14.683 19.2806 14.4 19.6073 14.4 20C14.4 20.3927 14.683 20.7194 15.0562 20.7871L15.2 20.8H19.1984L19.1997 24.8L19.2126 24.9438C19.2804 25.317 19.607 25.6 19.9997 25.6C20.3925 25.6 20.7191 25.317 20.7868 24.9438L20.7997 24.8L20.7984 20.8H24.8L24.9438 20.7871C25.317 20.7194 25.6 20.3927 25.6 20C25.6 19.6073 25.317 19.2806 24.9438 19.2129L24.8 19.2H20.7984L20.7997 15.2L20.7868 15.0562C20.7191 14.683 20.3925 14.4 19.9997 14.4ZM20.259 5.91211L20.3353 6.16395L21.2558 9.59982L14.4 9.60003C11.8437 9.60003 9.75417 11.5983 9.60818 14.118L9.60003 14.4L9.60047 22.9562C7.95734 22.9228 6.45777 21.8712 5.90353 20.2642L5.82005 19.9914L3.33553 10.719C2.78664 8.67051 3.93173 6.56719 5.91211 5.89634L6.16395 5.82005L15.4363 3.33553C17.3994 2.80951 19.4129 3.83924 20.1678 5.66898L20.259 5.91211Z"
-            />
+            ></path>
           </svg>
         </div>
       </div>

@@ -1,3 +1,5 @@
+import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
+
 interface CTADrawerProps {
   isCTADrawerOpen: boolean;
   setIsCTADrawerOpen: (open: boolean) => void;
@@ -9,10 +11,9 @@ const CTADrawer: React.FC<CTADrawerProps> = ({
 }) => {
   return (
     <>
-      <div
-        className={`fixed bottom-0 left-0 w-full max-h-[70%] bg-white rounded-t-[20px] shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-[600] transition-all duration-300 overflow-y-auto scrollbar-hide ${
-          isCTADrawerOpen ? "bottom-0 visible" : "bottom-[-100%] invisible"
-        }`}
+      <MobileDrawer
+        isOpen={isCTADrawerOpen}
+        onClose={() => setIsCTADrawerOpen(false)}
       >
         <div className="p-4 flex justify-center items-center relative border-b border-[#f0f0f0]">
           <h3 className="text-lg font-semibold text-[#464646]">
@@ -82,14 +83,7 @@ const CTADrawer: React.FC<CTADrawerProps> = ({
             </button>
           ))}
         </div>
-      </div>
-
-      <div
-        className={`absolute inset-0 bg-black/50 transition-all duration-300 ${
-          isCTADrawerOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
-        onClick={() => setIsCTADrawerOpen(false)}
-      />
+      </MobileDrawer>
     </>
   );
 };

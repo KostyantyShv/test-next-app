@@ -72,3 +72,16 @@ export const articlesMock: Article[] = [
     avatar: AVATARS[2],
   },
 ];
+
+export const featuredArticle: Article = {
+  title:
+    "Having Recently Started at New Companies, These TA Leaders Have Ambitious Goals",
+  category: "Business",
+  excerpt:
+    "Five talent acquisition leaders discuss what caught their eye during their onboarding, and their goals for the next 12 months. The transition to a new company can be both exciting and challenging, especially for leaders in talent acquisition who are responsible for building and managing teams.",
+  author: "Sarah Anderson",
+  date: "Published on July 09, 2021",
+  likes: 248,
+  coverImage: COVER_IMAGES[0],
+  avatar: AVATARS[0],
+};

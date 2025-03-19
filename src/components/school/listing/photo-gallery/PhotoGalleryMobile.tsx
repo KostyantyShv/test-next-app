@@ -1,3 +1,5 @@
+import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
+
 interface GalleryDrawerProps {
   images: string[];
   isOpen: boolean;
@@ -19,11 +21,7 @@ const PhotoGalleryMobile: React.FC<GalleryDrawerProps> = ({
 
   return (
     <>
-      <div
-        className={`fixed bottom-0 left-0 w-full h-[80%] bg-white rounded-t-[20px] shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-[600] transition-all duration-300 flex flex-col ${
-          isOpen ? "bottom-0 visible" : "bottom-[-100%] invisible"
-        }`}
-      >
+      <MobileDrawer isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <div className="p-4 flex justify-center items-center relative border-b border-[#f0f0f0]">
           <h3 className="text-lg font-semibold text-[#464646]">
             Lincoln Academy
@@ -100,14 +98,7 @@ const PhotoGalleryMobile: React.FC<GalleryDrawerProps> = ({
             ))}
           </div>
         </div>
-      </div>
-
-      <div
-        className={`absolute inset-0 bg-black/50 transition-all duration-300 ${
-          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
-        onClick={() => setIsOpen(false)}
-      />
+      </MobileDrawer>
     </>
   );
 };

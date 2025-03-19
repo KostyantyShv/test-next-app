@@ -19,12 +19,6 @@ const ImagesGridMobile: React.FC<SchoolPhotosProps> = ({ images }) => {
             alt="Main School Photo"
             className="w-full h-full object-cover"
           />
-          <div className="absolute bottom-3 left-3 bg-white py-1 px-2 font-bold text-xs rounded">
-            COLLEGE
-          </div>
-          <div className="absolute bottom-3 left-[84px] bg-[#eee] py-1 px-2 font-bold text-xs text-[#5F5F5F] rounded">
-            GRAD SCHOOL
-          </div>
           <button
             onClick={() => setIsGalleryDrawerOpen(true)}
             className="absolute top-3 right-3 flex items-center gap-1.5 bg-black/70 text-white py-1.5 px-2.5 rounded text-xs"

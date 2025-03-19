@@ -121,4 +121,32 @@ export const interactionIcons = {
       <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
     </svg>
   ),
+  prevArrow: (
+    <svg
+      viewBox="0 0 24 24"
+      width="24"
+      height="24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M15 18l-6-6 6-6"></path>
+    </svg>
+  ),
+  nextArrow: (
+    <svg
+      viewBox="0 0 24 24"
+      width="24"
+      height="24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M9 18l6-6-6-6"></path>
+    </svg>
+  ),
 };

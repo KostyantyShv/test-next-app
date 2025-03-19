@@ -26,12 +26,12 @@ import SpotlightCard from "../cards/spotlight-card/SpotlightCard";
 import CaseStudyCard from "../cards/case-study-card/CaseStudyCard";
 import AfterCollege from "../cards/after-college-card/AfterCollegeCard";
 import ProgramsCard from "../cards/probrams-card/ProgramsCard";
-import ComparisonCard from "../cards/comparison-card/ComparisonCard";
 import AreaCard from "../cards/area-card/AreaCard";
-import SocialMediaCard from "../cards/social-media-card/SocialMediaCard";
-import ArticlesCard from "../cards/articles-card/ArticlesCard";
 import Announcements from "../cards/announcements-card/AnnouncementsCard";
 import { removeLastWord } from "@/utils/removeLastWord";
+import ArticlesCard from "../cards/articles-card/ArticlesCard";
+import ComparisonCard from "../cards/comparison-card/ComparisonCard";
+import SocialMediaCard from "../cards/social-media-card/SocialMediaCard";
 const DynamicMapCard = dynamic(() => import("../cards/map-card/MapCard"), {
   loading: () => <p>Loading...</p>,
 });
@@ -109,9 +109,9 @@ const ContentDesktop = () => {
         <AfterCollege id={SIDE_TABS_DESKTOP.AFTER_COLLEGE_DESKTOP} />
         <AreaCard id={SIDE_TABS_DESKTOP.AREA_DESKTOP} />
         <ProgramsCard id={SIDE_TABS_DESKTOP.PROGRAMS_DESKTOP} />
-        <SocialMediaCard id={SIDE_TABS_DESKTOP.SOCIAL_MEDIA_DESKTOP} />
-        <ComparisonCard id={SIDE_TABS_DESKTOP.COMPARISON_DESKTOP} />
-        <ArticlesCard id={SIDE_TABS_DESKTOP.ARTICLES_DESKTOP} />
+        <SocialMediaCard idDesktop={SIDE_TABS_DESKTOP.SOCIAL_MEDIA_DESKTOP} />
+        <ComparisonCard idDesktop={SIDE_TABS_DESKTOP.COMPARISON_DESKTOP} />
+        <ArticlesCard idDesktop={SIDE_TABS_DESKTOP.ARTICLES_DESKTOP} />
       </div>
     </div>
   );

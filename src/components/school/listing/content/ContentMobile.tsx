@@ -2,8 +2,12 @@ import AboutSection from "../cards/about-card/AboutCard";
 import AcademicsCard from "../cards/academics-card/AcademicsCard";
 import Activities from "../cards/Activities-card/ActivitiesCard";
 import Admissions from "../cards/admissions-card/AdmissionsCard";
+import AfterCollege from "../cards/after-college-card/AfterCollegeCard";
 import Announcements from "../cards/announcements-card/AnnouncementsCard";
+import AreaCard from "../cards/area-card/AreaCard";
+import ArticlesCard from "../cards/articles-card/ArticlesCard";
 import CaseStudyCard from "../cards/case-study-card/CaseStudyCard";
+import ComparisonCard from "../cards/comparison-card/ComparisonCard";
 import CostSection from "../cards/cost-card/CostCard";
 import CultureSafety from "../cards/culture-card/CultureCard";
 import EventsCards from "../cards/events-card/EventsCard";
@@ -11,12 +15,14 @@ import LinksCard from "../cards/links-card/LinksCard";
 import MajorsCard from "../cards/majors-card/MajorsCard";
 import MapCard from "../cards/map-card/MapCard";
 import OverviewCard from "../cards/overview-card/OverviewCard";
+import ProgramsCard from "../cards/probrams-card/ProgramsCard";
 import Rankings from "../cards/rank-card/RankCard";
 import ReportCard from "../cards/report-card/ReportCard";
 import ReviewHighlightsCard from "../cards/review-highlights-card/review-highlights-modal/ReviewHighlightsCard";
 import Reviews from "../cards/reviews-card/ReviewsCard";
 import AdmissionsScatterPlotCard from "../cards/scatter-plot-card/ScatterPlotCard";
 import Similar from "../cards/similar/Similar";
+import SocialMediaCard from "../cards/social-media-card/SocialMediaCard";
 import SpotlightCard from "../cards/spotlight-card/SpotlightCard";
 import StudentsCard from "../cards/students-card/StudentsCard";
 import TeachersCard from "../cards/teachers-card/TeachersCard";
@@ -35,7 +41,7 @@ const reviewData = {
 
 const ContentMobile: React.FC = () => {
   return (
-    <div className="p-4 h-fit pb-32">
+    <div className="p-4 h-fit w-full pb-32">
       <Announcements id={SIDE_TABS_MOBILE.MONTHLY_UPDATE_MOBILE} />
       <ReportCard id={SIDE_TABS_MOBILE.REPORT_CARD_MOBILE} />
       <AboutSection id={SIDE_TABS_MOBILE.ABOUT_MOBILE} />
@@ -62,6 +68,12 @@ const ContentMobile: React.FC = () => {
       <Activities id={SIDE_TABS_MOBILE.ACTIVITIES_MOBILE} />
       <SpotlightCard id={SIDE_TABS_MOBILE.SPOTLIGHT_MOBILE} />
       <CaseStudyCard id={SIDE_TABS_MOBILE.CASE_STUDY_MOBILE} />
+      <AfterCollege id={SIDE_TABS_MOBILE.AFTER_COLLEGE_MOBILE} />
+      <AreaCard id={SIDE_TABS_MOBILE.AREA_MOBILE} />
+      <ProgramsCard id={SIDE_TABS_MOBILE.PROGRAMS_MOBILE} />
+      <SocialMediaCard idMobile={SIDE_TABS_MOBILE.SOCIAL_MEDIA_MOBILE} />
+      <ComparisonCard idMobile={SIDE_TABS_MOBILE.COMPARISON_MOBILE} />
+      <ArticlesCard idMobile={SIDE_TABS_MOBILE.ARTICLES_MOBILE} />
     </div>
   );
 };

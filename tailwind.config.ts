@@ -58,6 +58,9 @@ export default {
           },
         },
       },
+      backgroundImage: {
+        "conic-gradient": "conic-gradient(#77d3fa 0% 82%, #e8f4fc 82% 100%)",
+      },
     },
   },
   plugins: [],

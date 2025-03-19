@@ -21,7 +21,7 @@ const Announcements: React.FC<{ id: string }> = ({ id }) => {
 
   return (
     <div id={id} className="flex justify-center items-center">
-      <div className="w-full max-w-[375px] md:max-w-[875px] bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] overflow-hidden">
+      <div className="w-full md:max-w-[875px] bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] overflow-hidden">
         {/* Header */}
         <div
           ref={headerRef}

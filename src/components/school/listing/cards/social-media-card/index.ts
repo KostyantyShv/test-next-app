@@ -1,1 +1,1 @@
-export * from "./SocialMediaCard";
+export * from "./SocialMediaCardDesktop";
