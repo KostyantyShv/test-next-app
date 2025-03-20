@@ -10,6 +10,7 @@ import { AudioPlayer } from "@/components/player/AudioPlayer";
 import { Playlist } from "@/components/player/Playlist/Playlist";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { cn } from "@/lib/utils";
+import PageContainer from "./PageContainer";
 
 export const RootLayoutClient = ({
   children,
@@ -47,7 +48,7 @@ export const RootLayoutClient = ({
               isPlayerVisible && "pb-[72px] md:pb-[72px]" // Add padding when player is visible
             )}
           >
-            {children}
+            <PageContainer>{children}</PageContainer>
           </main>
 
           {/* Mobile Navigation - show only when player is not visible */}

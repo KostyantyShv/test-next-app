@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { FC, useState, useLayoutEffect } from 'react';
-import { Icon, IconName } from '@/components/ui/Icon';
-import { Logo } from '@/components/ui/Logo';
-import { cn } from '@/lib/utils';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
-import { CreateCollectionModal } from './CreateCollectionModal';
-import { mockCollections } from '@/lib/mocks/collections';
-import { CollectionsDropdown } from './CollectionsDropdown';
-import { useLeftSidebar } from '@/store/use-left-sidebar';
-import { useAudioPlayer } from '@/store/use-audio-player';
+import { FC, useState, useLayoutEffect } from "react";
+import { Icon, IconName } from "@/components/ui/Icon";
+import { Logo } from "@/components/ui/Logo";
+import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { CreateCollectionModal } from "./CreateCollectionModal";
+import { mockCollections } from "@/lib/mocks/collections";
+import { CollectionsDropdown } from "./CollectionsDropdown";
+import { useLeftSidebar } from "@/store/use-left-sidebar";
+import { useAudioPlayer } from "@/store/use-audio-player";
 
 interface NavItem {
   icon: IconName;
@@ -20,41 +20,43 @@ interface NavItem {
 }
 
 const exploreItems: NavItem[] = [
-  { icon: 'home', label: 'Dashboard', href: '/' },
-  { icon: 'explore', label: 'Explore', href: '/explore' },
+  { icon: "home", label: "Dashboard", href: "/" },
+  { icon: "explore", label: "Explore", href: "/explore" },
 ];
 
 const libraryItems: NavItem[] = [
-  { icon: 'collections', label: 'Collections', href: '/collections' },
-  { icon: 'bookmarks', label: 'Bookmarks', href: '/bookmarks' },
-  { icon: 'library', label: 'My Library', href: '/library' },
-  { icon: 'history', label: 'View History', href: '/history' },
+  { icon: "collections", label: "Collections", href: "/collections" },
+  { icon: "bookmarks", label: "Bookmarks", href: "/bookmarks" },
+  { icon: "library", label: "My Library", href: "/library" },
+  { icon: "history", label: "View History", href: "/history" },
 ];
 
 const bottomItems: NavItem[] = [
-  { 
-    icon: 'playlist', 
-    label: 'Playlist', 
-    href: '#',
+  {
+    icon: "playlist",
+    label: "Playlist",
+    href: "#",
     onClick: (e: React.MouseEvent) => {
       e.preventDefault();
       useAudioPlayer.getState().setPlaylistVisible(true);
-    }
+    },
   },
-  { icon: 'notifications', label: 'Notifications', href: '/notifications' },
-  { icon: 'settings', label: 'Settings', href: '/settings' },
+  { icon: "notifications", label: "Notifications", href: "/notifications" },
+  { icon: "settings", label: "Settings", href: "/settings" },
 ];
 
 export const LeftSidebar: FC = () => {
   const [mounted, setMounted] = useState(false);
-  const { 
-    isCollapsed, 
-    isCollectionsOpen, 
-    setIsCollapsed, 
-    setIsCollectionsOpen 
+  const {
+    isCollapsed: storeIsCollapsed,
+    isCollectionsOpen,
+    setIsCollapsed,
+    setIsCollectionsOpen,
   } = useLeftSidebar();
   const pathname = usePathname();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const isCollapsed = mounted ? storeIsCollapsed : true;
 
   useLayoutEffect(() => {
     setMounted(true);
@@ -62,11 +64,13 @@ export const LeftSidebar: FC = () => {
 
   if (!mounted) {
     return (
-      <aside className={cn(
-        'h-screen bg-white border-r border-border shrink-0 sticky top-0 left-0',
-        'transition-none',
-        isCollapsed ? 'w-16' : 'w-64'
-      )}>
+      <aside
+        className={cn(
+          "h-screen bg-white border-r border-border shrink-0 sticky top-0 left-0",
+          "transition-none",
+          isCollapsed ? "w-16" : "w-64"
+        )}
+      >
         <div className="flex h-full flex-col">
           <div className="h-16 flex items-center px-4 border-b border-border">
             <Logo collapsed={isCollapsed} />
@@ -77,11 +81,13 @@ export const LeftSidebar: FC = () => {
   }
 
   return (
-    <aside className={cn(
-      'h-screen bg-white border-r border-border shrink-0 sticky top-0 left-0',
-      'transition-all duration-300 ease-in-out',
-      isCollapsed ? 'w-16' : 'w-64'
-    )}>
+    <aside
+      className={cn(
+        "h-screen bg-white border-r border-border shrink-0 sticky top-0 left-0",
+        "transition-all duration-300 ease-in-out",
+        isCollapsed ? "w-16" : "w-64"
+      )}
+    >
       <div className="flex h-full flex-col">
         {/* Logo */}
         <div className="h-16 flex items-center px-4 border-b border-border">
@@ -92,11 +98,7 @@ export const LeftSidebar: FC = () => {
               className="ml-auto p-2 rounded-lg hover:bg-gray-100 transition-colors"
               aria-label="Collapse sidebar"
             >
-              <Icon 
-                name="collapse" 
-                size="md"
-                className="text-gray-500"
-              />
+              <Icon name="collapse" size="md" className="text-gray-500" />
             </button>
           )}
         </div>
@@ -123,13 +125,15 @@ export const LeftSidebar: FC = () => {
                     isCollapsed && "justify-center"
                   )}
                 >
-                  <Icon 
-                    name={item.icon} 
-                    size="md" 
+                  <Icon
+                    name={item.icon}
+                    size="md"
                     className={cn(
                       "shrink-0",
-                      pathname === item.href ? "text-[var(--icon)]" : "text-gray-500"
-                    )} 
+                      pathname === item.href
+                        ? "text-[var(--icon)]"
+                        : "text-gray-500"
+                    )}
                   />
                   {!isCollapsed && <span>{item.label}</span>}
                 </Link>
@@ -146,8 +150,8 @@ export const LeftSidebar: FC = () => {
             )}
             <div className="space-y-1 px-3">
               {libraryItems.map((item) => {
-                const isCollections = item.href === '/collections';
-                
+                const isCollections = item.href === "/collections";
+
                 return (
                   <div key={item.href}>
                     <Link
@@ -160,13 +164,15 @@ export const LeftSidebar: FC = () => {
                         isCollapsed && "justify-center"
                       )}
                     >
-                      <Icon 
-                        name={item.icon} 
-                        size="md" 
+                      <Icon
+                        name={item.icon}
+                        size="md"
                         className={cn(
                           "shrink-0",
-                          pathname === item.href ? "text-[var(--icon)]" : "text-gray-500"
-                        )} 
+                          pathname === item.href
+                            ? "text-[var(--icon)]"
+                            : "text-gray-500"
+                        )}
                       />
                       {!isCollapsed && (
                         <>
@@ -181,7 +187,11 @@ export const LeftSidebar: FC = () => {
                                 className="p-1 hover:bg-gray-200 rounded-md"
                                 aria-label="Add collection"
                               >
-                                <Icon name="plus" size="xs" className="text-gray-500" />
+                                <Icon
+                                  name="plus"
+                                  size="xs"
+                                  className="text-gray-500"
+                                />
                               </button>
                               <button
                                 onClick={(e) => {
@@ -191,13 +201,13 @@ export const LeftSidebar: FC = () => {
                                 className="p-1 hover:bg-gray-200 rounded-md"
                                 aria-label="Toggle collections"
                               >
-                                <Icon 
-                                  name="chevron-up" 
-                                  size="xs" 
+                                <Icon
+                                  name="chevron-up"
+                                  size="xs"
                                   className={cn(
                                     "text-gray-500 transition-transform",
                                     isCollectionsOpen ? "rotate-180" : ""
-                                  )} 
+                                  )}
                                 />
                               </button>
                             </div>
@@ -226,11 +236,7 @@ export const LeftSidebar: FC = () => {
               className="w-full p-2 rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center"
               aria-label="Expand sidebar"
             >
-              <Icon 
-                name="expand" 
-                size="md"
-                className="text-gray-500"
-              />
+              <Icon name="expand" size="md" className="text-gray-500" />
             </button>
           </div>
         )}
@@ -251,13 +257,15 @@ export const LeftSidebar: FC = () => {
                   isCollapsed && "justify-center"
                 )}
               >
-                <Icon 
-                  name={item.icon} 
-                  size="md" 
+                <Icon
+                  name={item.icon}
+                  size="md"
                   className={cn(
                     "shrink-0",
-                    pathname === item.href ? "text-[var(--icon)]" : "text-gray-500"
-                  )} 
+                    pathname === item.href
+                      ? "text-[var(--icon)]"
+                      : "text-gray-500"
+                  )}
                 />
                 {!isCollapsed && <span>{item.label}</span>}
               </Link>
@@ -266,10 +274,10 @@ export const LeftSidebar: FC = () => {
         </div>
       </div>
 
-      <CreateCollectionModal 
-        isOpen={isCreateModalOpen} 
-        onClose={() => setIsCreateModalOpen(false)} 
+      <CreateCollectionModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
       />
     </aside>
   );
-}; 
+};

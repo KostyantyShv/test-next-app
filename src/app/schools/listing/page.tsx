@@ -55,7 +55,7 @@ export default async function SchoolDirectory({ searchParams }: Props) {
   };
 
   return (
-    <div className="md:max-w-[1080px] md:mx-auto md:p-3">
+    <div className="md:max-w-[1080px]">
       <div className="bg-cardBackground md:rounded-cardBorderRadius md:overflow-hidden">
         <div className="relative">
           <ImagesGrid images={images} />
