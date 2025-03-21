@@ -1,4 +1,4 @@
-import FiltersWrapper from "@/components/explore/filter-wrapper/FilterWrapper";
+import FiltersWrapper from "@/components/school/explore/filter-wrapper/FilterWrapper";
 import React from "react";
 
 const Explore = () => {

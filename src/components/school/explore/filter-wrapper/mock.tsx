@@ -20,7 +20,7 @@ export const filtersMock: FilterData[] = [
       { value: "middle", label: "Middle" },
       { value: "high", label: "High School" },
     ],
-    minWidth: "240px",
+    minWidth: "",
   },
   {
     id: "type",
@@ -41,7 +41,7 @@ export const filtersMock: FilterData[] = [
       { value: "charter", label: "Charter" },
       { value: "magnet", label: "Magnet" },
     ],
-    minWidth: "240px",
+    minWidth: "",
   },
   {
     id: "religion",
@@ -66,7 +66,7 @@ export const filtersMock: FilterData[] = [
       { value: "jewish", label: "Jewish" },
       { value: "islamic", label: "Islamic" },
     ],
-    minWidth: "240px",
+    minWidth: "",
   },
   {
     id: "specialty",
@@ -86,7 +86,7 @@ export const filtersMock: FilterData[] = [
       { value: "montessori", label: "Montessori" },
       { value: "therapeutic", label: "Therapeutic" },
     ],
-    minWidth: "240px",
+    minWidth: "",
   },
 ];
 

@@ -42,6 +42,7 @@ export default {
       },
       backgroundColor: {
         cardBackground: "var(--card-background-light)",
+        modalBackground: "#00000080",
       },
       padding: {
         cardPadding: "32px",

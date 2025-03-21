@@ -1,7 +1,7 @@
 "use client";
 import Filter from "@/components/ui/Filter/Filter";
 import { FilterData } from "@/types/filter";
-import { useDropdown } from "@/hooks/useDropdown";
+import { useDisclosure } from "@/hooks/useDisclosure";
 
 interface FilterButtonComponentProps {
   category: FilterData;
@@ -10,7 +10,11 @@ interface FilterButtonComponentProps {
 export const FilterButtonComponent: React.FC<FilterButtonComponentProps> = ({
   category,
 }) => {
-  const { isDropdownOpened, dropdownRef, setIsDropdownOpened } = useDropdown();
+  const {
+    isOpened: isDropdownOpened,
+    ref: dropdownRef,
+    setIsOpened: setIsDropdownOpened,
+  } = useDisclosure();
 
   const handleOpenDropdown = () => {
     setIsDropdownOpened((prev) => !prev);
