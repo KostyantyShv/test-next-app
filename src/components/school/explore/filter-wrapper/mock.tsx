@@ -1,3 +1,4 @@
+// mock.ts
 import { FilterData } from "@/types/filter";
 import { SortData } from "@/types/sort";
 
@@ -15,13 +16,14 @@ export const filtersMock: FilterData[] = [
       </svg>
     ),
     options: [
-      { value: "prek", label: "Pre-K" },
+      { value: "pre-k", label: "Pre-K" }, // Changed from "prek" to "pre-k"
       { value: "elementary", label: "Elementary" },
       { value: "middle", label: "Middle" },
-      { value: "high", label: "High School" },
+      { value: "high school", label: "High School" }, // Changed from "high" to "high school"
     ],
     minWidth: "",
   },
+  // Other filters remain unchanged
   {
     id: "type",
     label: "Type",
