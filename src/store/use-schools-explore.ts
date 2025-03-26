@@ -6,21 +6,18 @@ import {
   TypeFilter,
   ReligionType,
   SpecialtyType,
+  GradeLevel,
+  FilterValue,
+  BoardingStatus,
+  FilterItem,
+  Academics,
+  Organization,
 } from "@/types/schools-explore";
+import { toggleFilter } from "@/utils/toggleFilters";
+import { isEmptyValue } from "@/utils/isEmptyValue";
+import { arrayFilterTypes, initialFilters, singleFilterTypes } from "./mock";
 
-const initialFilters: FiltersType = {
-  grade: [],
-  religion: [],
-  specialty: [],
-  type: [],
-};
-
-const toggleFilter = <T>(currentItems: T[], newItem: T): T[] =>
-  currentItems.includes(newItem)
-    ? currentItems.filter((item) => item !== newItem)
-    : [...currentItems, newItem];
-
-export const useSchoolsExplore = create<SchoolsStore>((set) => ({
+export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
   filters: initialFilters,
 
   setGrade: (grade: GradeFilter) => {
@@ -59,15 +56,103 @@ export const useSchoolsExplore = create<SchoolsStore>((set) => ({
     }));
   },
 
-  resetFilters: () => {
+  setHighestGrade: (grade: GradeLevel) => {
     set((state) => ({
       filters: {
         ...state.filters,
-        grade: [],
-        religion: [],
-        specialty: [],
-        type: [],
+        highestGrade: grade,
       },
     }));
+  },
+
+  setOrganization: (organization: Organization) => {
+    set((state) => ({
+      filters: {
+        ...state.filters,
+        organization: organization,
+      },
+    }));
+  },
+
+  setBoardingStatus: (status: BoardingStatus) => {
+    set((state) => ({
+      filters: {
+        ...state.filters,
+        boardingStatus: toggleFilter(state.filters.boardingStatus, status),
+      },
+    }));
+  },
+
+  setTuition: (value: number) => {
+    set((state) => ({
+      filters: {
+        ...state.filters,
+        tuition: value,
+      },
+    }));
+  },
+
+  setRation: (ration: number) => {
+    set((state) => ({
+      filters: {
+        ...state.filters,
+        ration: ration,
+      },
+    }));
+  },
+
+  removeFilter: (filterType: keyof FiltersType, value: FilterValue) => {
+    set((state) => {
+      const currentValue = state.filters[filterType];
+      if (Array.isArray(currentValue)) {
+        return {
+          filters: {
+            ...state.filters,
+            [filterType]: currentValue.filter((item) => item !== value),
+          },
+        };
+      }
+      return {
+        filters: {
+          ...state.filters,
+          [filterType]: initialFilters[filterType],
+        },
+      };
+    });
+  },
+
+  setAcademics: (academics: Academics) => {
+    set((state) => ({
+      filters: {
+        ...state.filters,
+        academics: toggleFilter(state.filters.academics, academics),
+      },
+    }));
+  },
+
+  resetFilters: () => {
+    set(() => ({
+      filters: { ...initialFilters },
+    }));
+  },
+
+  getActiveFilters: (): FilterItem[] => {
+    const filters = get().filters;
+    const activeFilters: FilterItem[] = [];
+
+    arrayFilterTypes.forEach(({ key, type }) => {
+      if (filters[key].length > 0) {
+        activeFilters.push(...filters[key].map((value) => ({ type, value })));
+      }
+    });
+
+    singleFilterTypes.forEach(({ key, initial }) => {
+      const value = filters[key];
+      if (value !== initial && !isEmptyValue(value)) {
+        activeFilters.push({ type: key, value });
+      }
+    });
+
+    return activeFilters;
   },
 }));

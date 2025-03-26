@@ -5,6 +5,7 @@ interface FilterButtonProps {
   icon: React.ReactNode;
   label: string;
   className?: string;
+  activeCount: number;
 }
 
 export const FilterButton: React.FC<FilterButtonProps> = ({
@@ -12,6 +13,7 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
   icon,
   label,
   className = "",
+  activeCount,
 }) => (
   <button
     onClick={onDropdownOpen}
@@ -19,5 +21,10 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
   >
     {icon}
     {label}
+    {activeCount ? (
+      <span className="bg-[#00DF8B] text-white w-5 h-5 rounded-full font-medium items-center justify-center">
+        {activeCount}
+      </span>
+    ) : null}
   </button>
 );

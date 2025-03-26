@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Sort from "./Sort";
-import { sortMock } from "@/components/school/explore/filter-wrapper/mock";
+import { sortMock } from "@/components/school/explore/mock";
 import { SortData, SortOption } from "@/types/sort";
 import { useDisclosure } from "@/hooks/useDisclosure";
 

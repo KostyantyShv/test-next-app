@@ -2,6 +2,7 @@ export interface FilterOptionType {
   value: string;
   label: string;
 }
+
 interface FilterOptionProps {
   filter: string;
   option: FilterOptionType;

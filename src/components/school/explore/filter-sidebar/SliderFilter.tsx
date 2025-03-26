@@ -1,9 +1,22 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 
+function debounce<T extends (...args: never[]) => void>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeout: NodeJS.Timeout;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+}
+
 interface SliderFilterProps {
   min: number;
   max: number;
   initialValue: number;
+  value?: number;
+  onSetValue?: (value: number) => void;
   unit?: string;
   label?: string;
   onChange?: (value: number) => void;
@@ -14,14 +27,16 @@ export const SliderFilter: React.FC<SliderFilterProps> = ({
   min,
   max,
   initialValue,
+  value = initialValue, // Default to initialValue if no value is provided
+  onSetValue = () => {},
   unit = "",
   label = "",
   onChange,
   formatValue = (value) => `${unit}${value.toLocaleString("en-US")}`,
 }) => {
-  const [value, setValue] = useState(initialValue);
   const [isDragging, setIsDragging] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [localValue, setLocalValue] = useState(value);
   const trackRef = useRef<HTMLDivElement>(null);
 
   const getPercentage = useCallback(
@@ -29,7 +44,16 @@ export const SliderFilter: React.FC<SliderFilterProps> = ({
     [min, max]
   );
 
-  const percentage = getPercentage(value);
+  const percentage = getPercentage(localValue);
+
+  // Debounced version of onSetValue
+  const debouncedSetValue = useCallback(
+    debounce((newValue: number) => {
+      onSetValue(newValue);
+      console.log("Final value set after delay:", newValue);
+    }, 100), // 300ms delay
+    [onSetValue]
+  );
 
   const updateSlider = useCallback(
     (clientX: number) => {
@@ -40,10 +64,11 @@ export const SliderFilter: React.FC<SliderFilterProps> = ({
       percent = Math.max(0, Math.min(100, percent));
 
       const newValue = Math.round(min + (percent / 100) * (max - min));
-      setValue(newValue);
+      setLocalValue(newValue);
       onChange?.(newValue);
+      debouncedSetValue(newValue);
     },
-    [min, max, onChange]
+    [min, max, onChange, debouncedSetValue]
   );
 
   // Mouse event handlers
@@ -94,6 +119,11 @@ export const SliderFilter: React.FC<SliderFilterProps> = ({
     },
     [isDragging, updateSlider]
   );
+
+  // Sync local value with prop value when it changes externally
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
 
   // Add/remove global event listeners
   useEffect(() => {
@@ -157,7 +187,7 @@ export const SliderFilter: React.FC<SliderFilterProps> = ({
           } pointer-events-none`}
           style={{ left: `${percentage}%`, transform: "translateX(-50%)" }}
         >
-          {formatValue(value)}
+          {formatValue(localValue)}
           <span className="absolute bottom-[-4px] left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-t-4 border-transparent border-t-primary-blue" />
         </div>
       </div>

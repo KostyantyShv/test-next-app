@@ -1,5 +1,6 @@
 import React from "react";
 import MapContainer from "./MapContainer";
+import SchoolCard, { School, schools } from "../SchoolCard";
 
 interface ContentAreaProps {
   isMapActive: boolean;
@@ -7,6 +8,14 @@ interface ContentAreaProps {
 }
 
 const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
+  // Define the number of cards to show based on layout
+  const cardCounts = {
+    grid: 6,
+    list: 4,
+    hybrid: 4,
+    classic: 8,
+  };
+
   return (
     <div className="flex p-6 min-h-[400px]">
       <div className="flex-1 transition-all duration-300">
@@ -15,13 +24,10 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             layout === "grid" ? "grid-cols-3" : "hidden"
           } ${isMapActive ? "grid-cols-2" : ""}`}
         >
-          {Array(6)
-            .fill(0)
-            .map((_, i) => (
-              <div
-                key={i}
-                className="bg-[#f5f5f7] h-[300px] rounded-xl overflow-hidden"
-              ></div>
+          {schools
+            .slice(0, cardCounts.grid)
+            .map((school: School, i: number) => (
+              <SchoolCard key={i} school={school} />
             ))}
         </div>
         <div
@@ -29,13 +35,10 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             layout === "list" ? "block" : "hidden"
           }`}
         >
-          {Array(4)
-            .fill(0)
-            .map((_, i) => (
-              <div
-                key={i}
-                className="bg-[#f5f5f7] h-[120px] rounded-xl overflow-hidden"
-              ></div>
+          {schools
+            .slice(0, cardCounts.list)
+            .map((school: School, i: number) => (
+              <SchoolCard key={i} school={school} />
             ))}
         </div>
         <div
@@ -43,13 +46,10 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             layout === "hybrid" ? "grid-cols-2" : "hidden"
           } ${isMapActive ? "grid-cols-1" : ""}`}
         >
-          {Array(4)
-            .fill(0)
-            .map((_, i) => (
-              <div
-                key={i}
-                className="bg-[#f5f5f7] h-[200px] rounded-xl overflow-hidden"
-              ></div>
+          {schools
+            .slice(0, cardCounts.hybrid)
+            .map((school: School, i: number) => (
+              <SchoolCard key={i} school={school} />
             ))}
         </div>
         <div
@@ -57,13 +57,10 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             layout === "classic" ? "grid-cols-4" : "hidden"
           } ${isMapActive ? "grid-cols-3" : ""}`}
         >
-          {Array(8)
-            .fill(0)
-            .map((_, i) => (
-              <div
-                key={i}
-                className="bg-[#f5f5f7] h-[200px] rounded-xl overflow-hidden"
-              ></div>
+          {schools
+            .slice(0, cardCounts.classic)
+            .map((school: School, i: number) => (
+              <SchoolCard key={i} school={school} />
             ))}
         </div>
       </div>

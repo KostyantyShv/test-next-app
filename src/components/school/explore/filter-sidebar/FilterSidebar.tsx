@@ -7,6 +7,27 @@ import { DropdownFilter } from "./DropdownFilter";
 import { SliderFilter } from "./SliderFilter";
 import { SidebarFooter } from "./SidebarFooter";
 import { RatingFilter } from "./RatingFilter";
+import Filter from "@/components/ui/Filter/Filter";
+import { useSchoolsExplore } from "@/store/use-schools-explore";
+import {
+  ACADEMICS_MOCK,
+  BOARDING_MOCK,
+  FILTER_MOCK,
+  highestGrade,
+  ORGANIZATION_MOCK,
+} from "../mock";
+import {
+  Academics,
+  BoardingStatus,
+  FiltersType,
+  GradeFilter,
+  GradeLevel,
+  Organization,
+  ReligionType,
+  SpecialtyType,
+  TypeFilter,
+} from "@/types/schools-explore";
+import { AcademicsMockType } from "@/types/filter";
 
 interface FilterSidebarProps {
   isSidePanelOpen: boolean;
@@ -19,8 +40,73 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   onClose,
   sidebarRef,
 }) => {
+  const filters = useSchoolsExplore((state) => state.filters);
+  const {
+    setGrade,
+    setReligion,
+    setSpecialty,
+    setType,
+    setHighestGrade,
+    setBoardingStatus,
+    setTuition,
+    setRation,
+    setAcademics,
+    setOrganization,
+  } = useSchoolsExplore((state) => state);
+
+  const handleBoardingStatusChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.dataset.value as string;
+    setBoardingStatus(value as BoardingStatus);
+  };
+
+  const handleHighestGradeChange = (value: string) => {
+    setHighestGrade(value as GradeLevel);
+  };
+
+  const handleOrganizationChange = (value: string) => {
+    setOrganization(value as Organization);
+  };
+
   const handleTuitionChange = (value: number) => {
     console.log("Tuition changed to:", value);
+  };
+
+  const handleGradeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.dataset.value as string;
+    setGrade(value as GradeFilter);
+  };
+
+  const handleReligionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.dataset.value as string;
+    setReligion(value as ReligionType);
+  };
+
+  const handleSpecialtyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.dataset.value as string;
+    setSpecialty(value as SpecialtyType);
+  };
+
+  const handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.dataset.value as string;
+    setType(value as TypeFilter);
+  };
+
+  const handleAcademicsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.dataset.value as string;
+    setAcademics(value as Academics);
+  };
+
+  const isOptionChecked = (
+    optionValue: string,
+    key: keyof FiltersType
+  ): boolean => {
+    const filterValue = filters[key];
+    if (Array.isArray(filterValue)) {
+      return filterValue.includes(optionValue as GradeFilter);
+    }
+    return false;
   };
 
   return (
@@ -35,18 +121,17 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       >
         <SidebarHeader onClose={onClose} />
         <div className="p-6 flex-1 overflow-y-auto">
-          {/* Grade Filter */}
           <FilterSection title="Grade" sectionId="grade">
-            <CheckboxFilter label="Pre-K" filter="grade" value="prek" />
-            <CheckboxFilter
-              label="Elementary"
-              filter="grade"
-              value="elementary"
-            />
-            <CheckboxFilter label="Middle" filter="grade" value="middle" />
-            <CheckboxFilter label="High School" filter="grade" value="high" />
+            {FILTER_MOCK.GRADE.options.map((option) => (
+              <Filter.Option
+                key={`${FILTER_MOCK.GRADE}-${option.value}`}
+                filter={FILTER_MOCK.GRADE.id}
+                option={option}
+                onChange={handleGradeChange}
+                isChecked={isOptionChecked(option.value, "grade")}
+              />
+            ))}
           </FilterSection>
-
           {/* Highest Grade Offered Filter */}
           <FilterSection
             title="Highest grade offered"
@@ -55,36 +140,23 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             tooltipText="Exclude schools that offer grades higher than the selected grade."
           >
             <DropdownFilter
-              options={[
-                { label: "Any", value: "any" },
-                { label: "Pre-K", value: "prek" },
-                { label: "Kindergarten", value: "k" },
-                { label: "1", value: "1" },
-                { label: "2", value: "2" },
-                { label: "3", value: "3" },
-                { label: "4", value: "4" },
-                { label: "5", value: "5" },
-                { label: "6", value: "6" },
-                { label: "7", value: "7" },
-                { label: "8", value: "8" },
-                { label: "9", value: "9" },
-                { label: "10", value: "10" },
-                { label: "11", value: "11" },
-                { label: "12", value: "12" },
-              ]}
-              defaultValue="any"
+              options={highestGrade}
+              defaultValue={filters.highestGrade}
+              onChange={handleHighestGradeChange}
             />
           </FilterSection>
-
           {/* Boarding Status Filter */}
           <FilterSection title="Boarding status" sectionId="boarding">
-            <CheckboxFilter
-              label="Offers boarding"
-              filter="boarding"
-              value="yes"
-            />
+            {BOARDING_MOCK.options.map((option) => (
+              <Filter.Option
+                key={`${BOARDING_MOCK}-${option.value}`}
+                filter={BOARDING_MOCK.id}
+                option={option}
+                onChange={handleBoardingStatusChange}
+                isChecked={isOptionChecked(option.value, "boarding")}
+              />
+            ))}
           </FilterSection>
-
           {/* Coed Status Filter */}
           <FilterSection title="Coed status" sectionId="coed">
             <div className="flex border border-[rgba(0,0,0,0.1)] rounded-3xl overflow-hidden w-fit">
@@ -108,88 +180,55 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               </button>
             </div>
           </FilterSection>
-
           {/* Type Filter */}
           <FilterSection title="Type" sectionId="type">
-            <div className="flex flex-col">
-              <CheckboxFilter
-                label="Public"
-                filter="type"
-                value="public"
-                parent="public"
+            {FILTER_MOCK.TYPE.options.map((option) => (
+              <Filter.Option
+                key={`${FILTER_MOCK.TYPE}-${option.value}`}
+                filter={FILTER_MOCK.TYPE.id}
+                option={option}
+                onChange={handleTypeChange}
+                isChecked={isOptionChecked(option.value, "type")}
               />
-              <div className="ml-6 flex flex-col gap-2 mt-2">
-                <CheckboxFilter
-                  label="Traditional"
-                  filter="type"
-                  value="traditional"
-                  parent="public"
-                />
-                <CheckboxFilter
-                  label="Charter"
-                  filter="type"
-                  value="charter"
-                  parent="public"
-                />
-                <CheckboxFilter
-                  label="Magnet"
-                  filter="type"
-                  value="magnet"
-                  parent="public"
-                />
-              </div>
-            </div>
-            <CheckboxFilter label="Private" filter="type" value="private" />
+            ))}
           </FilterSection>
-
           {/* Religion Filter */}
           <FilterSection title="Religion" sectionId="religion">
-            <CheckboxFilter
-              label="Catholic"
-              filter="religion"
-              value="catholic"
-            />
-            <CheckboxFilter
-              label="Christian"
-              filter="religion"
-              value="christian"
-            />
-            <CheckboxFilter label="Jewish" filter="religion" value="jewish" />
-            <CheckboxFilter label="Islamic" filter="religion" value="islamic" />
+            {FILTER_MOCK.RELIGION.options.map((option) => (
+              <Filter.Option
+                key={`${FILTER_MOCK.RELIGION}-${option.value}`}
+                filter={FILTER_MOCK.RELIGION.id}
+                option={option}
+                onChange={handleReligionChange}
+                isChecked={isOptionChecked(option.value, "religion")}
+              />
+            ))}
           </FilterSection>
-
           {/* Specialty Filter */}
           <FilterSection title="Specialty" sectionId="specialty">
-            <CheckboxFilter label="Online" filter="specialty" value="online" />
-            <CheckboxFilter
-              label="Special Education"
-              filter="specialty"
-              value="special-ed"
-            />
-            <CheckboxFilter
-              label="Montessori"
-              filter="specialty"
-              value="montessori"
-            />
-            <CheckboxFilter
-              label="Therapeutic"
-              filter="specialty"
-              value="therapeutic"
-            />
+            {FILTER_MOCK.SPECIALTY.options.map((option) => (
+              <Filter.Option
+                key={`${FILTER_MOCK.SPECIALTY}-${option.value}`}
+                filter={FILTER_MOCK.SPECIALTY.id}
+                option={option}
+                onChange={handleSpecialtyChange}
+                isChecked={isOptionChecked(option.value, "specialty")}
+              />
+            ))}
           </FilterSection>
-
           {/* Tuition Filter */}
           <FilterSection title="Tuition" sectionId="tuition">
             <SliderFilter
               min={0}
               max={50000}
               initialValue={25000}
+              value={filters.tuition}
+              onSetValue={setTuition}
               unit="$"
               onChange={handleTuitionChange}
               formatValue={(value) => `$${value.toLocaleString("en-US")}`}
             />
           </FilterSection>
-
           {/* Student-Teacher Ratio Filter */}
           <FilterSection
             title="Student-teacher ratio"
@@ -201,22 +240,24 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               min={2}
               max={50}
               initialValue={2}
+              value={filters.ration}
+              onSetValue={setRation}
               onChange={handleTuitionChange}
               formatValue={(value) => `${value.toLocaleString("en-US")}:1`}
             />
           </FilterSection>
-
           {/* Academics Filter */}
           <FilterSection title="Academics" sectionId="academics">
-            <CheckboxFilter label="AP Program" filter="academics" value="ap" />
-            <CheckboxFilter label="IB Program" filter="academics" value="ib" />
-            <CheckboxFilter
-              label="Gifted/Talented Program"
-              filter="academics"
-              value="gifted"
-            />
+            {ACADEMICS_MOCK.options.map((option) => (
+              <Filter.Option
+                key={`${ACADEMICS_MOCK}-${option.value}`}
+                filter={ACADEMICS_MOCK.id}
+                option={option}
+                onChange={handleAcademicsChange}
+                isChecked={isOptionChecked(option.value, "academics")}
+              />
+            ))}
           </FilterSection>
-
           {/* SchoolScout Grades Filter */}
           <FilterSection
             title="SchoolScout Grades"
@@ -246,33 +287,14 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               )}
             </div>
           </FilterSection>
-
           {/* Organization Filter */}
           <FilterSection title="Organization" sectionId="organization">
             <DropdownFilter
-              options={[
-                { label: "Any", value: "any" },
-                {
-                  label: "National Association of Independent Schools",
-                  value: "nais",
-                },
-                {
-                  label: "The Association of Boarding Schools",
-                  value: "tabs",
-                },
-                {
-                  label: "National Catholic Education Association",
-                  value: "ncea",
-                },
-                {
-                  label: "Association of Christian Schools International",
-                  value: "acsi",
-                },
-              ]}
-              defaultValue="any"
+              options={ORGANIZATION_MOCK}
+              defaultValue={filters.organization}
+              onChange={handleOrganizationChange}
             />
           </FilterSection>
-
           {/* Rating Filter */}
           <FilterSection title="Rating" sectionId="rating">
             <RatingFilter />
