@@ -9,8 +9,10 @@ export const initialFilters: FiltersType = {
   boardingStatus: [],
   tuition: 0,
   ration: 0,
+  rating: 0,
   academics: [],
   organization: "any",
+  schoolScoutGrades: [],
 };
 
 export const arrayFilterTypes = [
@@ -27,4 +29,5 @@ export const singleFilterTypes = [
   { key: "tuition" as const, initial: initialFilters.tuition },
   { key: "ration" as const, initial: initialFilters.ration },
   { key: "organization" as const, initial: initialFilters.organization },
+  { key: "rating" as const, initial: initialFilters.rating },
 ];

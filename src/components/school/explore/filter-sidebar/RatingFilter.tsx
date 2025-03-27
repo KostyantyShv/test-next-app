@@ -1,12 +1,17 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 
-export const RatingFilter = () => {
-  const [rating, setRating] = useState(0);
+interface RatingFilterProps {
+  rating: number;
+  setRating: (rating: number) => void;
+}
 
+export const RatingFilter: React.FC<RatingFilterProps> = ({
+  rating,
+  setRating,
+}) => {
   const handleRatingClick = (newRating: number) => {
     setRating(newRating);
-    console.log("Rating set to:", newRating);
   };
 
   return (

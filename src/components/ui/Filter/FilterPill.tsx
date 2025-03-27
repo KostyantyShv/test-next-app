@@ -1,25 +1,36 @@
 // FilterPill.tsx
 import { useSchoolsExplore } from "@/store/use-schools-explore";
 import React from "react";
-import { FilterValue } from "@/types/schools-explore"; // Import FilterValue
+import { FilterValue, FiltersType } from "@/types/schools-explore";
 
 const FilterPill = ({
   filterType,
   value,
 }: {
-  value: FilterValue; // Change to FilterValue instead of string
-  filterType: string;
+  value: FilterValue;
+  filterType: keyof FiltersType;
 }) => {
   const removeFilter = useSchoolsExplore((state) => state.removeFilter);
   const handleRemoveFilter = () => removeFilter(filterType, value);
 
-  // Convert value to string for display
-  const displayValue =
-    typeof value === "number" ? `$${value.toLocaleString()}` : String(value);
+  // let displayValue: string;
+  // switch (filterType) {
+  //   case "tuition":
+  //     displayValue = `$${Number(value).toLocaleString()}`;
+  //     break;
+  //   case "ration":
+  //     displayValue = `${value}:1`;
+  //     break;
+  //   case "schoolScoutGrades":
+  //     displayValue = String(value); // Already in "Academics: A" format
+  //     break;
+  //   default:
+  //     displayValue = String(value); // Default to string conversion
+  // }
 
   return (
     <div className="flex flex-row rounded-2xl bg-[#F2F2F2] py-1 px-2 w-fit items-center justify-center gap-2">
-      <span className="border-r-2 pr-2">{displayValue}</span>
+      <span className="border-r-2 pr-2">{value}</span>
       <span>
         <button
           className="flex items-center justify-center"

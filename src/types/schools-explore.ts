@@ -4,8 +4,17 @@ export type ReligionType = "catholic" | "christian" | "jewish" | "islamic";
 export type BoardingStatus = "Offers boarding";
 export type Academics = "AP Program" | "IB Program" | "Gifted/Talented Program";
 export type Organization = "NCEA" | "any" | "NAIS" | "TABS" | "ACSI";
+export type SchoolScoutGrade = "A" | "B" | "C" | "D";
+export type SchoolScoutCategory =
+  | "Academics"
+  | "Teachers"
+  | "Diversity"
+  | "Sports";
+export type SchoolScoutGradeEntry =
+  `${SchoolScoutCategory}: ${SchoolScoutGrade}`;
+
 export type FilterItem = {
-  type: keyof FiltersType;
+  type: keyof FiltersType; // This is string | number | symbol due to index signature
   value: FilterValue;
 };
 export type GradeLevel =
@@ -47,13 +56,20 @@ export interface FiltersType {
   type: TypeFilter[];
   religion: ReligionType[];
   specialty: SpecialtyType[];
-  highestGrade: GradeLevel; // Changed to single value (not array)
+  highestGrade: GradeLevel;
   boardingStatus: BoardingStatus[];
   tuition: number;
   ration: number;
+  rating: number;
   academics: Academics[];
   organization: Organization;
-  [key: string]: FilterValue[] | GradeLevel | number | Organization; // Updated index signature
+  schoolScoutGrades: SchoolScoutGradeEntry[];
+  [key: string]:
+    | FilterValue[]
+    | GradeLevel
+    | number
+    | Organization
+    | SchoolScoutGradeEntry[];
 }
 
 export interface SchoolsStore {
@@ -71,5 +87,10 @@ export interface SchoolsStore {
   setOrganization: (organization: Organization) => void;
   getActiveFilters: () => FilterItem[];
   removeFilter: (filterType: keyof FiltersType, value: FilterValue) => void;
+  setSchoolScoutGrade: (
+    category: SchoolScoutCategory,
+    grade: SchoolScoutGrade
+  ) => void;
+  setRating: (rating: number) => void;
   resetFilters: () => void;
 }

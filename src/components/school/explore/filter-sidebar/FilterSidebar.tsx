@@ -2,7 +2,6 @@ import React, { RefObject } from "react";
 import { FilterSection } from "./FilterSection"; // Import the updated FilterSection
 import { Overlay } from "@/components/ui/Overlay/Overlay";
 import { SidebarHeader } from "./SidebarHeader";
-import { CheckboxFilter } from "./CheckBoxFilter";
 import { DropdownFilter } from "./DropdownFilter";
 import { SliderFilter } from "./SliderFilter";
 import { SidebarFooter } from "./SidebarFooter";
@@ -24,10 +23,12 @@ import {
   GradeLevel,
   Organization,
   ReligionType,
+  SchoolScoutCategory,
+  SchoolScoutGrade,
+  SchoolScoutGradeEntry,
   SpecialtyType,
   TypeFilter,
 } from "@/types/schools-explore";
-import { AcademicsMockType } from "@/types/filter";
 
 interface FilterSidebarProps {
   isSidePanelOpen: boolean;
@@ -52,6 +53,8 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
     setRation,
     setAcademics,
     setOrganization,
+    setSchoolScoutGrade,
+    setRating,
   } = useSchoolsExplore((state) => state);
 
   const handleBoardingStatusChange = (
@@ -98,15 +101,32 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
     setAcademics(value as Academics);
   };
 
+  const handleSchoolScoutGradeChange = (
+    category: SchoolScoutCategory,
+    grade: SchoolScoutGrade
+  ) => {
+    setSchoolScoutGrade(category, grade);
+  };
+
   const isOptionChecked = (
     optionValue: string,
     key: keyof FiltersType
   ): boolean => {
     const filterValue = filters[key];
     if (Array.isArray(filterValue)) {
-      return filterValue.includes(optionValue as GradeFilter);
+      // For schoolScoutGrades, we need to check the full string (e.g., "academics: a")
+      if (key === "schoolScoutGrades") {
+        return filterValue.includes(optionValue as SchoolScoutGradeEntry);
+      }
+      // For other array filters (like grade, type, etc.), cast to string is fine
+      return filterValue.includes(optionValue as never); // Use 'any' temporarily to avoid strict typing issues
     }
     return false;
+  };
+
+  const isGradeSelected = (category: string, grade: SchoolScoutGrade) => {
+    const entry = `${category}: ${grade}` as SchoolScoutGradeEntry;
+    return filters.schoolScoutGrades.includes(entry);
   };
 
   return (
@@ -271,16 +291,33 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                       {category}
                     </div>
                     <div className="grid grid-cols-4 gap-2">
-                      {["a", "b", "c", "d"].map((grade) => (
-                        <button
-                          key={grade}
-                          className="w-9 h-9 flex items-center justify-center border border-[rgba(0,0,0,0.1)] rounded-full bg-white cursor-pointer text-sm font-medium transition-all hover:bg-[#f5f5f7]"
-                          data-category={category.toLowerCase()}
-                          data-grade={grade}
-                        >
-                          {grade.toUpperCase()}
-                        </button>
-                      ))}
+                      {["A", "B", "C", "D"].map((grade) => {
+                        const categoryLower = category as SchoolScoutCategory;
+                        const isSelected = isGradeSelected(
+                          categoryLower,
+                          grade as SchoolScoutGrade
+                        );
+                        return (
+                          <button
+                            key={grade}
+                            className={`w-9 h-9 flex items-center justify-center border border-[rgba(0,0,0,0.1)] rounded-full cursor-pointer text-sm font-medium transition-all ${
+                              isSelected
+                                ? "bg-[#00DF8B] text-[white] text-bold-text"
+                                : "bg-white hover:bg-[#f5f5f7] text-text-default"
+                            }`}
+                            data-category={categoryLower}
+                            data-grade={grade}
+                            onClick={() =>
+                              handleSchoolScoutGradeChange(
+                                categoryLower,
+                                grade as SchoolScoutGrade
+                              )
+                            }
+                          >
+                            {grade}{" "}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )
@@ -297,7 +334,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           </FilterSection>
           {/* Rating Filter */}
           <FilterSection title="Rating" sectionId="rating">
-            <RatingFilter />
+            <RatingFilter rating={filters.rating} setRating={setRating} />
           </FilterSection>
         </div>
         <SidebarFooter />

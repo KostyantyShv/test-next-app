@@ -8,15 +8,15 @@ import { FiltersType, FilterValue } from "@/types/schools-explore";
 interface FilterButtonComponentProps {
   category: FilterData;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  filters: FiltersType; // Use FiltersType directly
-  filterKey: keyof FiltersType; // Restrict to FiltersType keys
+  filters: FiltersType;
+  filterKey: keyof FiltersType;
 }
 
 interface FilterButtonComponentProps {
   category: FilterData;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  filters: FiltersType; // Use FiltersType directly
-  filterKey: keyof FiltersType; // Restrict to FiltersType keys
+  filters: FiltersType;
+  filterKey: keyof FiltersType;
 }
 
 export const FilterButtonComponent = ({
@@ -37,11 +37,10 @@ export const FilterButtonComponent = ({
 
   const isOptionChecked = (optionValue: string): boolean => {
     const filterValues = filters[filterKey] || [];
-    // Check if filterValues is an array
     if (Array.isArray(filterValues)) {
       return filterValues.includes(optionValue as FilterValue);
     }
-    return false; // If not an array, no match
+    return false;
   };
 
   const activeCount = Array.isArray(filters[filterKey])

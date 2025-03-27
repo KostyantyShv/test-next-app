@@ -12,6 +12,9 @@ import {
   FilterItem,
   Academics,
   Organization,
+  SchoolScoutCategory,
+  SchoolScoutGrade,
+  SchoolScoutGradeEntry,
 } from "@/types/schools-explore";
 import { toggleFilter } from "@/utils/toggleFilters";
 import { isEmptyValue } from "@/utils/isEmptyValue";
@@ -101,8 +104,73 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
     }));
   },
 
+  setSchoolScoutGrade: (
+    category: SchoolScoutCategory,
+    grade: SchoolScoutGrade
+  ) => {
+    set((state) => {
+      const entry = `${category}: ${grade}` as SchoolScoutGradeEntry;
+      const currentGrades = state.filters.schoolScoutGrades;
+
+      if (currentGrades.includes(entry)) {
+        return {
+          filters: {
+            ...state.filters,
+            schoolScoutGrades: currentGrades.filter((g) => g !== entry),
+          },
+        };
+      } else {
+        return {
+          filters: {
+            ...state.filters,
+            schoolScoutGrades: [...currentGrades, entry],
+          },
+        };
+      }
+    });
+  },
+
+  getActiveFilters: (): FilterItem[] => {
+    const filters = get().filters;
+    const activeFilters: FilterItem[] = [];
+
+    arrayFilterTypes.forEach(({ key, type }) => {
+      if (filters[key].length > 0) {
+        activeFilters.push(...filters[key].map((value) => ({ type, value })));
+      }
+    });
+
+    singleFilterTypes.forEach(({ key, initial }) => {
+      const value = filters[key];
+      if (value !== initial && !isEmptyValue(value)) {
+        activeFilters.push({ type: key, value });
+      }
+    });
+
+    if (filters.schoolScoutGrades.length > 0) {
+      activeFilters.push(
+        ...filters.schoolScoutGrades.map((grade) => ({
+          type: "schoolScoutGrades",
+          value: grade,
+        }))
+      );
+    }
+
+    return activeFilters;
+  },
+
   removeFilter: (filterType: keyof FiltersType, value: FilterValue) => {
     set((state) => {
+      if (filterType === "schoolScoutGrades") {
+        return {
+          filters: {
+            ...state.filters,
+            schoolScoutGrades: state.filters.schoolScoutGrades.filter(
+              (g) => g !== value
+            ),
+          },
+        };
+      }
       const currentValue = state.filters[filterType];
       if (Array.isArray(currentValue)) {
         return {
@@ -130,29 +198,18 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
     }));
   },
 
+  setRating: (rating: number) => {
+    set((state) => ({
+      filters: {
+        ...state.filters,
+        rating: rating,
+      },
+    }));
+  },
+
   resetFilters: () => {
     set(() => ({
       filters: { ...initialFilters },
     }));
-  },
-
-  getActiveFilters: (): FilterItem[] => {
-    const filters = get().filters;
-    const activeFilters: FilterItem[] = [];
-
-    arrayFilterTypes.forEach(({ key, type }) => {
-      if (filters[key].length > 0) {
-        activeFilters.push(...filters[key].map((value) => ({ type, value })));
-      }
-    });
-
-    singleFilterTypes.forEach(({ key, initial }) => {
-      const value = filters[key];
-      if (value !== initial && !isEmptyValue(value)) {
-        activeFilters.push({ type: key, value });
-      }
-    });
-
-    return activeFilters;
   },
 }));
