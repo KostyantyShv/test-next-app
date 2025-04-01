@@ -1,6 +1,8 @@
 import React from "react";
 import MapContainer from "./MapContainer";
-import SchoolCard, { School, schools } from "../SchoolCard";
+import SchoolCard from "../SchoolCard";
+import { schools } from "../mock";
+import { School } from "../types";
 
 interface ContentAreaProps {
   isMapActive: boolean;

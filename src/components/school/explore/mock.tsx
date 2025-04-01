@@ -5,11 +5,8 @@ import {
   FilterData,
 } from "@/types/filter";
 import { SortData } from "@/types/sort";
-
-type FilterMockType = Record<
-  "GRADE" | "TYPE" | "RELIGION" | "SPECIALTY",
-  FilterData
->;
+import { FilterMockType, School } from "./types";
+import { EstablishmentType, FiltersType } from "@/types/schools-explore";
 
 export const FILTER_MOCK: FilterMockType = {
   GRADE: {
@@ -25,10 +22,10 @@ export const FILTER_MOCK: FilterMockType = {
       </svg>
     ),
     options: [
-      { value: "pre-k", label: "Pre-K" }, // Changed from "prek" to "pre-k"
+      { value: "pre-k", label: "Pre-K" },
       { value: "elementary", label: "Elementary" },
       { value: "middle", label: "Middle" },
-      { value: "high school", label: "High School" }, // Changed from "high" to "high school"
+      { value: "high school", label: "High School" },
     ],
     minWidth: "",
   },
@@ -98,6 +95,185 @@ export const FILTER_MOCK: FilterMockType = {
     ],
     minWidth: "",
   },
+  COLLEGE_SPECIALTY: {
+    id: "collegeSpecialty",
+    label: "College Specialty",
+    icon: null,
+    options: [
+      { value: "Liberal arts", label: "Liberal arts" },
+      { value: "All-women", label: "All-women" },
+      { value: "All-men", label: "All-men" },
+      { value: "HBCU", label: "HBCU" },
+      {
+        value: "Hispanic-serving institutions",
+        label: "Hispanic-serving institutions",
+      },
+    ],
+    minWidth: "",
+  },
+  GOOD_FOR: {
+    id: "goodFor",
+    label: "Good for",
+    icon: null,
+    options: [
+      { value: "Liberal arts", label: "Liberal arts" },
+      { value: "International students", label: "International students" },
+      { value: "Adults learners", label: "Adults learners" },
+      { value: "Low-income students", label: "Low-income students" },
+      { value: "Middle-class students", label: "Middle-class students" },
+    ],
+    minWidth: "",
+  },
+  MAJORS: {
+    id: "majors",
+    label: "Majors",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M9.72154 3.47033C9.90035 3.39881 10.0998 3.39881 10.2786 3.47033L18.612 6.80366C18.8967 6.91756 19.0834 7.19334 19.0834 7.50002V12.5C19.0834 12.9142 18.7476 13.25 18.3334 13.25C17.9192 13.25 17.5834 12.9142 17.5834 12.5V8.6078L15.7501 9.34113V13.3334C15.7501 14.4243 14.9016 15.2566 13.871 15.7719C12.8053 16.3048 11.4126 16.5834 10.0001 16.5834C8.58758 16.5834 7.19484 16.3048 6.12914 15.7719C5.09852 15.2566 4.25008 14.4243 4.25008 13.3334V9.34113L1.38821 8.19638C1.10346 8.08248 0.916748 7.8067 0.916748 7.50002C0.916748 7.19334 1.10346 6.91756 1.38821 6.80366L9.72154 3.47033ZM5.29422 8.14324C5.2838 8.13879 5.27326 8.13457 5.2626 8.13059L3.68619 7.50002L10.0001 4.97446L16.314 7.50002L14.7376 8.13059C14.7269 8.13457 14.7164 8.13879 14.7059 8.14323L10.0001 10.0256L5.29422 8.14324ZM5.75008 9.94113V13.3334C5.75008 13.5685 5.95521 14.0079 6.79996 14.4303C7.60962 14.8351 8.76042 15.0834 10.0001 15.0834C11.2397 15.0834 12.3905 14.8351 13.2002 14.4303C14.0449 14.0079 14.2501 13.5685 14.2501 13.3334V9.94113L10.2786 11.5297C10.0998 11.6012 9.90035 11.6012 9.72154 11.5297L5.75008 9.94113Z"
+          fill="currentColor"
+        ></path>
+      </svg>
+    ),
+    options: [
+      { value: "Online", label: "Online" },
+      { value: "Campus", label: "Campus" },
+    ],
+    minWidth: "",
+  },
+  ONLINE_FRIENDLINESS: {
+    id: "onlineFriendliness",
+    label: "Online Friendliness",
+    icon: null,
+    options: [
+      { value: "Fully online", label: "Fully online" },
+      { value: "Large online program", label: "Large online program" },
+      { value: "Some online degrees", label: "Some online degrees" },
+    ],
+    minWidth: "",
+  },
+  SELECTIVITY: {
+    id: "selectivity",
+    label: "Selectivity",
+    icon: null,
+    options: [
+      { value: "Extremely selective", label: "Extremely selective" },
+      { value: "Very selective", label: "Very selective" },
+      { value: "Selective", label: "Selective" },
+      { value: "Average", label: "Average" },
+      { value: "Not selective", label: "Not selective" },
+    ],
+    minWidth: "",
+  },
+  STUDENT_BODY_SIZE: {
+    id: "studentBodySize",
+    label: "Student Body Size",
+    icon: null,
+    options: [
+      { value: "Small", label: "Small" },
+      { value: "Medium", label: "Medium" },
+      { value: "Large", label: "Large" },
+    ],
+    minWidth: "",
+  },
+  PROGRAM: {
+    id: "program",
+    label: "Program",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M9.72154 3.47033C9.90035 3.39881 10.0998 3.39881 10.2786 3.47033L18.612 6.80366C18.8967 6.91756 19.0834 7.19334 19.0834 7.50002V12.5C19.0834 12.9142 18.7476 13.25 18.3334 13.25C17.9192 13.25 17.5834 12.9142 17.5834 12.5V8.6078L15.7501 9.34113V13.3334C15.7501 14.4243 14.9016 15.2566 13.871 15.7719C12.8053 16.3048 11.4126 16.5834 10.0001 16.5834C8.58758 16.5834 7.19484 16.3048 6.12914 15.7719C5.09852 15.2566 4.25008 14.4243 4.25008 13.3334V9.34113L1.38821 8.19638C1.10346 8.08248 0.916748 7.8067 0.916748 7.50002C0.916748 7.19334 1.10346 6.91756 1.38821 6.80366L9.72154 3.47033ZM5.29422 8.14324C5.2838 8.13879 5.27326 8.13457 5.2626 8.13059L3.68619 7.50002L10.0001 4.97446L16.314 7.50002L14.7376 8.13059C14.7269 8.13457 14.7164 8.13879 14.7059 8.14323L10.0001 10.0256L5.29422 8.14324ZM5.75008 9.94113V13.3334C5.75008 13.5685 5.95521 14.0079 6.79996 14.4303C7.60962 14.8351 8.76042 15.0834 10.0001 15.0834C11.2397 15.0834 12.3905 14.8351 13.2002 14.4303C14.0449 14.0079 14.2501 13.5685 14.2501 13.3334V9.94113L10.2786 11.5297C10.0998 11.6012 9.90035 11.6012 9.72154 11.5297L5.75008 9.94113Z"
+          fill="currentColor"
+        ></path>
+      </svg>
+    ),
+    options: [
+      { value: "Online", label: "Online" },
+      { value: "Masters", label: "Masters" },
+      { value: "Doctorate", label: "Doctorate" },
+    ],
+    minWidth: "",
+  },
+  COLLEGE_TYPE: {
+    id: "college type",
+    label: "College type",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 32 32">
+        <path
+          fill="currentColor"
+          d="M10.8571 26.2857C10.8571 27.2325 10.0896 28 9.14286 28H5.71429C4.76751 28 4 27.2325 4 26.2857V22C4 21.0532 4.76751 20.2857 5.71429 20.2857H9.14286C10.0896 20.2857 10.8571 21.0532 10.8571 22V26.2857ZM19.4286 26.2857V14.2857C19.4286 13.3389 18.6611 12.5714 17.7143 12.5714H14.2857C13.3389 12.5714 12.5714 13.3389 12.5714 14.2857V26.2857C12.5714 27.2325 13.3389 28 14.2857 28H17.7143C18.6611 28 19.4286 27.2325 19.4286 26.2857ZM21.1429 26.2857C21.1429 27.2325 21.9104 28 22.8571 28H26.2857C27.2325 28 28 27.2325 28 26.2857V5.71429C28 4.76751 27.2325 4 26.2857 4H22.8571C21.9104 4 21.1429 4.76751 21.1429 5.71429V26.2857ZM17.7143 14.2857H14.2857V26.2857H17.7143V14.2857ZM26.2857 5.71429H22.8571V26.2857H26.2857V5.71429Z"
+          clipRule="evenodd"
+          fillRule="evenodd"
+        />
+      </svg>
+    ),
+    options: [
+      {
+        value: "4-year",
+        label: "4-year",
+        subOptions: [
+          { value: "Private", label: "Private" },
+          { value: "Public", label: "Public" },
+        ],
+      },
+      {
+        value: "2-year",
+        label: "2-year",
+        subOptions: [
+          {
+            value: "Community",
+            label: "Community",
+          },
+          {
+            value: "Trade/Career",
+            label: "Trade/Career",
+          },
+          {
+            value: "Other",
+            label: "Other",
+          },
+        ],
+      },
+    ],
+    minWidth: "",
+  },
+};
+
+export const FILTER_CONFIG: Record<
+  EstablishmentType,
+  Array<{
+    category: FilterData;
+    filterKey: keyof FiltersType;
+    tooltip?: string;
+  }>
+> = {
+  "K-12": [
+    { category: FILTER_MOCK.GRADE, filterKey: "grade" },
+    { category: FILTER_MOCK.TYPE, filterKey: "type" },
+    { category: FILTER_MOCK.RELIGION, filterKey: "religion" },
+    { category: FILTER_MOCK.SPECIALTY, filterKey: "specialty" },
+  ],
+  Colleges: [
+    { category: FILTER_MOCK.COLLEGE_TYPE, filterKey: "collegeType" },
+    { category: FILTER_MOCK.RELIGION, filterKey: "religion" },
+    { category: FILTER_MOCK.MAJORS, filterKey: "majors" },
+    { category: FILTER_MOCK.SPECIALTY, filterKey: "specialty" },
+  ],
+  Graduates: [
+    { category: FILTER_MOCK.COLLEGE_TYPE, filterKey: "collegeType" },
+    { category: FILTER_MOCK.RELIGION, filterKey: "religion" },
+    { category: FILTER_MOCK.SPECIALTY, filterKey: "specialty" },
+    {
+      category: FILTER_MOCK.PROGRAM,
+      filterKey: "program",
+      tooltip:
+        "Select a program to filter your search to only schools that offer degrees in that specific program.",
+    },
+  ],
 };
 
 export const sortMock: SortData = {
@@ -162,6 +338,49 @@ export const highestGrade = [
   { label: "12", value: "12" },
 ];
 
+export const generalAreaOfStudy = [
+  { label: "Any", value: "any" },
+  { label: "Agricultural Sciences", value: "Agricultural Sciences" },
+  { label: "Anthropology and Sociology", value: "Anthropology and Sociology" },
+  { label: "Architecture", value: "Architecture" },
+  { label: "Art", value: "Art" },
+  { label: "Arts Management", value: "Arts Management" },
+  { label: "Biology", value: "Biology" },
+  { label: "Building and Construction", value: "Building and Construction" },
+  { label: "Business and Management", value: "Business and Management" },
+  { label: "Chemistry", value: "Chemistry" },
+  { label: "Communications", value: "Communications" },
+];
+
+export const admissionsProcess = [
+  { label: "Any", value: "Any" },
+  { label: "No Application Fee", value: "No Application Fee" },
+  { label: "Accepts Common App", value: "Accepts Common App" },
+  { label: "Test-Optional", value: "Test-Optional" },
+  { label: "Offers Early Decision", value: "Offers Early Decision" },
+  { label: "Offers Early Action", value: "Offers Early Action" },
+  { label: "Rolling Admission", value: "Rolling Admission" },
+];
+
+export const religionAffiliation = [
+  { label: "Any", value: "Any" },
+  { label: "Catholic", value: "Catholic" },
+  { label: "Christian", value: "Christian" },
+  { label: "Jewish", value: "Jewish" },
+];
+
+export const startingSalaryAfterGraduation = [
+  { label: "Any", value: "Any" },
+  { label: "$30,000+", value: "$30,000+" },
+  { label: "$40,000+", value: "$40,000+" },
+  { label: "$50,000+", value: "$50,000+" },
+  { label: "$60,000+", value: "$60,000+" },
+  { label: "$70,000+", value: "$70,000+" },
+  { label: "$80,000+", value: "$80,000+" },
+  { label: "$90,000+", value: "$90,000+" },
+  { label: "$100,000+", value: "$100,000+" },
+];
+
 export const ORGANIZATION_MOCK = [
   { label: "Any", value: "any" },
   {
@@ -179,5 +398,79 @@ export const ORGANIZATION_MOCK = [
   {
     label: "Association of Christian Schools International",
     value: "ACSI",
+  },
+];
+
+export const schools: School[] = [
+  {
+    name: "Massachusetts Institute of Technology",
+    schoolType: "PRIVATE SCHOOL",
+    location: "Cambridge, MA",
+    ratio: "8:1",
+    rating: "4.9 (875)",
+    image: "https://i.ibb.co/J8QjpbD/school1.webp",
+    avatar: "https://i.ibb.co/J8QjpbD/school1.webp",
+    ranking: "#1 Best Private High Schools in Houston Area",
+    grade: "A+",
+    students: "1,756",
+    price: "$53,790",
+    grades: "PK, K-12",
+    specialty: "hot",
+    description:
+      "MIT offers an unparalleled academic experience with world-class faculty, cutting-edge research, and a collaborative culture. The opportunities for innovation, networking, and career advancement are exceptional.",
+    reviews: 672,
+  },
+  {
+    name: "Stanford University",
+    schoolType: "CHARTER SCHOOL",
+    location: "Stanford, CA",
+    ratio: "6:1",
+    rating: "4.8 (923)",
+    image: "https://i.ibb.co/fVRCnNZY/school2.webp",
+    avatar: "https://i.ibb.co/fVRCnNZY/school2.webp",
+    ranking: "#1 Best Private High Schools in America",
+    grade: "A+",
+    students: "1,343",
+    price: "$56,169",
+    grades: "9-12",
+    specialty: "instant-book",
+    description:
+      "Stanford combines academic excellence, entrepreneurial spirit, and innovation in the heart of Silicon Valley. The university's interdisciplinary approach and research opportunities are unmatched.",
+    reviews: 845,
+  },
+  {
+    name: "Harvard University",
+    schoolType: "MAGNET SCHOOL",
+    location: "Cambridge, MA",
+    ratio: "12:1",
+    rating: "4.7 (1k+)",
+    image: "https://i.ibb.co/fzzhd5tf/school4.webp",
+    avatar: "https://i.ibb.co/fzzhd5tf/school4.webp",
+    ranking: "#1 Best Private High Schools in Houston Area",
+    grade: "A+",
+    students: "1,469",
+    price: "$54,768",
+    grades: "6-12",
+    specialty: "sponsored",
+    description:
+      "Harvard provides a transformative educational experience with renowned faculty, diverse perspectives, and extensive resources. The university's rich history and global network create unique opportunities.",
+    reviews: 957,
+  },
+  {
+    name: "California Institute of Technology",
+    schoolType: "TRADITIONAL SCHOOL",
+    location: "Pasadena, CA",
+    ratio: "3:1",
+    rating: "4.8 (456)",
+    image: "https://i.ibb.co/B5pFBbB2/school5.webp",
+    avatar: "https://i.ibb.co/B5pFBbB2/school5.webp",
+    ranking: "#3 in Best School for Physics in America",
+    grade: "A+",
+    students: "789",
+    price: "$52,506",
+    grades: "K-12",
+    description:
+      "Caltech offers an intensive focus on science and engineering with small class sizes and close faculty collaboration. The institute's research facilities and theoretical approach are world-renowned.",
+    reviews: 389,
   },
 ];

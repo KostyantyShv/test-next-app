@@ -4,7 +4,19 @@ import { useSchoolsExplore } from "@/store/use-schools-explore";
 import React from "react";
 
 const ActiveFilters = () => {
-  const { getActiveFilters } = useSchoolsExplore((state) => state);
+  const {
+    getActiveFiltersK12,
+    getActiveFiltersCollege,
+    getActiveFiltersGraduates,
+    establishment,
+  } = useSchoolsExplore((state) => state);
+
+  const getActiveFilters =
+    establishment === "K-12"
+      ? getActiveFiltersK12
+      : establishment === "Colleges"
+      ? getActiveFiltersCollege
+      : getActiveFiltersGraduates;
 
   const renderActivePills = () => {
     const activeFilters = getActiveFilters();
@@ -22,6 +34,15 @@ const ActiveFilters = () => {
           break;
         case "rating":
           displayValue = `${filter.value}+ Rating`;
+          break;
+        case "cost":
+          displayValue = `$${Number(filter.value).toLocaleString()}`;
+          break;
+        case "sat":
+          displayValue = `SAT: ${filter.value}`;
+          break;
+        case "act":
+          displayValue = `ACT: ${filter.value}`;
           break;
         default:
           displayValue = String(filter.value);

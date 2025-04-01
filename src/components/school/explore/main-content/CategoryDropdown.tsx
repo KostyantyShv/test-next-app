@@ -1,8 +1,30 @@
+"use client";
+import { useDisclosure } from "@/hooks/useDisclosure";
+import { useSchoolsExplore } from "@/store/use-schools-explore";
+import { EstablishmentType } from "@/types/schools-explore";
 import React from "react";
 
+const establishmentTypes: EstablishmentType[] = [
+  "K-12",
+  "Colleges",
+  "Graduates",
+];
+
 const CategoryDropdown: React.FC = () => {
+  const { isOpened, setIsOpened, ref } = useDisclosure();
+  const { establishment, setEstablishment } = useSchoolsExplore(
+    (state) => state
+  );
+  const handleOpenDropdown = () => {
+    setIsOpened((prev) => (prev = !prev));
+  };
+
   return (
-    <div className="flex items-center gap-3 cursor-pointer p-2 rounded-[20px] hover:bg-[#f5f5f7] transition-colors duration-200 relative group">
+    <div
+      ref={ref}
+      onClick={handleOpenDropdown}
+      className="flex items-center gap-3 cursor-pointer p-2 rounded-[20px] hover:bg-[#f5f5f7] transition-colors duration-200 relative group"
+    >
       <div className="w-6 h-6 flex items-center justify-center text-[#464646]">
         <svg
           viewBox="0 0 24 24"
@@ -18,7 +40,7 @@ const CategoryDropdown: React.FC = () => {
           <path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
         </svg>
       </div>
-      <h1 className="text-lg font-semibold text-[#464646]">K-12</h1>
+      <h1 className="text-lg font-semibold text-[#464646]">{establishment}</h1>
       <div className="w-4 h-4 ml-2 text-[#4A4A4A]">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <path
@@ -29,9 +51,14 @@ const CategoryDropdown: React.FC = () => {
           ></path>
         </svg>
       </div>
-      <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.1)] w-[240px] p-2 hidden group-hover:block z-[1000]">
-        {["K-12", "Colleges", "Graduate", "Districts"].map((item) => (
+      <div
+        className={`absolute top-full left-0 mt-2 bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.1)] w-[240px] p-2 ${
+          isOpened ? "block z-[1000]" : "hidden"
+        }`}
+      >
+        {establishmentTypes.map((item) => (
           <div
+            onClick={() => setEstablishment(item)}
             key={item}
             className="flex items-center p-2 hover:bg-[rgba(0,0,0,0.04)] transition-colors duration-200 cursor-pointer"
           >

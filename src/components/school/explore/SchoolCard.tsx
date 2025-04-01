@@ -1,24 +1,6 @@
-// types/school.ts
-export interface School {
-  name: string;
-  schoolType: string;
-  location: string;
-  ratio: string;
-  rating: string;
-  image: string;
-  avatar: string;
-  ranking: string;
-  grade: string;
-  students: string;
-  price: string;
-  grades: string;
-  specialty?: "hot" | "instant-book" | "sponsored";
-  description: string;
-  reviews: number;
-}
-
-// components/SchoolCard.tsx
 import React from "react";
+import { School } from "./types";
+import Image from "next/image";
 
 const SchoolCard: React.FC<{ school: School }> = ({ school }) => {
   return (
@@ -93,7 +75,9 @@ const SchoolCard: React.FC<{ school: School }> = ({ school }) => {
           </div>
         )}
 
-        <img
+        <Image
+          height={720}
+          width={720}
           src={school.image}
           alt={school.name}
           className="school-image absolute top-0 left-0 w-full h-full object-cover"
@@ -195,7 +179,9 @@ const SchoolCard: React.FC<{ school: School }> = ({ school }) => {
 
       <div className="hover-overlay absolute top-0 left-0 w-full h-full bg-[rgba(255,255,255,0.98)] p-6 opacity-0 invisible transition-all duration-300 ease-in-out flex flex-col z-10 group-hover:opacity-100 group-hover:visible">
         <div className="hover-header flex gap-3 mb-3">
-          <img
+          <Image
+            height={720}
+            width={720}
             src={school.avatar}
             alt={school.name}
             className="school-avatar w-10 h-10 rounded-lg object-cover"
@@ -294,78 +280,3 @@ const SchoolCard: React.FC<{ school: School }> = ({ school }) => {
 };
 
 export default SchoolCard;
-
-// data/schools.ts
-export const schools: School[] = [
-  {
-    name: "Massachusetts Institute of Technology",
-    schoolType: "PRIVATE SCHOOL",
-    location: "Cambridge, MA",
-    ratio: "8:1",
-    rating: "4.9 (875)",
-    image: "https://i.ibb.co/J8QjpbD/school1.webp",
-    avatar: "https://i.ibb.co/J8QjpbD/school1.webp",
-    ranking: "#1 Best Private High Schools in Houston Area",
-    grade: "A+",
-    students: "1,756",
-    price: "$53,790",
-    grades: "PK, K-12",
-    specialty: "hot",
-    description:
-      "MIT offers an unparalleled academic experience with world-class faculty, cutting-edge research, and a collaborative culture. The opportunities for innovation, networking, and career advancement are exceptional.",
-    reviews: 672,
-  },
-  {
-    name: "Stanford University",
-    schoolType: "CHARTER SCHOOL",
-    location: "Stanford, CA",
-    ratio: "6:1",
-    rating: "4.8 (923)",
-    image: "https://i.ibb.co/fVRCnNZY/school2.webp",
-    avatar: "https://i.ibb.co/fVRCnNZY/school2.webp",
-    ranking: "#1 Best Private High Schools in America",
-    grade: "A+",
-    students: "1,343",
-    price: "$56,169",
-    grades: "9-12",
-    specialty: "instant-book",
-    description:
-      "Stanford combines academic excellence, entrepreneurial spirit, and innovation in the heart of Silicon Valley. The university's interdisciplinary approach and research opportunities are unmatched.",
-    reviews: 845,
-  },
-  {
-    name: "Harvard University",
-    schoolType: "MAGNET SCHOOL",
-    location: "Cambridge, MA",
-    ratio: "12:1",
-    rating: "4.7 (1k+)",
-    image: "https://i.ibb.co/fzzhd5tf/school4.webp",
-    avatar: "https://i.ibb.co/fzzhd5tf/school4.webp",
-    ranking: "#1 Best Private High Schools in Houston Area",
-    grade: "A+",
-    students: "1,469",
-    price: "$54,768",
-    grades: "6-12",
-    specialty: "sponsored",
-    description:
-      "Harvard provides a transformative educational experience with renowned faculty, diverse perspectives, and extensive resources. The university's rich history and global network create unique opportunities.",
-    reviews: 957,
-  },
-  {
-    name: "California Institute of Technology",
-    schoolType: "TRADITIONAL SCHOOL",
-    location: "Pasadena, CA",
-    ratio: "3:1",
-    rating: "4.8 (456)",
-    image: "https://i.ibb.co/B5pFBbB2/school5.webp",
-    avatar: "https://i.ibb.co/B5pFBbB2/school5.webp",
-    ranking: "#3 in Best School for Physics in America",
-    grade: "A+",
-    students: "789",
-    price: "$52,506",
-    grades: "K-12",
-    description:
-      "Caltech offers an intensive focus on science and engineering with small class sizes and close faculty collaboration. The institute's research facilities and theoretical approach are world-renowned.",
-    reviews: 389,
-  },
-];
