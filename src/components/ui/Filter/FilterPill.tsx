@@ -13,21 +13,6 @@ const FilterPill = ({
   const removeFilter = useSchoolsExplore((state) => state.removeFilter);
   const handleRemoveFilter = () => removeFilter(filterType, value);
 
-  // let displayValue: string;
-  // switch (filterType) {
-  //   case "tuition":
-  //     displayValue = `$${Number(value).toLocaleString()}`;
-  //     break;
-  //   case "ration":
-  //     displayValue = `${value}:1`;
-  //     break;
-  //   case "schoolScoutGrades":
-  //     displayValue = String(value); // Already in "Academics: A" format
-  //     break;
-  //   default:
-  //     displayValue = String(value); // Default to string conversion
-  // }
-
   return (
     <div className="flex flex-row rounded-2xl bg-[#F2F2F2] py-1 px-2 w-fit items-center justify-center gap-2">
       <span className="border-r-2 pr-2">{value}</span>

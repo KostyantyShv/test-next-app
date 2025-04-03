@@ -59,7 +59,7 @@ const CollegesFilters: React.FC<CollegesFiltersProps> = ({
   const isCollegeOptionChecked = (optionValue: string): boolean => {
     const [type, subType] = optionValue.split(": ");
     return subType
-      ? filterColleges.collegeType[type as CollegeTypeFilter]?.includes(
+      ? filterColleges.collegeTypeColleges[type as CollegeTypeFilter]?.includes(
           subType as CollegeSubTypeFilter
         ) || false
       : false;

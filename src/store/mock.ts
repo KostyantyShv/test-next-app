@@ -29,7 +29,7 @@ export const initialFilters: FiltersType = {
   collegeSpecialty: [],
   academics: [],
   schoolScoutGrades: [],
-  collegeType: {
+  collegeTypeColleges: {
     "4-year": [],
     "2-year": [],
   },

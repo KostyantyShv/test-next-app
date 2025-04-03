@@ -10,7 +10,6 @@ interface ContentAreaProps {
 }
 
 const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
-  // Define the number of cards to show based on layout
   const cardCounts = {
     grid: 6,
     list: 4,
@@ -29,7 +28,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
           {schools
             .slice(0, cardCounts.grid)
             .map((school: School, i: number) => (
-              <SchoolCard key={i} school={school} />
+              <SchoolCard key={i} school={school} layout={layout} />
             ))}
         </div>
         <div
@@ -40,7 +39,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
           {schools
             .slice(0, cardCounts.list)
             .map((school: School, i: number) => (
-              <SchoolCard key={i} school={school} />
+              <SchoolCard key={i} school={school} layout={layout} />
             ))}
         </div>
         <div
@@ -51,7 +50,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
           {schools
             .slice(0, cardCounts.hybrid)
             .map((school: School, i: number) => (
-              <SchoolCard key={i} school={school} />
+              <SchoolCard key={i} school={school} layout={layout} />
             ))}
         </div>
         <div
@@ -62,7 +61,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
           {schools
             .slice(0, cardCounts.classic)
             .map((school: School, i: number) => (
-              <SchoolCard key={i} school={school} />
+              <SchoolCard key={i} school={school} layout={layout} />
             ))}
         </div>
       </div>

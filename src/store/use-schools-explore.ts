@@ -50,11 +50,14 @@ const filterMap: Record<ESTABLISHMENT, EstablishmentTypes> = {
 const getActiveFilters = (filterData: FiltersType): FilterItem[] => {
   const activeFilters: FilterItem[] = [];
 
-  Object.entries(filterData.collegeType).forEach(([type, subTypes]) => {
+  Object.entries(filterData.collegeTypeColleges).forEach(([type, subTypes]) => {
     if (subTypes.length > 0) {
-      activeFilters.push({ type: "collegeType", value: type });
+      activeFilters.push({ type: "collegeTypeColleges", value: type });
       activeFilters.push(
-        ...subTypes.map((subType) => ({ type: "collegeType", value: subType }))
+        ...subTypes.map((subType) => ({
+          type: "collegeTypeColleges",
+          value: subType,
+        }))
       );
     }
   });
@@ -260,9 +263,12 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
       return {
         [filterKey]: {
           ...currentFilter,
-          collegeType: {
-            ...currentFilter.collegeType,
-            [type]: toggleFilter(currentFilter.collegeType[type], subType),
+          collegeTypeColleges: {
+            ...currentFilter.collegeTypeColleges,
+            [type]: toggleFilter(
+              currentFilter.collegeTypeColleges[type],
+              subType
+            ),
           },
         },
       };
@@ -396,17 +402,17 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
     set((state) => {
       const currentFilters = state[filterStateKey];
 
-      if (filterType === "collegeType") {
+      if (filterType === "collegeTypeColleges") {
         const [type, subType] = (value as string).split(": ");
         return {
           [filterStateKey]: {
             ...currentFilters,
-            collegeType: {
-              ...currentFilters.collegeType,
+            collegeTypeColleges: {
+              ...currentFilters.collegeTypeColleges,
               [type]: subType
-                ? currentFilters.collegeType[type as CollegeTypeFilter].filter(
-                    (st) => st !== subType
-                  )
+                ? currentFilters.collegeTypeColleges[
+                    type as CollegeTypeFilter
+                  ].filter((st) => st !== subType)
                 : [],
             },
           },

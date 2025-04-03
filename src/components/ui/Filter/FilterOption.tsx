@@ -18,43 +18,38 @@ export const FilterOption: React.FC<FilterOptionProps> = ({
   level = 0,
   isOptionChecked,
 }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (onChange) {
-      onChange(e);
+  const { value, label, subOptions, parentValue } = option;
 
-      if (option.subOptions && option.subOptions.length > 0) {
-        const isMainChecked = e.target.checked;
-        option.subOptions.forEach((subOption) => {
-          const syntheticEvent = {
-            target: {
-              dataset: { filter, value: `${option.value}: ${subOption.value}` },
-              checked: isMainChecked,
-            },
-          } as unknown as React.ChangeEvent<HTMLInputElement>;
-          onChange(syntheticEvent);
-        });
-      }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!onChange) return;
+    onChange(e);
+
+    if (subOptions?.length) {
+      const isMainChecked = e.target.checked;
+      subOptions.forEach((subOption) => {
+        const syntheticEvent = {
+          target: {
+            dataset: { filter, value: `${value}: ${subOption.value}` },
+            checked: isMainChecked,
+          },
+        } as unknown as React.ChangeEvent<HTMLInputElement>;
+        onChange(syntheticEvent);
+      });
     }
   };
 
   const areAllSuboptionsChecked =
-    option.subOptions && option.subOptions.length > 0 && isOptionChecked
-      ? option.subOptions.every((subOption) =>
-          isOptionChecked(`${option.value}: ${subOption.value}`)
-        )
+    subOptions?.length && isOptionChecked
+      ? subOptions.every((sub) => isOptionChecked(`${value}: ${sub.value}`))
       : false;
 
   const finalChecked = isChecked || areAllSuboptionsChecked;
-
-  // Use parentValue only for collegeType suboptions; otherwise, use option.value alone
-  const valueForInput = option.parentValue
-    ? `${option.parentValue}: ${option.value}` // Suboption case (e.g., "2-year: Community")
-    : option.value; // Top-level or non-nested case (e.g., "2-year" or "christian")
+  const valueForInput = parentValue ? `${parentValue}: ${value}` : value;
 
   return (
     <div className="filter-option-wrapper">
       <label
-        className={`filter-option flex items-center gap-2 px-3 py-2 rounded hover:bg-[#f8fafc] cursor-pointer text-sm`}
+        className="filter-option flex items-center gap-2 px-3 py-2 rounded hover:bg-[#f8fafc] cursor-pointer text-sm"
         style={{ paddingLeft: `${level * 16 + 12}px` }}
       >
         <input
@@ -65,20 +60,18 @@ export const FilterOption: React.FC<FilterOptionProps> = ({
           className="w-4 h-4 border-2 border-[#cbd5e0] rounded cursor-pointer"
           onChange={handleChange}
         />
-        {option.label}
+        {label}
       </label>
-      {option.subOptions && option.subOptions.length > 0 && (
+      {subOptions && subOptions?.length > 0 && (
         <div className="sub-options">
-          {option.subOptions.map((subOption: FilterOptionType) => (
+          {subOptions.map((subOption) => (
             <FilterOption
               key={`${filter}-${subOption.value}`}
               filter={filter}
-              option={{ ...subOption, parentValue: option.value }}
+              option={{ ...subOption, parentValue: value }}
               onChange={onChange}
               isChecked={
-                isOptionChecked
-                  ? isOptionChecked(`${option.value}: ${subOption.value}`)
-                  : false
+                isOptionChecked?.(`${value}: ${subOption.value}`) ?? false
               }
               level={level + 1}
               isOptionChecked={isOptionChecked}

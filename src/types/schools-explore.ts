@@ -160,7 +160,7 @@ export interface FiltersType {
   onlineFriendliness: OnlineFriendliness[];
   schoolScoutGrades: SchoolScoutGradeEntry[];
   studentBodySize: StudentBodySize[];
-  collegeType: {
+  collegeTypeColleges: {
     "4-year": CollegeSubTypeFilter[];
     "2-year": CollegeSubTypeFilter[];
   };

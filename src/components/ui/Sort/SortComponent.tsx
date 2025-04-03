@@ -40,7 +40,7 @@ export const SortComponent: React.FC<SortProps> = ({
         label={selectedOption.label}
         onClick={handleOpenDropdown}
       />
-      <Sort.Dropdown minWidth={sortData.minWidth} isOpened={isDropdownOpened}>
+      <Sort.Dropdown isOpened={isDropdownOpened}>
         {sortData.options.map((option) => (
           <Sort.Option
             key={option.value}

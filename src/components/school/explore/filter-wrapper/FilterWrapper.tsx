@@ -76,7 +76,7 @@ const FiltersWrapper: React.FC = () => {
       type: (value) => setType(value as TypeFilter),
       religion: (value) => setReligion(value as ReligionType),
       specialty: (value) => setSpecialty(value as SpecialtyType),
-      collegeType: (value) => {
+      collegeTypeColleges: (value) => {
         const [type, subType] = (value as string).split(": ");
         if (subType)
           setCollegeType(

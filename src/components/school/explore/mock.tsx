@@ -187,7 +187,7 @@ export const FILTER_MOCK: FilterMockType = {
       { value: "Doctorate", label: "Doctorate" },
     ],
   },
-  COLLEGE_TYPE: {
+  COLLEGE_TYPE_COLLEGES: {
     id: "college type",
     label: "College type",
     icon: (
@@ -229,6 +229,40 @@ export const FILTER_MOCK: FilterMockType = {
       },
     ],
   },
+  COLLEGE_TYPE_GRADUATE: {
+    id: "college type graduate",
+    label: "College type graduate",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 32 32">
+        <path
+          fill="currentColor"
+          d="M10.8571 26.2857C10.8571 27.2325 10.0896 28 9.14286 28H5.71429C4.76751 28 4 27.2325 4 26.2857V22C4 21.0532 4.76751 20.2857 5.71429 20.2857H9.14286C10.0896 20.2857 10.8571 21.0532 10.8571 22V26.2857ZM19.4286 26.2857V14.2857C19.4286 13.3389 18.6611 12.5714 17.7143 12.5714H14.2857C13.3389 12.5714 12.5714 13.3389 12.5714 14.2857V26.2857C12.5714 27.2325 13.3389 28 14.2857 28H17.7143C18.6611 28 19.4286 27.2325 19.4286 26.2857ZM21.1429 26.2857C21.1429 27.2325 21.9104 28 22.8571 28H26.2857C27.2325 28 28 27.2325 28 26.2857V5.71429C28 4.76751 27.2325 4 26.2857 4H22.8571C21.9104 4 21.1429 4.76751 21.1429 5.71429V26.2857ZM17.7143 14.2857H14.2857V26.2857H17.7143V14.2857ZM26.2857 5.71429H22.8571V26.2857H26.2857V5.71429Z"
+          clipRule="evenodd"
+          fillRule="evenodd"
+        />
+      </svg>
+    ),
+    options: [
+      {
+        value: "Public",
+        label: "Public",
+      },
+      {
+        value: "Private",
+        label: "Private",
+        subOptions: [
+          {
+            value: "For-profit",
+            label: "For-profit",
+          },
+          {
+            value: "Not-for-profit",
+            label: "Not-for-profit",
+          },
+        ],
+      },
+    ],
+  },
 };
 
 export const FILTER_CONFIG: Record<
@@ -248,7 +282,10 @@ export const FILTER_CONFIG: Record<
     { category: FILTER_MOCK.SPECIALTY, filterKey: "specialty" },
   ],
   Colleges: [
-    { category: FILTER_MOCK.COLLEGE_TYPE, filterKey: "collegeType" },
+    {
+      category: FILTER_MOCK.COLLEGE_TYPE_COLLEGES,
+      filterKey: "collegeTypeColleges",
+    },
     { category: FILTER_MOCK.RELIGION, filterKey: "religion" },
     {
       category: FILTER_MOCK.MAJORS,
@@ -259,7 +296,10 @@ export const FILTER_CONFIG: Record<
     { category: FILTER_MOCK.SPECIALTY, filterKey: "specialty" },
   ],
   Graduates: [
-    { category: FILTER_MOCK.COLLEGE_TYPE, filterKey: "collegeType" },
+    {
+      category: FILTER_MOCK.COLLEGE_TYPE_COLLEGES,
+      filterKey: "collegeTypeColleges",
+    },
     { category: FILTER_MOCK.RELIGION, filterKey: "religion" },
     { category: FILTER_MOCK.SPECIALTY, filterKey: "specialty" },
     {
