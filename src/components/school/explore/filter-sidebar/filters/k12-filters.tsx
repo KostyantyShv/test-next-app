@@ -9,9 +9,17 @@ import {
 } from "../../mock";
 import Filter from "@/components/ui/Filter/Filter";
 import {
+  Academics,
+  BoardingStatus,
   FiltersType,
+  GradeFilter,
+  GradeLevel,
+  Organization,
+  ReligionType,
   SchoolScoutCategory,
   SchoolScoutGrade,
+  SpecialtyType,
+  TypeFilter,
 } from "@/types/schools-explore";
 import { useSchoolsExplore } from "@/store/use-schools-explore";
 import { DropdownFilter } from "../DropdownFilter";
@@ -19,42 +27,74 @@ import SliderFilter from "../SliderFilter";
 import { RatingFilter } from "../RatingFilter";
 
 interface K12FiltersProps {
-  handleGradeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSchoolScoutGradeChange: (
-    category: SchoolScoutCategory,
-    grade: SchoolScoutGrade
-  ) => void;
-  handleSetRating: (rating: number) => void;
-  handleOrganizationChange: (value: string) => void;
-  handleHighestGradeChange: (value: string) => void;
-  handleAcademicsChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleBoardingStatusChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleTypeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleReligionChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSpecialtyChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSetTuition: (value: number) => void;
-  handleSetRation: (value: number) => void;
   isOptionChecked: (optionValue: string, key: keyof FiltersType) => boolean;
   isGradeSelected: (category: string, grade: SchoolScoutGrade) => boolean;
 }
 
 const K12Filters: React.FC<K12FiltersProps> = ({
-  handleGradeChange,
-  handleSchoolScoutGradeChange,
-  handleSetRating,
-  handleOrganizationChange,
-  handleHighestGradeChange,
-  handleAcademicsChange,
-  handleBoardingStatusChange,
-  handleTypeChange,
-  handleReligionChange,
-  handleSpecialtyChange,
-  handleSetTuition,
-  handleSetRation,
   isGradeSelected,
   isOptionChecked,
 }) => {
-  const filters = useSchoolsExplore((state) => state.filterK12);
+  const {
+    filterK12: filters,
+    setBoardingStatus,
+    setHighestGrade,
+    setOrganization,
+    setGrade,
+    setSchoolScoutGrade,
+    setReligion,
+    setSpecialty,
+    setType,
+    setAcademics,
+    setTuition,
+    setRation,
+    setRating,
+  } = useSchoolsExplore((state) => state);
+
+  const handleBoardingStatusChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.dataset.value as string;
+    setBoardingStatus(value as BoardingStatus);
+  };
+
+  const handleHighestGradeChange = (value: string) => {
+    setHighestGrade(value as GradeLevel);
+  };
+  const handleOrganizationChange = (value: string) => {
+    setOrganization(value as Organization);
+  };
+  const handleGradeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.dataset.value as string;
+    setGrade(value as GradeFilter);
+  };
+
+  const handleSchoolScoutGradeChange = (
+    category: SchoolScoutCategory,
+    grade: SchoolScoutGrade
+  ) => {
+    setSchoolScoutGrade(category, grade);
+  };
+
+  const handleReligionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.dataset.value as string;
+    setReligion(value as ReligionType);
+  };
+
+  const handleSpecialtyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.dataset.value as string;
+    setSpecialty(value as SpecialtyType);
+  };
+
+  const handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.dataset.value as string;
+    setType(value as TypeFilter);
+  };
+
+  const handleAcademicsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.dataset.value as string;
+    setAcademics(value as Academics);
+  };
   return (
     <>
       <FilterSection title="Grade" sectionId="grade">
@@ -159,7 +199,7 @@ const K12Filters: React.FC<K12FiltersProps> = ({
           max={50000}
           initialValue={25000}
           value={filters.tuition}
-          onSetValue={handleSetTuition}
+          onSetValue={setTuition}
           unit="$"
           formatValue={(value) => `$${value.toLocaleString("en-US")}`}
         />
@@ -176,7 +216,7 @@ const K12Filters: React.FC<K12FiltersProps> = ({
           max={50}
           initialValue={2}
           value={filters.ration}
-          onSetValue={handleSetRation}
+          onSetValue={setRation}
           formatValue={(value) => `${value.toLocaleString("en-US")}:1`}
         />
       </FilterSection>
@@ -243,7 +283,7 @@ const K12Filters: React.FC<K12FiltersProps> = ({
       </FilterSection>
       {/* Rating Filter */}
       <FilterSection title="Rating" sectionId="rating">
-        <RatingFilter rating={filters.rating} setRating={handleSetRating} />
+        <RatingFilter rating={filters.rating} setRating={setRating} />
       </FilterSection>
     </>
   );

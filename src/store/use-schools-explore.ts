@@ -28,24 +28,67 @@ import {
   ReligionAffiliation,
   GoodFor,
   StartingSalaryAfterGraduation,
+  EstablishmentTypes,
+  Program,
 } from "@/types/schools-explore";
 import { toggleFilter } from "@/utils/toggleFilters";
 import { isEmptyValue } from "@/utils/isEmptyValue";
 import {
   arrayFilterTypes,
-  initialCollegesFilters,
+  initialFilters,
   initialEstablishment,
-  initialGraduatesFilters,
-  initialK12Filters,
   singleFilterTypes,
 } from "./mock";
 import { ESTABLISHMENT } from "./enum";
 
+const filterMap: Record<ESTABLISHMENT, EstablishmentTypes> = {
+  [ESTABLISHMENT.K_12]: "filterK12",
+  [ESTABLISHMENT.COLLEGES]: "filterColleges",
+  [ESTABLISHMENT.GRADUATES]: "filterGraduates",
+};
+
+const getActiveFilters = (filterData: FiltersType): FilterItem[] => {
+  const activeFilters: FilterItem[] = [];
+
+  Object.entries(filterData.collegeType).forEach(([type, subTypes]) => {
+    if (subTypes.length > 0) {
+      activeFilters.push({ type: "collegeType", value: type });
+      activeFilters.push(
+        ...subTypes.map((subType) => ({ type: "collegeType", value: subType }))
+      );
+    }
+  });
+
+  arrayFilterTypes.forEach(({ key, type }) => {
+    if (filterData[key].length > 0) {
+      activeFilters.push(...filterData[key].map((value) => ({ type, value })));
+    }
+  });
+
+  singleFilterTypes.forEach(({ key, initial }) => {
+    const value = filterData[key];
+    if (value !== initial && !isEmptyValue(value)) {
+      activeFilters.push({ type: key, value });
+    }
+  });
+
+  if (filterData.schoolScoutGrades.length > 0) {
+    activeFilters.push(
+      ...filterData.schoolScoutGrades.map((grade) => ({
+        type: "schoolScoutGrades",
+        value: grade,
+      }))
+    );
+  }
+
+  return activeFilters;
+};
+
 export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
-  filterK12: initialK12Filters,
-  filterColleges: initialCollegesFilters,
+  filterK12: initialFilters,
+  filterColleges: initialFilters,
+  filterGraduates: initialFilters,
   establishment: initialEstablishment,
-  filterGraduates: initialGraduatesFilters,
 
   setGrade: (grade: GradeFilter) => {
     set((state) => ({
@@ -68,54 +111,33 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
   setReligion: (religion: ReligionType) => {
     const { establishment } = get();
 
-    if (establishment === ESTABLISHMENT.K_12) {
-      set((state) => ({
-        filterK12: {
-          ...state.filterK12,
-          religion: toggleFilter(state.filterK12.religion, religion),
+    set((state) => {
+      const filterKey = filterMap[establishment];
+      const currentFilter = state[filterKey];
+
+      return {
+        [filterKey]: {
+          ...currentFilter,
+          religion: toggleFilter(currentFilter.religion, religion),
         },
-      }));
-    } else if (establishment === ESTABLISHMENT.COLLEGES) {
-      set((state) => ({
-        filterColleges: {
-          ...state.filterColleges,
-          religion: toggleFilter(state.filterColleges.religion, religion),
-        },
-      }));
-    } else if (establishment === ESTABLISHMENT.GRADUATES) {
-      set((state) => ({
-        filterGraduates: {
-          ...state.filterGraduates,
-          religion: toggleFilter(state.filterGraduates.religion, religion),
-        },
-      }));
-    }
+      } as Partial<SchoolsStore>;
+    });
   },
 
   setSpecialty: (specialty: SpecialtyType) => {
     const { establishment } = get();
-    if (establishment === ESTABLISHMENT.K_12) {
-      set((state) => ({
-        filterK12: {
-          ...state.filterK12,
-          specialty: toggleFilter(state.filterK12.specialty, specialty),
+
+    set((state) => {
+      const filterKey = filterMap[establishment];
+      const currentFilter = state[filterKey];
+
+      return {
+        [filterKey]: {
+          ...currentFilter,
+          specialty: toggleFilter(currentFilter.specialty, specialty),
         },
-      }));
-    } else if (establishment === ESTABLISHMENT.COLLEGES) {
-      set((state) => ({
-        filterColleges: {
-          ...state.filterColleges,
-          specialty: toggleFilter(state.filterColleges.specialty, specialty),
-        },
-      }));
-    } else if (establishment === ESTABLISHMENT.GRADUATES) {
-      set((state) => ({
-        filterGraduates: {
-          ...state.filterGraduates,
-          specialty: toggleFilter(state.filterGraduates.specialty, specialty),
-        },
-      }));
-    }
+      } as Partial<SchoolsStore>;
+    });
   },
 
   setGenAreaOfStudy: (area: GenAreaOfStudy) => {
@@ -166,7 +188,14 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
     }));
   },
 
-  setProgram: () => {},
+  setProgram: (program: Program) => {
+    set((state) => ({
+      filterGraduates: {
+        ...state.filterGraduates,
+        program: toggleFilter(state.filterGraduates.program, program),
+      },
+    }));
+  },
 
   setTuition: (value: number) => {
     set((state) => ({
@@ -223,43 +252,21 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
 
   setCollegeType: (type: CollegeTypeFilter, subType: CollegeSubTypeFilter) => {
     const { establishment } = get();
-    if (establishment === ESTABLISHMENT.K_12) {
-      set((state) => ({
-        filterK12: {
-          ...state.filterK12,
+
+    set((state) => {
+      const filterKey = filterMap[establishment];
+      const currentFilter = state[filterKey];
+
+      return {
+        [filterKey]: {
+          ...currentFilter,
           collegeType: {
-            ...state.filterK12.collegeType,
-            [type]: toggleFilter(state.filterK12.collegeType[type], subType),
+            ...currentFilter.collegeType,
+            [type]: toggleFilter(currentFilter.collegeType[type], subType),
           },
         },
-      }));
-    } else if (establishment === ESTABLISHMENT.COLLEGES) {
-      set((state) => ({
-        filterColleges: {
-          ...state.filterColleges,
-          collegeType: {
-            ...state.filterColleges.collegeType,
-            [type]: toggleFilter(
-              state.filterColleges.collegeType[type],
-              subType
-            ),
-          },
-        },
-      }));
-    } else if (establishment === ESTABLISHMENT.GRADUATES) {
-      set((state) => ({
-        filterGraduates: {
-          ...state.filterGraduates,
-          collegeType: {
-            ...state.filterGraduates.collegeType,
-            [type]: toggleFilter(
-              state.filterGraduates.collegeType[type],
-              subType
-            ),
-          },
-        },
-      }));
-    }
+      };
+    });
   },
 
   setReligionAffiliation: (religion: ReligionAffiliation) => {
@@ -301,45 +308,11 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
     }));
   },
 
-  getActiveFiltersK12: (): FilterItem[] => {
-    const { filterK12 } = get();
-    const activeFilters: FilterItem[] = [];
-    Object.entries(filterK12.collegeType).forEach(([type, subTypes]) => {
-      if (subTypes.length > 0) {
-        activeFilters.push({ type: "collegeType", value: type });
-        activeFilters.push(
-          ...subTypes.map((subType) => ({
-            type: "collegeType",
-            value: subType,
-          }))
-        );
-      }
-    });
+  getActiveFiltersCollege: () => getActiveFilters(get().filterColleges),
 
-    arrayFilterTypes.forEach(({ key, type }) => {
-      if (filterK12[key].length > 0) {
-        activeFilters.push(...filterK12[key].map((value) => ({ type, value })));
-      }
-    });
+  getActiveFiltersGraduates: () => getActiveFilters(get().filterGraduates),
 
-    singleFilterTypes.forEach(({ key, initial }) => {
-      const value = filterK12[key];
-      if (value !== initial && !isEmptyValue(value)) {
-        activeFilters.push({ type: key, value });
-      }
-    });
-
-    if (filterK12.schoolScoutGrades.length > 0) {
-      activeFilters.push(
-        ...filterK12.schoolScoutGrades.map((grade) => ({
-          type: "schoolScoutGrades",
-          value: grade,
-        }))
-      );
-    }
-
-    return activeFilters;
-  },
+  getActiveFiltersK12: () => getActiveFilters(get().filterK12),
 
   setAct: (value: number) => {
     set((state) => ({
@@ -399,90 +372,6 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
         startingSalaryAfterGraduation: salary,
       },
     }));
-  },
-
-  getActiveFiltersCollege: (): FilterItem[] => {
-    const { filterColleges } = get();
-    const activeFilters: FilterItem[] = [];
-    Object.entries(filterColleges.collegeType).forEach(([type, subTypes]) => {
-      if (subTypes.length > 0) {
-        activeFilters.push({ type: "collegeType", value: type });
-        activeFilters.push(
-          ...subTypes.map((subType) => ({
-            type: "collegeType",
-            value: subType,
-          }))
-        );
-      }
-    });
-
-    arrayFilterTypes.forEach(({ key, type }) => {
-      if (filterColleges[key].length > 0) {
-        activeFilters.push(
-          ...filterColleges[key].map((value) => ({ type, value }))
-        );
-      }
-    });
-
-    singleFilterTypes.forEach(({ key, initial }) => {
-      const value = filterColleges[key];
-      if (value !== initial && !isEmptyValue(value)) {
-        activeFilters.push({ type: key, value });
-      }
-    });
-
-    if (filterColleges.schoolScoutGrades.length > 0) {
-      activeFilters.push(
-        ...filterColleges.schoolScoutGrades.map((grade) => ({
-          type: "schoolScoutGrades",
-          value: grade,
-        }))
-      );
-    }
-
-    return activeFilters;
-  },
-
-  getActiveFiltersGraduates: (): FilterItem[] => {
-    const { filterGraduates } = get();
-    const activeFilters: FilterItem[] = [];
-    Object.entries(filterGraduates.collegeType).forEach(([type, subTypes]) => {
-      if (subTypes.length > 0) {
-        activeFilters.push({ type: "collegeType", value: type });
-        activeFilters.push(
-          ...subTypes.map((subType) => ({
-            type: "collegeType",
-            value: subType,
-          }))
-        );
-      }
-    });
-
-    arrayFilterTypes.forEach(({ key, type }) => {
-      if (filterGraduates[key].length > 0) {
-        activeFilters.push(
-          ...filterGraduates[key].map((value) => ({ type, value }))
-        );
-      }
-    });
-
-    singleFilterTypes.forEach(({ key, initial }) => {
-      const value = filterGraduates[key];
-      if (value !== initial && !isEmptyValue(value)) {
-        activeFilters.push({ type: key, value });
-      }
-    });
-
-    if (filterGraduates.schoolScoutGrades.length > 0) {
-      activeFilters.push(
-        ...filterGraduates.schoolScoutGrades.map((grade) => ({
-          type: "schoolScoutGrades",
-          value: grade,
-        }))
-      );
-    }
-
-    return activeFilters;
   },
 
   removeFilter: (filterType: keyof FiltersType, value: FilterValue) => {
@@ -545,16 +434,16 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
         };
       }
 
-      const initialFilters = {
-        [ESTABLISHMENT.K_12]: initialK12Filters,
-        [ESTABLISHMENT.COLLEGES]: initialCollegesFilters,
-        [ESTABLISHMENT.GRADUATES]: initialGraduatesFilters,
+      const allInitialFilters = {
+        [ESTABLISHMENT.K_12]: initialFilters,
+        [ESTABLISHMENT.COLLEGES]: initialFilters,
+        [ESTABLISHMENT.GRADUATES]: initialFilters,
       }[establishment];
 
       return {
         [filterStateKey]: {
           ...currentFilters,
-          [filterType]: initialFilters[filterType],
+          [filterType]: allInitialFilters[filterType],
         },
       };
     });
@@ -593,15 +482,15 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
 
     if (establishment === ESTABLISHMENT.K_12) {
       set(() => ({
-        filterK12: { ...initialK12Filters },
+        filterK12: { ...initialFilters },
       }));
     } else if (establishment === ESTABLISHMENT.COLLEGES) {
       set(() => ({
-        filterColleges: { ...initialCollegesFilters },
+        filterColleges: { ...initialFilters },
       }));
     } else if (establishment === ESTABLISHMENT.GRADUATES) {
       set(() => ({
-        filterGraduates: { ...initialGraduatesFilters },
+        filterGraduates: { ...initialFilters },
       }));
     }
   },

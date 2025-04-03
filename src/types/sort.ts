@@ -12,5 +12,4 @@ export type SortData = {
   label: string;
   icon: React.ReactNode;
   options: SortOption[];
-  minWidth: string;
 };

@@ -15,6 +15,8 @@ interface FilterButtonComponentProps {
   filters: FiltersType;
   filterKey: keyof FiltersType;
   tooltip?: string;
+  hasTextInput?: boolean;
+  inputPlaceholder?: string;
 }
 
 export const FilterButtonComponent = ({
@@ -23,6 +25,8 @@ export const FilterButtonComponent = ({
   filters,
   filterKey,
   tooltip,
+  hasTextInput = false,
+  inputPlaceholder = "",
 }: FilterButtonComponentProps) => {
   const {
     isOpened: isDropdownOpened,
@@ -85,7 +89,10 @@ export const FilterButtonComponent = ({
         activeCount={activeCount}
         tooltip={tooltip}
       />
-      <Filter.Dropdown minWidth={category.minWidth} isOpened={isDropdownOpened}>
+      <Filter.Dropdown isOpened={isDropdownOpened}>
+        {hasTextInput ? (
+          <Filter.TextInput inputPlaceholder={inputPlaceholder} />
+        ) : null}
         {category.options.map((option) => (
           <Filter.Option
             key={`${category.id}-${option.value}`}

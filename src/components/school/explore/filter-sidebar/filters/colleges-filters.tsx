@@ -12,55 +12,49 @@ import {
 import { DropdownFilter } from "../DropdownFilter";
 import Filter from "@/components/ui/Filter/Filter";
 import {
+  AdmissionsProcess,
+  CollegeSpecialty,
   CollegeSubTypeFilter,
   CollegeTypeFilter,
   FiltersType,
+  FilterValue,
+  GenAreaOfStudy,
+  GoodFor,
+  MajorsType,
+  OnlineFriendliness,
+  ReligionAffiliation,
+  Selectivity,
+  StartingSalaryAfterGraduation,
+  StudentBodySize,
 } from "@/types/schools-explore";
 import SliderFilter from "../SliderFilter";
 import { RatingFilter } from "../RatingFilter";
 
 interface CollegesFiltersProps {
-  handleCollegeTypeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleGenAreaOfStudyChange: (value: string) => void;
-  handleMajorsChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSelectivityChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleOnlineFriendlinessChange: (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => void;
-  handleStudentBodySizeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleGoodForChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleCollegeSpecialtyChange: (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => void;
-  handleSetCost: (value: number) => void;
-  handleSetAct: (value: number) => void;
-  handleSetSat: (value: number) => void;
-  handleAdmissionsProcessChange: (value: string) => void;
-  handleReligionAffiliation: (value: string) => void;
-  handleStartingSalaryAfterGraduationChange: (value: string) => void;
   isOptionChecked: (optionValue: string, key: keyof FiltersType) => boolean;
-  handleSetRating: (rating: number) => void;
 }
 
 const CollegesFilters: React.FC<CollegesFiltersProps> = ({
-  handleCollegeTypeChange,
-  handleGenAreaOfStudyChange,
-  handleOnlineFriendlinessChange,
-  handleStudentBodySizeChange,
-  handleCollegeSpecialtyChange,
-  handleAdmissionsProcessChange,
-  handleStartingSalaryAfterGraduationChange,
-  handleReligionAffiliation,
-  handleGoodForChange,
-  handleSelectivityChange,
-  handleMajorsChange,
-  handleSetCost,
-  handleSetAct,
-  handleSetSat,
-  handleSetRating,
   isOptionChecked,
 }) => {
-  const { filterColleges } = useSchoolsExplore((state) => state);
+  const {
+    filterColleges,
+    setCollegeType,
+    setGenAreaOfStudy,
+    setRating,
+    setMajors,
+    setCost,
+    setOnlineFriendliness,
+    setStudentBodySize,
+    setCollegeSpecialty,
+    setAdmissionsProcess,
+    setReligionAffiliation,
+    setSelectivity,
+    setAct,
+    setSat,
+    setGoodFor,
+    setStartingSalaryAfterGraduation,
+  } = useSchoolsExplore((state) => state);
 
   const isCollegeOptionChecked = (optionValue: string): boolean => {
     const [type, subType] = optionValue.split(": ");
@@ -69,6 +63,68 @@ const CollegesFilters: React.FC<CollegesFiltersProps> = ({
           subType as CollegeSubTypeFilter
         ) || false
       : false;
+  };
+
+  const handleStartingSalaryAfterGraduationChange = (value: string) => {
+    setStartingSalaryAfterGraduation(value as StartingSalaryAfterGraduation);
+  };
+
+  const handleGoodForChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.dataset.value as string;
+    setGoodFor(value as GoodFor);
+  };
+
+  const handleSelectivityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.dataset.value as string;
+    setSelectivity(value as Selectivity);
+  };
+
+  const handleReligionAffiliation = (value: string) => {
+    setReligionAffiliation(value as ReligionAffiliation);
+  };
+  const handleGenAreaOfStudyChange = (value: string) => {
+    setGenAreaOfStudy(value as GenAreaOfStudy);
+  };
+
+  const handleStudentBodySizeChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.dataset.value as string;
+    setStudentBodySize(value as StudentBodySize);
+  };
+
+  const handleAdmissionsProcessChange = (value: string) => {
+    setAdmissionsProcess(value as AdmissionsProcess);
+  };
+
+  const handleCollegeSpecialtyChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.dataset.value as string;
+    setCollegeSpecialty(value as CollegeSpecialty);
+  };
+
+  const handleMajorsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.dataset.value as string;
+    setMajors(value as MajorsType);
+  };
+
+  const handleCollegeTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.dataset.value as FilterValue;
+    const [type, subType] = (value as string).split(": ");
+    if (subType) {
+      setCollegeType(
+        type as CollegeTypeFilter,
+        subType as CollegeSubTypeFilter
+      );
+    }
+  };
+
+  const handleOnlineFriendlinessChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.dataset.value as string;
+    setOnlineFriendliness(value as OnlineFriendliness);
   };
 
   return (
@@ -142,7 +198,7 @@ const CollegesFilters: React.FC<CollegesFiltersProps> = ({
           max={35000}
           initialValue={2000}
           value={filterColleges.cost}
-          onSetValue={handleSetCost}
+          onSetValue={setCost}
           unit="$"
           formatValue={(value) => `$${value.toLocaleString("en-US")}`}
         />
@@ -188,7 +244,7 @@ const CollegesFilters: React.FC<CollegesFiltersProps> = ({
           max={1600}
           initialValue={0}
           value={filterColleges.sat}
-          onSetValue={handleSetSat}
+          onSetValue={setSat}
           formatValue={(value) => String(value)}
         />
         <SliderFilter
@@ -197,7 +253,7 @@ const CollegesFilters: React.FC<CollegesFiltersProps> = ({
           label="ACT:"
           initialValue={12}
           value={filterColleges.act}
-          onSetValue={handleSetAct}
+          onSetValue={setAct}
           formatValue={(value) => String(value)}
         />
       </FilterSection>
@@ -235,10 +291,7 @@ const CollegesFilters: React.FC<CollegesFiltersProps> = ({
         />
       </FilterSection>
       <FilterSection title="Rating" sectionId="rating">
-        <RatingFilter
-          rating={filterColleges.rating}
-          setRating={handleSetRating}
-        />
+        <RatingFilter rating={filterColleges.rating} setRating={setRating} />
       </FilterSection>
       <FilterSection
         title="Good for"

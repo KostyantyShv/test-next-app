@@ -1,6 +1,11 @@
 import { InitialValueCollegesType } from "@/store/colleges-types";
 import { InitialValueGraduatesType } from "@/store/graduates-types";
 
+export type EstablishmentTypes =
+  | "filterK12"
+  | "filterColleges"
+  | "filterGraduates";
+
 export type GradeFilter = "pre-k" | "elementary" | "middle" | "high school";
 export type TypeFilter = "public" | "private" | "charter" | "magnet";
 export type ReligionType = "catholic" | "christian" | "jewish" | "islamic";
@@ -150,6 +155,7 @@ export interface FiltersType {
   academics: Academics[];
   selectivity: Selectivity[];
   goodFor: GoodFor[];
+  program: Program[];
   collegeSpecialty: CollegeSpecialty[];
   onlineFriendliness: OnlineFriendliness[];
   schoolScoutGrades: SchoolScoutGradeEntry[];
@@ -221,5 +227,6 @@ export interface SchoolsStore {
   ) => void;
   setRating: (rating: number) => void;
   setMajors: (major: MajorsType) => void;
+  setProgram: (program: Program) => void;
   resetFilters: () => void;
 }

@@ -27,7 +27,6 @@ export const FILTER_MOCK: FilterMockType = {
       { value: "middle", label: "Middle" },
       { value: "high school", label: "High School" },
     ],
-    minWidth: "",
   },
   TYPE: {
     id: "type",
@@ -48,7 +47,6 @@ export const FILTER_MOCK: FilterMockType = {
       { value: "charter", label: "Charter" },
       { value: "magnet", label: "Magnet" },
     ],
-    minWidth: "",
   },
   RELIGION: {
     id: "religion",
@@ -73,7 +71,6 @@ export const FILTER_MOCK: FilterMockType = {
       { value: "jewish", label: "Jewish" },
       { value: "islamic", label: "Islamic" },
     ],
-    minWidth: "",
   },
   SPECIALTY: {
     id: "specialty",
@@ -93,7 +90,6 @@ export const FILTER_MOCK: FilterMockType = {
       { value: "montessori", label: "Montessori" },
       { value: "therapeutic", label: "Therapeutic" },
     ],
-    minWidth: "",
   },
   COLLEGE_SPECIALTY: {
     id: "collegeSpecialty",
@@ -109,7 +105,6 @@ export const FILTER_MOCK: FilterMockType = {
         label: "Hispanic-serving institutions",
       },
     ],
-    minWidth: "",
   },
   GOOD_FOR: {
     id: "goodFor",
@@ -122,7 +117,6 @@ export const FILTER_MOCK: FilterMockType = {
       { value: "Low-income students", label: "Low-income students" },
       { value: "Middle-class students", label: "Middle-class students" },
     ],
-    minWidth: "",
   },
   MAJORS: {
     id: "majors",
@@ -141,7 +135,6 @@ export const FILTER_MOCK: FilterMockType = {
       { value: "Online", label: "Online" },
       { value: "Campus", label: "Campus" },
     ],
-    minWidth: "",
   },
   ONLINE_FRIENDLINESS: {
     id: "onlineFriendliness",
@@ -152,7 +145,6 @@ export const FILTER_MOCK: FilterMockType = {
       { value: "Large online program", label: "Large online program" },
       { value: "Some online degrees", label: "Some online degrees" },
     ],
-    minWidth: "",
   },
   SELECTIVITY: {
     id: "selectivity",
@@ -165,7 +157,6 @@ export const FILTER_MOCK: FilterMockType = {
       { value: "Average", label: "Average" },
       { value: "Not selective", label: "Not selective" },
     ],
-    minWidth: "",
   },
   STUDENT_BODY_SIZE: {
     id: "studentBodySize",
@@ -176,7 +167,6 @@ export const FILTER_MOCK: FilterMockType = {
       { value: "Medium", label: "Medium" },
       { value: "Large", label: "Large" },
     ],
-    minWidth: "",
   },
   PROGRAM: {
     id: "program",
@@ -196,7 +186,6 @@ export const FILTER_MOCK: FilterMockType = {
       { value: "Masters", label: "Masters" },
       { value: "Doctorate", label: "Doctorate" },
     ],
-    minWidth: "",
   },
   COLLEGE_TYPE: {
     id: "college type",
@@ -239,7 +228,6 @@ export const FILTER_MOCK: FilterMockType = {
         ],
       },
     ],
-    minWidth: "",
   },
 };
 
@@ -249,6 +237,8 @@ export const FILTER_CONFIG: Record<
     category: FilterData;
     filterKey: keyof FiltersType;
     tooltip?: string;
+    hasTextInput?: boolean;
+    inputPlaceholder?: string;
   }>
 > = {
   "K-12": [
@@ -260,7 +250,12 @@ export const FILTER_CONFIG: Record<
   Colleges: [
     { category: FILTER_MOCK.COLLEGE_TYPE, filterKey: "collegeType" },
     { category: FILTER_MOCK.RELIGION, filterKey: "religion" },
-    { category: FILTER_MOCK.MAJORS, filterKey: "majors" },
+    {
+      category: FILTER_MOCK.MAJORS,
+      filterKey: "majors",
+      hasTextInput: true,
+      inputPlaceholder: "Search majors...",
+    },
     { category: FILTER_MOCK.SPECIALTY, filterKey: "specialty" },
   ],
   Graduates: [
@@ -272,6 +267,8 @@ export const FILTER_CONFIG: Record<
       filterKey: "program",
       tooltip:
         "Select a program to filter your search to only schools that offer degrees in that specific program.",
+      hasTextInput: true,
+      inputPlaceholder: "Enter a program",
     },
   ],
 };
@@ -300,7 +297,6 @@ export const sortMock: SortData = {
     { value: "most-wished", label: "Most Wished" },
     { value: "most-reactions", label: "Most Reactions" },
   ],
-  minWidth: "200px",
 };
 
 export const ACADEMICS_MOCK: AcademicsMockType = {
@@ -311,13 +307,11 @@ export const ACADEMICS_MOCK: AcademicsMockType = {
     { value: "IB Program", label: "IB Program" },
     { value: "Gifted/Talented program", label: "Gifted/Talented program" },
   ],
-  minWidth: "200px",
 };
 export const BOARDING_MOCK: BoardingMockType = {
   id: "boarding",
   label: "Boarding",
   options: [{ value: "Offers boarding", label: "Offers boarding" }],
-  minWidth: "200px",
 };
 
 export const highestGrade = [
