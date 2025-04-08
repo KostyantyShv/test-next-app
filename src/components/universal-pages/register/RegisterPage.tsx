@@ -50,21 +50,11 @@ const RegisterPage: React.FC = () => {
 
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <Input
-                type="text"
-                placeholder="Full Name"
-                required
-                className="placeholder:text-[#666] placeholder:font-medium text-[#333]"
-              />
+              <Input type="text" placeholder="Full Name" required />
             </div>
 
             <div className="mb-4">
-              <Input
-                type="email"
-                placeholder="Email"
-                required
-                className="placeholder:text-[#666] placeholder:font-medium text-[#333]"
-              />
+              <Input type="email" placeholder="Email" required />
             </div>
 
             <div className="mb-4">
@@ -73,7 +63,6 @@ const RegisterPage: React.FC = () => {
                 placeholder="Password"
                 showPasswordToggle
                 required
-                className="placeholder:text-[#666] placeholder:font-medium text-[#333]"
               />
             </div>
 
