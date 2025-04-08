@@ -1,5 +1,6 @@
 import { FilterData } from "@/types/filter";
 
+// types.ts
 export interface School {
   name: string;
   schoolType: string;
@@ -16,6 +17,8 @@ export interface School {
   specialty?: "hot" | "instant-book" | "sponsored";
   description: string;
   reviews: number;
+  acceptanceRate?: string; // Optional, e.g., "20%"
+  duration?: string; // Optional, e.g., "4 Year"
 }
 
 export type FilterMockType = Record<
