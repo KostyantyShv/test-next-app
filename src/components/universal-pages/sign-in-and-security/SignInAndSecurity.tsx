@@ -29,7 +29,7 @@ const SignInAndSecurity: React.FC = () => {
   };
 
   return (
-    <div className="max-w-[1055px] mx-auto p-0 md:p-5 my-10 z-[200]">
+    <div className="max-w-[1055px] mx-auto p-0 max-md:p-5 max-md:mb-10 md:my-10 z-[200]">
       <h1 className="text-[28px] font-semibold mb-10 text-[#464646]">
         Sign In & Security
       </h1>

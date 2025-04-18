@@ -59,14 +59,14 @@ const SchoolScoutProfile: React.FC<SchoolScoutProfileProps> = ({
         />
         <HighSchoolInfo formData={formData} handleChange={handleChange} />
       </div>
-      <div className="flex justify-end mt-7 pt-5 border-t border-gray-200">
+      {/* <div className="flex justify-end mt-7 pt-5 border-t border-gray-200">
         <button
           onClick={handleSave}
           className="bg-save-button-bg text-white border-none py-2.5 px-5 rounded font-semibold text-sm hover:bg-save-button-hover transition-colors"
         >
           Save
         </button>
-      </div>
+      </div> */}
     </>
   );
 };

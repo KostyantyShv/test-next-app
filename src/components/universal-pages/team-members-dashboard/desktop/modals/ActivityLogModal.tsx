@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { activityLogs } from "./activityLogs";
+import { activityLogs } from "../../data/activityLogs";
 
 interface ActivityLogModalProps {
   memberId: number;

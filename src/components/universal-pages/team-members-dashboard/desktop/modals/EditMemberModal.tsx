@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { teamMembers } from "./teamMembers";
+import { teamMembers } from "../../data/teamMembers";
 
 interface EditMemberModalProps {
   memberId: number;

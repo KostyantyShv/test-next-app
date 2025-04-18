@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useOutsideClick } from "./hooks";
+import { useOutsideClick } from "./desktop/hooks/useOutsideClick";
 
 interface ItemsPerPageDropdownProps {
   value: number;

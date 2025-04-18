@@ -13,7 +13,7 @@ const Section: React.FC<SectionProps> = ({ title, description, children }) => {
         <h2 className="text-xl font-semibold text-text-color mb-3">{title}</h2>
         <p className="text-sm text-text-muted leading-relaxed">{description}</p>
       </div>
-      <div className="flex-1 min-w-0">{children}</div>
+      <div className="flex-1 min-w-0 max-md:bg-white">{children}</div>
     </div>
   );
 };

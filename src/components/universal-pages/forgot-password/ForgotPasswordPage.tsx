@@ -4,6 +4,7 @@ import AppLink from "@/components/ui/AppLink/AppLink";
 import Card from "@/components/ui/Card/Card";
 import Button from "@/components/ui/form/button/Button";
 import Input from "@/components/ui/form/input/Input";
+import { Logo } from "@/components/ui/Logo";
 import { CloseIcon } from "@/components/ui/SocialIcons/SocialIcons";
 import VerificationCodeInput from "@/components/ui/VerificationCodeInput/VerificationCodeInput";
 import { ROUTES } from "@/enums/routes";
@@ -128,12 +129,15 @@ const ForgotPasswordPage: React.FC = () => {
         }
         onClickOutside={() => router.replace(ROUTES.LOGIN)}
       >
-        <AppLink
-          href={ROUTES.LOGIN}
-          className="absolute top-5 right-5 bg-transparent border-none cursor-pointer p-2 text-[#666] hover:text-[#333] transition-colors duration-200 z-[1000]"
-        >
-          <CloseIcon />
-        </AppLink>
+        <div className="flex justify-between w-full">
+          <Logo className="max-md:flex hidden" />
+          <AppLink
+            href={ROUTES.LOGIN}
+            className="md:absolute md:top-5 md:right-5 bg-transparent border-none cursor-pointer p-2 text-[#666] hover:text-[#333] transition-colors duration-200 z-[1000]"
+          >
+            <CloseIcon />
+          </AppLink>
+        </div>
         <div className="w-[70px] h-[70px] bg-[rgba(0,102,178,0.1)] rounded-full flex items-center justify-center mb-6">
           <svg fill="#0066b2" viewBox="0 0 15 16" height="32" width="30">
             <path d="M9.54947 0H4.63158C2.08842 0 0 2.07158 0 4.63158V8.67368C0 9.04421 0.303158 9.34737 0.673684 9.34737C1.04421 9.34737 1.34737 9.04421 1.34737 8.67368V4.63158C1.34737 2.82947 2.81263 1.36421 4.61474 1.36421H9.51579C11.3516 1.36421 12.8168 2.82947 12.8168 4.63158V8.16842C12.8168 9.97053 11.3516 11.4358 9.54947 11.4358H3.46947L5.50737 9.39789C5.77684 9.12842 5.77684 8.70737 5.50737 8.43789C5.23789 8.16842 4.81684 8.16842 4.54737 8.43789L1.34737 11.6379C1.07789 11.9074 1.07789 12.3284 1.34737 12.5979L4.54737 15.7979C4.68211 15.9326 4.85053 16 5.03579 16C5.20421 16 5.38947 15.9326 5.52421 15.7979C5.79368 15.5284 5.79368 15.1074 5.52421 14.8379L3.46947 12.8H9.54947C12.1095 12.8 14.1811 10.7284 14.1811 8.16842V4.63158C14.1811 2.07158 12.0926 0 9.54947 0Z"></path>
@@ -191,12 +195,15 @@ const ForgotPasswordPage: React.FC = () => {
         }
         onClickOutside={() => router.replace(ROUTES.LOGIN)}
       >
-        <AppLink
-          href={ROUTES.LOGIN}
-          className="absolute top-5 right-5 bg-transparent border-none cursor-pointer p-2 text-[#666] hover:text-[#333] transition-colors duration-200 z-[1000]"
-        >
-          <CloseIcon />
-        </AppLink>
+        <div className="flex justify-between w-full">
+          <Logo className="max-md:flex hidden" />
+          <AppLink
+            href={ROUTES.LOGIN}
+            className="md:absolute md:top-5 md:right-5 bg-transparent border-none cursor-pointer p-2 text-[#666] hover:text-[#333] transition-colors duration-200 z-[1000]"
+          >
+            <CloseIcon />
+          </AppLink>
+        </div>
         <div className="w-[70px] h-[70px] bg-[rgba(0,102,178,0.1)] rounded-full flex items-center justify-center mb-6">
           <svg
             width="32"
@@ -247,12 +254,15 @@ const ForgotPasswordPage: React.FC = () => {
         }
         onClickOutside={() => router.replace(ROUTES.LOGIN)}
       >
-        <AppLink
-          href={ROUTES.LOGIN}
-          className="absolute top-5 right-5 bg-transparent border-none cursor-pointer p-2 text-[#666] hover:text-[#333] transition-colors duration-200 z-[1000]"
-        >
-          <CloseIcon />
-        </AppLink>
+        <div className="flex justify-between w-full">
+          <Logo className="max-md:flex hidden" />
+          <AppLink
+            href={ROUTES.LOGIN}
+            className="md:absolute md:top-5 md:right-5 bg-transparent border-none cursor-pointer p-2 text-[#666] hover:text-[#333] transition-colors duration-200 z-[1000]"
+          >
+            <CloseIcon />
+          </AppLink>
+        </div>
         <div className="w-[70px] h-[70px] bg-[rgba(0,102,178,0.1)] rounded-full flex items-center justify-center mb-6">
           <svg
             width="32"
@@ -319,6 +329,7 @@ const ForgotPasswordPage: React.FC = () => {
             variant="secondary"
             fullWidth
             onClick={() => setStep("email")}
+            className="max-md:!border-1 !border-[#A0AEC0] max-md:bg-[#D9DCE3]"
           >
             Cancel
           </Button>

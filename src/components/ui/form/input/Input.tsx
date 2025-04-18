@@ -39,7 +39,7 @@ const Input = ({
       {showPasswordToggle && type === "password" && (
         <button
           type="button"
-          className="absolute right-3 top-1/3 -translate-y-1/2 bg-transparent border-none cursor-pointer text-[#666]"
+          className="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-[#666]"
           onClick={togglePasswordVisibility}
         >
           <svg

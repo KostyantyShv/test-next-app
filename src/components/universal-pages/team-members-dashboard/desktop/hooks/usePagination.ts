@@ -1,27 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { TeamMember } from "./types";
+import { useState } from "react";
+import { TeamMember } from "../../types";
 
-//Outside click hook
-export const useOutsideClick = (callback: () => void) => {
-  const ref = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        callback();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [callback]);
-
-  return ref;
-};
-
-//Pagination hook
 export const usePagination = (items: TeamMember[], itemsPerPage: number) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPageValue, setItemsPerPageValue] = useState(itemsPerPage);

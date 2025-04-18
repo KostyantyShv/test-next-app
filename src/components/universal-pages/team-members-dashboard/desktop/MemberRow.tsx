@@ -1,7 +1,7 @@
 import Image from "next/image";
-import { Checkbox } from "./Checkbox";
-import { TeamMember } from "./types";
-import { StatusBadge } from "./StatusBadge";
+import { Checkbox } from "../Checkbox";
+import { TeamMember } from "../types";
+import { StatusBadge } from "../StatusBadge";
 
 interface MemberRowProps {
   member: TeamMember;

@@ -25,7 +25,7 @@ const AccountDetails: React.FC = () => {
 
   return (
     <div className="max-w-[1140px] mx-auto px-5 py-10">
-      <div className="flex justify-between items-center mb-10 pb-5 max-md:flex-col max-md:items-start max-md:gap-4">
+      <div className="flex justify-between items-center mb-10 pb-5 max-md:items-start max-md:gap-4">
         <h1 className="text-3xl font-bold text-[#464646]">Account Details</h1>
         <button
           onClick={handleSave}
@@ -72,6 +72,14 @@ const AccountDetails: React.FC = () => {
           handleSave={handleSave}
         />
       </Section>
+      <div className="flex justify-end items-center mb-10 pb-5 max-md:items-start max-md:gap-4">
+        <button
+          onClick={handleSave}
+          className="bg-[#1B1B1B] text-white border-none rounded px-4 py-2 font-medium text-sm"
+        >
+          Save
+        </button>
+      </div>
     </div>
   );
 };

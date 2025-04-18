@@ -16,7 +16,7 @@ const Card = ({ children, className = "", onClickOutside }: CardProps) => {
         }
       }}
     >
-      <div className="bg-white p-8 rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.1)] w-full max-w-[360px] relative flex flex-col items-center">
+      <div className="sm:bg-white max-sm:h-full bg-transparent p-8 rounded-xl sm:shadow-[0_4px_6px_rgba(0,0,0,0.1)] w-full md:max-w-[360px] relative flex flex-col items-center">
         {children}
       </div>
     </div>
