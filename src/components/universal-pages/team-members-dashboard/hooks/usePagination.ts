@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TeamMember } from "../../types";
+import { TeamMember } from "../types";
 
 export const usePagination = (items: TeamMember[], itemsPerPage: number) => {
   const [currentPage, setCurrentPage] = useState(1);

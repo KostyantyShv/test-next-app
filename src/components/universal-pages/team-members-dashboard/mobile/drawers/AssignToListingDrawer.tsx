@@ -1,96 +1,80 @@
-import { useState } from "react";
-import { useTeam } from "../hooks/useTeam";
-import { useToast } from "../hooks/useToast";
-import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
+import { Drawer } from "./Drawer";
 
 interface AssignToListingDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  onSave: () => void;
 }
 
-export function AssignToListingDrawer({
+export const AssignToListingDrawer: React.FC<AssignToListingDrawerProps> = ({
   isOpen,
   onClose,
-}: AssignToListingDrawerProps) {
-  const { members, setMembers, currentMemberId } = useTeam();
-  const [listing, setListing] = useState("");
-  const { showToast } = useToast();
-
-  const handleAssign = () => {
-    if (listing.trim()) {
-      setMembers((prev) =>
-        prev.map((m) =>
-          m.id === currentMemberId
-            ? {
-                ...m,
-                listings: [
-                  ...m.listings,
-                  {
-                    id: Date.now(),
-                    name: listing,
-                    image: "https://i.ibb.co/fGKH7fDq/product2.png",
-                  },
-                ],
-              }
-            : m
-        )
-      );
-      showToast(`Assigned to ${listing}`, "success");
-      setListing("");
-      onClose();
-    } else {
-      showToast("Please enter a listing name", "error");
-    }
-  };
+  onSave,
+}) => {
+  const listings = [
+    {
+      id: 1,
+      name: "Harvard University",
+      image: "https://i.ibb.co/fGKH7fDq/product2.png",
+    },
+    {
+      id: 2,
+      name: "Stanford University",
+      image: "https://i.ibb.co/fGKH7fDq/product2.png",
+    },
+    {
+      id: 3,
+      name: "Massachusetts Institute of Technology",
+      image: "https://i.ibb.co/63Y8x85/product3.jpg",
+    },
+  ];
 
   return (
-    <MobileDrawer isOpen={isOpen} onClose={onClose}>
-      <div className="sticky top-0 z-[1] flex items-center justify-between border-b border-gray-200 bg-white px-5 py-4">
-        <h2 className="text-lg font-semibold text-bold-text">
-          Assign to Listing
-        </h2>
-        <button
-          className="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100"
-          onClick={onClose}
-          aria-label="Close Assign to Listing"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+    <Drawer
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Assign to Listing"
+      footer={
+        <>
+          <button
+            className="px-5 py-3 rounded-lg text-sm font-medium text-gray-600 border border-gray-300 bg-white hover:bg-gray-100"
+            onClick={onClose}
           >
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
-      </div>
-      <div className="px-5 py-4">
-        <label
-          htmlFor="listing"
-          className="mb-2 block text-sm font-medium text-bold-text"
-        >
-          Listing Name
-        </label>
-        <input
-          id="listing"
-          type="text"
-          className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-text-default focus:border-active-green focus:outline-none focus:ring-2 focus:ring-active-green/10"
-          placeholder="Enter listing name"
-          value={listing}
-          onChange={(e) => setListing(e.target.value)}
-        />
-      </div>
-      <div className="sticky bottom-0 border-t border-gray-200 bg-white px-5 py-4">
-        <button
-          className="w-full rounded-lg bg-apply-button-bg px-4 py-2.5 text-sm font-semibold text-active-green transition-colors hover:bg-apply-button-hover"
-          onClick={handleAssign}
-        >
-          Assign
-        </button>
-      </div>
-    </MobileDrawer>
+            Cancel
+          </button>
+          <button
+            className="px-5 py-3 rounded-lg text-sm font-medium text-white bg-black hover:bg-gray-900"
+            onClick={onSave}
+          >
+            Save
+          </button>
+        </>
+      }
+    >
+      <form id="assignListingsForm">
+        {listings.map((listing) => (
+          <label
+            className="flex items-center gap-3 p-3 border-b border-gray-200 last:border-b-0 cursor-pointer"
+            htmlFor={`assignListing${listing.id}`}
+            key={listing.id}
+          >
+            <input
+              type="checkbox"
+              id={`assignListing${listing.id}`}
+              className="appearance-none h-5 w-5 border-2 border-gray-300 rounded checked:bg-green-800 checked:border-green-800 focus:outline-none"
+              value={listing.id}
+            />
+            <img
+              src={listing.image}
+              alt={listing.name}
+              className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+            />
+            <span className="text-sm text-gray-600 flex-1 truncate">
+              {listing.name}
+            </span>
+          </label>
+        ))}
+      </form>
+    </Drawer>
   );
-}
+};

@@ -1,6 +1,6 @@
 import React from "react";
 import TeamMembersDashboardDesktop from "./desktop/TeamMembersDashboardDesktop";
-import { TeamMembersDashboardMobile } from "./mobile/TeamMembersDashboardMobile";
+import TeamMembersDashboardMobile from "./mobile/TeamMembersDashboardMobile";
 
 const TeamMembersDashboard = () => {
   return (

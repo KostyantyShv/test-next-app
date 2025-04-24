@@ -17,7 +17,7 @@ import {
   sortOptions,
   statusOptions,
 } from "../data/filter-options";
-import { usePagination } from "./hooks/usePagination";
+import { usePagination } from "../hooks/usePagination";
 
 // Main component
 const TeamMembersDashboardDesktop: React.FC = () => {

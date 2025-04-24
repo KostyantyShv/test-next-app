@@ -1,29 +1,34 @@
-import { useTeam } from "./hooks/useTeam";
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  itemsPerPageValue: number;
+  onPageChange: (page: number) => void;
+  onItemsPerPageChange: (value: number) => void;
+  getPageNumbers: () => number[];
+}
 
-export function Pagination() {
-  const {
-    currentPage,
-    totalPages,
-    itemsPerPage,
-    setCurrentPage,
-    setItemsPerPage,
-    getPageNumbers,
-  } = useTeam();
-
+export const Pagination: React.FC<PaginationProps> = ({
+  currentPage,
+  totalPages,
+  itemsPerPageValue,
+  onPageChange,
+  onItemsPerPageChange,
+  getPageNumbers,
+}) => {
   return (
-    <div className="mt-4 flex items-center justify-between border-t border-gray-divider bg-background px-4 py-4">
+    <div className="p-4 mt-4 border-t border-gray-300 bg-gray-200 flex justify-between items-center">
       <div className="flex items-center gap-2">
-        <label htmlFor="itemsPerPageSelect" className="text-xs text-gray-600">
+        <label
+          htmlFor="itemsPerPageSelect"
+          className="text-[13px] text-gray-600"
+        >
           Show:
         </label>
         <select
           id="itemsPerPageSelect"
-          className="cursor-pointer rounded-md border border-gray-300 bg-white px-2 py-1 text-xs"
-          value={itemsPerPage}
-          onChange={(e) => {
-            setItemsPerPage(parseInt(e.target.value));
-            setCurrentPage(1);
-          }}
+          className="p-1 pr-2 rounded-md border border-gray-300 text-[13px] bg-white cursor-pointer"
+          value={itemsPerPageValue}
+          onChange={(e) => onItemsPerPageChange(parseInt(e.target.value))}
         >
           <option value="10">10</option>
           <option value="20">20</option>
@@ -32,12 +37,13 @@ export function Pagination() {
       </div>
       <div className="flex items-center gap-2">
         <button
-          className="flex h-8 w-8 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
-          onClick={() => setCurrentPage(currentPage - 1)}
+          className="w-8 h-8 flex items-center justify-center border border-gray-200 bg-white rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:bg-gray-100"
+          onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
           aria-label="Previous Page"
         >
           <svg
+            className="w-3.5 h-3.5"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -51,24 +57,25 @@ export function Pagination() {
         {getPageNumbers().map((page) => (
           <button
             key={page}
-            className={`flex h-8 w-8 items-center justify-center rounded-md border border-gray-200 text-sm transition-colors ${
+            className={`w-8 h-8 flex items-center justify-center border rounded-md text-sm transition-all ${
               page === currentPage
-                ? "border-dark-text bg-dark-text text-white"
-                : "bg-white text-gray-600 hover:bg-gray-100"
+                ? "bg-black text-white border-black"
+                : "border-gray-200 bg-white text-gray-600 hover:bg-gray-100"
             }`}
-            onClick={() => setCurrentPage(page)}
+            onClick={() => onPageChange(page)}
             aria-current={page === currentPage ? "page" : undefined}
           >
             {page}
           </button>
         ))}
         <button
-          className="flex h-8 w-8 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
-          onClick={() => setCurrentPage(currentPage + 1)}
-          disabled={currentPage === totalPages || totalPages === 0}
+          className="w-8 h-8 flex items-center justify-center border border-gray-200 bg-white rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:bg-gray-100"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
           aria-label="Next Page"
         >
           <svg
+            className="w-3.5 h-3.5"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -82,4 +89,4 @@ export function Pagination() {
       </div>
     </div>
   );
-}
+};

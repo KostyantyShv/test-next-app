@@ -1,108 +1,141 @@
-import { useState } from "react";
-import { useTeam } from "../hooks/useTeam";
-import { useToast } from "../hooks/useToast";
-import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
+import { Drawer } from "./Drawer";
 
 interface EditMemberDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  onSaveChanges: () => void;
 }
 
-export function EditMemberDrawer({ isOpen, onClose }: EditMemberDrawerProps) {
-  const { members, setMembers, currentMemberId } = useTeam();
-  const member = members.find((m) => m.id === currentMemberId);
-  const [firstName, setFirstName] = useState(member?.firstName || "");
-  const [lastName, setLastName] = useState(member?.lastName || "");
-  const [isAdmin, setIsAdmin] = useState(member?.isAdmin || false);
-  const { showToast } = useToast();
-
-  const handleSave = () => {
-    if (firstName.trim() && lastName.trim()) {
-      setMembers((prev) =>
-        prev.map((m) =>
-          m.id === currentMemberId ? { ...m, firstName, lastName, isAdmin } : m
-        )
-      );
-      showToast("Member updated successfully", "success");
-      onClose();
-    } else {
-      showToast("Please fill in all fields", "error");
-    }
-  };
+export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
+  isOpen,
+  onClose,
+  onSaveChanges,
+}) => {
+  const listings = [
+    {
+      id: 1,
+      name: "Harvard University",
+      image: "https://i.ibb.co/fGKH7fDq/product2.png",
+    },
+    {
+      id: 2,
+      name: "Stanford University",
+      image: "https://i.ibb.co/fGKH7fDq/product2.png",
+    },
+    {
+      id: 3,
+      name: "Massachusetts Institute of Technology",
+      image: "https://i.ibb.co/63Y8x85/product3.jpg",
+    },
+  ];
 
   return (
-    <MobileDrawer isOpen={isOpen} onClose={onClose}>
-      <div className="sticky top-0 z-[1] flex items-center justify-between border-b border-gray-200 bg-white px-5 py-4">
-        <h2 className="text-lg font-semibold text-bold-text">
-          Edit Team Member
-        </h2>
-        <button
-          className="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100"
-          onClick={onClose}
-          aria-label="Close Edit Member"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+    <Drawer
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Edit Team Member"
+      footer={
+        <>
+          <button
+            className="px-5 py-3 rounded-lg text-sm font-medium text-gray-600 border border-gray-300 bg-white hover:bg-gray-100"
+            onClick={onClose}
           >
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
-      </div>
-      <div className="px-5 py-4 space-y-4">
-        <div>
+            Cancel
+          </button>
+          <button
+            className="px-5 py-3 rounded-lg text-sm font-medium text-white bg-black hover:bg-gray-900"
+            onClick={onSaveChanges}
+          >
+            Save Changes
+          </button>
+        </>
+      }
+    >
+      <form id="editMemberForm">
+        <div className="mb-4">
           <label
-            htmlFor="firstName"
-            className="mb-2 block text-sm font-medium text-bold-text"
+            htmlFor="editFirstName"
+            className="block text-sm font-medium text-gray-700 mb-1.5"
           >
             First Name
           </label>
           <input
-            id="firstName"
             type="text"
-            className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-text-default focus:border-active-green focus:outline-none focus:ring-2 focus:ring-active-green/10"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
+            id="editFirstName"
+            className="w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-600 focus:outline-none focus:border-green-800 focus:ring-2 focus:ring-green-100"
+            required
           />
         </div>
-        <div>
+        <div className="mb-4">
           <label
-            htmlFor="lastName"
-            className="mb-2 block text-sm font-medium text-bold-text"
+            htmlFor="editLastName"
+            className="block text-sm font-medium text-gray-700 mb-1.5"
           >
             Last Name
           </label>
           <input
-            id="lastName"
             type="text"
-            className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-text-default focus:border-active-green focus:outline-none focus:ring-2 focus:ring-active-green/10"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
+            id="editLastName"
+            className="w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-600 focus:outline-none focus:border-green-800 focus:ring-2 focus:ring-green-100"
+            required
           />
         </div>
-        <label className="flex items-center gap-2">
+        <div className="mb-4">
+          <label
+            htmlFor="editEmail"
+            className="block text-sm font-medium text-gray-700 mb-1.5"
+          >
+            Email
+          </label>
+          <input
+            type="email"
+            id="editEmail"
+            className="w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-600 focus:outline-none focus:border-green-800 focus:ring-2 focus:ring-green-100"
+            required
+          />
+        </div>
+        <div className="flex items-center gap-2.5 mb-4">
           <input
             type="checkbox"
-            checked={isAdmin}
-            onChange={(e) => setIsAdmin(e.target.checked)}
-            className="h-4 w-4 border-gray-300 text-active-green focus:ring-active-green"
+            id="editAdminCheckbox"
+            className="appearance-none h-5 w-5 border-2 border-gray-300 rounded checked:bg-green-800 checked:border-green-800 focus:outline-none"
           />
-          <span className="text-sm text-text-default">Admin</span>
-        </label>
-      </div>
-      <div className="sticky bottom-0 border-t border-gray-200 bg-white px-5 py-4">
-        <button
-          className="w-full rounded-lg bg-apply-button-bg px-4 py-2.5 text-sm font-semibold text-active-green transition-colors hover:bg-apply-button-hover"
-          onClick={handleSave}
-        >
-          Save Changes
-        </button>
-      </div>
-    </MobileDrawer>
+          <label
+            htmlFor="editAdminCheckbox"
+            className="text-sm text-gray-600 cursor-pointer"
+          >
+            Admin access
+          </label>
+        </div>
+        <div className="h-px bg-gray-200 my-5" />
+        <div>
+          <h3 className="text-base font-medium text-gray-700 mb-4">
+            Assign to Listings
+          </h3>
+          {listings.map((listing) => (
+            <label
+              className="flex items-center gap-3 p-3 border-b border-gray-200 last:border-b-0 cursor-pointer"
+              htmlFor={`editListing${listing.id}`}
+              key={listing.id}
+            >
+              <input
+                type="checkbox"
+                id={`editListing${listing.id}`}
+                className="appearance-none h-5 w-5 border-2 border-gray-300 rounded checked:bg-green-800 checked:border-green-800 focus:outline-none"
+                value={listing.id}
+              />
+              <img
+                src={listing.image}
+                alt={listing.name}
+                className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+              />
+              <span className="text-sm text-gray-600 flex-1 truncate">
+                {listing.name}
+              </span>
+            </label>
+          ))}
+        </div>
+      </form>
+    </Drawer>
   );
-}
+};

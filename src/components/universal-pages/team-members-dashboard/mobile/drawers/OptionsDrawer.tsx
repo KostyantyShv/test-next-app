@@ -1,56 +1,63 @@
-import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
-import { bulkActionOptions } from "../../data/filter-options";
-import { useToast } from "../hooks/useToast";
+import { Drawer } from "./Drawer";
 
 interface OptionsDrawerProps {
   isOpen: boolean;
+  sortFilter: string;
   onClose: () => void;
+  onSortChange: (sort: string) => void;
 }
 
-export function OptionsDrawer({ isOpen, onClose }: OptionsDrawerProps) {
-  const { showToast } = useToast();
-
-  const handleBulkAction = (action: string) => {
-    if (action) {
-      showToast(`Performing bulk action: ${action}`, "info");
-    }
-    onClose();
-  };
-
+export const OptionsDrawer: React.FC<OptionsDrawerProps> = ({
+  isOpen,
+  sortFilter,
+  onClose,
+  onSortChange,
+}) => {
   return (
-    <MobileDrawer isOpen={isOpen} onClose={onClose}>
-      <div className="sticky top-0 z-[1] flex items-center justify-between border-b border-gray-200 bg-white px-5 py-4">
-        <h2 className="text-lg font-semibold text-bold-text">Options</h2>
-        <button
-          className="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100"
-          onClick={onClose}
-          aria-label="Close Options"
+    <Drawer isOpen={isOpen} onClose={onClose} title="Options">
+      <div className="p-2 border-b border-gray-300">
+        <div className="px-4 pb-2 text-base font-medium text-gray-700">
+          Sort By
+        </div>
+        <div
+          className={`px-4 py-3 text-sm cursor-pointer hover:bg-gray-100 ${
+            sortFilter === "name"
+              ? "font-semibold text-cyan-600"
+              : "text-gray-600"
+          }`}
+          onClick={() => onSortChange("name")}
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
+          Name A-Z
+        </div>
+        <div
+          className={`px-4 py-3 text-sm cursor-pointer hover:bg-gray-100 ${
+            sortFilter === "lastActive"
+              ? "font-semibold text-cyan-600"
+              : "text-gray-600"
+          }`}
+          onClick={() => onSortChange("lastActive")}
+        >
+          Last Active
+        </div>
+        <div
+          className={`px-4 py-3 text-sm cursor-pointer hover:bg-gray-100 ${
+            sortFilter === "email"
+              ? "font-semibold text-cyan-600"
+              : "text-gray-600"
+          }`}
+          onClick={() => onSortChange("email")}
+        >
+          Email A-Z
+        </div>
       </div>
-      <div className="px-2 py-2">
-        {bulkActionOptions.map((option) => (
-          <button
-            key={option.value}
-            className="flex w-full items-center px-5 py-4 text-base text-text-default transition-colors hover:bg-gray-100 disabled:text-gray-400"
-            onClick={() => handleBulkAction(option.value)}
-            disabled={!option.value}
-          >
-            <span className="flex-1 text-left">{option.label}</span>
-          </button>
-        ))}
+      <div className="p-2">
+        <div className="px-4 pb-2 text-base font-medium text-gray-700">
+          Layout
+        </div>
+        <div className="px-4 py-4 text-sm text-gray-600">
+          Dummy Layout Options
+        </div>
       </div>
-    </MobileDrawer>
+    </Drawer>
   );
-}
+};

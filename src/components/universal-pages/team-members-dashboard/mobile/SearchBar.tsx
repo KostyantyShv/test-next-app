@@ -1,28 +1,30 @@
-import { useTeam } from "./hooks/useTeam";
-
 interface SearchBarProps {
-  visible: boolean;
+  isVisible: boolean;
+  searchTerm: string;
+  onSearchChange: (term: string) => void;
 }
 
-export function SearchBar({ visible }: SearchBarProps) {
-  const { searchTerm, setSearchTerm } = useTeam();
-
+export const SearchBar: React.FC<SearchBarProps> = ({
+  isVisible,
+  searchTerm,
+  onSearchChange,
+}) => {
   return (
     <div
-      className={`sticky top-[61px] z-[9] bg-background px-4 py-3 ${
-        visible ? "block" : "hidden"
-      } border-b border-gray-divider`}
+      className={`sticky top-[61px] bg-gray-200 z-[9] px-4 py-3 border-b border-gray-300 transition-all ${
+        isVisible ? "block" : "hidden"
+      }`}
     >
       <div className="relative">
         <input
           type="search"
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pl-10 text-sm text-text-default shadow-sm focus:border-active-green focus:outline-none focus:ring-2 focus:ring-active-green/10"
+          className="w-full p-2.5 pl-10 bg-white border border-gray-300 rounded-lg text-sm text-gray-600 shadow-sm focus:outline-none focus:border-green-800 focus:ring-2 focus:ring-green-100"
           placeholder="Search members..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => onSearchChange(e.target.value)}
         />
         <svg
-          className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400"
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -36,4 +38,4 @@ export function SearchBar({ visible }: SearchBarProps) {
       </div>
     </div>
   );
-}
+};

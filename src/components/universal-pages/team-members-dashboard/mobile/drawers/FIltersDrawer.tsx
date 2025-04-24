@@ -1,100 +1,95 @@
-import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
-import { useTeam } from "../hooks/useTeam";
-import { useToast } from "../hooks/useToast";
+import { statusOptions, sortOptions } from "../../data/filter-options";
+import { Drawer } from "./Drawer";
 
 interface FiltersDrawerProps {
   isOpen: boolean;
+  statusFilter: string;
+  sortFilter: string;
   onClose: () => void;
+  onApplyFilters: () => void;
+  onResetFilters: () => void;
 }
 
-export function FiltersDrawer({ isOpen, onClose }: FiltersDrawerProps) {
-  const {
-    statusFilter,
-    setStatusFilter,
-    sortFilter,
-    setSortFilter,
-    statusOptions,
-    sortOptions,
-  } = useTeam();
-  const { showToast } = useToast();
-
-  const handleApplyFilters = () => {
-    showToast("Filters applied", "success");
-    onClose();
-  };
-
+export const FiltersDrawer: React.FC<FiltersDrawerProps> = ({
+  isOpen,
+  statusFilter,
+  sortFilter,
+  onClose,
+  onApplyFilters,
+  onResetFilters,
+}) => {
   return (
-    <MobileDrawer isOpen={isOpen} onClose={onClose}>
-      <div className="sticky top-0 z-[1] flex items-center justify-between border-b border-gray-200 bg-white px-5 py-4">
-        <h2 className="text-lg font-semibold text-bold-text">Filters</h2>
-        <button
-          className="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100"
-          onClick={onClose}
-          aria-label="Close Filters"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+    <Drawer
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Filters"
+      footer={
+        <>
+          <button
+            className="px-5 py-3 rounded-lg text-sm font-medium text-gray-600 border border-gray-300 bg-white hover:bg-gray-100"
+            onClick={onResetFilters}
           >
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
-      </div>
-      <div className="flex-1 overflow-y-auto px-5 py-4">
-        <div className="mb-6">
-          <h3 className="mb-2 text-sm font-medium text-bold-text">Status</h3>
-          <div className="space-y-2">
+            Reset
+          </button>
+          <button
+            className="px-5 py-3 rounded-lg text-sm font-medium text-white bg-black hover:bg-gray-900 flex-1"
+            onClick={onApplyFilters}
+          >
+            Apply Filters
+          </button>
+        </>
+      }
+    >
+      <form id="filtersForm">
+        <div className="border-b border-gray-200 pb-4 mb-4">
+          <h3 className="text-base font-semibold text-gray-700 pb-3">Status</h3>
+          <div className="flex flex-col gap-3">
             {statusOptions.map((option) => (
-              <label key={option.value} className="flex items-center gap-2">
+              <div className="flex items-center" key={option.value}>
                 <input
                   type="radio"
-                  name="status"
+                  id={`filterStatus${option.value}`}
+                  name="filterStatus"
                   value={option.value}
-                  checked={statusFilter === option.value}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="h-4 w-4 border-gray-300 text-active-green focus:ring-active-green"
+                  className="appearance-none h-5 w-5 border-2 border-gray-300 rounded-full checked:bg-green-800 checked:border-green-800 focus:outline-none"
+                  defaultChecked={option.value === statusFilter}
                 />
-                <span className="text-sm text-text-default">
+                <label
+                  htmlFor={`filterStatus${option.value}`}
+                  className="pl-3 text-sm text-gray-600 cursor-pointer"
+                >
                   {option.label}
-                </span>
-              </label>
+                </label>
+              </div>
             ))}
           </div>
         </div>
         <div>
-          <h3 className="mb-2 text-sm font-medium text-bold-text">Sort By</h3>
-          <div className="space-y-2">
+          <h3 className="text-base font-semibold text-gray-700 pb-3">
+            Sort By
+          </h3>
+          <div className="flex flex-col gap-3">
             {sortOptions.map((option) => (
-              <label key={option.value} className="flex items-center gap-2">
+              <div className="flex items-center" key={option.value}>
                 <input
                   type="radio"
-                  name="sort"
+                  id={`filterSort${option.value}`}
+                  name="filterSort"
                   value={option.value}
-                  checked={sortFilter === option.value}
-                  onChange={(e) => setSortFilter(e.target.value)}
-                  className="h-4 w-4 border-gray-300 text-active-green focus:ring-active-green"
+                  className="appearance-none h-5 w-5 border-2 border-gray-300 rounded-full checked:bg-green-800 checked:border-green-800 focus:outline-none"
+                  defaultChecked={option.value === sortFilter}
                 />
-                <span className="text-sm text-text-default">
-                  {option.label}
-                </span>
-              </label>
+                <label
+                  htmlFor={`filterSort${option.value}`}
+                  className="pl-3 text-sm text-gray-600 cursor-pointer"
+                >
+                  {option.label.replace("Sort by: ", "")}
+                </label>
+              </div>
             ))}
           </div>
         </div>
-      </div>
-      <div className="sticky bottom-0 border-t border-gray-200 bg-white px-5 py-4">
-        <button
-          className="w-full rounded-lg bg-apply-button-bg px-4 py-2.5 text-sm font-semibold text-active-green transition-colors hover:bg-apply-button-hover"
-          onClick={handleApplyFilters}
-        >
-          Apply Filters
-        </button>
-      </div>
-    </MobileDrawer>
+      </form>
+    </Drawer>
   );
-}
+};
