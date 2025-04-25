@@ -26,7 +26,7 @@ export default function BillingInformation({
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 mb-10">
+    <div className="flex flex-col lg:flex-row gap-8 mb-24">
       {/* Left Column: Title and Description */}
       <div className="flex-none lg:w-[30%] pt-0 lg:pt-1">
         <h2 className="text-lg font-semibold text-[#464646] mb-3">
@@ -229,8 +229,8 @@ export default function BillingInformation({
 
           {/* Subscription Section */}
           <div className="border-t border-[#E5E7EB] pt-8 mt-8">
-            <div className="flex justify-between items-center mb-5">
-              <div>
+            <div className="flex justify-between md:items-center mb-5 max-md:flex-col">
+              <div className="flex max-md:flex-row">
                 <span className="text-base font-semibold text-[#464646]">
                   Professional (monthly)
                 </span>
@@ -382,21 +382,19 @@ export default function BillingInformation({
                 <div className="h-full bg-[#1D77BD] rounded-md w-1/2"></div>
               </div>
 
-              <div className="flex justify-between mt-5">
-                <div>
-                  <button className="bg-white text-[#4A4A4A] border border-[#E5E7EB] rounded px-4 py-2 text-sm font-medium">
-                    Manage seats
-                  </button>
-                  <button className="bg-white text-[#4A4A4A] border border-[#E5E7EB] rounded px-4 py-2 text-sm font-medium ml-2">
-                    Manage members
-                  </button>
-                </div>
+              <div className="flex md:justify-between max-md:flex-col mt-5 gap-2">
+                <button className="bg-white text-[#4A4A4A] border border-[#E5E7EB] rounded px-4 py-2 text-sm font-medium">
+                  Manage seats
+                </button>
+                <button className="bg-white text-[#4A4A4A] border border-[#E5E7EB] rounded px-4 py-2 text-sm font-medium">
+                  Manage members
+                </button>
               </div>
             </div>
 
-            <div className="border-t border-[#E5E7EB] py-5 flex justify-between items-center">
+            <div className="border-t border-[#E5E7EB] py-5 flex md:justify-between max-md:flex-col md:items-center max-md:gap-2">
               <div className="text-[#4A4A4A]">Next billing date</div>
-              <div className="flex items-center gap-2">
+              <div className="flex md:items-center max-md:flex-col gap-2">
                 <span>December 13, 2023</span>
                 <span>50 day left in current billing cycle</span>
                 <button
@@ -408,9 +406,9 @@ export default function BillingInformation({
               </div>
             </div>
 
-            <div className="border-t border-[#E5E7EB] py-5 flex justify-between items-center">
+            <div className="border-t border-[#E5E7EB] py-5 flex md:justify-between md:items-center max-md:flex-col max-md:gap-2">
               <div className="text-[#4A4A4A]">Payment method</div>
-              <div className="flex items-center gap-2">
+              <div className="flex md:items-center max-md:flex-col gap-2">
                 <span>Card ending in ***4692</span>
                 <button
                   onClick={openEditPayment}
@@ -421,15 +419,15 @@ export default function BillingInformation({
               </div>
             </div>
 
-            <div className="border-t border-[#E5E7EB] py-5 flex justify-between items-center">
+            <div className="border-t border-[#E5E7EB] pt-5 flex md:justify-between md:items-center max-md:flex-col max-md:gap-2">
               <div className="text-[#4A4A4A]">
                 Your free trial ends on Mon, December 5th 2023
               </div>
               <div className="flex items-center gap-2">
-                <button className="bg-white text-[#4A4A4A] border border-[#E5E7EB] rounded px-4 py-2 text-sm font-medium">
+                <button className="bg-white max-md:w-full text-[#4A4A4A] border border-[#E5E7EB] rounded px-4 py-2 text-sm font-medium">
                   Cancel Trial
                 </button>
-                <button className="bg-[#1D77BD] text-white border-none rounded px-4 py-2 text-sm font-medium">
+                <button className="bg-[#1D77BD] max-md:w-full text-white border-none rounded px-4 py-2 text-sm font-medium">
                   Upgrade Plan
                 </button>
               </div>

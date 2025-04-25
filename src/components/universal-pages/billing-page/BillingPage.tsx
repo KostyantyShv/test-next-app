@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { Inter } from "next/font/google";
 import BillingInformation from "./BillingInformation";
-import PastInvoicesModal from "./PastInvoicesModal";
-import InvoiceDetailModal from "./InvoiceDetailModal";
-import EditPaymentModal from "./EditPaymentModal";
-import AddPaymentModal from "./AddPaymentModal";
-import ConfirmationModal from "./ConfirmationModal";
+import AddPaymentModal from "./modals/add-payment/AddPaymentModal";
+import EditPaymentModal from "./modals/edit-payment/EditPaymentModal";
+import InvoiceDetailModal from "./modals/invoice-detail/InvoiceDetailModal";
+import PastInvoicesModal from "./modals/past-invoices/PastInvoicesModal";
+import ConfirmationModal from "./modals/confirmation/ConfirmationModal";
 
 // Components
 const inter = Inter({ subsets: ["latin"] });
@@ -65,7 +65,7 @@ export default function BillingPage() {
 
   return (
     <div className={`${inter.className} text-[#4A4A4A]`}>
-      <div className="max-w-[1055px] mx-auto my-5">
+      <div className="max-w-[1055px] mx-auto my-5 max-md:mx-5">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-[#464646] font-semibold text-2xl flex items-center gap-2">
@@ -86,36 +86,37 @@ export default function BillingPage() {
         />
 
         {/* Modals */}
-        {activeModal === "past-invoices" && (
-          <PastInvoicesModal
-            onClose={closeModal}
-            onViewInvoice={() => {
-              closeModal();
-              openModal("invoice-detail");
-            }}
-          />
-        )}
+        <PastInvoicesModal
+          isOpen={activeModal === "past-invoices"}
+          onClose={closeModal}
+          onViewInvoice={() => {
+            closeModal();
+            openModal("invoice-detail");
+          }}
+        />
 
-        {activeModal === "invoice-detail" && (
-          <InvoiceDetailModal onClose={closeModal} />
-        )}
+        <InvoiceDetailModal
+          isOpen={activeModal === "invoice-detail"}
+          onClose={closeModal}
+        />
 
-        {activeModal === "edit-payment" && (
-          <EditPaymentModal
-            onClose={closeModal}
-            onAddPayment={() => {
-              closeModal();
-              openModal("add-payment");
-            }}
-          />
-        )}
+        <EditPaymentModal
+          isOpen={activeModal === "edit-payment"}
+          onClose={closeModal}
+          onAddPayment={() => {
+            closeModal();
+            openModal("add-payment");
+          }}
+        />
 
-        {activeModal === "add-payment" && (
-          <AddPaymentModal onClose={closeModal} />
-        )}
+        <AddPaymentModal
+          isOpen={activeModal === "add-payment"}
+          onClose={closeModal}
+        />
 
         {activeModal === "confirmation" && (
           <ConfirmationModal
+            isOpen={activeModal === "confirmation"}
             type={confirmationType}
             addonName={addonName}
             onCancel={closeModal}
