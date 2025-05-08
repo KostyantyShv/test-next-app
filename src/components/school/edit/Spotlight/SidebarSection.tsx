@@ -136,7 +136,7 @@ export default function SidebarSection({
             {links.map((link, index) => (
               <div
                 key={index}
-                className="flex items-center gap-4 p-3 border border-[#E5E5E5] rounded-lg relative"
+                className="flex max-md:flex-col max-md:w-full items-center gap-4 p-3 border border-[#E5E5E5] rounded-lg relative"
               >
                 <button
                   type="button"
@@ -145,7 +145,10 @@ export default function SidebarSection({
                 >
                   ×
                 </button>
-                <div className="flex-1">
+                <div className="flex-1 max-md:w-full">
+                  <label className="max-md:block hidden font-semibold text-[#4A4A4A] mb-2 text-sm">
+                    Link Text
+                  </label>
                   <input
                     type="text"
                     value={link.text}
@@ -158,7 +161,10 @@ export default function SidebarSection({
                     placeholder="Link Text"
                   />
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 max-md:w-full">
+                  <label className="max-md:block hidden font-semibold text-[#4A4A4A] mb-2 text-sm">
+                    URL
+                  </label>
                   <input
                     type="url"
                     value={link.url}
@@ -174,19 +180,19 @@ export default function SidebarSection({
               </div>
             ))}
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex md:items-center max-md:items-start max-md:flex-col max-md:flex max-md:w-full gap-4">
             <input
               type="text"
               value={newLinkText}
               onChange={(e) => setNewLinkText(e.target.value)}
-              className="flex-1 p-2 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+              className="flex-1 p-2 border border-[#E5E5E5] rounded-lg text-sm max-md:w-full text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
               placeholder="Enter link text"
             />
             <input
               type="url"
               value={newLinkUrl}
               onChange={(e) => setNewLinkUrl(e.target.value)}
-              className="flex-1 p-2 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+              className="flex-1 p-2 border border-[#E5E5E5] rounded-lg text-sm max-md:w-full text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
               placeholder="Enter link URL"
             />
             <button
@@ -206,7 +212,7 @@ export default function SidebarSection({
             {socialButtons.map((button, index) => (
               <div
                 key={index}
-                className="flex items-center gap-4 p-3 border border-[#E5E5E5] rounded-lg relative"
+                className="flex items-center max-md:flex-col max-md:w-full gap-4 p-3 border border-[#E5E5E5] rounded-lg relative"
               >
                 <button
                   type="button"
@@ -215,7 +221,7 @@ export default function SidebarSection({
                 >
                   ×
                 </button>
-                <div className="flex-1">
+                <div className="flex-1 max-md:w-full">
                   <input
                     type="text"
                     value={button.type}
@@ -228,7 +234,7 @@ export default function SidebarSection({
                     placeholder="Social Platform (e.g., twitter)"
                   />
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 max-md:w-full">
                   <input
                     type="url"
                     value={button.url}
@@ -244,25 +250,25 @@ export default function SidebarSection({
               </div>
             ))}
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center max-md:w-full max-md:flex-col gap-4">
             <input
               type="text"
               value={newSocialType}
               onChange={(e) => setNewSocialType(e.target.value)}
-              className="flex-1 p-2 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+              className="flex-1 p-2 border border-[#E5E5E5] max-md:w-full rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
               placeholder="Enter social platform"
             />
             <input
               type="url"
               value={newSocialUrl}
               onChange={(e) => setNewSocialUrl(e.target.value)}
-              className="flex-1 p-2 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+              className="flex-1 p-2 border border-[#E5E5E5] max-md:w-full rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
               placeholder="Enter social URL"
             />
             <button
               type="button"
               onClick={addSocialButton}
-              className="px-4 py-2 bg-[#f5f5f5] border border-[#ddd] rounded text-sm hover:bg-[#eee] transition-colors"
+              className="px-4 py-2 bg-[#f5f5f5] border max-md:w-full border-[#ddd] rounded text-sm hover:bg-[#eee] transition-colors"
             >
               Add Social Button
             </button>

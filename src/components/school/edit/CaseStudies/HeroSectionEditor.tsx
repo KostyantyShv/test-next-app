@@ -159,7 +159,7 @@ export default function HeroSection({
           </div>
         </div>
       </div>
-      <div className="flex gap-6 mb-6">
+      <div className="flex gap-6 max-md:flex-col mb-6">
         {columns.map((column) => (
           <div key={column} className="flex-1 bg-[#f8f9fa] p-5 rounded-lg">
             <div className="mb-4">

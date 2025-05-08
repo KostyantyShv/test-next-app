@@ -17,7 +17,7 @@ export default function SpotlightRight({
   maxSpotlights,
 }: SpotlightRightProps) {
   return (
-    <div className="w-[750px] bg-white rounded-lg p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative">
+    <div className="w-full bg-white rounded-lg p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative">
       <div className="absolute top-6 right-6 text-sm font-semibold text-[#4A4A4A] bg-[#F8F9FA] rounded-full px-3 py-1">
         {spotlights.length}/{maxSpotlights}
       </div>

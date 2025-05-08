@@ -39,7 +39,7 @@ export default function GallerySection({
       <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
         Gallery Images
       </label>
-      <div className="grid grid-cols-4 gap-3 mb-4">
+      <div className="grid grid-cols-4 max-md:grid-cols-2 gap-3 mb-4">
         {formData.gallery.map((image, index) => (
           <div
             key={index}

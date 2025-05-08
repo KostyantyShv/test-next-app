@@ -36,7 +36,7 @@ export default function CtaRowsSection({
         {ctaRows.map((cta, index) => (
           <div
             key={index}
-            className="flex items-center gap-4 p-4 border border-[#E5E5E5] rounded-lg relative"
+            className="flex max-md:flex-col max-md:w-full items-center gap-4 p-4 border border-[#E5E5E5] rounded-lg relative"
           >
             <button
               type="button"
@@ -45,7 +45,7 @@ export default function CtaRowsSection({
             >
               ×
             </button>
-            <div className="flex-1">
+            <div className="flex-1 max-md:w-full">
               <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
                 CTA Text
               </label>
@@ -57,7 +57,7 @@ export default function CtaRowsSection({
                 placeholder="e.g., Schedule a Demo Session"
               />
             </div>
-            <div className="w-[150px]">
+            <div className="w-[150px] max-md:w-full">
               <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
                 Button Text
               </label>

@@ -49,13 +49,13 @@ export default function TagsSection({ tags, setTags }: TagsSectionProps) {
           </div>
         ))}
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex md:items-center gap-4 max-md:flex-col max-md:w-full">
         <input
           type="text"
           value={newTag}
           onChange={(e) => setNewTag(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="px-3 py-1.5 border border-[#E5E5E5] rounded-full text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF] w-[200px]"
+          className="px-3 py-1.5 border max-md:w-full border-[#E5E5E5] rounded-full text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF] w-[200px]"
           placeholder="Enter tag"
         />
         <button

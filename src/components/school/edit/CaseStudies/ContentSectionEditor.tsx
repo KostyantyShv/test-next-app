@@ -397,7 +397,7 @@ export default function ContentSections({
         <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
           Feature Boxes
         </label>
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-2 max-md:grid-cols-1 gap-4 mb-4">
           {formData.keyFeatures.features.map((feature, index) => (
             <div
               key={index}

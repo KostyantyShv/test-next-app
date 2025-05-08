@@ -7,7 +7,7 @@ export const initialCaseStudies: CaseStudy[] = [
     category: "Web Design",
     description:
       "A comprehensive website redesign for Aecon, focusing on sustainable energy solutions and user-friendly navigation.",
-    thumbnail: "https://i.ibb.co/nMwVdhDY/hero1.webp",
+    thumbnail: "https://i.ibb.co/GvnKvp2Z/image1.png",
     status: "published",
     pinned: false,
     hero: {
@@ -15,7 +15,7 @@ export const initialCaseStudies: CaseStudy[] = [
       title: "Aecon Green Energy Solutions",
       buttonText: "Launch Website",
       buttonUrl: "https://example.com",
-      image: "https://i.ibb.co/nMwVdhDY/hero1.webp",
+      image: "https://i.ibb.co/GvnKvp2Z/image1.png",
     },
     infoColumns: {
       column1: {
@@ -39,7 +39,7 @@ export const initialCaseStudies: CaseStudy[] = [
           "Our approach focused on clean design and intuitive navigation.",
         features: ["Mobile-first design", "Fast load times"],
         buttonText: "View Technical Details",
-        image: "https://i.ibb.co/GvnKvp2Z/image1.png",
+        image: "https://i.ibb.co/LJwrLdW/coaching-image.webp",
       },
     ],
     keyFeatures: {
@@ -53,7 +53,7 @@ export const initialCaseStudies: CaseStudy[] = [
         },
       ],
     },
-    gallery: ["https://i.ibb.co/GvnKvp2Z/image1.png"],
+    gallery: ["https://i.ibb.co/LJwrLdW/coaching-image.webp"],
     testimonial: {
       label: "TESTIMONIALS",
       title: "Client Feedback",

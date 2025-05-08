@@ -4,7 +4,8 @@ import { useState } from "react";
 import { CaseStudy } from "./types/caseStudy";
 import { initialCaseStudies } from "./mock/caseStudies";
 import CaseStudyList from "./CaseStudiesList";
-import CaseStudyModal from "./CaseStudiesModal";
+import CaseStudyModalContent from "./CaseStudiesModalContent";
+import CaseStudiesModal from "./CaseStudiesModal";
 
 export default function CaseStudiesSection() {
   const [caseStudies, setCaseStudies] =
@@ -71,8 +72,8 @@ export default function CaseStudiesSection() {
   };
 
   return (
-    <div className="max-w-[1150px] mx-auto flex gap-[25px]">
-      <div className="w-[375px]">
+    <div className="max-w-[1150px] mx-auto flex max-md:flex-col gap-[25px]">
+      <div className="max-w-[375px] max-md:p-6">
         <h1 className="text-[#1a1a19] text-2xl font-semibold mb-3">
           Case Studies
         </h1>
@@ -81,7 +82,7 @@ export default function CaseStudiesSection() {
           highlight successful projects, and demonstrate your expertise.
         </p>
       </div>
-      <div className="w-[750px] bg-white rounded-lg p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative">
+      <div className="w-full bg-white rounded-lg p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative">
         <CaseStudyList
           caseStudies={caseStudies}
           onEdit={handleEditCaseStudy}
@@ -94,14 +95,13 @@ export default function CaseStudiesSection() {
           Add Case Study
         </button>
       </div>
-      {isModalOpen && (
-        <CaseStudyModal
-          caseStudy={caseStudies.find((study) => study.id === currentEditId)}
-          onSave={handleSaveCaseStudy}
-          onDelete={handleDeleteCaseStudy}
-          onClose={handleCloseModal}
-        />
-      )}
+      <CaseStudiesModal
+        isOpen={isModalOpen}
+        caseStudy={caseStudies.find((study) => study.id === currentEditId)}
+        onSave={handleSaveCaseStudy}
+        onDelete={handleDeleteCaseStudy}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 }

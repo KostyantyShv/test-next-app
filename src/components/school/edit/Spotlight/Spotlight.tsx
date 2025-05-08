@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import SpotlightContainer from "./SpotlightContainer";
-import SpotlightModal from "./SpotlightModal";
 import { Spotlight, SpotlightFormData } from "./types";
+import SpotlightModal from "./SpotlightModal";
 
 export default function SpotlightSection() {
   const initialSpotlights: Spotlight[] = [
@@ -186,18 +186,17 @@ export default function SpotlightSection() {
         onTogglePin={handleTogglePin}
         maxSpotlights={MAX_SPOTLIGHTS}
       />
-      {isModalOpen && (
-        <SpotlightModal
-          onClose={() => setIsModalOpen(false)}
-          onSave={handleSaveSpotlight}
-          onDelete={handleDeleteSpotlight}
-          spotlight={
-            currentEditId
-              ? spotlights.find((s) => s.id === currentEditId)
-              : undefined
-          }
-        />
-      )}
+      <SpotlightModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveSpotlight}
+        onDelete={handleDeleteSpotlight}
+        spotlight={
+          currentEditId
+            ? spotlights.find((s) => s.id === currentEditId)
+            : undefined
+        }
+      />
     </>
   );
 }

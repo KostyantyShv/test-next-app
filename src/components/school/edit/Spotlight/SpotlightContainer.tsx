@@ -18,7 +18,7 @@ export default function SpotlightContainer({
   maxSpotlights,
 }: SpotlightContainerProps) {
   return (
-    <div className="max-w-[1150px] mx-auto flex gap-6">
+    <div className="max-w-[1150px] mx-auto flex max-md:flex-col gap-6">
       <SpotlightLeft />
       <SpotlightRight
         spotlights={spotlights}

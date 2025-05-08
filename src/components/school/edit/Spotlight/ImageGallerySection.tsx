@@ -40,7 +40,7 @@ export default function ImageGallerySection({
       <h3 className="text-lg font-semibold text-[#262B47] mb-4">
         Image Gallery
       </h3>
-      <div className="grid grid-cols-4 gap-3 mb-3">
+      <div className="grid grid-cols-4 max-md:grid-cols-2 gap-3 mb-3">
         {images.map((src, index) => (
           <div
             key={index}

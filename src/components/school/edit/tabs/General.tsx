@@ -10,7 +10,7 @@ import FAQ from "../QA/FAQ";
 
 const General = () => {
   return (
-    <div className="mb-12">
+    <div>
       <Announcements />
       <About />
       <FAQ />

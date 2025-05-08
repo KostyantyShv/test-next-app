@@ -13,7 +13,7 @@ import Offers from "./tabs/Offers";
 const EditPage = () => {
   const [activeTab, setActiveTab] = useState<ActiveType>("general");
   return (
-    <div>
+    <div className="mb-14">
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
       {activeTab === "general" && <General />}
       {activeTab === "reviews" && <Reviews />}
