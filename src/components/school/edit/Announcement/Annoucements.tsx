@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Announcement } from "./types/announcement";
 import AnnouncementItem from "./AnnouncementItem";
-import AnnouncementModal from "./AnnpuncementModal";
+import AnnouncementsModal from "./AnnouncementsModal";
 
 const initialAnnouncements: Announcement[] = [
   {
@@ -83,6 +83,7 @@ export default function Announcements() {
 
   const handleSubmit = (formData: Omit<Announcement, "id" | "pinned">) => {
     if (currentEditId) {
+      // Update existing announcement
       setAnnouncements((prev) =>
         prev.map((a) =>
           a.id === currentEditId
@@ -91,14 +92,19 @@ export default function Announcements() {
         )
       );
     } else {
+      // Add new announcement
       if (announcements.length >= MAX_ANNOUNCEMENTS) {
-        alert("Maximum number of announcements reached.");
+        alert(
+          "Maximum number of announcements reached. Please delete an existing announcement first."
+        );
         return;
       }
-      setAnnouncements((prev) => [
-        ...prev,
-        { ...formData, id: Date.now(), pinned: false },
-      ]);
+      const newAnnouncement: Announcement = {
+        id: Date.now(),
+        ...formData,
+        pinned: false,
+      };
+      setAnnouncements((prev) => [...prev, newAnnouncement]);
     }
     closeModal();
   };
@@ -132,8 +138,8 @@ export default function Announcements() {
   };
 
   return (
-    <div className="max-w-[1150px] mx-auto flex gap-6">
-      <div className="w-[350px]">
+    <div className="flex max-md:flex-col gap-6">
+      <div className="max-w-[350px] max-md:p-6">
         <h1 className="text-[#1a1a19] text-2xl font-semibold mb-3">
           Announcements
         </h1>
@@ -142,11 +148,11 @@ export default function Announcements() {
           announcements and manage their visibility.
         </p>
       </div>
-      <div className="w-[775px] bg-white rounded-lg p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative">
+      <div className="w-full bg-white rounded-lg p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative">
         <div className="absolute top-6 right-6 text-sm font-semibold text-[var(--text-color)] py-1 px-3 bg-[#F8F9FA] rounded-2xl">
           {announcements.length}/{MAX_ANNOUNCEMENTS}
         </div>
-        <div className="mt-6 pt-2.5">
+        <div className="my-6 pt-2.5">
           {announcements.map((announcement) => (
             <AnnouncementItem
               key={announcement.id}
@@ -157,21 +163,20 @@ export default function Announcements() {
           ))}
         </div>
         <button
-          className="bg-[#02C5AF] text-white px-6 py-3 rounded-lg font-semibold text-sm hover:opacity-90"
+          className="bg-[#02C5AF] max-md:w-full text-white px-6 py-3 rounded-lg font-semibold text-sm hover:opacity-90"
           onClick={() => openModal()}
         >
           Add Announcement
         </button>
       </div>
-      {isModalOpen && (
-        <AnnouncementModal
-          onClose={closeModal}
-          onSubmit={handleSubmit}
-          onDelete={deleteAnnouncement}
-          editId={currentEditId}
-          announcements={announcements}
-        />
-      )}
+      <AnnouncementsModal
+        isModalOpen={isModalOpen}
+        onClose={closeModal}
+        onSubmit={handleSubmit}
+        onDelete={deleteAnnouncement}
+        editId={currentEditId}
+        announcements={announcements}
+      />
     </div>
   );
 }

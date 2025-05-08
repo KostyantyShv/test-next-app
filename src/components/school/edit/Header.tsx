@@ -2,6 +2,8 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ActiveType } from "./types/active-tab";
 
 type NavLink = {
   href: string;
@@ -9,11 +11,17 @@ type NavLink = {
   isActive?: boolean;
 };
 
-export default function ResponsiveHeader() {
-  const [activeTab, setActiveTab] = useState<string>("general");
+export default function ResponsiveHeader({
+  activeTab,
+  setActiveTab,
+}: {
+  activeTab: string;
+  setActiveTab: React.Dispatch<React.SetStateAction<ActiveType>>;
+}) {
   const [saveButtonText, setSaveButtonText] = useState<string>("Save");
   const [showScrollLeft, setShowScrollLeft] = useState<boolean>(false);
   const [showScrollRight, setShowScrollRight] = useState<boolean>(true);
+  const router = useRouter();
   const tabNavRef = useRef<HTMLDivElement>(null);
 
   const navLinks: NavLink[] = [
@@ -43,7 +51,9 @@ export default function ResponsiveHeader() {
     href: string
   ) => {
     e.preventDefault();
-    setActiveTab(href.replace("#", ""));
+    setActiveTab(href.replace("#", "") as ActiveType);
+    const newPathname = `/schools/edit/${href}`;
+    router.push(newPathname);
   };
 
   const handleSaveClick = () => {
@@ -146,7 +156,7 @@ export default function ResponsiveHeader() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-10">
+    <header className="sticky top-0 z-10 bg-[#F8FCFF]">
       {/* Mobile Header (md:hidden) */}
       <div className="md:hidden bg-white border-b border-black/10 shadow-sm">
         <div className="p-4 flex items-center gap-3">
@@ -204,7 +214,7 @@ export default function ResponsiveHeader() {
       </div>
 
       {/* Desktop Header (hidden on mobile) */}
-      <div className="hidden md:block py-6">
+      <div className="hidden md:block pt-6 mb-6">
         <div className="relative mx-auto flex justify-between rounded-lg pb-3">
           <div className="flex items-start gap-6">
             <Image

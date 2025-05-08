@@ -1,0 +1,11 @@
+export default function SpotlightLeft() {
+  return (
+    <div className="w-[375px]">
+      <h1 className="text-[#1a1a19] text-2xl font-semibold mb-3">Spotlight</h1>
+      <p className="text-[#5F5F5F] text-base leading-relaxed">
+        Showcase your institution`s key projects, achievements, and initiatives
+        to highlight your impact and excellence.
+      </p>
+    </div>
+  );
+}
