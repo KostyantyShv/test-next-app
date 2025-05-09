@@ -1,0 +1,165 @@
+import { Review } from "../types/review";
+
+export const initialReviews: Review[] = [
+  {
+    id: "1",
+    author: { name: "Shuwang Y.", fullName: "Shuwang Yang" },
+    title: {
+      short: "Learning Python for Data...",
+      full: "Learning Python for Data Analysis and Visualization",
+    },
+    rating: 4.9,
+    published: { short: "Jun 22, 2022", full: "Jun 22, 2022 2:15:30 PM" },
+    votes: 24,
+    featured: true,
+    reply: {
+      content:
+        "Thank you for your detailed feedback! We're glad to hear that you found the course material helpful and comprehensive. Your input helps us continue to improve our programs and provide the best possible learning experience for our students.",
+      date: "Jun 23, 2022",
+    },
+  },
+  {
+    id: "2",
+    author: { name: "Kiking A.", fullName: "Kiking Alexandr" },
+    title: {
+      short: "Learning Python for Data...",
+      full: "Learning Python for Data Analysis and Visualization",
+    },
+    rating: 5.0,
+    published: { short: "Jun 22, 2022", full: "Jun 22, 2022 4:33:20 PM" },
+    votes: 16,
+    featured: false,
+  },
+  {
+    id: "3",
+    author: { name: "Kiking A.", fullName: "Kiking Alexandr" },
+    title: {
+      short: "Learning Python for Data...",
+      full: "Learning Python for Data Analysis and Visualization",
+    },
+    rating: 5.0,
+    published: { short: "Jun 22, 2022", full: "Jun 22, 2022 4:33:20 PM" },
+    votes: 16,
+    featured: false,
+  },
+  {
+    id: "4",
+    author: { name: "Kiking A.", fullName: "Kiking Alexandr" },
+    title: {
+      short: "Learning Python for Data...",
+      full: "Learning Python for Data Analysis and Visualization",
+    },
+    rating: 5.0,
+    published: { short: "Jun 22, 2022", full: "Jun 22, 2022 4:33:20 PM" },
+    votes: 16,
+    featured: false,
+  },
+  {
+    id: "5",
+    author: { name: "Kiking A.", fullName: "Kiking Alexandr" },
+    title: {
+      short: "Learning Python for Data...",
+      full: "Learning Python for Data Analysis and Visualization",
+    },
+    rating: 5.0,
+    published: { short: "Jun 22, 2022", full: "Jun 22, 2022 4:33:20 PM" },
+    votes: 16,
+    featured: false,
+  },
+  {
+    id: "6",
+    author: { name: "Kiking A.", fullName: "Kiking Alexandr" },
+    title: {
+      short: "Learning Python for Data...",
+      full: "Learning Python for Data Analysis and Visualization",
+    },
+    rating: 5.0,
+    published: { short: "Jun 22, 2022", full: "Jun 22, 2022 4:33:20 PM" },
+    votes: 16,
+    featured: false,
+  },
+  {
+    id: "7",
+    author: { name: "Kiking A.", fullName: "Kiking Alexandr" },
+    title: {
+      short: "Learning Python for Data...",
+      full: "Learning Python for Data Analysis and Visualization",
+    },
+    rating: 5.0,
+    published: { short: "Jun 22, 2022", full: "Jun 22, 2022 4:33:20 PM" },
+    votes: 16,
+    featured: false,
+  },
+  {
+    id: "8",
+    author: { name: "Kiking A.", fullName: "Kiking Alexandr" },
+    title: {
+      short: "Learning Python for Data...",
+      full: "Learning Python for Data Analysis and Visualization",
+    },
+    rating: 5.0,
+    published: { short: "Jun 22, 2022", full: "Jun 22, 2022 4:33:20 PM" },
+    votes: 16,
+    featured: false,
+  },
+  {
+    id: "9",
+    author: { name: "Kiking A.", fullName: "Kiking Alexandr" },
+    title: {
+      short: "Learning Python for Data...",
+      full: "Learning Python for Data Analysis and Visualization",
+    },
+    rating: 5.0,
+    published: { short: "Jun 22, 2022", full: "Jun 22, 2022 4:33:20 PM" },
+    votes: 16,
+    featured: false,
+  },
+  {
+    id: "10",
+    author: { name: "Kiking A.", fullName: "Kiking Alexandr" },
+    title: {
+      short: "Learning Python for Data...",
+      full: "Learning Python for Data Analysis and Visualization",
+    },
+    rating: 5.0,
+    published: { short: "Jun 22, 2022", full: "Jun 22, 2022 4:33:20 PM" },
+    votes: 16,
+    featured: false,
+  },
+  {
+    id: "11",
+    author: { name: "Kiking A.", fullName: "Kiking Alexandr" },
+    title: {
+      short: "Learning Python for Data...",
+      full: "Learning Python for Data Analysis and Visualization",
+    },
+    rating: 5.0,
+    published: { short: "Jun 22, 2022", full: "Jun 22, 2022 4:33:20 PM" },
+    votes: 16,
+    featured: false,
+  },
+  {
+    id: "12",
+    author: { name: "Kiking A.", fullName: "Kiking Alexandr" },
+    title: {
+      short: "Learning Python for Data...",
+      full: "Learning Python for Data Analysis and Visualization",
+    },
+    rating: 5.0,
+    published: { short: "Jun 22, 2022", full: "Jun 22, 2022 4:33:20 PM" },
+    votes: 16,
+    featured: false,
+  },
+  {
+    id: "13",
+    author: { name: "Kiking A.", fullName: "Kiking Alexandr" },
+    title: {
+      short: "Learning Python for Data...",
+      full: "Learning Python for Data Analysis and Visualization",
+    },
+    rating: 5.0,
+    published: { short: "Jun 22, 2022", full: "Jun 22, 2022 4:33:20 PM" },
+    votes: 16,
+    featured: false,
+  },
+];

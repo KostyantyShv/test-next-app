@@ -1,7 +1,8 @@
 import React from "react";
+import { CheckListSection } from "../Checklist/ChecklistSection";
 
 const CheckList = () => {
-  return <div></div>;
+  return <CheckListSection />;
 };
 
 export default CheckList;

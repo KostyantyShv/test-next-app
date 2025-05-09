@@ -138,37 +138,40 @@ export default function Announcements() {
   };
 
   return (
-    <div className="flex max-md:flex-col gap-6">
-      <div className="max-w-[350px] max-md:p-6">
-        <h1 className="text-[#1a1a19] text-2xl font-semibold mb-3">
-          Announcements
-        </h1>
-        <p className="text-[#5F5F5F] text-base leading-6">
-          Share important updates and news with your community. Schedule
-          announcements and manage their visibility.
-        </p>
-      </div>
-      <div className="w-full bg-white rounded-lg p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative">
-        <div className="absolute top-6 right-6 text-sm font-semibold text-[var(--text-color)] py-1 px-3 bg-[#F8F9FA] rounded-2xl">
-          {announcements.length}/{MAX_ANNOUNCEMENTS}
+    <>
+      <div className="flex max-md:flex-col gap-6">
+        <div className="max-w-[350px] max-md:p-6">
+          <h1 className="text-[#1a1a19] text-2xl font-semibold mb-3">
+            Announcements
+          </h1>
+          <p className="text-[#5F5F5F] text-base leading-6">
+            Share important updates and news with your community. Schedule
+            announcements and manage their visibility.
+          </p>
         </div>
-        <div className="my-6 pt-2.5">
-          {announcements.map((announcement) => (
-            <AnnouncementItem
-              key={announcement.id}
-              announcement={announcement}
-              onTogglePin={togglePin}
-              onEdit={editAnnouncement}
-            />
-          ))}
+        <div className="w-full bg-white rounded-lg p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative">
+          <div className="absolute top-6 right-6 text-sm font-semibold text-[var(--text-color)] py-1 px-3 bg-[#F8F9FA] rounded-2xl">
+            {announcements.length}/{MAX_ANNOUNCEMENTS}
+          </div>
+          <div className="my-6 pt-2.5">
+            {announcements.map((announcement) => (
+              <AnnouncementItem
+                key={announcement.id}
+                announcement={announcement}
+                onTogglePin={togglePin}
+                onEdit={editAnnouncement}
+              />
+            ))}
+          </div>
+          <button
+            className="bg-[#02C5AF] max-md:w-full text-white px-6 py-3 rounded-lg font-semibold text-sm hover:opacity-90"
+            onClick={() => openModal()}
+          >
+            Add Announcement
+          </button>
         </div>
-        <button
-          className="bg-[#02C5AF] max-md:w-full text-white px-6 py-3 rounded-lg font-semibold text-sm hover:opacity-90"
-          onClick={() => openModal()}
-        >
-          Add Announcement
-        </button>
       </div>
+
       <AnnouncementsModal
         isModalOpen={isModalOpen}
         onClose={closeModal}
@@ -177,6 +180,6 @@ export default function Announcements() {
         editId={currentEditId}
         announcements={announcements}
       />
-    </div>
+    </>
   );
 }

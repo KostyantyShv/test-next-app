@@ -19,12 +19,12 @@ const LinkModal: React.FC<LinkModalProps> = ({
 }) => {
   return (
     <>
-      <div className="max-md:block hidden">
+      <div className={`max-md:block hidden ${!isOpen ? "w-0 h-0" : ""}`}>
         <MobileDrawer isOpen={isOpen} onClose={onClose}>
           <LinkModalContent onClose={onClose} onSave={onSave} link={link} />
         </MobileDrawer>
       </div>
-      <div className="max-md:hidden block">
+      <div className={`max-md:hidden block ${!isOpen ? "w-0 h-0" : ""}`}>
         <DesktopModal isOpen={isOpen} onClose={onClose}>
           <LinkModalContent onClose={onClose} onSave={onSave} link={link} />
         </DesktopModal>

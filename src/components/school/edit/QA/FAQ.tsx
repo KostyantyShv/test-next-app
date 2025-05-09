@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import QAModal from "./QAModalContent";
 import QuestionList from "./QuestionList";
 import { Question } from "./types/question";
+import QAModal from "./QAModal";
 
 export default function FAQ() {
   // Sample initial data
@@ -74,24 +74,25 @@ export default function FAQ() {
   };
 
   return (
-    <div className="mx-auto flex gap-6 max-md:flex-col">
-      <div className="max-w-[350px] px-6">
-        <h1 className="text-2xl font-semibold text-[#1A1A1A] mb-3">FAQ</h1>
-        <p className="text-base text-[#5F5F5F] leading-relaxed">
-          Add frequently asked questions and their answers to help students
-          better understand your school.
-        </p>
-      </div>
+    <>
+      <div className="mx-auto flex gap-6 max-md:flex-col">
+        <div className="max-w-[350px] px-6">
+          <h1 className="text-2xl font-semibold text-[#1A1A1A] mb-3">FAQ</h1>
+          <p className="text-base text-[#5F5F5F] leading-relaxed">
+            Add frequently asked questions and their answers to help students
+            better understand your school.
+          </p>
+        </div>
 
-      <div className="w-full bg-white rounded-lg p-6 shadow-[0_1px_3px_rgba(0,_0,_0,_0.1)]">
-        <QuestionList
-          questions={questions}
-          onTogglePin={handleTogglePin}
-          onEdit={handleEditQuestion}
-          onAddQuestion={handleAddQuestion}
-        />
+        <div className="w-full bg-white rounded-lg p-6 shadow-[0_1px_3px_rgba(0,_0,_0,_0.1)]">
+          <QuestionList
+            questions={questions}
+            onTogglePin={handleTogglePin}
+            onEdit={handleEditQuestion}
+            onAddQuestion={handleAddQuestion}
+          />
+        </div>
       </div>
-
       <QAModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -99,6 +100,6 @@ export default function FAQ() {
         onDelete={handleDeleteQuestion}
         currentQuestion={currentQuestion}
       />
-    </div>
+    </>
   );
 }

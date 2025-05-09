@@ -110,6 +110,12 @@ const LinksSection = () => {
   return (
     <>
       <div className="max-md:block hidden w-full">
+        <LinkModal
+          isOpen={isModalOpen}
+          link={links.find((l) => l.id === currentEditId)}
+          onSave={saveLink}
+          onClose={closeModal}
+        />
         <LinksSectionMobile
           links={links}
           setLinks={setLinks}
@@ -130,13 +136,6 @@ const LinksSection = () => {
           onUpdateColor={updateColor}
         />
       </div>
-
-      <LinkModal
-        isOpen={isModalOpen}
-        link={links.find((l) => l.id === currentEditId)}
-        onSave={saveLink}
-        onClose={closeModal}
-      />
 
       <div
         className={`fixed bottom-20 left-1/2 min-w-[280px] max-w-[calc(100%-40px)] -translate-x-1/2 rounded-lg bg-[#EBFCF4] px-4 py-3 text-sm font-medium text-[#0B6333] shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-all duration-300 z-[2000] ${
