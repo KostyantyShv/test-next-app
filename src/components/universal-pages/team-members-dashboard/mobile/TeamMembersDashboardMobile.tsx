@@ -9,7 +9,6 @@ import { AddMemberDrawer } from "./drawers/AddMemberDrawer";
 import { AssignToListingDrawer } from "./drawers/AssignToListingDrawer";
 import { DeleteConfirmationDrawer } from "./drawers/DeleteConfirmationDrawer";
 import { EditMemberDrawer } from "./drawers/EditMemberDrawer";
-import { FiltersDrawer } from "./drawers/FiltersDrawer";
 import { OptionsDrawer } from "./drawers/OptionsDrawer";
 import { TeamTypeDrawer } from "./drawers/TeamTypeDrawer";
 import { Header } from "./Header";
@@ -17,6 +16,7 @@ import { MemberList } from "./MemberList";
 import { Pagination } from "./Pagination";
 import { SearchBar } from "./SearchBar";
 import { ActionsDrawer } from "./drawers/ActionsDrawer";
+import { FiltersDrawer } from "./drawers/FiltersDrawer";
 
 const TeamMembersMobile: React.FC = () => {
   // State
