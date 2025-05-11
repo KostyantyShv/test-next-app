@@ -16,7 +16,7 @@ import { MemberList } from "./MemberList";
 import { Pagination } from "./Pagination";
 import { SearchBar } from "./SearchBar";
 import { ActionsDrawer } from "./drawers/ActionsDrawer";
-import { FiltersDrawer } from "./drawers/FiltersDrawer";
+// import { FiltersDrawer } from "./drawers/FiltersDrawer";
 
 const TeamMembersMobile: React.FC = () => {
   // State
@@ -235,14 +235,14 @@ const TeamMembersMobile: React.FC = () => {
         onClose={closeDrawer}
         onTeamTypeChange={handleTeamTypeChange}
       />
-      <FiltersDrawer
+      {/* <FiltersDrawer
         isOpen={isFiltersDrawerOpen}
         statusFilter={statusFilter}
         sortFilter={sortFilter}
         onClose={closeDrawer}
         onApplyFilters={handleApplyFilters}
         onResetFilters={handleResetFilters}
-      />
+      /> */}
       <ActionsDrawer
         isOpen={isActionsDrawerOpen}
         currentMemberId={currentMemberId}
