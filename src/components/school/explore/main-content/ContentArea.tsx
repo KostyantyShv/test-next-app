@@ -1,15 +1,19 @@
 import React from "react";
 import MapContainer from "./MapContainer";
 import SchoolCard from "../SchoolCard";
-import { schools } from "../mock";
 import { School } from "../types";
 
 interface ContentAreaProps {
   isMapActive: boolean;
   layout: string;
+  schools: School[];
 }
 
-const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
+const ContentArea: React.FC<ContentAreaProps> = ({
+  isMapActive,
+  layout,
+  schools,
+}) => {
   const cardCounts = {
     grid: 6,
     list: 4,

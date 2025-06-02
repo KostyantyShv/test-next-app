@@ -1,13 +1,11 @@
-import FiltersWrapper from "@/components/school/explore/filter-wrapper/FilterWrapper";
-import MainContent from "@/components/school/explore/main-content/MainContent";
+import ExplorePage from "@/components/school/explore/ExplorePage";
 import React from "react";
 
 const Explore = () => {
   return (
-    <div>
-      <FiltersWrapper />
-      <MainContent />
-    </div>
+    <>
+      <ExplorePage />
+    </>
   );
 };
 

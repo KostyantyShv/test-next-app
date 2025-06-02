@@ -1,10 +1,8 @@
-import React from "react";
-import { layouts } from "./mock";
+import React, { JSX } from "react";
 import CategoryDropdown from "./CategoryDropdown";
 import SearchBox from "./SearchBox";
 import MapButton from "./MapButton";
 import LayoutToggle from "./LayoutToggle";
-import SearchTypeButton from "./SearchTypeButton";
 
 interface HeaderProps {
   isSearchActive: boolean;
@@ -13,6 +11,18 @@ interface HeaderProps {
   setIsMapActive: (value: boolean) => void;
   layout: string;
   setLayout: (value: string) => void;
+  renderDropdownItems: () => React.ReactNode;
+  dropdownValue: string;
+  dropdownIcon?: JSX.Element;
+  layouts: {
+    type: string;
+    icon: JSX.Element;
+  }[];
+  layoutToggleWidth: number;
+  renderActionsButton?: () => React.ReactNode;
+  renderItemsCount?: () => React.ReactNode;
+  renderSearchTypeButton?: () => React.ReactNode;
+  renderExpandCollapseButton?: () => React.ReactNode;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -22,11 +32,25 @@ const Header: React.FC<HeaderProps> = ({
   setIsMapActive,
   layout,
   setLayout,
+  renderDropdownItems,
+  dropdownValue,
+  dropdownIcon,
+  layouts,
+  layoutToggleWidth,
+  renderItemsCount = () => <></>,
+  renderActionsButton = () => <></>,
+  renderSearchTypeButton = () => <></>,
+  renderExpandCollapseButton = () => <></>,
 }) => {
   return (
     <div className="flex items-center justify-between p-4 md:p-6 border-b border-[rgba(0,0,0,0.08)] bg-white">
-      <CategoryDropdown />
+      <CategoryDropdown
+        renderDropdownItems={renderDropdownItems}
+        value={dropdownValue}
+        dropdownIcon={dropdownIcon}
+      />
       <div className="flex items-center gap-3">
+        {renderExpandCollapseButton()}
         <SearchBox
           isSearchActive={isSearchActive}
           setIsSearchActive={setIsSearchActive}
@@ -46,9 +70,16 @@ const Header: React.FC<HeaderProps> = ({
           </svg>
         </button>
         <MapButton isMapActive={isMapActive} setIsMapActive={setIsMapActive} />
+        {renderActionsButton()}
         <div className="w-[1px] h-6 bg-[rgba(0,0,0,0.1)] mx-2"></div>
-        <LayoutToggle layout={layout} setLayout={setLayout} layouts={layouts} />
-        <SearchTypeButton />
+        <LayoutToggle
+          layout={layout}
+          setLayout={setLayout}
+          layouts={layouts}
+          width={layoutToggleWidth}
+        />
+        {renderSearchTypeButton()}
+        {renderItemsCount()}
       </div>
     </div>
   );

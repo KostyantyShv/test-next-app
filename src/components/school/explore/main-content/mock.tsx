@@ -1,3 +1,5 @@
+import { EstablishmentType } from "@/types/schools-explore";
+
 export const layouts = [
   {
     type: "grid",
@@ -52,4 +54,10 @@ export const layouts = [
       </svg>
     ),
   },
+];
+
+export const establishmentTypes: EstablishmentType[] = [
+  "K-12",
+  "Colleges",
+  "Graduates",
 ];

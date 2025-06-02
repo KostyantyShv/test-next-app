@@ -58,12 +58,12 @@ export const Section: React.FC<SectionProps> = ({
           }
         }}
       >
-        <div className="flex items-center gap-4">
+        <div className="flex md:items-center max-md:flex-col md:gap-4">
           <div className="text-base font-semibold text-header-green">
             {title}
           </div>
           {completedCount === totalItems ? (
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-success-bg text-[#089E68] text-[13px] font-medium min-w-[95px]">
+            <div className="flex max-md:bg-[#d1fae5] max-md:w-fit items-center gap-1.5 px-3 py-1 rounded-full bg-success-bg text-[#089E68] text-[13px] font-medium min-w-[95px]">
               <svg
                 width="20"
                 height="20"

@@ -39,7 +39,7 @@ export const ChecklistItem: React.FC<
   return (
     <div className="border border-border rounded-lg mb-4 overflow-hidden last:mb-0 animate-fadeIn">
       <div
-        className="p-4 grid grid-cols-[48px_1fr_auto_24px] gap-4 items-center bg-white"
+        className="p-4 max-md:flex max-md:flex-col max-md:gap-3 bg-white"
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -48,12 +48,59 @@ export const ChecklistItem: React.FC<
           }
         }}
       >
-        <div className="flex items-center justify-center">
-          <Icon name={icon} className="w-6 h-6 text-header-green" />
+        <div className="grid grid-cols-[48px_1fr_auto_24px] max-md:grid-cols-[32px_1fr_auto] gap-4 items-center">
+          <div className="flex items-center justify-center">
+            <Icon name={icon} className="w-6 h-6 text-header-green" />
+          </div>
+          <div className="text-sm font-medium text-bold-text">{title}</div>
+          {status === "completed" ? (
+            <div className="flex max-md:hidden items-center gap-2 text-sm font-medium text-[#089E68]">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path d="M10 0a10 10 0 110 20 10 10 0 010-20zm3.77 7.23l-4.95 4.95-2.59-2.59L4.77 11l3.18 3.18 5.59-5.59-1.77-1.36z" />
+              </svg>
+              Completed
+            </div>
+          ) : (
+            <button
+              className={`px-4 py-1.5 block max-md:hidden rounded-md text-[13px] font-medium border border-border ${
+                button?.type === "add"
+                  ? "bg-apply-button-bg text-header-green hover:bg-apply-button-hover"
+                  : "bg-gray-100 text-dark-text hover:bg-gray-200"
+              } transition-all`}
+              onClick={handleAction}
+              disabled={isProcessing}
+            >
+              {isProcessing ? "Processing..." : button?.label}
+            </button>
+          )}
+          <div
+            className="flex items-center justify-center cursor-pointer"
+            onClick={toggleItem}
+          >
+            <svg
+              className={`w-5 h-5 transition-transform ${
+                isExpanded ? "rotate-180" : ""
+              }`}
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
         </div>
-        <div className="text-sm font-medium text-bold-text">{title}</div>
         {status === "completed" ? (
-          <div className="flex items-center gap-2 text-sm font-medium text-[#089E68]">
+          <div className="max-md:flex hidden justify-center w-full border-2 p-[8px_12px] bg-[#d1fae5] rounded-lg border-[#089E68]  items-center gap-2 text-sm font-medium text-[#089E68]">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
               <path d="M10 0a10 10 0 110 20 10 10 0 010-20zm3.77 7.23l-4.95 4.95-2.59-2.59L4.77 11l3.18 3.18 5.59-5.59-1.77-1.36z" />
             </svg>
@@ -61,7 +108,7 @@ export const ChecklistItem: React.FC<
           </div>
         ) : (
           <button
-            className={`px-4 py-1.5 rounded-md text-[13px] font-medium border border-border ${
+            className={`px-4 py-1.5 hidden max-md:block rounded-md text-[13px] font-medium border border-border ${
               button?.type === "add"
                 ? "bg-apply-button-bg text-header-green hover:bg-apply-button-hover"
                 : "bg-gray-100 text-dark-text hover:bg-gray-200"
@@ -72,26 +119,6 @@ export const ChecklistItem: React.FC<
             {isProcessing ? "Processing..." : button?.label}
           </button>
         )}
-        <div
-          className="flex items-center justify-center cursor-pointer"
-          onClick={toggleItem}
-        >
-          <svg
-            className={`w-5 h-5 transition-transform ${
-              isExpanded ? "rotate-180" : ""
-            }`}
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </div>
       </div>
       <div
         className={`p-4 bg-gray-50 border-t border-border ${

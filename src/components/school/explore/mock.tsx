@@ -273,6 +273,7 @@ export const FILTER_CONFIG: Record<
     tooltip?: string;
     hasTextInput?: boolean;
     inputPlaceholder?: string;
+    withSubOptions?: boolean;
   }>
 > = {
   "K-12": [
@@ -285,6 +286,7 @@ export const FILTER_CONFIG: Record<
     {
       category: FILTER_MOCK.COLLEGE_TYPE_COLLEGES,
       filterKey: "collegeTypeColleges",
+      withSubOptions: true,
     },
     { category: FILTER_MOCK.RELIGION, filterKey: "religion" },
     {

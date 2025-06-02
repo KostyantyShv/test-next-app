@@ -1,15 +1,5 @@
 import { memo } from "react";
-
-interface Review {
-  id: string;
-  author: { name: string; fullName: string };
-  title: { short: string; full: string };
-  rating: number;
-  published: { short: string; full: string };
-  votes: number;
-  featured: boolean;
-  reply?: { content: string; date: string };
-}
+import { Review } from "./types/review";
 
 interface ReviewRowProps {
   review: Review;
@@ -17,7 +7,7 @@ interface ReviewRowProps {
   isDropdownActive: boolean;
   onToggleRow: (reviewId: string) => void;
   onToggleDropdown: (reviewId: string) => void;
-  onReplyClick: (reviewId: string) => void;
+  onReplyClick: (review: Review) => void;
   onDelete: (reviewId: string) => void;
   onToggleFeatured: (reviewId: string) => void;
 }
@@ -56,7 +46,7 @@ const ICONS = {
       <path
         fillRule="nonzero"
         fill="currentColor"
-        d="M19 1a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-1.263v4l-5.39-4H5a2 2 0 0 1-2-2V3a2 2 0 0 1 2-想不到2h14zm0 1.5H5a.5.5 0 0 0-.5.5v14a.5.5 0 0 0 .5.5h14a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM16.25 12a.75.75 0 1 1 0 1.5h-8.5a.75.75 0 1 1 0-1.5h8.5zm0-3a.75.75 0 1 1 0 1.5h-8.5a.75.75 0 1 1 0-1.5h8.5zm0-3a.75.75 0 1 1 0 1.5h-8.5a.75.75 0 1 1 0-1.5h8.5z"
+        d="M19 1a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-1.263v4l-5.39-4H5a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h14zm0 1.5H5a.5.5 0 0 0-.5.5v14a.5.5 0 0 0 .5.5h14a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM16.25 12a.75.75 0 1 1 0 1.5h-8.5a.75.75 0 1 1 0-1.5h8.5zm0-3a.75.75 0 1 1 0 1.5h-8.5a.75.75 0 1 1 0-1.5h8.5zm0-3a.75.75 0 1 1 0 1.5h-8.5a.75.75 0 1 1 0-1.5h8.5z"
       ></path>
     </svg>
   ),
@@ -71,7 +61,7 @@ const ICONS = {
   delete: (
     <svg viewBox="0 0 20 20" width="18" height="18">
       <g fillRule="nonzero" fill="#F44336">
-        <path d="M11.429 2.357c1.014 0 1.845.783 1.922 1.778l.006.15v1.43a.5.5 0 0 1-.992.09l-.008-.09v-1.43a.93.93 0 0 0-.82-.922l-.108-.006H8.57a.93.93 0 0 0-.922.82l-.006.109v1.428a.5.5 0 0 1-.992.09l-.008-.09V4.286c0-1.015.783-1.846 1.778-1.923l.15-.006z"></path>
+        <path d="M11.429 2.357c1.014 0 1.845.783 1.922 1.778l.006.15v1.43a.5.5 0 0 1-.992.09l-.008-.09v-1.43a.93.93 0 0 0-.82-.922l-.108-.006H8.57a.93.93 0 0 0-.922.82l-.006.109v1.428a.5.5 0 0 1-.992.09l-.008-.09V4.286c0-1.015.783-1.846 1.778-1.923l.150-.006z"></path>
         <path d="M16.429 5.214a.5.5 0 0 1 .09.992l-.09.008H3.57a.5.5 0 0 1-.09-.992l.09-.008z"></path>
         <path d="M15 5.214H5a.5.5 0 0 0-.5.5v10c0 1.065.863 1.929 1.929 1.929h7.142a1.93 1.93 0 0 0 1.929-1.929v-10a.5.5 0 0 0-.5-.5m-9.5 1h9v9.5a.93.93 0 0 1-.929.929H6.43l-.109-.006a.93.93 0 0 1-.82-.923z"></path>
       </g>
@@ -91,9 +81,9 @@ function ReviewRow({
 }: ReviewRowProps) {
   return (
     <tr className={`main-row relative ${isExpanded ? "expanded" : ""}`}>
-      <td className="p-4 bg-white border-b border-[#E5E7EB] align-middle">
+      <td className="p-4 bg-white border-b border-gray-200 align-middle">
         <button
-          className="w-8 h-8 rounded-md bg-[#F1F3F6] border-none cursor-pointer flex items-center justify-center hover:bg-[#E5E7EB] transition-colors"
+          className="w-8 h-8 rounded-md bg-gray-100 border-none cursor-pointer flex items-center justify-center hover:bg-gray-200 transition-colors"
           onClick={() => onToggleRow(review.id)}
         >
           <span
@@ -103,52 +93,52 @@ function ReviewRow({
           </span>
         </button>
       </td>
-      <td className="p-4 bg-white border-b border-[#E5E7EB] align-middle">
-        <div className="relative inline-block group">
-          <span className="text-[0.95rem] font-semibold text-[#016853] tracking-tight">
+      <td className="p-4 bg-white border-b border-gray-200 align-middle">
+        <div className="relative group">
+          <span className="text-[0.95rem] font-semibold text-green-800 tracking-tight">
             {review.author.name}
           </span>
-          <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-[#464646] text-white text-center rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap text-xs font-normal transition-opacity">
+          <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-gray-800 text-white text-center rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap text-xs font-normal transition-opacity">
             {review.author.fullName}
-            <span className="absolute top-full left-1/2 -translate-x-1/2 border-5 border-t-[#464646] border-x-transparent border-b-transparent"></span>
+            <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-t-gray-800 border-x-transparent border-b-transparent"></span>
           </span>
         </div>
       </td>
-      <td className="p-4 bg-white border-b border-[#E5E7EB] align-middle">
-        <div className="relative inline-block group">
-          <span className="text-[0.95rem] text-[#4A4A4A] tracking-tight">
+      <td className="p-4 bg-white border-b border-gray-200 align-middle">
+        <div className="relative group">
+          <span className="text-[0.95rem] text-gray-700 tracking-tight">
             {review.title.short}
           </span>
-          <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-[#464646] text-white text-center rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap text-xs font-normal transition-opacity">
+          <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-gray-800 text-white text-center rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap text-xs font-normal transition-opacity">
             {review.title.full}
-            <span className="absolute top-full left-1/2 -translate-x-1/2 border-5 border-t-[#464646] border-x-transparent border-b-transparent"></span>
+            <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-t-gray-800 border-x-transparent border-b-transparent"></span>
           </span>
         </div>
       </td>
-      <td className="p-4 bg-white border-b border-[#E5E7EB] align-middle">
-        <div className="flex items-center gap-1 font-semibold text-[#089E68]">
-          <span className="text-[#00DF8B] pb-[5px]">★</span>
+      <td className="p-4 bg-white border-b border-gray-200 align-middle">
+        <div className="flex items-center gap-1 font-semibold text-green-600">
+          <span className="text-green-400 pb-[5px]">★</span>
           <span>{review.rating}</span>
         </div>
       </td>
-      <td className="p-4 bg-white border-b border-[#E5E7EB] align-middle">
-        <div className="relative inline-block group">
-          <span className="text-sm text-[#5F5F5F]">
+      <td className="p-4 bg-white border-b border-gray-200 align-middle">
+        <div className="relative group">
+          <span className="text-sm text-gray-600">
             {review.published.short}
           </span>
-          <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-[#464646] text-white text-center rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap text-xs font-normal transition-opacity">
+          <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-gray-800 text-white text-center rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap text-xs font-normal transition-opacity">
             {review.published.full}
-            <span className="absolute top-full left-1/2 -translate-x-1/2 border-5 border-t-[#464646] border-x-transparent border-b-transparent"></span>
+            <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-t-gray-800 border-x-transparent border-b-transparent"></span>
           </span>
         </div>
       </td>
-      <td className="p-4 bg-white border-b border-[#E5E7EB] align-middle">
-        <div className="flex items-center gap-[6px] text-[#5F5F5F] font-medium">
+      <td className="p-4 bg-white border-b border-gray-200 align-middle">
+        <div className="flex items-center gap-[6px] text-gray-600 font-medium">
           {ICONS.thumbsUp}
           {review.votes}
         </div>
       </td>
-      <td className="p-4 bg-white border-b border-[#E5E7EB] align-middle">
+      <td className="p-4 bg-white border-b border-gray-200 align-middle">
         <label className="relative inline-block w-9 h-5">
           <input
             type="checkbox"
@@ -157,8 +147,8 @@ function ReviewRow({
             className="opacity-0 w-0 h-0"
           />
           <span
-            className={`absolute cursor-pointer inset-0 bg-[#E5E7EB] rounded-full transition-colors ${
-              review.featured ? "bg-[#0B6333]" : ""
+            className={`absolute cursor-pointer inset-0 bg-gray-300 rounded-full transition-colors ${
+              review.featured ? "bg-green-700" : ""
             }`}
           ></span>
           <span
@@ -168,10 +158,10 @@ function ReviewRow({
           ></span>
         </label>
       </td>
-      <td className="p-4 bg-white border-b border-[#E5E7EB] align-middle">
+      <td className="p-4 bg-white border-b border-gray-200 align-middle">
         <div className="relative">
           <div
-            className="cursor-pointer p-2 rounded-md font-bold hover:bg-[#F8F9FA]"
+            className="cursor-pointer p-2 rounded-md font-bold hover:bg-gray-100"
             onClick={(e) => {
               e.stopPropagation();
               onToggleDropdown(review.id);
@@ -180,43 +170,31 @@ function ReviewRow({
             ⋮
           </div>
           <div
-            className={`absolute right-0 top-full bg-white border border-[#E5E7EB] rounded-lg shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] min-w-[200px] z-[1000] ${
+            className={`absolute right-0 top-full bg-white border border-gray-200 rounded-lg shadow-lg min-w-[200px] z-[1000] ${
               isDropdownActive ? "block" : "hidden"
             }`}
           >
-            <a
-              href="#"
-              className="flex items-center gap-3 p-3 text-[#4A4A4A] text-sm hover:bg-[#F8F9FA] transition-colors"
-              onClick={(e) => {
-                e.preventDefault();
-                onReplyClick(review.id);
-              }}
+            <button
+              className="w-full text-left px-4 py-2 text-gray-700 text-sm hover:bg-gray-100 flex items-center gap-3"
+              onClick={() => onReplyClick(review)}
             >
               {ICONS.reply}
               Reply to Review
-            </a>
-            <a
-              href="#"
-              className="flex items-center gap-3 p-3 text-[#4A4A4A] text-sm hover:bg-[#F8F9FA] transition-colors"
-              onClick={(e) => e.preventDefault()}
-            >
+            </button>
+            <button className="w-full text-left px-4 py-2 text-gray-700 text-sm hover:bg-gray-100 flex items-center gap-3">
               {ICONS.view}
               View Review
-            </a>
+            </button>
             {review.reply && (
               <>
-                <div className="h-px bg-[#E0E0E0] my-2"></div>
-                <a
-                  href="#"
-                  className="flex items-center gap-3 p-3 text-[#FF4D4D] text-sm hover:bg-[#FFF1F1] transition-colors"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onDelete(review.id);
-                  }}
+                <div className="h-px bg-gray-200 my-2"></div>
+                <button
+                  className="w-full text-left px-4 py-2 text-red-600 text-sm hover:bg-red-50 flex items-center gap-3"
+                  onClick={() => onDelete(review.id)}
                 >
                   {ICONS.delete}
                   Delete Reply
-                </a>
+                </button>
               </>
             )}
           </div>

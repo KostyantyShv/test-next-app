@@ -42,8 +42,8 @@ export const Header: React.FC<HeaderProps> = ({
         <h1 className="text-xl font-semibold text-header-green">
           Listing Checklist
         </h1>
-        <div className="flex items-center gap-4 w-full md:w-auto">
-          <div className="w-[240px] relative">
+        <div className="flex items-center max-md:flex-col gap-4 w-full md:w-auto">
+          <div className="md:w-[240px] max-md:w-full relative">
             <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
               <div
                 className="h-full bg-[#016853] absolute top-0 rounded-l-full left-0 transition-all"
@@ -57,14 +57,14 @@ export const Header: React.FC<HeaderProps> = ({
               ></div>
             </div>
           </div>
-          <div className="flex gap-3 text-sm font-medium">
+          <div className="flex md:gap-3 max-md:w-full text-sm max-md:justify-between font-medium">
             <span className="text-[#016853]">{incompleteCount} incomplete</span>
             <span className="text-[#ef4444]">{issuesCount} issues</span>
           </div>
         </div>
       </div>
       <div className="flex items-center gap-[10px]">
-        <div className="flex gap-4 mr-[10px]">
+        <div className="flex max-md:hidden gap-4 mr-[10px]">
           <ToggleSwitch
             label="Show Incomplete"
             checked={showIncomplete}
@@ -72,6 +72,18 @@ export const Header: React.FC<HeaderProps> = ({
           />
           <ToggleSwitch
             label="Show Issues"
+            checked={showIssues}
+            onChange={() => setShowIssues(!showIssues)}
+          />
+        </div>
+        <div className="max-md:flex hidden gap-4 mr-[10px]">
+          <ToggleSwitch
+            label="Incomplete"
+            checked={showIncomplete}
+            onChange={() => setShowIncomplete(!showIncomplete)}
+          />
+          <ToggleSwitch
+            label="Issues"
             checked={showIssues}
             onChange={() => setShowIssues(!showIssues)}
           />

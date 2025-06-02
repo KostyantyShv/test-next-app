@@ -1,23 +1,25 @@
 "use client";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { useSchoolsExplore } from "@/store/use-schools-explore";
-import { EstablishmentType } from "@/types/schools-explore";
-import React from "react";
+import React, { JSX } from "react";
 
-const establishmentTypes: EstablishmentType[] = [
-  "K-12",
-  "Colleges",
-  "Graduates",
-];
+interface CategoryDropdownProps {
+  value: string;
+  renderDropdownItems: () => React.ReactNode;
+  dropdownIcon?: JSX.Element;
+}
 
-const CategoryDropdown: React.FC = () => {
+const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
+  value,
+  renderDropdownItems,
+  dropdownIcon,
+}) => {
   const { isOpened, setIsOpened, ref } = useDisclosure();
-  const { establishment, setEstablishment } = useSchoolsExplore(
-    (state) => state
-  );
+
   const handleOpenDropdown = () => {
     setIsOpened((prev) => (prev = !prev));
   };
+
+  const renderDropdownIcon = () => dropdownIcon;
 
   return (
     <div
@@ -26,21 +28,25 @@ const CategoryDropdown: React.FC = () => {
       className="flex items-center gap-3 cursor-pointer p-2 rounded-[20px] hover:bg-[#f5f5f7] transition-colors duration-200 relative group"
     >
       <div className="w-6 h-6 flex items-center justify-center text-[#464646]">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#4F4F4F"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M4 4h6v6h-6z"></path>
-          <path d="M14 4h6v6h-6z"></path>
-          <path d="M4 14h6v6h-6z"></path>
-          <path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
-        </svg>
+        {dropdownIcon ? (
+          renderDropdownIcon()
+        ) : (
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#4F4F4F"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M4 4h6v6h-6z"></path>
+            <path d="M14 4h6v6h-6z"></path>
+            <path d="M4 14h6v6h-6z"></path>
+            <path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+          </svg>
+        )}
       </div>
-      <h1 className="text-lg font-semibold text-[#464646]">{establishment}</h1>
+      <h1 className="text-lg font-semibold text-[#464646]">{value}</h1>
       <div className="w-4 h-4 ml-2 text-[#4A4A4A]">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <path
@@ -52,37 +58,11 @@ const CategoryDropdown: React.FC = () => {
         </svg>
       </div>
       <div
-        className={`absolute top-full left-0 mt-2 bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.1)] w-[240px] p-2 ${
+        className={`absolute top-full left-0 mt-2 bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.1)] w-[240px] ${
           isOpened ? "block z-[1000]" : "hidden"
         }`}
       >
-        {establishmentTypes.map((item) => (
-          <div
-            onClick={() => setEstablishment(item)}
-            key={item}
-            className="flex items-center p-2 hover:bg-[rgba(0,0,0,0.04)] transition-colors duration-200 cursor-pointer"
-          >
-            <div className="w-6 h-6 flex items-center justify-center mr-3">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#4F4F4F"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M4 4h6v6h-6z"></path>
-                <path d="M14 4h6v6h-6z"></path>
-                <path d="M4 14h6v6h-6z"></path>
-                <path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
-              </svg>
-            </div>
-            <div className="flex-1 flex justify-between items-center">
-              <span className="text-[#4A4A4A] text-sm font-medium">{item}</span>
-              <span className="text-[#5F5F5F] text-[13px]"></span>
-            </div>
-          </div>
-        ))}
+        {renderDropdownItems()}
       </div>
     </div>
   );

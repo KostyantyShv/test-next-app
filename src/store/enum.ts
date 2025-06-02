@@ -3,3 +3,12 @@ export enum ESTABLISHMENT {
   COLLEGES = "Colleges",
   GRADUATES = "Graduates",
 }
+
+export enum SUBCATEGORIES_ENUM {
+  COLLEGE_APP = "College Applications",
+  LIKED = "Liked",
+  RECENT_VIEWS = "Recent Views",
+  MY_REPORTS = "My Reports",
+  TOP_SCHOOLS = "Top Schools",
+  SUMMARY_PROGRAMS = "Summary Programs",
+}

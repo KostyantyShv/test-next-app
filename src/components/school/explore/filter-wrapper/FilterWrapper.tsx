@@ -22,7 +22,19 @@ import {
   TypeFilter,
 } from "@/types/schools-explore";
 
-const FiltersWrapper: React.FC = () => {
+interface FiltersWrapperProps {
+  renderFilterButtonsComponent?: () => React.ReactNode;
+  renderSortButtonComponent?: () => React.ReactNode;
+  renderActiveFiltersComponent?: () => React.ReactNode;
+  renderFiltersSidebarComponent?: () => React.ReactNode;
+}
+
+const FiltersWrapper: React.FC<FiltersWrapperProps> = ({
+  renderActiveFiltersComponent = () => <></>,
+  renderFilterButtonsComponent = () => <></>,
+  renderFiltersSidebarComponent = () => <></>,
+  renderSortButtonComponent = () => <></>,
+}) => {
   const { isOpened, setIsOpened, ref: sidebarRef } = useDisclosure();
   const {
     filterK12,
@@ -96,46 +108,16 @@ const FiltersWrapper: React.FC = () => {
     <>
       <div className="w-full mb-5 bg-white p-4 md:px-8 rounded-xl shadow-sm border border-gray-200">
         <div className="flex items-center justify-between gap-4 flex-wrap">
-          <div className="flex items-center gap-3 flex-wrap flex-1">
-            {FILTER_CONFIG[establishment]?.map(
-              ({
-                category,
-                filterKey,
-                tooltip,
-                hasTextInput,
-                inputPlaceholder,
-              }) => (
-                <FilterButtonComponent
-                  key={filterKey}
-                  category={category}
-                  onChange={getOnChangeHandler(filterKey)}
-                  filters={currentFilters}
-                  filterKey={filterKey}
-                  tooltip={tooltip}
-                  hasTextInput={hasTextInput}
-                  inputPlaceholder={inputPlaceholder}
-                />
-              )
-            )}
-            <FiltersButton
-              filtersFlat={getActiveFilters}
-              onClick={toggleSidebar}
-            />
-            <ResetButton filters={getActiveFilters} />
-          </div>
+          {renderFilterButtonsComponent()}
           <div className="flex items-center gap-4 pl-6 border-l border-gray-200">
-            <SortComponent sortData={sortMock} />
+            {renderSortButtonComponent()}
           </div>
         </div>
         <div className="active-filters-bar mt-2.5 flex flex-wrap gap-2 items-center">
-          <ActiveFilters />
+          {renderActiveFiltersComponent()}
         </div>
       </div>
-      <FilterSidebar
-        onClose={toggleSidebar}
-        isSidePanelOpen={isOpened}
-        sidebarRef={sidebarRef}
-      />
+      {renderFiltersSidebarComponent()}
     </>
   );
 };

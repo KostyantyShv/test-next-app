@@ -393,7 +393,7 @@ export const CheckListSection: React.FC = () => {
   }, [expandMode, showIncomplete, showIssues]);
 
   return (
-    <div className="w-[1150px] max-w-full">
+    <div className="max-w-full">
       <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.1)] pb-4">
         <Header
           showIncomplete={showIncomplete}

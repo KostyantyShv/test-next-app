@@ -2,19 +2,19 @@ import React from "react";
 
 interface FilterButtonProps {
   onDropdownOpen: () => void;
-  icon: React.ReactNode;
-  label: string;
+  icon?: React.ReactNode;
+  label?: string;
   className?: string;
-  activeCount: number;
+  activeCount?: number;
   tooltip?: string;
 }
 
 export const FilterButton: React.FC<FilterButtonProps> = ({
   onDropdownOpen,
   icon,
-  label,
+  label = "",
   className = "",
-  activeCount,
+  activeCount = 0,
   tooltip = "",
 }) => (
   <button

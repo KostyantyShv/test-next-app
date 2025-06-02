@@ -29,6 +29,7 @@ export const initialFilters: FiltersType = {
   collegeSpecialty: [],
   academics: [],
   schoolScoutGrades: [],
+  vendor: [],
   collegeTypeColleges: {
     "4-year": [],
     "2-year": [],
@@ -49,6 +50,10 @@ export const arrayFilterTypes = [
   { key: "selectivity" as const, type: "selectivity" as const },
   { key: "goodFor" as const, type: "goodFor" as const },
   { key: "program" as const, type: "program" as const },
+  { key: "vendor" as const, type: "vendor" as const },
+  { key: "categories" as const, type: "categories" as const },
+  { key: "status" as const, type: "status" as const },
+  { key: "notes" as const, type: "notes" as const },
 ];
 
 export const singleFilterTypes = [

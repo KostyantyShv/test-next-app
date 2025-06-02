@@ -4,20 +4,17 @@ import React from "react";
 
 interface ResetButtonProps {
   filters: () => FilterItem[];
+  onClick: () => void;
 }
 
-const ResetButton: React.FC<ResetButtonProps> = ({ filters }) => {
-  const resetFilters = useSchoolsExplore((state) => state.resetFilters);
-
-  const handleResetFilters = () => resetFilters();
-
+const ResetButton: React.FC<ResetButtonProps> = ({ filters, onClick }) => {
   return (
     <>
       {filters().length ? (
         <button
           className="items-center flex gap-1.5 w-fit bg-transparent border-none text-textDefault text-xs cursor-pointer px-2 py-1 rounded hover:bg-[rgba(0,0,0,0.05)] transition-all"
           id="resetAllBtn"
-          onClick={handleResetFilters}
+          onClick={onClick}
         >
           <svg
             fill="none"

@@ -4,10 +4,11 @@ import ReviewTable from "./ReviewTable";
 import { initialReviews } from "./mock/reviews";
 import { Review } from "./types/review";
 
+const inter = Inter({ subsets: ["latin"] });
+
 export default function ReviewsSection() {
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
 
-  // Truncate text for author names and review titles
   const truncateText = useCallback((text: string, maxLength: number) => {
     if (text.length > maxLength) {
       return text.substring(0, maxLength) + "...";
@@ -15,7 +16,6 @@ export default function ReviewsSection() {
     return text;
   }, []);
 
-  // Apply truncation on mount
   useEffect(() => {
     setReviews((prev) =>
       prev.map((review) => ({
@@ -33,24 +33,24 @@ export default function ReviewsSection() {
   }, [truncateText]);
 
   return (
-    <div className={`min-h-screen text-[#4A4A4A]`}>
-      <div className="w-full mx-auto flex gap-[25px]">
-        <div className="max-w-[350px] w-full">
-          <h1 className="text-[#1a1a19] text-2xl font-semibold mb-3">
-            Reviews
-          </h1>
-          <p className="text-[#5F5F5F] text-base leading-6">
-            Manage student feedback and respond to reviews. Keep track of
-            important comments and highlight exceptional experiences.
-          </p>
-        </div>
-        <div className="w-full bg-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.1)] p-6">
-          <div className="flex justify-between items-center mb-6 px-2">
-            <h1 className="text-[#1B1B1B] text-2xl font-semibold tracking-tight">
+    <div className={`text-gray-700 ${inter.className}`}>
+      <div className="container mx-auto">
+        <div className="md:flex md:gap-6">
+          <div className="md:max-w-[350px] max-md:p-6">
+            <h1 className="text-gray-900 text-2xl font-semibold mb-3">
+              Reviews
+            </h1>
+            <p className="text-gray-600 text-base leading-6">
+              Manage student feedback and respond to reviews. Keep track of
+              important comments and highlight exceptional experiences.
+            </p>
+          </div>
+          <div className="w-full bg-white rounded-xl shadow-sm p-6">
+            <h1 className="text-gray-900 text-2xl font-semibold tracking-tight mb-6">
               Review Manager
             </h1>
+            <ReviewTable reviews={reviews} setReviews={setReviews} />
           </div>
-          <ReviewTable reviews={reviews} setReviews={setReviews} />
         </div>
       </div>
     </div>

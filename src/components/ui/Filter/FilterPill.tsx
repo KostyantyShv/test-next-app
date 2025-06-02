@@ -1,16 +1,16 @@
 // FilterPill.tsx
-import { useSchoolsExplore } from "@/store/use-schools-explore";
 import React from "react";
 import { FilterValue, FiltersType } from "@/types/schools-explore";
 
 const FilterPill = ({
   filterType,
   value,
+  removeFilter,
 }: {
   value: FilterValue;
   filterType: keyof FiltersType;
+  removeFilter: (value: FilterValue, filterType: keyof FiltersType) => void;
 }) => {
-  const removeFilter = useSchoolsExplore((state) => state.removeFilter);
   const handleRemoveFilter = () => removeFilter(filterType, value);
 
   return (

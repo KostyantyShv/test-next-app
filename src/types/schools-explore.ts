@@ -1,5 +1,6 @@
 import { InitialValueCollegesType } from "@/store/colleges-types";
 import { InitialValueGraduatesType } from "@/store/graduates-types";
+import { StudyTypeFilter } from "./schools-collections";
 
 export type EstablishmentTypes =
   | "filterK12"
@@ -165,6 +166,7 @@ export interface FiltersType {
     "2-year": CollegeSubTypeFilter[];
   };
   [key: string]:
+    | StudyTypeFilter
     | FilterValue[]
     | AdmissionsProcess
     | GradeLevel

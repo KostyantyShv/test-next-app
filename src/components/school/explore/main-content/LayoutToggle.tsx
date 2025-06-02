@@ -4,15 +4,19 @@ interface LayoutToggleProps {
   layout: string;
   setLayout: (value: string) => void;
   layouts: { type: string; icon: JSX.Element }[];
+  width: number;
 }
 
 const LayoutToggle: React.FC<LayoutToggleProps> = ({
   layout,
   setLayout,
   layouts,
+  width,
 }) => {
   return (
-    <div className="flex items-center bg-[#f5f5f7] rounded-md p-[2px] w-9 overflow-hidden transition-all duration-300 hover:w-[134px] group">
+    <div
+      className={`flex items-center bg-[#f5f5f7] rounded-md p-[2px] w-9 overflow-hidden transition-all duration-300 hover:w-[${width}px] group`}
+    >
       {layouts.map(({ type, icon }, index) => (
         <button
           key={type}

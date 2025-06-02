@@ -2,12 +2,12 @@
 import React from "react";
 
 interface RatingFilterProps {
-  rating: number;
+  rating: number | undefined;
   setRating: (rating: number) => void;
 }
 
 export const RatingFilter: React.FC<RatingFilterProps> = ({
-  rating,
+  rating = 0,
   setRating,
 }) => {
   const handleRatingClick = (newRating: number) => {

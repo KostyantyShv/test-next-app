@@ -40,6 +40,7 @@ import {
   singleFilterTypes,
 } from "./mock";
 import { ESTABLISHMENT } from "./enum";
+import { AllFiltersType } from "@/types/filter";
 
 const filterMap: Record<ESTABLISHMENT, EstablishmentTypes> = {
   [ESTABLISHMENT.K_12]: "filterK12",
@@ -47,7 +48,7 @@ const filterMap: Record<ESTABLISHMENT, EstablishmentTypes> = {
   [ESTABLISHMENT.GRADUATES]: "filterGraduates",
 };
 
-const getActiveFilters = (filterData: FiltersType): FilterItem[] => {
+const getActiveFilters = (filterData: AllFiltersType): FilterItem[] => {
   const activeFilters: FilterItem[] = [];
 
   Object.entries(filterData.collegeTypeColleges).forEach(([type, subTypes]) => {
@@ -63,7 +64,7 @@ const getActiveFilters = (filterData: FiltersType): FilterItem[] => {
   });
 
   arrayFilterTypes.forEach(({ key, type }) => {
-    if (filterData[key].length > 0) {
+    if (filterData[key]?.length > 0) {
       activeFilters.push(...filterData[key].map((value) => ({ type, value })));
     }
   });
@@ -314,11 +315,14 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
     }));
   },
 
-  getActiveFiltersCollege: () => getActiveFilters(get().filterColleges),
+  getActiveFiltersCollege: () =>
+    getActiveFilters(get().filterColleges as AllFiltersType),
 
-  getActiveFiltersGraduates: () => getActiveFilters(get().filterGraduates),
+  getActiveFiltersGraduates: () =>
+    getActiveFilters(get().filterGraduates as AllFiltersType),
 
-  getActiveFiltersK12: () => getActiveFilters(get().filterK12),
+  getActiveFiltersK12: () =>
+    getActiveFilters(get().filterK12 as AllFiltersType),
 
   setAct: (value: number) => {
     set((state) => ({
