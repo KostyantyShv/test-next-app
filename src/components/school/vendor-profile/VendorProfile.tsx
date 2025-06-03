@@ -6,6 +6,7 @@ import ProfileSidebar from "./components/ProfileSidebar";
 import { useSearchParams } from "next/navigation";
 import { OffersGrid } from "./components/OffersGrid";
 import { CollectionsGrid } from "./components/CollectionsGrid";
+import { LikedGrid } from "./components/LikedGrid";
 
 type TabType =
   | "listings"
@@ -28,6 +29,8 @@ export default function VendorProfile() {
         return <OffersGrid />;
       case "collections":
         return <CollectionsGrid />;
+      case "liked":
+        return <LikedGrid />;
       default:
         <div>no content yet</div>;
     }
