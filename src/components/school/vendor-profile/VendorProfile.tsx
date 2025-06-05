@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { OffersGrid } from "./components/OffersGrid";
 import { CollectionsGrid } from "./components/CollectionsGrid";
 import { LikedGrid } from "./components/LikedGrid";
+import ReviewsGrid from "./components/ReviewsGrid";
 
 type TabType =
   | "listings"
@@ -31,6 +32,8 @@ export default function VendorProfile() {
         return <CollectionsGrid />;
       case "liked":
         return <LikedGrid />;
+      case "reviews":
+        return <ReviewsGrid />;
       default:
         <div>no content yet</div>;
     }
