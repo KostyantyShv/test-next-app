@@ -8,6 +8,8 @@ import { OffersGrid } from "./components/OffersGrid";
 import { CollectionsGrid } from "./components/CollectionsGrid";
 import { LikedGrid } from "./components/LikedGrid";
 import ReviewsGrid from "./components/ReviewsGrid";
+import ConnectionsGrid from "./components/ConnectionsGrid";
+import MembersGrid from "./components/MembersGrid";
 
 type TabType =
   | "listings"
@@ -34,6 +36,10 @@ export default function VendorProfile() {
         return <LikedGrid />;
       case "reviews":
         return <ReviewsGrid />;
+      case "connections":
+        return <ConnectionsGrid />;
+      case "members":
+        return <MembersGrid />;
       default:
         <div>no content yet</div>;
     }

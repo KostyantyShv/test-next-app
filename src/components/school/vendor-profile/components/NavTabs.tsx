@@ -84,7 +84,7 @@ export default function NavTabs() {
       ),
     },
     {
-      id: "followers",
+      id: "connections",
       label: "Connections",
       icon: (
         <svg

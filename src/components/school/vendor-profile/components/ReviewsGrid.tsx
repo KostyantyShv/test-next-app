@@ -3,6 +3,12 @@
 import React, { useState } from 'react';
 import { Inter } from "next/font/google";
 
+const inter = Inter({
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700"],
+    display: "swap",
+});
+
 
 type Review = {
   author: string;
@@ -216,11 +222,14 @@ const ReviewCard: React.FC<{ review: Review; avatarUrl: string; productImageUrl:
 
 const ReviewsGrid: React.FC<ReviewsGridProps> = ({ reviews = mockReviews }) => {
   return (
-    <div className="mx-auto">
-      <div className="max-w-[1165px] mx-auto">
-        <div className="bg-white rounded-2xl">
+    <div className={`${inter.className} text-[#4A4A4A]`}>
+            <div className="mx-auto">
+                <div className="bg-white">
           <nav className="flex gap-8 border-b border-gray-200 mb-8 pb-1 overflow-x-auto">
-            <div className="px-1 font-medium text-[#016853] border-b-2 border-[#016853] whitespace-nowrap">
+            <div className="flex items-center gap-2 py-3 text-[#016853] font-medium border-b-2 border-[#016853] whitespace-nowrap">
+            <svg  className="w-5 h-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M22.954 9.395C22.832 9.017 22.481 8.756 22.058 8.747L15.298 8.823L12.878 1.628C12.746 1.252 12.39 1 11.992 1H11.99C11.591 1 11.236 1.254 11.103 1.639L8.72301 8.822L1.92101 8.686C1.52101 8.693 1.16901 8.953 1.04601 9.333C0.922011 9.714 1.05401 10.132 1.36001 10.361L6.82101 14.607L4.55601 21.791C4.44101 22.173 4.58101 22.588 4.90501 22.821C5.23101 23.056 5.66501 23.056 5.99101 22.829L12.121 18.526L17.994 22.83C18.155 22.942 18.343 22.998 18.531 22.998C18.726 22.998 18.919 22.938 19.083 22.819C19.406 22.583 19.544 22.169 19.424 21.777L17.129 14.74L22.628 10.43C22.946 10.189 23.077 9.772 22.954 9.393V9.395ZM16.211 13.554C15.736 13.916 15.534 14.541 15.711 15.123L17.463 20.581L12.942 17.268C12.451 16.925 11.794 16.927 11.304 17.268L6.49301 20.646L8.25601 15.053C8.42901 14.482 8.22601 13.856 7.76201 13.504L3.60601 10.222L8.80301 10.326C9.39901 10.313 9.93101 9.927 10.13 9.353L11.997 3.719L13.895 9.363C14.091 9.927 14.622 10.313 15.243 10.326L20.405 10.267L16.211 13.554Z"></path>
+                    </svg>
               Reviews
             </div>
           </nav>
