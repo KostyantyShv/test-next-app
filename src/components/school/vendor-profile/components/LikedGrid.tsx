@@ -185,10 +185,10 @@ const SchoolCard: React.FC<{ school: School }> = ({ school }) => {
         if (!school.specialty) return null;
 
         const specialtyClasses = {
-            hot: "text-[#FF4D4D]",
-            "instant-book": "text-[#1D77BD]",
-            sponsored: "text-[#FF9900]",
-        };
+        hot: "text-[#FF4D4D]",
+        "instant-book": "text-[#1D77BD]",
+        sponsored: "text-[#FF9900]",
+    };
 
         const specialtyIcons = {
             hot: ICONS.hot,
@@ -208,69 +208,69 @@ const SchoolCard: React.FC<{ school: School }> = ({ school }) => {
 
     return (
         <div className="bg-white w-full rounded-xl overflow-hidden transition-all duration-300 ease-in-out relative border border-transparent hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:-translate-y-1 hover:border-gray-200 group">
-  <div className="relative w-full h-[160px] overflow-hidden">
+            <div className="relative w-full h-[160px] overflow-hidden">
     <div className="absolute top-2 p-2 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#4A4A4A] transition-all duration-200 ease-in-out hover:bg-[#EBFCF4] hover:text-[#016853] z-10">
       {ICONS.like}
-    </div>
+                </div>
     {getSpecialtyLabel()}
-    <img
-      src={school.image}
-      alt={school.name}
+                <img
+                    src={school.image}
+                    alt={school.name}
       className="w-full h-full object-cover"
-    />
+                />
     <div className="absolute bottom-0 left-2.5 bg-white px-2 py-1 text-xs font-semibold text-[#464646] tracking-wider uppercase rounded-t-md shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
-      {school.schoolType}
-    </div>
-  </div>
+                    {school.schoolType}
+                </div>
+            </div>
 
   <div className="p-4 min-h-[168px] h-[168px] flex flex-col justify-between">
     <div>
       <div className="text-[#089E68] text-xs font-medium mb-2 truncate">
-        {school.ranking}
-      </div>
+                    {school.ranking}
+                </div>
       <h3 className="text-base font-semibold text-[#464646] mb-2 leading-[1.4] line-clamp-2">
-        {school.name}
-      </h3>
+                    {school.name}
+                </h3>
 
       <div className="flex gap-3 text-xs">
         <div className="flex items-center gap-1.5 text-[#5F5F5F] h-[32px] whitespace-nowrap">
           <div className="w-[16px] h-[16px] flex items-center justify-center shrink-0">
             {React.cloneElement(ICONS.location, { className: "w-[32px] h-[32px]" })}
           </div>
-          <span className="text-[#464646]">{school.location}</span>
-        </div>
+                        <span className="text-[#464646]">{school.location}</span>
+                    </div>
 
         <div className="flex items-center gap-1.5 text-[#5F5F5F] h-[32px] whitespace-nowrap">
           <div className="w-[16px] h-[16px] flex items-center justify-center shrink-0">
             {React.cloneElement(ICONS.ratio, { className: "w-[32px] h-[32px]" })}
           </div>
-          <span className="text-[#464646]">{school.ratio}</span>
-        </div>
+                        <span className="text-[#464646]">{school.ratio}</span>
+                    </div>
 
         <div className="flex items-center gap-1.5 text-[#5F5F5F] h-[32px] whitespace-nowrap">
           <div className="w-[16px] h-[16px] flex items-center justify-center shrink-0">
             {React.cloneElement(ICONS.star, { className: "w-[32px] h-[32px]" })}
           </div>
-          <span className="text-[#464646]">{school.rating}</span>
-        </div>
-      </div>
-    </div>
+                        <span className="text-[#464646]">{school.rating}</span>
+                    </div>
+                </div>
+            </div>
   </div>
 
   <div className="px-4 py-4 border-t border-[rgba(1,104,83,0.1)] flex items-center justify-between">
     <div className="flex items-center gap-2 font-semibold text-[#016853]">
-      <div className="w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-sm font-semibold">
-        {school.grade}
-      </div>
-    </div>
-    <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F]">
+                    <div className="w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                        {school.grade}
+                    </div>
+                </div>
+                <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F]">
       <div className="w-[16px] h-[16px] flex items-center justify-center shrink-0">
         {React.cloneElement(ICONS.students, { className: "w-[32px] h-[32px]" })}
       </div>
-      <span>Students: {school.students}</span>
-    </div>
-  </div>
-</div>
+                    <span>Students: {school.students}</span>
+                </div>
+            </div>
+        </div>
 
     );
 };
@@ -285,14 +285,14 @@ export const LikedGrid: React.FC = () => {
             <svg className="w-5 h-5" fill="none" viewBox="0 0 16 16">
                         <path stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5" stroke="currentColor" d="M10.7408 2C13.0889 2 14.6667 4.235 14.6667 6.32C14.6667 10.5425 8.11856 14 8.00004 14C7.88152 14 1.33337 10.5425 1.33337 6.32C1.33337 4.235 2.91115 2 5.2593 2C6.60745 2 7.48893 2.6825 8.00004 3.2825C8.51115 2.6825 9.39263 2 10.7408 2Z"></path>
                     </svg>
-                            Liked
-                        </div>
-                    </nav>
+                                Liked
+                            </div>
+                        </nav>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {schools.map((school, index) => (
-                            <SchoolCard key={index} school={school} />
-                        ))}
+                            {schools.map((school, index) => (
+                                <SchoolCard key={index} school={school} />
+                            ))}
                     </div>
                 </div>
             </div>

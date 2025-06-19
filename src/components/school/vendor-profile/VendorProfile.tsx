@@ -1,5 +1,5 @@
 "use client";
-import ProfileHeader from "./components/ProfileHeader";
+import { ProfileHeader } from "./components/ProfileHeader";
 import NavTabs from "./components/NavTabs";
 import SchoolsGrid from "./components/SchoolsGrid";
 import ProfileSidebar from "./components/ProfileSidebar";
@@ -45,11 +45,19 @@ export default function VendorProfile() {
     }
   };
   return (
-    <div className={`text-[#4A4A4A] leading-normal`}>
-      <div className="w-full mx-auto px-5">
-        <div className="w-full mx-auto grid grid-cols-[1fr_350px] gap-8">
-          <div className="bg-white rounded-2xl p-8 shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
-            <ProfileHeader />
+    <div className="text-[#4A4A4A] leading-normal w-full max-w-full overflow-x-hidden">
+      <div className="w-full max-w-full mx-auto px-4 sm:px-5">
+        <div className="w-full max-w-full mx-auto grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8">
+          <div className="bg-white rounded-2xl p-4 sm:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
+            <ProfileHeader 
+              name="Lincoln University"
+              avatar="https://i.ibb.co/XkdtT1Yj/product2.png"
+              rating="4.9"
+              reviews={575}
+              followers={111}
+              following={98}
+              isFollowing={false}
+            />
             <NavTabs />
             {renderTabContent()}
           </div>
