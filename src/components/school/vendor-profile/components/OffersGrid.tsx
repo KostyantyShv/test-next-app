@@ -154,8 +154,91 @@ export const OffersGrid: React.FC = () => {
   return (
     <div>
       <div className="mx-auto">
+        {/* Mobile Header */}
+        <div className="lg:hidden mb-4">
+          <h1 className="text-xl font-semibold text-[#016853] flex items-center gap-2">
+            <BriefcaseIcon className="w-6 h-6" />
+            Offers
+          </h1>
+        </div>
+
         <div>
-          <div className="grid grid-cols-3 gap-6 w-full">
+          {/* Mobile Layout */}
+          <div className="lg:hidden flex flex-col gap-4 w-full">
+            {offerData.map((offer, index) => {
+              const imageUrl = offerImages[index % offerImages.length];
+
+              return (
+                <div
+                  key={index}
+                  className="bg-white rounded-xl overflow-hidden border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.08)] flex flex-col"
+                >
+                  <div className="relative w-full h-[160px] overflow-hidden">
+                    <Image
+                      src={imageUrl}
+                      alt={offer.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw"
+                    />
+                  </div>
+
+                  <div className="p-4 flex-grow flex flex-col">
+                    <h3 className="text-base font-semibold text-[#464646] mb-2.5 leading-[1.4]">
+                      {offer.title}
+                    </h3>
+
+                    <div className="flex flex-wrap gap-2 mb-2.5">
+                      <span className="flex items-center gap-1 text-xs text-[#5F5F5F]">
+                        <CheckmarkIcon className="w-3.5 h-3.5 text-[#0B6333] flex-shrink-0" />
+                        {offer.days} days
+                      </span>
+                      <span className="flex items-center gap-1 text-xs text-[#5F5F5F]">
+                        <CheckmarkIcon className="w-3.5 h-3.5 text-[#0B6333] flex-shrink-0" />
+                        {offer.revisions} revisions
+                      </span>
+                      {offer.hasSourceFile && (
+                        <span className="flex items-center gap-1 text-xs text-[#5F5F5F]">
+                          <CheckmarkIcon className="w-3.5 h-3.5 text-[#0B6333] flex-shrink-0" />
+                          Source file
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="text-[13px] leading-[1.5] text-[#4A4A4A] mb-3 flex-grow line-clamp-2">
+                      {offer.description}
+                    </p>
+
+                    <div className="flex items-center justify-between mt-auto">
+                      <div className="flex items-center gap-2">
+                        <div className="text-base font-semibold text-[#464646]">
+                          {offer.price}
+                        </div>
+                        <div className="flex items-center gap-0.5">
+                          <StarIcon className="w-3.5 h-3.5 text-[#464646] mr-0.5" />
+                          <span className="font-semibold text-sm text-[#464646]">
+                            {offer.rating}
+                          </span>
+                          <span className="text-[13px] text-[#5F5F5F]">
+                            ({offer.reviews})
+                          </span>
+                        </div>
+                      </div>
+                      {offer.hasQuickHire && (
+                        <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium bg-[#EBFCF4] text-[#016853]">
+                          <LightningIcon className="w-3 h-3" />
+                          Quick Hire
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop Layout */}
+          <div className="hidden lg:grid grid-cols-3 gap-6 w-full">
             {offerData.map((offer, index) => {
               const imageUrl = offerImages[index % offerImages.length];
 
