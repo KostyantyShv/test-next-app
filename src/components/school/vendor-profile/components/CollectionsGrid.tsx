@@ -79,7 +79,6 @@ export const CollectionsGrid: React.FC = () => {
   }) => {
     const mainImageUrl = mainImages[index % mainImages.length];
 
-    // Get 3 unique thumbnails for each collection
     const thumbnails: string[] = [];
     for (let i = 0; i < 3; i++) {
       const thumbIndex = (index * 3 + i) % thumbnailImages.length;
@@ -133,13 +132,12 @@ export const CollectionsGrid: React.FC = () => {
     );
   };
 
-  const MobileCollectionCard: React.FC<{ collection: Collection; index: number }> = ({
-    collection,
-    index,
-  }) => {
+  const MobileCollectionCard: React.FC<{
+    collection: Collection;
+    index: number;
+  }> = ({ collection, index }) => {
     const mainImageUrl = mainImages[index % mainImages.length];
 
-    // Get 3 unique thumbnails for each collection
     const thumbnails: string[] = [];
     for (let i = 0; i < 3; i++) {
       const thumbIndex = (index * 3 + i) % thumbnailImages.length;
@@ -161,9 +159,11 @@ export const CollectionsGrid: React.FC = () => {
             <div
               key={thumbIndex}
               className={`w-full h-[60px] overflow-hidden ${
-                thumbIndex === 0 ? "rounded-br-lg" : 
-                thumbIndex === 1 ? "rounded-b-lg" : 
-                "rounded-bl-lg"
+                thumbIndex === 0
+                  ? "rounded-br-lg"
+                  : thumbIndex === 1
+                  ? "rounded-b-lg"
+                  : "rounded-bl-lg"
               }`}
             >
               <img
@@ -201,18 +201,28 @@ export const CollectionsGrid: React.FC = () => {
     <div className={`${inter.className}text-[#4A4A4A]`}>
       <div className="">
         <div className="mx-auto">
-          {/* Mobile Header */}
           <div className="lg:hidden mb-5">
             <div className="flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="20" width="20" fill="currentColor" className="text-[#016853]">
-                <path d="M16 9a7 7 0 1 1 0 14 7 7 0 1 1 0-14zm4-7a2 2 0 0 1 2 2v4h-1.5V3.5h-17v17H8V22H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16zm-3 10h-2v3h-3v2h3v3h2v-3h3v-2h-3v-3z" fillRule="nonzero"></path>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                height="20"
+                width="20"
+                fill="currentColor"
+                className="text-[#016853]"
+              >
+                <path
+                  d="M16 9a7 7 0 1 1 0 14 7 7 0 1 1 0-14zm4-7a2 2 0 0 1 2 2v4h-1.5V3.5h-17v17H8V22H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16zm-3 10h-2v3h-3v2h3v3h2v-3h3v-2h-3v-3z"
+                  fillRule="nonzero"
+                ></path>
               </svg>
-              <h1 className="text-lg font-semibold text-[#016853]">Collections</h1>
+              <h1 className="text-lg font-semibold text-[#016853]">
+                Collections
+              </h1>
             </div>
           </div>
 
           <div className="bg-white">
-            {/* Mobile Layout */}
             <div className="lg:hidden flex flex-col gap-5 w-full">
               {collectionsData.map((collection, index) => (
                 <MobileCollectionCard
@@ -223,7 +233,6 @@ export const CollectionsGrid: React.FC = () => {
               ))}
             </div>
 
-            {/* Desktop Layout */}
             <div className="hidden lg:grid grid-cols-3 gap-8 w-full">
               {collectionsData.map((collection, index) => (
                 <CollectionCard

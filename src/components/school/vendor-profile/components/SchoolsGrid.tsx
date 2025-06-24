@@ -186,80 +186,77 @@ export default function SchoolsGrid() {
           key={school.name}
           className="bg-white rounded-xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#E5E7EB] w-full"
         >
-          {/* Desktop Layout */}
           <div className="hidden lg:block">
-          <div className="relative w-full h-40 overflow-hidden">
-            <div className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all z-10">
-              <span className="w-4 h-4 mr-1">{ICONS.like}</span>
+            <div className="relative w-full h-40 overflow-hidden">
+              <div className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all z-10">
+                <span className="w-4 h-4 mr-1">{ICONS.like}</span>
+              </div>
+              {school.specialty === "hot" && (
+                <div className="absolute top-3 left-3 h-8 bg-white rounded-2xl flex items-center px-3 cursor-pointer text-[#FF4D4D] text-xs font-medium shadow-[0_2px_4px_rgba(0,0,0,0.1)] z-10">
+                  <span className="w-4 h-4 mr-1">{ICONS.hot}</span>
+                  High demand
+                </div>
+              )}
+              {school.specialty === "instant-book" && (
+                <div className="absolute top-3 left-3 h-8 bg-white rounded-2xl flex items-center px-3 cursor-pointer text-[#1D77BD] text-xs font-medium shadow-[0_2px_4px_rgba(0,0,0,0.1)] z-10">
+                  <span className="w-4 h-4 mr-1">{ICONS.instant}</span>
+                  Instant book
+                </div>
+              )}
+              {school.specialty === "sponsored" && (
+                <div className="absolute top-3 left-3 h-8 bg-white rounded-2xl flex items-center px-3 cursor-pointer text-[#FF9900] text-xs font-medium shadow-[0_2px_4px_rgba(0,0,0,0.1)] z-10">
+                  <span className="w-4 h-4 mr-1">{ICONS.sponsored}</span>
+                  Sponsored
+                </div>
+              )}
+              <img
+                src={school.image}
+                alt={school.name}
+                className="absolute top-0 left-0 w-full h-full object-cover"
+              />
+              <div className="absolute bottom-0 left-2.5 bg-white px-2 pt-1 text-xs font-semibold text-[#464646] uppercase tracking-wider rounded-t-md h-6 flex items-center shadow-[0_-1px_4px_rgba(0,0,0,0.1)] z-10">
+                {school.schoolType}
+              </div>
             </div>
-            {school.specialty === "hot" && (
-              <div className="absolute top-3 left-3 h-8 bg-white rounded-2xl flex items-center px-3 cursor-pointer text-[#FF4D4D] text-xs font-medium shadow-[0_2px_4px_rgba(0,0,0,0.1)] z-10">
-                <span className="w-4 h-4 mr-1">{ICONS.hot}</span>
-                High demand
+            <div className="p-4 flex-grow">
+              <div className="text-[#089E68] text-sm mb-2 whitespace-nowrap overflow-hidden text-ellipsis font-medium">
+                {school.ranking}
               </div>
-            )}
-            {school.specialty === "instant-book" && (
-              <div className="absolute top-3 left-3 h-8 bg-white rounded-2xl flex items-center px-3 cursor-pointer text-[#1D77BD] text-xs font-medium shadow-[0_2px_4px_rgba(0,0,0,0.1)] z-10">
-                <span className="w-4 h-4 mr-1">{ICONS.instant}</span>
-                Instant book
+              <h3 className="text-base font-semibold text-[#464646] mb-2 leading-tight">
+                {school.name}
+              </h3>
+              <div className="flex flex-wrap gap-3 mb-4">
+                <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F] font-[450]">
+                  <span className="w-4 h-4 mr-1">{ICONS.location}</span>
+
+                  <span className="text-[#464646]">{school.location}</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F] font-[450]">
+                  <span className="w-4 h-4 mr-1">{ICONS.ratio}</span>
+
+                  <span className="text-[#464646]">{school.ratio}</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F] font-[450]">
+                  <span className="w-4 h-4 mr-1">{ICONS.star}</span>
+
+                  <span className="text-[#464646]">{school.rating}</span>
+                </div>
               </div>
-            )}
-            {school.specialty === "sponsored" && (
-              <div className="absolute top-3 left-3 h-8 bg-white rounded-2xl flex items-center px-3 cursor-pointer text-[#FF9900] text-xs font-medium shadow-[0_2px_4px_rgba(0,0,0,0.1)] z-10">
-                <span className="w-4 h-4 mr-1">{ICONS.sponsored}</span>
-                Sponsored
+            </div>
+            <div className="p-4 border-t border-[rgba(1,104,83,0.1)] flex items-center justify-between">
+              <div className="flex items-center gap-2 text-[#016853] font-semibold">
+                <div className="w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                  {school.grade}
+                </div>
               </div>
-            )}
-            <img
-              src={school.image}
-              alt={school.name}
-              className="absolute top-0 left-0 w-full h-full object-cover"
-            />
-            <div className="absolute bottom-0 left-2.5 bg-white px-2 pt-1 text-xs font-semibold text-[#464646] uppercase tracking-wider rounded-t-md h-6 flex items-center shadow-[0_-1px_4px_rgba(0,0,0,0.1)] z-10">
-              {school.schoolType}
+              <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F]">
+                <span className="w-4 h-4 mr-1">{ICONS.students}</span>
+
+                <span>Students: {school.students}</span>
+              </div>
             </div>
           </div>
-          <div className="p-4 flex-grow">
-            <div className="text-[#089E68] text-sm mb-2 whitespace-nowrap overflow-hidden text-ellipsis font-medium">
-              {school.ranking}
-            </div>
-            <h3 className="text-base font-semibold text-[#464646] mb-2 leading-tight">
-              {school.name}
-            </h3>
-            <div className="flex flex-wrap gap-3 mb-4">
-              <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F] font-[450]">
-                <span className="w-4 h-4 mr-1">{ICONS.location}</span>
 
-                <span className="text-[#464646]">{school.location}</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F] font-[450]">
-                <span className="w-4 h-4 mr-1">{ICONS.ratio}</span>
-
-                <span className="text-[#464646]">{school.ratio}</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F] font-[450]">
-                <span className="w-4 h-4 mr-1">{ICONS.star}</span>
-
-                <span className="text-[#464646]">{school.rating}</span>
-              </div>
-            </div>
-          </div>
-          <div className="p-4 border-t border-[rgba(1,104,83,0.1)] flex items-center justify-between">
-            <div className="flex items-center gap-2 text-[#016853] font-semibold">
-              <div className="w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                {school.grade}
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F]">
-              <span className="w-4 h-4 mr-1">{ICONS.students}</span>
-
-              <span>Students: {school.students}</span>
-          </div>
-        </div>
-          </div>
-
-
-          {/* Mobile Layout */}
           <div className="lg:hidden p-3 flex gap-3 w-full">
             <img
               src={school.image}
@@ -277,15 +274,21 @@ export default function SchoolsGrid() {
               </div>
               <div className="flex flex-wrap gap-2 mt-1">
                 <div className="flex items-center gap-1 text-xs text-[#6F767E]">
-                  <span className="w-3.5 h-3.5 flex-shrink-0">{ICONS.location}</span>
+                  <span className="w-3.5 h-3.5 flex-shrink-0">
+                    {ICONS.location}
+                  </span>
                   <span className="truncate">{school.location}</span>
                 </div>
                 <div className="flex items-center gap-1 text-xs text-[#6F767E]">
-                  <span className="w-3.5 h-3.5 flex-shrink-0">{ICONS.ratio}</span>
+                  <span className="w-3.5 h-3.5 flex-shrink-0">
+                    {ICONS.ratio}
+                  </span>
                   <span>{school.ratio}</span>
                 </div>
                 <div className="flex items-center gap-1 text-xs text-[#6F767E]">
-                  <span className="w-3.5 h-3.5 flex-shrink-0">{ICONS.star}</span>
+                  <span className="w-3.5 h-3.5 flex-shrink-0">
+                    {ICONS.star}
+                  </span>
                   <span>{school.rating}</span>
                 </div>
               </div>
@@ -300,7 +303,9 @@ export default function SchoolsGrid() {
               <span>Grade</span>
             </div>
             <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F]">
-              <span className="w-4 h-4 text-[#089E68] flex-shrink-0">{ICONS.students}</span>
+              <span className="w-4 h-4 text-[#089E68] flex-shrink-0">
+                {ICONS.students}
+              </span>
               <span className="truncate">Students: {school.students}</span>
             </div>
           </div>

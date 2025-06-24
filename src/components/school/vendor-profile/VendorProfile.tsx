@@ -49,7 +49,7 @@ export default function VendorProfile() {
       <div className="w-full max-w-full mx-auto px-4 sm:px-5">
         <div className="w-full max-w-full mx-auto grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8">
           <div className="bg-white rounded-2xl p-4 sm:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
-            <ProfileHeader 
+            <ProfileHeader
               name="Lincoln University"
               avatar="https://i.ibb.co/XkdtT1Yj/product2.png"
               rating="4.9"
