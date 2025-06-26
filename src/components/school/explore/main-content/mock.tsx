@@ -60,4 +60,5 @@ export const establishmentTypes: EstablishmentType[] = [
   "K-12",
   "Colleges",
   "Graduates",
+  "District",
 ];

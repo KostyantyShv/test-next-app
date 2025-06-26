@@ -22,51 +22,65 @@ const ContentArea: React.FC<ContentAreaProps> = ({
   };
 
   return (
-    <div className="flex p-6 min-h-[400px]">
-      <div className="flex-1 transition-all duration-300">
-        <div
-          className={`grid gap-6 ${
-            layout === "grid" ? "grid-cols-3" : "hidden"
-          } ${isMapActive ? "grid-cols-2" : ""}`}
-        >
-          {schools
-            .slice(0, cardCounts.grid)
-            .map((school: School, i: number) => (
-              <SchoolCard key={i} school={school} layout={layout} />
-            ))}
+    <div className="flex flex-col md:flex-row min-h-[400px]">
+      <div className="flex-1 p-6 transition-all duration-300">
+        {/* Mobile Grid Layout */}
+        <div className="md:hidden">
+          <div className="grid grid-cols-2 gap-4">
+            {schools
+              .slice(0, 6)
+              .map((school: School, i: number) => (
+                <SchoolCard key={i} school={school} layout="grid" />
+              ))}
+          </div>
         </div>
-        <div
-          className={`flex flex-col gap-4 ${
-            layout === "list" ? "block" : "hidden"
-          }`}
-        >
-          {schools
-            .slice(0, cardCounts.list)
-            .map((school: School, i: number) => (
-              <SchoolCard key={i} school={school} layout={layout} />
-            ))}
-        </div>
-        <div
-          className={`grid gap-6 ${
-            layout === "hybrid" ? "grid-cols-2" : "hidden"
-          } ${isMapActive ? "grid-cols-1" : ""}`}
-        >
-          {schools
-            .slice(0, cardCounts.hybrid)
-            .map((school: School, i: number) => (
-              <SchoolCard key={i} school={school} layout={layout} />
-            ))}
-        </div>
-        <div
-          className={`grid gap-6 ${
-            layout === "classic" ? "grid-cols-4" : "hidden"
-          } ${isMapActive ? "grid-cols-3" : ""}`}
-        >
-          {schools
-            .slice(0, cardCounts.classic)
-            .map((school: School, i: number) => (
-              <SchoolCard key={i} school={school} layout={layout} />
-            ))}
+
+        {/* Desktop Layouts */}
+        <div className="hidden md:block">
+          <div
+            className={`grid gap-6 ${
+              layout === "grid" ? "grid-cols-3" : "hidden"
+            } ${isMapActive ? "grid-cols-2" : ""}`}
+          >
+            {schools
+              .slice(0, cardCounts.grid)
+              .map((school: School, i: number) => (
+                <SchoolCard key={i} school={school} layout={layout} />
+              ))}
+          </div>
+          <div
+            className={`flex flex-col gap-4 ${
+              layout === "list" ? "block" : "hidden"
+            }`}
+          >
+            {schools
+              .slice(0, cardCounts.list)
+              .map((school: School, i: number) => (
+                <SchoolCard key={i} school={school} layout={layout} />
+              ))}
+          </div>
+          <div
+            className={`grid gap-6 ${
+              layout === "hybrid" ? "grid-cols-2" : "hidden"
+            } ${isMapActive ? "grid-cols-1" : ""}`}
+          >
+            {schools
+              .slice(0, cardCounts.hybrid)
+              .map((school: School, i: number) => (
+                <SchoolCard key={i} school={school} layout={layout} />
+              ))}
+          </div>
+          <div
+            className={`grid gap-6 ${
+              layout === "classic" ? "grid-cols-4" : "hidden"
+            } ${isMapActive ? "grid-cols-3" : ""}`}
+          >
+            {schools
+              .slice(0, cardCounts.classic)
+              .map((school: School, i: number) => (
+                <SchoolCard key={i} school={school} layout={layout} />
+              ))}
+          </div>
         </div>
       </div>
       <MapContainer isMapActive={isMapActive} />

@@ -46,6 +46,7 @@ const filterMap: Record<ESTABLISHMENT, EstablishmentTypes> = {
   [ESTABLISHMENT.K_12]: "filterK12",
   [ESTABLISHMENT.COLLEGES]: "filterColleges",
   [ESTABLISHMENT.GRADUATES]: "filterGraduates",
+  [ESTABLISHMENT.DISTRICT]: "filterDistrict",
 };
 
 const getActiveFilters = (filterData: AllFiltersType): FilterItem[] => {
@@ -92,6 +93,7 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
   filterK12: initialFilters,
   filterColleges: initialFilters,
   filterGraduates: initialFilters,
+  filterDistrict: initialFilters,
   establishment: initialEstablishment,
 
   setGrade: (grade: GradeFilter) => {
@@ -324,6 +326,9 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
   getActiveFiltersK12: () =>
     getActiveFilters(get().filterK12 as AllFiltersType),
 
+  getActiveFiltersDistrict: () =>
+    getActiveFilters(get().filterDistrict as AllFiltersType),
+
   setAct: (value: number) => {
     set((state) => ({
       filterColleges: {
@@ -395,6 +400,8 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
           return "filterColleges";
         case ESTABLISHMENT.GRADUATES:
           return "filterGraduates";
+        case ESTABLISHMENT.DISTRICT:
+          return "filterDistrict";
         default:
           return null;
       }
@@ -448,6 +455,7 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
         [ESTABLISHMENT.K_12]: initialFilters,
         [ESTABLISHMENT.COLLEGES]: initialFilters,
         [ESTABLISHMENT.GRADUATES]: initialFilters,
+        [ESTABLISHMENT.DISTRICT]: initialFilters,
       }[establishment];
 
       return {
@@ -501,6 +509,10 @@ export const useSchoolsExplore = create<SchoolsStore>((set, get) => ({
     } else if (establishment === ESTABLISHMENT.GRADUATES) {
       set(() => ({
         filterGraduates: { ...initialFilters },
+      }));
+    } else if (establishment === ESTABLISHMENT.DISTRICT) {
+      set(() => ({
+        filterDistrict: { ...initialFilters },
       }));
     }
   },

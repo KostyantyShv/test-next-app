@@ -32,6 +32,7 @@ const FiltersSection = () => {
     filterK12,
     filterColleges,
     filterGraduates,
+    filterDistrict,
     establishment,
     setGrade,
     setMajors,
@@ -41,6 +42,7 @@ const FiltersSection = () => {
     getActiveFiltersK12,
     getActiveFiltersCollege,
     getActiveFiltersGraduates,
+    getActiveFiltersDistrict,
     setCollegeType,
     setProgram,
     resetFilters,
@@ -54,10 +56,12 @@ const FiltersSection = () => {
         return filterK12;
       case "Colleges":
         return filterColleges;
+      case "District":
+        return filterDistrict;
       default:
         return filterGraduates;
     }
-  }, [establishment, filterK12, filterColleges, filterGraduates]);
+  }, [establishment, filterK12, filterColleges, filterGraduates, filterDistrict]);
 
   const getActiveFilters = useMemo(() => {
     switch (establishment) {
@@ -65,6 +69,8 @@ const FiltersSection = () => {
         return getActiveFiltersK12;
       case "Colleges":
         return getActiveFiltersCollege;
+      case "District":
+        return getActiveFiltersDistrict;
       default:
         return getActiveFiltersGraduates;
     }
@@ -73,6 +79,7 @@ const FiltersSection = () => {
     getActiveFiltersK12,
     getActiveFiltersCollege,
     getActiveFiltersGraduates,
+    getActiveFiltersDistrict,
   ]);
 
   const getOnChangeHandler = (filterKey: keyof FiltersType) => {
@@ -129,6 +136,13 @@ const FiltersSection = () => {
         );
       case ESTABLISHMENT.COLLEGES:
         return <CollegesFilters isOptionChecked={isOptionChecked} />;
+      case ESTABLISHMENT.DISTRICT:
+        return (
+          <K12Filters
+            isOptionChecked={isOptionChecked}
+            isGradeSelected={isGradeSelected}
+          />
+        );
       case ESTABLISHMENT.GRADUATES:
         return <p>Coming soon...</p>;
       default:
@@ -160,8 +174,6 @@ const FiltersSection = () => {
           />
         )
       )}
-      <FiltersButton filtersFlat={getActiveFilters} onClick={toggleSidebar} />
-      <ResetButton filters={getActiveFilters} onClick={resetFilters} />
     </div>
   );
 
@@ -179,13 +191,23 @@ const FiltersSection = () => {
       renderFilters={renderFilters}
     />
   );
+  
   return (
-    <FiltersWrapper
-      renderFilterButtonsComponent={renderFilterButtons}
-      renderSortButtonComponent={renderSortButton}
-      renderActiveFiltersComponent={renderActiveFilters}
-      renderFiltersSidebarComponent={renderFilterSidebar}
-    />
+    <div className="w-full mb-5 bg-white p-4 md:p-8 rounded-xl shadow-sm border border-gray-200">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-3 flex-wrap flex-1">
+          {renderFilterButtons()}
+          <FiltersButton filtersFlat={getActiveFilters} onClick={toggleSidebar} />
+        </div>
+        <div className="flex items-center gap-4 pl-6 border-l border-gray-200">
+          {renderSortButton()}
+        </div>
+      </div>
+      <div className="active-filters-bar mt-2.5 flex flex-wrap gap-2 items-center">
+        {renderActiveFilters()}
+      </div>
+      {renderFilterSidebar()}
+    </div>
   );
 };
 

@@ -90,6 +90,20 @@ export const FILTER_MOCK: CollectionsFilterMockType = {
           },
         ],
       },
+      {
+        value: "District",
+        label: "District",
+        subOptions: [
+          {
+            value: "Public",
+            label: "Public",
+          },
+          {
+            value: "Private",
+            label: "Private",
+          },
+        ],
+      },
     ],
   },
   RATING: {

@@ -313,6 +313,12 @@ export const FILTER_CONFIG: Record<
       inputPlaceholder: "Enter a program",
     },
   ],
+  District: [
+    { category: FILTER_MOCK.GRADE, filterKey: "grade" },
+    { category: FILTER_MOCK.TYPE, filterKey: "type" },
+    { category: FILTER_MOCK.RELIGION, filterKey: "religion" },
+    { category: FILTER_MOCK.SPECIALTY, filterKey: "specialty" },
+  ],
 };
 
 export const sortMock: SortData = {

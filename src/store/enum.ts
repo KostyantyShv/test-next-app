@@ -2,6 +2,7 @@ export enum ESTABLISHMENT {
   K_12 = "K-12",
   COLLEGES = "Colleges",
   GRADUATES = "Graduates",
+  DISTRICT = "District",
 }
 
 export enum SUBCATEGORIES_ENUM {

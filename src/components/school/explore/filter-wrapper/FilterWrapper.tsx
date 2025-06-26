@@ -40,6 +40,7 @@ const FiltersWrapper: React.FC<FiltersWrapperProps> = ({
     filterK12,
     filterColleges,
     filterGraduates,
+    filterDistrict,
     establishment,
     setGrade,
     setMajors,
@@ -49,6 +50,7 @@ const FiltersWrapper: React.FC<FiltersWrapperProps> = ({
     getActiveFiltersK12,
     getActiveFiltersCollege,
     getActiveFiltersGraduates,
+    getActiveFiltersDistrict,
     setCollegeType,
     setProgram,
   } = useSchoolsExplore((state) => state);
@@ -59,10 +61,12 @@ const FiltersWrapper: React.FC<FiltersWrapperProps> = ({
         return filterK12;
       case "Colleges":
         return filterColleges;
+      case "District":
+        return filterDistrict;
       default:
         return filterGraduates;
     }
-  }, [establishment, filterK12, filterColleges, filterGraduates]);
+  }, [establishment, filterK12, filterColleges, filterGraduates, filterDistrict]);
 
   const getActiveFilters = useMemo(() => {
     switch (establishment) {
@@ -70,6 +74,8 @@ const FiltersWrapper: React.FC<FiltersWrapperProps> = ({
         return getActiveFiltersK12;
       case "Colleges":
         return getActiveFiltersCollege;
+      case "District":
+        return getActiveFiltersDistrict;
       default:
         return getActiveFiltersGraduates;
     }
@@ -78,6 +84,7 @@ const FiltersWrapper: React.FC<FiltersWrapperProps> = ({
     getActiveFiltersK12,
     getActiveFiltersCollege,
     getActiveFiltersGraduates,
+    getActiveFiltersDistrict,
   ]);
 
   const toggleSidebar = () => setIsOpened((prev) => !prev);
@@ -106,14 +113,14 @@ const FiltersWrapper: React.FC<FiltersWrapperProps> = ({
 
   return (
     <>
-      <div className="w-full mb-5 bg-white p-4 md:px-8 rounded-xl shadow-sm border border-gray-200">
-        <div className="flex items-center justify-between gap-4 flex-wrap">
+      <div className="w-full mb-4 md:mb-5 bg-white p-3 md:p-4 md:px-8 rounded-lg md:rounded-xl shadow-sm border border-gray-200">
+        <div className="flex items-center justify-between gap-3 md:gap-4 flex-wrap">
           {renderFilterButtonsComponent()}
-          <div className="flex items-center gap-4 pl-6 border-l border-gray-200">
+          <div className="flex items-center gap-3 md:gap-4 pl-3 md:pl-6 border-l border-gray-200">
             {renderSortButtonComponent()}
           </div>
         </div>
-        <div className="active-filters-bar mt-2.5 flex flex-wrap gap-2 items-center">
+        <div className="active-filters-bar mt-2 md:mt-2.5 flex flex-wrap gap-2 items-center">
           {renderActiveFiltersComponent()}
         </div>
       </div>

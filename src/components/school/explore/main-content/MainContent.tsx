@@ -50,7 +50,7 @@ const MainContent: React.FC = () => {
   const renderSearchTypeButton = () => <SearchTypeButton />;
 
   return (
-    <div className="w-full mx-auto bg-white rounded-xl border border-[rgba(0,0,0,0.1)] shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-hidden">
+    <div className="w-full bg-white rounded-xl border border-[rgba(0,0,0,0.1)] shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-hidden">
       <Header
         dropdownValue={establishment}
         layouts={layouts}

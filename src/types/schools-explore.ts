@@ -5,7 +5,8 @@ import { StudyTypeFilter } from "./schools-collections";
 export type EstablishmentTypes =
   | "filterK12"
   | "filterColleges"
-  | "filterGraduates";
+  | "filterGraduates"
+  | "filterDistrict";
 
 export type GradeFilter = "pre-k" | "elementary" | "middle" | "high school";
 export type TypeFilter = "public" | "private" | "charter" | "magnet";
@@ -15,7 +16,7 @@ export type BoardingStatus = "Offers boarding";
 export type Academics = "AP Program" | "IB Program" | "Gifted/Talented Program";
 export type Organization = "NCEA" | "any" | "NAIS" | "TABS" | "ACSI";
 export type SchoolScoutGrade = "A" | "B" | "C" | "D";
-export type EstablishmentType = "K-12" | "Colleges" | "Graduates";
+export type EstablishmentType = "K-12" | "Colleges" | "Graduates" | "District";
 export type CollegeTypeFilter = "4-year" | "2-year";
 export type MajorsType = "Online" | "Campus";
 export type Program = "Online" | "Masters" | "Doctorate";
@@ -190,6 +191,7 @@ export interface SchoolsStore {
   establishment: EstablishmentType;
   filterColleges: InitialValueCollegesType;
   filterGraduates: InitialValueGraduatesType;
+  filterDistrict: FiltersType;
 
   setGrade: (grade: GradeFilter) => void;
   setType: (type: TypeFilter) => void;
@@ -213,6 +215,7 @@ export interface SchoolsStore {
   getActiveFiltersK12: () => FilterItem[];
   getActiveFiltersCollege: () => FilterItem[];
   getActiveFiltersGraduates: () => FilterItem[];
+  getActiveFiltersDistrict: () => FilterItem[];
   setGenAreaOfStudy: (area: GenAreaOfStudy) => void;
   setStartingSalaryAfterGraduation: (
     salary: StartingSalaryAfterGraduation

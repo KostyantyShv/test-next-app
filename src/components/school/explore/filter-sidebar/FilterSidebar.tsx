@@ -22,12 +22,12 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       <aside
         ref={sidebarRef}
         id="sidePanel"
-        className={`fixed top-0 right-0 w-[400px] h-full bg-white shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.1)] transition-transform duration-300 ease-in-out z-[1001] flex flex-col overflow-y-auto ${
+        className={`fixed top-0 right-0 w-full md:w-[400px] h-full bg-white shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.1)] transition-transform duration-300 ease-in-out z-[1001] flex flex-col overflow-y-auto ${
           isSidePanelOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <SidebarHeader onClose={onClose} />
-        <div className="p-6 flex-1 overflow-y-auto">{renderFilters()}</div>
+        <div className="p-4 md:p-6 flex-1 overflow-y-auto">{renderFilters()}</div>
         <SidebarFooter />
       </aside>
     </>

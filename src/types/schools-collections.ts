@@ -10,13 +10,14 @@ import {
 } from "./schools-explore";
 
 export type SubtypeK12 = "Traditional" | "Charter" | "Magnet" | "Private";
+export type SubtypeDistrict = "Traditional" | "Charter" | "Magnet" | "Private";
 export type SubtypeColleges = "2 year" | "4 year";
 export type SubtypeGraduates = "Public" | "Private";
 export type SubtypesEstablishmentType =
   | SubtypeK12
   | SubtypeColleges
-  | SubtypeGraduates;
-export type TypesEstablishmentType = "K12" | "Colleges" | "Graduates";
+  | SubtypeGraduates | SubtypeDistrict;
+export type TypesEstablishmentType = "K12" | "Colleges" | "Graduates" | "District";
 
 export type CategoryType =
   | "STEM"
