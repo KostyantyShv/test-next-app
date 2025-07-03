@@ -107,3 +107,62 @@ body {
 .animate-fade-in {
   animation: fadeIn 0.3s ease;
 }
+
+/* Mobile specific styles for school stats */
+@media (max-width: 768px) {
+  .mobile-school-stats {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+  }
+  
+  .mobile-school-stats > * {
+    width: 100% !important;
+  }
+  
+  /* Override any grid styles for mobile */
+  .school-stats.mobile-school-stats {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+  }
+  
+  .school-stats.mobile-school-stats > * {
+    width: 100% !important;
+  }
+  
+  /* Force single column for grid and hybrid layouts on mobile */
+  .school-stats {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+  }
+  
+  .school-stats > * {
+    width: 100% !important;
+  }
+  
+  /* Force single column for hybrid layout on mobile */
+  .hybrid-school-stats {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+  }
+  
+  .hybrid-school-stats > * {
+    width: 100% !important;
+  }
+  
+  /* Override any existing grid styles with higher specificity */
+  div.school-stats,
+  div.hybrid-school-stats {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+  }
+  
+  div.school-stats > *,
+  div.hybrid-school-stats > * {
+    width: 100% !important;
+  }
+}

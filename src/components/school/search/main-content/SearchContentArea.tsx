@@ -1,15 +1,15 @@
 import React from "react";
-import MapContainer from "./MapContainer";
-import SchoolCard from "../SchoolCard";
-import { School } from "../types";
+import SearchMapContainer from "./SearchMapContainer";
+import SchoolCard from "../../explore/SchoolCard";
+import { School } from "../../explore/types";
 
-interface ContentAreaProps {
+interface SearchContentAreaProps {
   isMapActive: boolean;
   layout: string;
   schools: School[];
 }
 
-const ContentArea: React.FC<ContentAreaProps> = ({
+const SearchContentArea: React.FC<SearchContentAreaProps> = ({
   isMapActive,
   layout,
   schools,
@@ -112,9 +112,9 @@ const ContentArea: React.FC<ContentAreaProps> = ({
           </div>
         </div>
       </div>
-      <MapContainer isMapActive={isMapActive} />
+      <SearchMapContainer isMapActive={isMapActive} />
     </div>
   );
 };
 
-export default ContentArea;
+export default SearchContentArea; 

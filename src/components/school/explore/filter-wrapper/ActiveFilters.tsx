@@ -30,7 +30,6 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
         filters().length ? "block" : "hidden"
       } text-sm font-medium text-textDefault flex flex-wrap items-center gap-2`}
     >
-      Active Filters:{" "}
       {filters().map((filter: FilterItem) => (
         <FilterPill
           removeFilter={removeFilter}
