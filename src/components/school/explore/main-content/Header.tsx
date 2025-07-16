@@ -21,6 +21,7 @@ import {
   Program,
   SchoolScoutGrade,
   SchoolScoutGradeEntry,
+  EstablishmentType,
 } from "@/types/schools-explore";
 
 interface HeaderProps {
@@ -209,7 +210,7 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   const handleEstablishmentSelect = (establishment: string) => {
-    setEstablishment(establishment as any);
+    setEstablishment(establishment as EstablishmentType);
     setIsEstablishmentDrawerOpen(false);
   };
 
