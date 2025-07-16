@@ -1,13 +1,9 @@
 "use client";
 import React from "react";
-import SearchFiltersWrapper from "../filter-wrapper/SearchFiltersWrapper";
+import FiltersSection from "../../explore/sections/FiltersSection";
 
 const SearchFiltersSection = () => {
-  return (
-    <div className="w-full mb-5">
-      <SearchFiltersWrapper />
-    </div>
-  );
+  return <FiltersSection />;
 };
 
 export default SearchFiltersSection; 

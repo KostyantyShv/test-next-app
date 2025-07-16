@@ -18,6 +18,7 @@ import {
   Program,
   SchoolScoutGrade,
   SchoolScoutGradeEntry,
+  EstablishmentType,
 } from "@/types/schools-explore";
 
 interface SearchHeaderProps {
@@ -197,7 +198,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
     }
   };
 
-  const handleEstablishmentSelect = (establishment: string) => {
+  const handleEstablishmentSelect = (establishment: EstablishmentType) => {
     setEstablishment(establishment);
     setIsEstablishmentDrawerOpen(false);
   };

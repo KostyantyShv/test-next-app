@@ -71,6 +71,7 @@ const initialCollectionsFilters: CollectionsFiltersWithPartialFiltersType = {
     K12: [],
     Colleges: [],
     Graduates: [],
+    District: [],
   },
   rating: 0,
   specialty: [],
