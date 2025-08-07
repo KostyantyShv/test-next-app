@@ -11,6 +11,7 @@ import { mockCollections } from "@/lib/mocks/collections";
 import { CollectionsDropdown } from "./CollectionsDropdown";
 import { useLeftSidebar } from "@/store/use-left-sidebar";
 import { useAudioPlayer } from "@/store/use-audio-player";
+import { Avatar } from "@/components/ui/Avatar";
 
 interface NavItem {
   icon: IconName;
@@ -473,14 +474,18 @@ export const LeftSidebar: FC = () => {
 
           {/* User Profile */}
           <div className={cn(
-            "flex items-center gap-3 px-3 py-2 rounded-3xl transition-all duration-200 cursor-pointer mt-2 relative group",
+            "flex items-center gap-3 px-3 py-2 rounded-3xl transition-all duration-200 mt-2 relative group",
             "hover:bg-green-50",
             isCollapsed && "justify-center w-11 h-11 mx-auto"
           )}>
-            <img 
-              src="https://i.ibb.co/1tk3W7g0/unamed-person.png" 
-              alt="User Avatar" 
-              className="w-8 h-8 rounded-full object-cover shrink-0"
+            <Avatar 
+              size="sm"
+              user={{
+                name: 'Ira Taylor',
+                email: 'ira.taylor@example.com',
+                plan: 'Professional until Apr 30, 2024'
+              }}
+              className="shrink-0"
             />
             {!isCollapsed && (
               <div className="flex-1">

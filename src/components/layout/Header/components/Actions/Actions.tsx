@@ -2,6 +2,7 @@
 
 import { FC, useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
+import { Avatar } from '@/components/ui/Avatar';
 
 export const Actions: FC = () => {
   const [mounted, setMounted] = useState(false);
@@ -117,14 +118,15 @@ export const Actions: FC = () => {
       </button>
 
       {/* Avatar */}
-      <div className="relative">
-        <button 
-          className="w-11 h-11 bg-white text-[#4A4A4A] border border-[#e9ecef] rounded-full flex items-center justify-center font-medium text-sm cursor-pointer transition-all duration-300 tracking-[0.5px] hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:opacity-90"
-          title="User Menu"
-        >
-          AZ
-        </button>
-      </div>
+      <Avatar 
+        size="md"
+        user={{
+          name: 'Daniel Lopez',
+          email: 'daniellopez@gmail.com',
+          plan: 'Professional until Apr 30, 2024'
+        }}
+        className="border border-[#e9ecef] hover:border-[#0B6333]"
+      />
     </div>
   );
 };
