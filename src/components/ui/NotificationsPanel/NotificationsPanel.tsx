@@ -53,7 +53,7 @@ const mockNotifications: Notification[] = [
           <span>★★★★★</span>
           <span>5</span>
         </div>
-        <div>"The campus is absolutely beautiful and the comp-sci program is top-notch..."</div>
+        <div>&quot;The campus is absolutely beautiful and the comp-sci program is top-notch...&quot;</div>
       </div>
     ),
     date: 'Friday, Dec 23, 2024',

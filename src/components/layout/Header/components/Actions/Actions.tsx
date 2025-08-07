@@ -7,20 +7,17 @@ import { NotificationsPanel } from '@/components/ui/NotificationsPanel';
 
 export const Actions: FC = () => {
   const [mounted, setMounted] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
   // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
-    setIsDarkMode(theme === 'dark');
   }, [theme]);
 
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
-    setIsDarkMode(newTheme === 'dark');
   };
 
   if (!mounted) {
