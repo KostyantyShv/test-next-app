@@ -3,10 +3,12 @@
 import { FC, useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { Avatar } from '@/components/ui/Avatar';
+import { NotificationsPanel } from '@/components/ui/NotificationsPanel';
 
 export const Actions: FC = () => {
   const [mounted, setMounted] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
   // Prevent hydration mismatch
@@ -61,6 +63,7 @@ export const Actions: FC = () => {
 
       {/* Notifications */}
       <button 
+        onClick={() => setIsNotificationsOpen(true)}
         className="relative w-11 h-11 border border-[#e9ecef] bg-white rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:opacity-90"
         title="Notifications"
       >
@@ -126,6 +129,12 @@ export const Actions: FC = () => {
           plan: 'Professional until Apr 30, 2024'
         }}
         className="border border-[#e9ecef] hover:border-[#0B6333]"
+      />
+
+      {/* Notifications Panel */}
+      <NotificationsPanel
+        isOpen={isNotificationsOpen}
+        onClose={() => setIsNotificationsOpen(false)}
       />
     </div>
   );
