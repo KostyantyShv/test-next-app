@@ -71,7 +71,7 @@ export const Avatar: React.FC<AvatarProps> = ({
 
       {/* Dropdown Menu */}
       {isDropdownOpen && (
-        <div className="absolute top-12 right-0 w-70 bg-white rounded-xl shadow-lg border border-gray-100 z-50 animate-in fade-in-0 zoom-in-95 duration-200">
+        <div className="absolute top-12 right-0 w-70 bg-white rounded-xl shadow-lg border border-gray-100 z-[1001] animate-in fade-in-0 zoom-in-95 duration-200">
           {/* Arrow */}
           <div className="absolute -top-2 right-4 w-4 h-4 bg-white border-l border-t border-gray-100 transform rotate-45"></div>
           

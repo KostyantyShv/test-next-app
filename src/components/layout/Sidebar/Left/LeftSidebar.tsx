@@ -12,6 +12,7 @@ import { CollectionsDropdown } from "./CollectionsDropdown";
 import { useLeftSidebar } from "@/store/use-left-sidebar";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { Avatar } from "@/components/ui/Avatar";
+import { ContactUsModal } from "@/components/ui/ContactUsModal";
 
 interface NavItem {
   icon: IconName;
@@ -91,6 +92,7 @@ const bottomItems: NavItem[] = [
 
 export const LeftSidebar: FC = () => {
   const [mounted, setMounted] = useState(false);
+  const [isContactUsOpen, setIsContactUsOpen] = useState(false);
   const {
     isCollapsed: storeIsCollapsed,
     isCollectionsOpen,
@@ -421,6 +423,27 @@ export const LeftSidebar: FC = () => {
           </div>
         )}
 
+        {/* Contact Us Button */}
+        <div className="px-2 py-2 border-t border-gray-200 flex-shrink-0">
+          <button
+            onClick={() => setIsContactUsOpen(true)}
+            className={cn(
+              "w-full flex items-center gap-3 px-3 py-2 text-[#016853] bg-[#EBFCF4] border-2 border-[#0B6333] rounded-lg font-semibold transition-all duration-300 hover:bg-[#D7F7E9] hover:-translate-y-0.5",
+              isCollapsed && "justify-center w-11 h-11 mx-auto"
+            )}
+          >
+            <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            {!isCollapsed && <span>Contact Us</span>}
+            {isCollapsed && (
+              <div className="absolute left-16 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
+                Contact Us
+              </div>
+            )}
+          </button>
+        </div>
+
         {/* Bottom Items */}
         <div className="px-2 py-2 border-t border-gray-200 flex-shrink-0">
           <div className="space-y-1">
@@ -504,6 +527,11 @@ export const LeftSidebar: FC = () => {
       <CreateCollectionModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
+      />
+
+      <ContactUsModal
+        isOpen={isContactUsOpen}
+        onClose={() => setIsContactUsOpen(false)}
       />
     </aside>
   );
