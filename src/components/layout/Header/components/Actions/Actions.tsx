@@ -4,10 +4,17 @@ import { FC, useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { Avatar } from '@/components/ui/Avatar';
 import { NotificationsPanel } from '@/components/ui/NotificationsPanel';
+import { AIAssistantPlatform } from '@/components/ui/AIAssistantPlatform';
+import { Cart } from '@/components/ui/Cart';
+import { Monitor } from '@/components/ui/Monitor';
+import { cn } from '@/lib/utils';
 
 export const Actions: FC = () => {
   const [mounted, setMounted] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isAIPanelOpen, setIsAIPanelOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isMonitorOpen, setIsMonitorOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
   // Prevent hydration mismatch
@@ -49,13 +56,23 @@ export const Actions: FC = () => {
 
       {/* Monitor Icon */}
       <button 
-        className="relative w-11 h-11 border border-[#e9ecef] bg-white rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:opacity-90"
-        title="Monitor"
+        onClick={() => setIsMonitorOpen(!isMonitorOpen)}
+        className={cn(
+          "relative w-11 h-11 border border-[#e9ecef] bg-white rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:opacity-90",
+          isMonitorOpen && "bg-[#EBFCF4] border-[#0B6333] text-[#0B6333]"
+        )}
+        title="Monitor Changes"
       >
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5">
           <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 10.74 21.78 9.54 21.38 8.44L19.92 9.9C20.37 10.56 20.62 11.27 20.62 12C20.62 16.76 16.76 20.62 12 20.62C7.24 20.62 3.38 16.76 3.38 12C3.38 7.24 7.24 3.38 12 3.38C13.81 3.38 15.48 3.92 16.84 4.85L18.25 3.43C16.57 2.45 14.4 2 12 2ZM19.95 5.5L16.2 9.25L14.75 7.8L18.5 4.05L19.95 5.5Z"></path>
           <path d="M6 2c.306 0 .582.187.696.471L10 10.731l1.304-3.26A.751.751 0 0 1 12 7h3.25a.75.75 0 0 1 0 1.5h-2.742l-1.812 4.528a.751.751 0 0 1-1.392 0L6 4.77 4.696 8.03A.75.75 0 0 1 4 8.5H.75a.75.75 0 0 1 0-1.5h2.742l1.812-4.529A.751.751 0 0 1 6 2Z" transform="translate(4 4)"></path>
         </svg>
+        <span className="absolute -top-1.5 -right-1.5 bg-[#1D77BD] text-white rounded-full w-5 h-5 flex items-center justify-center text-[11px] font-semibold border-2 border-white">5</span>
+        {isMonitorOpen && (
+          <span className="absolute -top-1.5 -right-1.5 bg-[#0B6333] text-white rounded-full w-5 h-5 flex items-center justify-center text-[11px] font-semibold border-2 border-white">
+            ON
+          </span>
+        )}
       </button>
 
       {/* Notifications */}
@@ -73,13 +90,22 @@ export const Actions: FC = () => {
 
       {/* Cart */}
       <button 
-        className="relative w-11 h-11 border border-[#e9ecef] bg-white rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:opacity-90"
+        onClick={() => setIsCartOpen(!isCartOpen)}
+        className={cn(
+          "relative w-11 h-11 border border-[#e9ecef] bg-white rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:opacity-90",
+          isCartOpen && "bg-[#EBFCF4] border-[#0B6333] text-[#0B6333]"
+        )}
         title="Shopping Cart"
       >
         <svg fill="none" viewBox="0 0 24 24" className="w-5 h-5">
           <path fill="currentColor" d="M22.5 16.14L23.92 6l-18.8-.81L4.92 4A4.43 4.43 0 002.51.8L.58 0 0 1.39l1.88.78a2.88 2.88 0 011.56 2.11l2.5 14.86a2.54 2.54 0 103.57 3h5.93a2.54 2.54 0 100-1.5H9.52a2.53 2.53 0 00-2.1-1.79l-.31-1.83 15.39-.88zm-4.65 4.21a1 1 0 11-.1 1.997 1 1 0 01.1-1.997zm4.36-12.92l-1 7.29-14.33.84-1.51-8.85 16.84.72zM8.14 21.4a1 1 0 11-2 0 1 1 0 012 0z"></path>
         </svg>
         <span className="absolute -top-1.5 -right-1.5 bg-[#1D77BD] text-white rounded-full w-5 h-5 flex items-center justify-center text-[11px] font-semibold border-2 border-white">3</span>
+        {isCartOpen && (
+          <span className="absolute -top-1.5 -right-1.5 bg-[#0B6333] text-white rounded-full w-5 h-5 flex items-center justify-center text-[11px] font-semibold border-2 border-white">
+            ON
+          </span>
+        )}
       </button>
 
       {/* Dark/Light Mode Toggle */}
@@ -104,12 +130,21 @@ export const Actions: FC = () => {
 
       {/* AI Panel */}
       <button 
-        className="relative w-11 h-11 border border-[#e9ecef] bg-white rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:opacity-90"
-        title="AI Panel"
+        onClick={() => setIsAIPanelOpen(!isAIPanelOpen)}
+        className={cn(
+          "relative w-11 h-11 border border-[#e9ecef] bg-white rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:opacity-90",
+          isAIPanelOpen && "bg-[#EBFCF4] border-[#0B6333] text-[#0B6333]"
+        )}
+        title={isAIPanelOpen ? "Close Panel" : "Open Panel"}
       >
         <svg viewBox="0 0 18 18" className="w-5 h-5">
           <path d="M11.879 16.244 10.864 18H7.132l-1.014-1.756h5.76ZM8.999 0c3.684 0 6.672 2.978 6.672 6.652a6.643 6.643 0 0 1-3.199 5.68l-.044.027v2.744H5.582v-2.736l-.016-.01a6.646 6.646 0 0 1-3.24-5.62v-.085C2.325 2.978 5.313 0 8.998 0Zm0 1.756c-2.717 0-4.918 2.193-4.918 4.896a4.894 4.894 0 0 0 2.762 4.402l.494.24v2.052h3.335V11.29l.492-.241a4.887 4.887 0 0 0 2.75-4.397c.001-2.703-2.2-4.896-4.916-4.896Zm.216 2.229-.493 1.9h2.449l-.91 3.827H8.456l.492-2.07H6.453L7.4 3.985h1.814Z" fill="currentColor"></path>
         </svg>
+        {isAIPanelOpen && (
+          <span className="absolute -top-1.5 -right-1.5 bg-[#0B6333] text-white rounded-full w-5 h-5 flex items-center justify-center text-[11px] font-semibold border-2 border-white">
+            ON
+          </span>
+        )}
       </button>
 
       {/* Signup Button */}
@@ -132,6 +167,24 @@ export const Actions: FC = () => {
       <NotificationsPanel
         isOpen={isNotificationsOpen}
         onClose={() => setIsNotificationsOpen(false)}
+      />
+
+      {/* AI Assistant Platform */}
+      <AIAssistantPlatform
+        isOpen={isAIPanelOpen}
+        onClose={() => setIsAIPanelOpen(false)}
+      />
+
+      {/* Cart */}
+      <Cart
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+      />
+
+      {/* Monitor */}
+      <Monitor
+        isOpen={isMonitorOpen}
+        onClose={() => setIsMonitorOpen(false)}
       />
     </div>
   );

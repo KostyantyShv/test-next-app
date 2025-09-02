@@ -1,7 +1,24 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import dynamic from "next/dynamic";
+
+// Dynamically import EmojiPicker to avoid SSR issues
+const EmojiPicker = dynamic(
+  () => import("emoji-picker-react").then((mod) => mod.default),
+  { 
+    ssr: false,
+    loading: () => <div className="w-full h-[350px] bg-gray-100 rounded-xl flex items-center justify-center">Loading emoji picker...</div>
+  }
+);
+
+// Type for emoji data
+interface EmojiClickData {
+  emoji: string;
+  unified: string;
+  names: string[];
+  activeSkinTone: string;
+}
 
 interface EmojiPickerComponentProps {
   selectedEmoji: string | null;

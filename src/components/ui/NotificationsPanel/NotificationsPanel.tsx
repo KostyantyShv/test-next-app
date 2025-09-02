@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import styles from './NotificationsPanel.module.css';
 
 interface Notification {
   id: string;
@@ -96,19 +97,28 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
   const [notifications, setNotifications] = useState(mockNotifications);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (panelRef.current && !panelRef.current.contains(event.target as Node)) {
-        onClose();
-      }
-    };
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (panelRef.current && !panelRef.current.contains(event.target as Node)) {
+      onClose();
+    }
+  }, [onClose]);
 
-    if (isOpen) {
+  useEffect(() => {
+    if (isOpen && panelRef.current) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen, onClose]);
+    return () => {
+      try {
+        if (document) {
+          document.removeEventListener('mousedown', handleClickOutside);
+        }
+      } catch (error) {
+        // Ignore errors during cleanup
+        console.warn('Error removing event listener:', error);
+      }
+    };
+  }, [isOpen, handleClickOutside]);
 
   const filteredNotifications = notifications.filter(notification => {
     const matchesCategory = notification.category === activeCategory;
@@ -119,40 +129,51 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
     return matchesCategory && matchesSearch && matchesReadFilter;
   });
 
-  const markAsRead = (id: string) => {
+  const markAsRead = useCallback((id: string) => {
     setNotifications(prev => 
       prev.map(notif => 
         notif.id === id ? { ...notif, isUnread: false, isRead: true } : notif
       )
     );
-  };
+  }, []);
 
-  const dismissNotification = (id: string) => {
+  const dismissNotification = useCallback((id: string) => {
     setNotifications(prev => prev.filter(notif => notif.id !== id));
-  };
+  }, []);
 
-  const markAllAsRead = () => {
+  const markAllAsRead = useCallback(() => {
     setNotifications(prev => 
       prev.map(notif => ({ ...notif, isUnread: false, isRead: true }))
     );
-  };
+  }, []);
 
   if (!isOpen) return null;
+
+  // Additional safety check
+  if (typeof window === 'undefined') return null;
 
   return (
     <div className="fixed inset-0 z-[1001]">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black bg-opacity-25" />
+      <div className="absolute inset-0 bg-black bg-opacity-40" />
       
       {/* Panel */}
       <div 
         ref={panelRef}
         className={cn(
-          "absolute top-0 right-0 w-[480px] h-full bg-white shadow-lg flex flex-col",
+          "absolute top-0 right-0 w-[480px] h-screen bg-white shadow-2xl flex flex-col",
           "transform transition-transform duration-300 ease-in-out",
+          "border-l border-gray-200",
+          styles.notificationsPanel,
           isOpen ? "translate-x-0" : "translate-x-full",
           className
         )}
+        style={{
+          backgroundColor: 'white !important',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          height: '100vh',
+          minHeight: '100vh',
+        }}
       >
         {/* Header */}
         <div className="p-6 pb-4 border-b border-[#D1D5DB]">
