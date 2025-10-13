@@ -28,8 +28,8 @@ interface NavItem {
 }
 
 const exploreItems: NavItem[] = [
-  { icon: "compass", label: "Explore", href: "/explore" },
-  { icon: "activity", label: "Leaderboard", href: "/leaderboard" },
+  { icon: "compass", label: "Explore", href: "/schools/explore" },
+  { icon: "activity", label: "Leaderboard", href: "/schools/leaderboard" },
 ];
 
 const libraryItems: NavItem[] = [
