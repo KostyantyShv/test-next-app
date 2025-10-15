@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 interface CartItem {
@@ -21,6 +22,7 @@ export const Cart: React.FC<CartProps> = ({
   onClose,
   className,
 }) => {
+  const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([
     { id: 1, image: 'https://i.ibb.co/8DRBhzTm/product5.jpg', title: 'Master Microservices with Spring Boot and Spring Cloud', price: 149.99 },
     { id: 2, image: 'https://i.ibb.co/23PtGQWJ/product55.jpg', title: 'Java Tutorial for Complete Beginners', price: 19.99 },
@@ -72,8 +74,8 @@ export const Cart: React.FC<CartProps> = ({
   };
 
   const goToCart = () => {
-    alert('Redirecting to cart page...');
     onClose();
+    router.push('/checkout');
   };
 
   const totalAmount = cartItems.reduce((sum, item) => sum + item.price, 0);

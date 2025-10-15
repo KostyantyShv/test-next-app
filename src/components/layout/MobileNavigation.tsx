@@ -9,7 +9,7 @@ import { useAudioPlayer } from "@/store/use-audio-player";
 
 const navigationItems: { href: string; label: string; icon: IconName }[] = [
   { href: "/", label: "Dashboard", icon: "home" },
-  { href: "/explore", label: "Explore", icon: "explore" },
+  { href: "schools/explore", label: "Explore", icon: "explore" },
   { href: "/library", label: "Library", icon: "library" },
   {
     href: "#",

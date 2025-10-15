@@ -45,7 +45,9 @@ export const RootLayoutClient = ({
           <main
             className={cn(
               "flex-1",
-              isPlayerVisible && "pb-[72px] md:pb-[72px]" // Add padding when player is visible
+              isPlayerVisible
+                ? "pb-[72px] md:pb-[72px]" // Player visible: reserve player height
+                : "pb-[56px] md:pb-0" // Player hidden: reserve mobile nav height
             )}
           >
             <PageContainer>{children}</PageContainer>

@@ -265,9 +265,17 @@ export const LeftSidebar: FC = () => {
                             e.currentTarget.querySelector('.action-buttons')?.classList.remove('opacity-100');
                           }
                         }}
-                        onClick={() => {
+                        onClick={(e) => {
                           if (hasSubmenu) {
+                            e.preventDefault();
+                            // For Monitors, navigate to /monitors first, then toggle submenu
+                            if (item.href === "/monitors") {
+                              window.location.href = "/monitors";
+                            }
                             toggleSubmenu(submenuId);
+                          } else {
+                            // Navigate to the href if no submenu
+                            window.location.href = item.href;
                           }
                         }}
                       >
