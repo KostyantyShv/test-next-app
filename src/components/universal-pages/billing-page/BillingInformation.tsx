@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import ContentBadge from "./ContentBadge";
 
 interface BillingInformationProps {
@@ -244,9 +245,11 @@ export default function BillingInformation({
             <div>
               <div className="flex justify-between mb-2">
                 <div>{activeBadges.length}/5 Addons Selected</div>
-                <button className="text-[#346DC2] text-sm font-medium flex items-center gap-1 cursor-pointer bg-transparent border-none">
-                  All Plans &rarr;
-                </button>
+                <Link href="/billing/pricing">
+                  <button className="text-[#346DC2] text-sm font-medium flex items-center gap-1 cursor-pointer bg-transparent border-none">
+                    All Plans &rarr;
+                  </button>
+                </Link>
               </div>
             </div>
 
@@ -427,9 +430,11 @@ export default function BillingInformation({
                 <button className="bg-white max-md:w-full text-[#4A4A4A] border border-[#E5E7EB] rounded px-4 py-2 text-sm font-medium">
                   Cancel Trial
                 </button>
-                <button className="bg-[#1D77BD] max-md:w-full text-white border-none rounded px-4 py-2 text-sm font-medium">
-                  Upgrade Plan
-                </button>
+                <Link href="/billing/pricing">
+                  <button className="bg-[#1D77BD] max-md:w-full text-white border-none rounded px-4 py-2 text-sm font-medium">
+                    Upgrade Plan
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
