@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { CartMobile } from './CartMobile';
+import Link from 'next/link';
 
 interface CartItem {
   id: number;
@@ -32,8 +34,13 @@ export const Cart: React.FC<CartProps> = ({
   const modalRef = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = useCallback((event: MouseEvent) => {
-    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-      onClose();
+    const target = event.target as Node;
+    if (modalRef.current && !modalRef.current.contains(target)) {
+      // Додаткова перевірка: переконаємося, що клік не на backdrop
+      const backdrop = document.querySelector('[data-backdrop="cart"]');
+      if (backdrop && backdrop.contains(target)) {
+        onClose();
+      }
     }
   }, [onClose]);
 
@@ -83,11 +90,17 @@ export const Cart: React.FC<CartProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[1001]">
+    <>
+      {/* Mobile Version */}
+      <CartMobile isOpen={isOpen} onClose={onClose} className={className} />
+      
+      {/* Desktop Version */}
+      <div className="fixed inset-0 z-[1001] hidden md:block">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black bg-opacity-25 cursor-pointer" 
         onClick={onClose}
+        data-backdrop="cart"
       />
       
       {/* Cart Modal */}
@@ -166,15 +179,18 @@ export const Cart: React.FC<CartProps> = ({
               <span className="text-base font-semibold text-[#464646]">Total:</span>
               <span className="text-xl font-bold text-[#464646]">${totalAmount.toFixed(2)}</span>
             </div>
+            <Link href="/checkout">
             <button 
               onClick={goToCart}
               className="w-full py-3 px-6 bg-[#1D77BD] text-white border-none rounded-lg text-[15px] font-semibold cursor-pointer transition-colors hover:bg-[#1a6ba8]"
             >
               Go to cart
             </button>
+            </Link>
           </div>
         )}
       </div>
     </div>
+    </>
   );
 };

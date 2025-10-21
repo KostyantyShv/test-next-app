@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import styles from './NotificationsPanel.module.css';
+import { NotificationsPanelMobile } from './NotificationsPanelMobile';
 
 interface Notification {
   id: string;
@@ -98,8 +99,13 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
   const panelRef = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = useCallback((event: MouseEvent) => {
-    if (panelRef.current && !panelRef.current.contains(event.target as Node)) {
-      onClose();
+    const target = event.target as Node;
+    if (panelRef.current && !panelRef.current.contains(target)) {
+      // Додаткова перевірка: переконаємося, що клік дійсно на backdrop
+      const backdrop = document.querySelector('[data-backdrop="notifications"]');
+      if (backdrop && backdrop.contains(target)) {
+        onClose();
+      }
     }
   }, [onClose]);
 
@@ -153,9 +159,18 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
   if (typeof window === 'undefined') return null;
 
   return (
-    <div className="fixed inset-0 z-[1001]">
+    <>
+      {/* Mobile Version */}
+      <NotificationsPanelMobile isOpen={isOpen} onClose={onClose} className={className} />
+      
+      {/* Desktop Version */}
+      <div className="fixed inset-0 z-[1001] hidden md:block">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black bg-opacity-40" />
+      <div 
+        className="absolute inset-0 bg-black bg-opacity-40" 
+        onClick={onClose}
+        data-backdrop="notifications"
+      />
       
       {/* Panel */}
       <div 
@@ -345,5 +360,6 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
         </div>
       </div>
     </div>
+    </>
   );
 }; 

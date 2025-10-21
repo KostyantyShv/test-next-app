@@ -4,7 +4,7 @@ import { FC, useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Search } from './components/Search';
 import { Actions } from './components/Actions';
-import { MobileActions } from './components/MobileActions';
+import { MobileActions } from './components/MobileActions/MobileActions';
 
 interface HeaderProps {
   className?: string;

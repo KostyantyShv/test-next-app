@@ -31,7 +31,7 @@ export const MobileNavigation: FC = () => {
   };
 
   return (
-    <nav className="fixed z-30 bottom-0 left-0 right-0 bg-[#003366] md:hidden">
+    <nav className="fixed z-30 bottom-0 left-0 right-0 bg-[#016853] md:hidden">
       <div className="flex items-center justify-between">
         {navigationItems.map((item) => (
           <Link
@@ -42,10 +42,10 @@ export const MobileNavigation: FC = () => {
               "flex flex-1 flex-col items-center gap-1 px-2 py-3",
               "text-[14px] font-medium min-w-[72px]",
               item.href === "#"
-                ? "text-blue-200"
+                ? "text-[#b3d2cc]"
                 : pathname === item.href
                 ? "text-white"
-                : "text-blue-200"
+                : "text-[#b3d2cc]"
             )}
           >
             <div className="w-6 h-6 flex items-center justify-center">
@@ -54,10 +54,10 @@ export const MobileNavigation: FC = () => {
                 size="lg"
                 className={cn(
                   item.href === "#"
-                    ? "text-blue-200"
+                    ? "text-[#b3d2cc]"
                     : pathname === item.href
                     ? "text-white"
-                    : "text-blue-200"
+                    : "text-[#b3d2cc]"
                 )}
               />
             </div>
