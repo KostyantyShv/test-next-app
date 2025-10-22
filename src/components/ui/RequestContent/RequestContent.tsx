@@ -205,12 +205,24 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
   const [focusedDropdownIndex, setFocusedDropdownIndex] = useState(-1);
+  const [isMobile, setIsMobile] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const urlTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
   const lastFocusableRef = useRef<HTMLButtonElement>(null);
+
+  // Handle mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Handle clicks outside dropdown
   useEffect(() => {
@@ -434,8 +446,275 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
 
   if (!isOpen) return null;
 
+  // Mobile version - drawer from bottom
+  if (isMobile) {
+    return (
+      <div className="block md:hidden">
+        {/* Mobile overlay */}
+        <div
+          className={`fixed inset-0 bg-black/50 z-[2500] transition-all duration-300 ${
+            isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
+          onClick={onClose}
+        />
+        
+        {/* Mobile drawer */}
+        <div
+          className={`fixed bottom-0 left-0 w-full max-h-[90%] bg-white rounded-t-[20px] shadow-[0_-2px_10px_rgba(0,0,0,0.15)] z-[3000] transition-all duration-300 overflow-hidden flex flex-col ${
+            isOpen ? "bottom-0 visible" : "bottom-[-100%] invisible"
+          }`}
+          ref={modalRef}
+          role="dialog"
+          aria-labelledby="modal-title"
+          aria-modal="true"
+        >
+          {/* Mobile header */}
+          <div className="sticky top-0 bg-white p-4 border-b border-gray-200 flex justify-between items-center z-10 flex-shrink-0">
+            <h2 id="modal-title" className="text-lg font-semibold text-gray-900">Request New Content</h2>
+            <button
+              ref={firstFocusableRef}
+              onClick={onClose}
+              className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-full transition-colors"
+              aria-label="Close modal"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+
+          {/* Mobile body */}
+          <div className="flex-1 overflow-y-auto p-5 bg-gray-50">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Content Type Dropdown */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Content Type
+                </label>
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    type="button"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    onKeyDown={handleDropdownKeyDown}
+                    className="w-full p-3 border border-gray-300 rounded-lg bg-white text-left flex items-center justify-between hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    aria-expanded={isDropdownOpen}
+                    aria-haspopup="listbox"
+                    id="content-type-dropdown"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="text-green-600">
+                        {selectedContentType.icon}
+                      </div>
+                      <span>{selectedContentType.name}</span>
+                    </div>
+                    <svg 
+                      className={`w-4 h-4 text-gray-500 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                      viewBox="0 0 20 20" 
+                      fill="currentColor"
+                    >
+                      <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd"/>
+                    </svg>
+                  </button>
+
+                  {isDropdownOpen && (
+                    <div 
+                      className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 animate-in slide-in-from-top-2 duration-150"
+                      role="listbox"
+                      aria-labelledby="content-type-dropdown"
+                    >
+                      {contentTypes.map((type, index) => (
+                        <button
+                          key={type.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedContentType(type);
+                            setIsDropdownOpen(false);
+                            setFocusedDropdownIndex(-1);
+                          }}
+                          className={`w-full p-3 text-left flex items-center gap-2.5 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-colors ${
+                            focusedDropdownIndex === index ? 'bg-gray-50' : ''
+                          }`}
+                          role="option"
+                          aria-selected={selectedContentType.id === type.id}
+                          tabIndex={-1}
+                        >
+                          <div className="text-green-600">
+                            {type.icon}
+                          </div>
+                          <span>{type.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Title Input */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Enter content title"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                />
+              </div>
+
+              {/* URL Input */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  URL
+                </label>
+                <input
+                  type="url"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  placeholder="https://example.com"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                />
+
+                {/* URL Preview */}
+                {(showUrlPreview || isLoadingPreview) && (
+                  <div className="mt-4 p-4 border border-gray-300 rounded-lg bg-gray-100 animate-in slide-in-from-top-2 duration-300">
+                    <span className="block text-xs font-medium text-gray-500 mb-3">Preview</span>
+                    {isLoadingPreview ? (
+                      <div className="flex items-center justify-center py-4">
+                        <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+                        <span className="ml-2 text-sm text-gray-500">Loading preview...</span>
+                      </div>
+                    ) : (
+                      <div className="flex gap-3">
+                        <img 
+                          src={previewData.image} 
+                          alt="Content preview" 
+                          className="w-15 h-15 rounded-md object-cover flex-shrink-0"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium text-gray-700 line-clamp-3 mb-1.5">
+                            {previewData.title}
+                          </div>
+                          <div className="text-xs text-gray-500 line-clamp-3">
+                            {previewData.description}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Matching Requests */}
+              {matchingRequests.length > 0 && (
+                <div className="mt-6 p-4 bg-white rounded-lg border border-gray-200">
+                  <h4 className="text-sm font-medium text-gray-500 mb-4">Matching Requests</h4>
+                  <div className="space-y-2">
+                    {matchingRequests.map((request) => (
+                      <div key={request.id} className="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg hover:shadow-sm transition-shadow">
+                        <img 
+                          src={request.image} 
+                          alt={request.title} 
+                          className="w-10 h-10 rounded-md object-cover flex-shrink-0"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium text-gray-700 truncate">
+                            {request.title}
+                          </div>
+                          <div className="text-xs text-gray-500 flex items-center gap-2 mt-1">
+                            <span>{request.author}</span>
+                            <div className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-green-50 text-green-600 rounded text-xs font-medium">
+                              {contentTypes.find(t => t.id === request.type)?.icon}
+                              <span>{contentTypes.find(t => t.id === request.type)?.name}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-center min-w-8">
+                          <button
+                            type="button"
+                            onClick={() => handleVote(request.id, 'up')}
+                            className="text-gray-500 hover:text-green-600 p-0.5 text-xs transition-colors"
+                          >
+                            ▲
+                          </button>
+                          <span className="text-xs font-medium text-gray-700 my-0.5">
+                            {request.votes}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleVote(request.id, 'down')}
+                            className="text-gray-500 hover:text-green-600 p-0.5 text-xs transition-colors"
+                          >
+                            ▼
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Confirmation Section */}
+              <div className="pt-5 border-t border-gray-200">
+                {hasMatchingResults && (
+                  <div className="flex items-start gap-3 mb-5">
+                    <div
+                      className={`w-4.5 h-4.5 border-2 rounded cursor-pointer flex items-center justify-center transition-all ${
+                        isCheckboxChecked 
+                          ? 'bg-blue-600 border-blue-600' 
+                          : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                      onClick={() => setIsCheckboxChecked(!isCheckboxChecked)}
+                      role="checkbox"
+                      aria-checked={isCheckboxChecked}
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setIsCheckboxChecked(!isCheckboxChecked);
+                        }
+                      }}
+                    >
+                      {isCheckboxChecked && (
+                        <svg className="w-3 h-3 text-white" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd"/>
+                        </svg>
+                      )}
+                    </div>
+                    <label className="text-sm text-gray-700 cursor-pointer leading-relaxed">
+                      I confirm my request is not in the list above
+                    </label>
+                  </div>
+                )}
+                
+                <button
+                  ref={lastFocusableRef}
+                  type="submit"
+                  disabled={!canSubmit || isSubmitting}
+                  className="w-full py-3 px-6 bg-green-50 text-green-800 border border-green-200 rounded-lg font-medium hover:bg-green-100 hover:border-green-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  {isSubmitting ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-4 h-4 border-2 border-green-200 border-t-green-600 rounded-full animate-spin"></div>
+                      Submitting...
+                    </div>
+                  ) : (
+                    'Submit'
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop version - centered modal
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-5">
+    <div className="hidden md:flex fixed inset-0 bg-black bg-opacity-40 items-center justify-center z-50 p-5">
       <div 
         ref={modalRef}
         className="bg-white rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl animate-in fade-in-0 zoom-in-95 duration-300"
