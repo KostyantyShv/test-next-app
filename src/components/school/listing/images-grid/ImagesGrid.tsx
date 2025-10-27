@@ -10,9 +10,12 @@ interface ImagesGridProps {
 const ImagesGrid: React.FC<ImagesGridProps> = ({ images }) => {
   return (
     <>
+      {/* Mobile Images Grid */}
       <div className="block md:hidden">
         <ImagesGridMobile images={images} />
       </div>
+      
+      {/* Desktop Images Grid */}
       <div className="hidden md:block">
         <ImagesGrigDesktop images={images} />
       </div>

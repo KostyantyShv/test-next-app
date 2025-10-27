@@ -130,7 +130,7 @@ const MainContentSection: React.FC<{
   );
 
   return (
-    <div className="w-full mx-auto bg-white rounded-xl border border-[rgba(0,0,0,0.1)] shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-hidden">
+    <div className="w-full mx-auto bg-white rounded-lg sm:rounded-xl border border-[rgba(0,0,0,0.1)] shadow-[0_1px_4px_rgba(0,0,0,0.05)] sm:shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-hidden">
       <Header
         layouts={layouts}
         dropdownValue={subcategory}

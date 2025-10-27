@@ -12,9 +12,12 @@ interface SchoolInfoProps {
 const SchoolInfo: React.FC<SchoolInfoProps> = ({ schoolInfo, images }) => {
   return (
     <>
+      {/* Mobile School Info */}
       <div className="block md:hidden">
         <SchoolInfoMobile images={images} />
       </div>
+      
+      {/* Desktop School Info */}
       <div className="hidden md:block">
         <SchoolInfoDesktop schoolInfo={schoolInfo} />
       </div>

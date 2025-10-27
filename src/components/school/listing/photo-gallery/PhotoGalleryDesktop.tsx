@@ -52,23 +52,31 @@ const PhotoGalleryDesktop: React.FC<PhotoGalleryDesktopProps> = ({
 
   return (
     <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-90 z-[9999] flex flex-col">
-      <div className="absolute top-0 left-0 right-0 flex justify-between items-center bg-black bg-opacity-60 p-4">
-        <h2 className="text-white text-base sm:text-lg font-semibold">
+      {/* Header */}
+      <div className="absolute top-0 left-0 right-0 flex justify-between items-center bg-black bg-opacity-60 p-3 sm:p-4">
+        <h2 className="text-white text-sm sm:text-base md:text-lg font-semibold truncate">
           {schoolName}
         </h2>
-        <button onClick={onClose} className="text-white hover:text-gray-300">
+        <button 
+          onClick={onClose} 
+          className="text-white hover:text-gray-300 p-1 sm:p-2 rounded-full hover:bg-white/10 transition-colors"
+        >
           <Icon name="close" />
         </button>
       </div>
-      <div className="absolute top-12 sm:top-16 right-4 sm:right-6 bg-black bg-opacity-60 text-white px-3 py-1 sm:px-4 sm:py-2 rounded text-sm">
+      
+      {/* Image Counter */}
+      <div className="absolute top-12 sm:top-16 right-3 sm:right-4 md:right-6 bg-black bg-opacity-60 text-white px-2 py-1 sm:px-3 sm:py-1 md:px-4 md:py-2 rounded text-xs sm:text-sm">
         {activeIndex + 1} of {images.length}
       </div>
-      <div className="flex flex-1 justify-center items-center px-2 sm:px-6">
+      
+      {/* Main Image Container */}
+      <div className="flex flex-1 justify-center items-center px-2 sm:px-4 md:px-6 pt-16 pb-20 sm:pb-24">
         <button
           onClick={() =>
             setActiveIndex((prev) => (prev - 1 + images.length) % images.length)
           }
-          className="absolute left-2 sm:left-6 text-white bg-opacity-40 p-2 sm:p-3 rounded-full hover:bg-opacity-60"
+          className="absolute left-2 sm:left-4 md:left-6 text-white bg-black bg-opacity-40 p-2 sm:p-3 rounded-full hover:bg-opacity-60 transition-all z-10"
         >
           <GalleryNavIcon className="rotate-180" />
         </button>
@@ -77,22 +85,24 @@ const PhotoGalleryDesktop: React.FC<PhotoGalleryDesktopProps> = ({
           alt={`School photo ${activeIndex + 1}`}
           width={500}
           height={800}
-          className="max-w-full max-h-[80vh] object-contain"
+          className="max-w-full max-h-[70vh] sm:max-h-[75vh] md:max-h-[80vh] object-contain"
         />
         <button
           onClick={() => setActiveIndex((prev) => (prev + 1) % images.length)}
-          className="absolute right-2 sm:right-6 bg-opacity-40 p-2 sm:p-3 rounded-full hover:bg-opacity-60"
+          className="absolute right-2 sm:right-4 md:right-6 bg-black bg-opacity-40 p-2 sm:p-3 rounded-full hover:bg-opacity-60 transition-all z-10"
         >
           <GalleryNavIcon />
         </button>
       </div>
-      <div className="absolute bottom-2 sm:bottom-4 left-0 right-0 px-2 sm:px-6 flex gap-2 overflow-x-auto">
+      
+      {/* Thumbnail Strip */}
+      <div className="absolute bottom-2 sm:bottom-4 left-0 right-0 px-2 sm:px-4 md:px-6 flex gap-1 sm:gap-2 overflow-x-auto scrollbar-hide">
         {images.map((img, idx) => (
           <button
             key={idx}
             onClick={() => setActiveIndex(idx)}
-            className={`w-[120px] h-[80px] flex-shrink-0 ${
-              activeIndex === idx ? "border-2 border-emerald-600" : ""
+            className={`w-[60px] h-[40px] sm:w-[80px] sm:h-[50px] md:w-[120px] md:h-[80px] flex-shrink-0 rounded overflow-hidden ${
+              activeIndex === idx ? "border-2 border-emerald-600" : "border-2 border-transparent"
             }`}
           >
             <Image

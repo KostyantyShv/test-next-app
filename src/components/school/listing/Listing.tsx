@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Header from "./header/Header";
 import SchoolInfo from "./school-info/SchoolInfo";
 import Content from "./content/Content";
@@ -25,6 +25,7 @@ const Listing: React.FC<ListingProps> = ({
 }) => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
+  const schoolInfoRef = useRef<HTMLDivElement>(null);
 
   const defaultSchoolInfo: SchoolInfoInterface = {
     name: "Lincoln Academy",
@@ -39,16 +40,47 @@ const Listing: React.FC<ListingProps> = ({
     }
   };
 
+  // Mobile footer visibility observer
+  useEffect(() => {
+    const schoolInfoElement = schoolInfoRef.current;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        setIsFooterVisible(!entry.isIntersecting);
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        threshold: 0,
+      }
+    );
+
+    if (schoolInfoElement) {
+      observer.observe(schoolInfoElement);
+    }
+
+    return () => {
+      if (schoolInfoElement) {
+        observer.unobserve(schoolInfoElement);
+      }
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <Header />
+      {/* Desktop Header - Hidden on mobile */}
+      <div className="hidden md:block">
+        <Header />
+      </div>
       
-      {/* School Info Section */}
-      <SchoolInfo 
-        schoolInfo={schoolInfo || defaultSchoolInfo} 
-        images={images} 
-      />
+      {/* School Info Section with ref for mobile footer visibility */}
+      <div ref={schoolInfoRef}>
+        <SchoolInfo 
+          schoolInfo={schoolInfo || defaultSchoolInfo} 
+          images={images} 
+        />
+      </div>
       
       {/* Images Grid */}
       <ImagesGrid images={images} />
@@ -64,11 +96,13 @@ const Listing: React.FC<ListingProps> = ({
       {/* Main Content */}
       <Content />
       
-      {/* Mobile Footer */}
-      <FooterMobile 
-        isFooterVisible={isFooterVisible}
-        images={images}
-      />
+      {/* Mobile Footer - Only visible on mobile */}
+      <div className="block md:hidden">
+        <FooterMobile 
+          isFooterVisible={isFooterVisible}
+          images={images}
+        />
+      </div>
     </div>
   );
 };

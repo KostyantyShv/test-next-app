@@ -268,11 +268,20 @@ export const LeftSidebar: FC = () => {
                         onClick={(e) => {
                           if (hasSubmenu) {
                             e.preventDefault();
+                            // For Analytics, navigate to /analytics page
+                            if (item.href === "/analytics") {
+                              window.location.href = "/analytics";
+                            }
+                            // For Collections, navigate to /collections page
+                            else if (item.href === "/collections") {
+                              window.location.href = "/collections";
+                            }
                             // For Monitors, navigate to /monitors first, then toggle submenu
-                            if (item.href === "/monitors") {
+                            else if (item.href === "/monitors") {
                               window.location.href = "/monitors";
                             }
-                            toggleSubmenu(submenuId);
+                            // For other items with submenu, do nothing on main click - use button
+                            // Submenu toggle will be handled by button click
                           } else {
                             // Navigate to the href if no submenu
                             window.location.href = item.href;

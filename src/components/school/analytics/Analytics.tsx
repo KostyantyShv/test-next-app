@@ -77,16 +77,16 @@ export const Analytics: FC = () => {
   return (
     <div className="bg-[#E1E7EE] min-h-screen">
       {/* Desktop Header */}
-      <header className="hidden md:block bg-[#E1E7EE] px-8 py-6 sticky top-0 z-[100]">
+      <header className="hidden md:block bg-[#E1E7EE] px-4 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 sticky top-0 z-[100]">
         <div className="max-w-[1147px] mx-auto bg-[#E1E7EE] pb-3 rounded-lg relative">
           {/* Bottom border with shadow */}
           <div className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-black/10 shadow-[0_1px_2px_rgba(0,0,0,0.05)]" />
 
-          <div className="flex justify-between items-start">
+          <div className="flex justify-between items-start gap-4">
             {/* Left Section - Listing Info */}
-            <div className="flex gap-6 items-start">
+            <div className="flex gap-3 sm:gap-4 md:gap-6 items-start min-w-0">
               {/* Listing Image */}
-              <div className="relative w-[120px] h-[80px] rounded-lg overflow-hidden flex-shrink-0">
+              <div className="relative w-16 sm:w-20 md:w-[120px] h-10 sm:h-14 md:h-[80px] rounded-lg overflow-hidden flex-shrink-0">
                 <Image
                   src="https://i.ibb.co/XkdtT1Yj/product2.png"
                   alt="Stanford University"
@@ -97,13 +97,13 @@ export const Analytics: FC = () => {
               </div>
 
               {/* Listing Details */}
-              <div className="flex flex-col h-[80px] justify-between">
+              <div className="flex flex-col h-10 sm:h-14 md:h-[80px] justify-between min-w-0 flex-1">
                 {/* Title */}
-                <h1 className="text-2xl font-semibold text-[#464646] flex items-center gap-2 tracking-[-0.01em] -mt-0.5">
+                <h1 className="text-sm sm:text-base md:text-2xl font-semibold text-[#464646] flex items-center gap-1 sm:gap-2 tracking-[-0.01em] -mt-0.5 truncate">
                   Stanford University
                   <svg
                     onClick={handleInfoClick}
-                    className="w-5 h-5 opacity-60 cursor-pointer transition-opacity duration-200 hover:opacity-100"
+                    className="w-4 h-4 sm:w-4 md:w-5 md:h-5 opacity-60 cursor-pointer transition-opacity duration-200 hover:opacity-100 flex-shrink-0"
                     viewBox="0 0 24 24"
                   >
                     <path
@@ -114,7 +114,7 @@ export const Analytics: FC = () => {
                 </h1>
 
                 {/* Navigation */}
-                <nav className="flex gap-8 -mb-2">
+                <nav className="hidden sm:flex gap-4 md:gap-8 -mb-2 overflow-x-auto">
                   {navigationItems.map((item) => (
                     <a
                       key={item.id}
@@ -124,7 +124,7 @@ export const Analytics: FC = () => {
                         handleTabChange(item.id);
                       }}
                       className={cn(
-                        'text-[15px] font-medium pb-2 border-b-2 border-transparent transition-all duration-200 relative',
+                        'text-xs sm:text-sm md:text-[15px] font-medium pb-2 border-b-2 border-transparent transition-all duration-200 relative whitespace-nowrap',
                         activeTab === item.id
                           ? 'text-[#0B6333]'
                           : 'text-[#5F5F5F] hover:text-[#464646]'
@@ -144,22 +144,22 @@ export const Analytics: FC = () => {
             </div>
 
             {/* Right Section - Actions */}
-            <div className="flex gap-4 items-start">
+            <div className="flex gap-2 sm:gap-3 md:gap-4 items-start flex-shrink-0">
               {/* Preview Button with Dropdown */}
-              <div className="relative">
+              <div className="relative hidden sm:block">
                 <button
                   onMouseEnter={() => setShowPreviewMenu(true)}
                   onMouseLeave={() => setShowPreviewMenu(false)}
-                  className="flex items-center gap-2 px-4 py-2 border border-[#e0e0e0] rounded-lg bg-white text-[#1B1B1B] text-sm font-medium cursor-pointer transition-all duration-200 hover:border-[#ccc] hover:bg-[#f8f8f8]"
+                  className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 border border-[#e0e0e0] rounded-lg bg-white text-[#1B1B1B] text-xs sm:text-sm md:text-sm font-medium cursor-pointer transition-all duration-200 hover:border-[#ccc] hover:bg-[#f8f8f8]"
                 >
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                     <circle cx="12" cy="12" r="3" />
                   </svg>
-                  Preview
+                  <span className="hidden md:inline">Preview</span>
                   <svg
                     className="transition-transform"
-                    height="16"
+                    height="14"
                     stroke="currentColor"
                     strokeWidth="2"
                     viewBox="0 0 24 24"
@@ -174,7 +174,7 @@ export const Analytics: FC = () => {
                   <div
                     onMouseEnter={() => setShowPreviewMenu(true)}
                     onMouseLeave={() => setShowPreviewMenu(false)}
-                    className="absolute top-[calc(100%+8px)] right-0 bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.08)] py-2 min-w-[225px] z-10"
+                    className="absolute top-[calc(100%+8px)] right-0 bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.08)] py-2 min-w-[200px] sm:min-w-[225px] z-10"
                   >
                     <div className="px-4 py-2 text-[#1B1B1B] text-sm flex items-center gap-3 cursor-pointer transition-colors hover:bg-[#f5f5f5]">
                       <svg viewBox="0 0 20 20" className="w-5 h-5">
@@ -218,14 +218,14 @@ export const Analytics: FC = () => {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="px-6 py-2 bg-[#1a1a1a] text-white border-none rounded-lg text-sm font-medium cursor-pointer transition-all duration-200 hover:bg-[#333] disabled:opacity-70"
+                className="px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 bg-[#1a1a1a] text-white border-none rounded-lg text-xs sm:text-sm md:text-sm font-medium cursor-pointer transition-all duration-200 hover:bg-[#333] disabled:opacity-70"
               >
                 {getSaveButtonText()}
               </button>
 
               {/* More Button */}
-              <button className="p-2 bg-transparent border-none cursor-pointer text-[#5F5F5F] rounded-full transition-all duration-200 hover:bg-[#f5f5f5] hover:text-[#1B1B1B]">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2">
+              <button className="p-1.5 sm:p-2 bg-transparent border-none cursor-pointer text-[#5F5F5F] rounded-full transition-all duration-200 hover:bg-[#f5f5f5] hover:text-[#1B1B1B]">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="1" />
                   <circle cx="12" cy="5" r="1" />
                   <circle cx="12" cy="19" r="1" />
@@ -239,8 +239,8 @@ export const Analytics: FC = () => {
       {/* Mobile Header */}
       <header className="md:hidden bg-white sticky top-0 z-[100] border-b border-black/10 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
         {/* Listing Header */}
-        <div className="p-4 flex items-center gap-3">
-          <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+        <div className="p-2.5 sm:p-3 md:p-4 flex items-center gap-2 sm:gap-3">
+          <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden flex-shrink-0">
             <Image
               src="https://i.ibb.co/XkdtT1Yj/product2.png"
               alt="Stanford University"
@@ -249,11 +249,11 @@ export const Analytics: FC = () => {
               priority
             />
           </div>
-          <h1 className="text-base font-semibold text-[#464646] flex items-center gap-1">
+          <h1 className="text-sm sm:text-base font-semibold text-[#464646] flex items-center gap-1 truncate">
             Stanford University
             <svg
               onClick={handleInfoClick}
-              className="w-4 h-4 opacity-60 cursor-pointer transition-opacity duration-200 ml-1"
+              className="w-3.5 h-3.5 sm:w-4 sm:h-4 opacity-60 cursor-pointer transition-opacity duration-200 ml-1 flex-shrink-0"
               viewBox="0 0 24 24"
             >
               <path
@@ -267,13 +267,14 @@ export const Analytics: FC = () => {
         {/* Tab Navigation */}
         <nav 
           ref={tabNavRef}
-          className="px-4 overflow-x-auto whitespace-nowrap mb-2 scrollbar-hide"
+          className="px-2.5 sm:px-3 md:px-4 overflow-x-auto whitespace-nowrap mb-2 scrollbar-hide scroll-smooth"
           style={{ 
             scrollbarWidth: 'none',
-            msOverflowStyle: 'none'
+            msOverflowStyle: 'none',
+            scrollBehavior: 'smooth'
           }}
         >
-          <div className="inline-flex gap-6 pb-2 border-b border-transparent">
+          <div className="inline-flex gap-4 sm:gap-6 pb-2 border-b border-transparent">
             {navigationItems.map((item) => (
               <a
                 key={item.id}
@@ -286,10 +287,10 @@ export const Analytics: FC = () => {
                   handleTabChange(item.id);
                 }}
                 className={cn(
-                  'text-sm font-medium pb-2 relative cursor-pointer transition-colors duration-200',
+                  'text-xs sm:text-sm font-medium pb-2 relative cursor-pointer transition-colors duration-200 whitespace-nowrap flex-shrink-0',
                   activeTab === item.id
                     ? 'text-[#0B6333]'
-                    : 'text-[#5F5F5F]'
+                    : 'text-[#5F5F5F] hover:text-[#464646]'
                 )}
               >
                 {item.label}
@@ -306,12 +307,12 @@ export const Analytics: FC = () => {
       </header>
 
       {/* Content Area */}
-      <div className="max-w-[1147px] mx-auto px-4 md:px-8 py-6">
-        <div className="bg-white rounded-lg p-4 md:p-6 shadow-sm">
-          <h2 className="text-lg md:text-xl font-semibold text-[#464646] mb-4">
+      <div className="max-w-[1147px] mx-auto px-3 sm:px-4 md:px-8 py-3 sm:py-4 md:py-6">
+        <div className="bg-white rounded-lg p-3 sm:p-4 md:p-6 shadow-sm">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-[#464646] mb-2 sm:mb-3 md:mb-4">
             Analytics Content - {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
           </h2>
-          <p className="text-[#5F5F5F] text-sm md:text-base">
+          <p className="text-xs sm:text-sm md:text-base text-[#5F5F5F]">
             This is where the {activeTab} analytics content will be displayed.
           </p>
         </div>
@@ -320,6 +321,27 @@ export const Analytics: FC = () => {
       <style jsx>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        nav {
+          scroll-behavior: smooth;
+        }
+        nav > div {
+          display: inline-flex;
+          gap: 1rem;
+        }
+        @media (max-width: 640px) {
+          nav > div {
+            gap: 1rem;
+          }
+        }
+        @media (min-width: 641px) and (max-width: 1023px) {
+          nav > div {
+            gap: 1.5rem;
+          }
         }
       `}</style>
     </div>

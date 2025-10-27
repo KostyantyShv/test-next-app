@@ -6,9 +6,12 @@ import ContentMobile from "./ContentMobile";
 const Content: React.FC = () => {
   return (
     <>
+      {/* Mobile Content */}
       <div className="block md:hidden">
         <ContentMobile />
       </div>
+      
+      {/* Desktop Content */}
       <div className="hidden md:block">
         <ContentDesktop />
       </div>

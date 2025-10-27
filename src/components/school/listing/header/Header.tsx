@@ -23,14 +23,14 @@ const Header = ({
 
   return (
     <header
-      className={`z-50 transition-all duration-300 min-h-fit bg-white ${
+      className={`z-50 transition-all duration-300 min-h-fit bg-white pt-4 sm:pt-6${
         classes || ""
       }`}
     >
       <div className="max-w-full flex justify-center">
-        <div className="px-5 flex w-[1080px] max-w-[1080px] justify-between">
+        <div className="px-4 sm:px-5 flex w-full max-w-[1080px] justify-between">
           {/* School Info */}
-          <div className="flex gap-5 flex-1">
+          <div className="flex gap-3 sm:gap-5 flex-1 min-w-0">
             {/* Thumbnail */}
             <div
               className={`${imageSizes} rounded-lg overflow-hidden flex-shrink-0 border border-gray-200/60 shadow-sm`}
@@ -45,13 +45,13 @@ const Header = ({
             </div>
 
             {/* School Details */}
-            <div className="flex-1 flex flex-col justify-between h-14 py-0.5">
-              <div className="flex items-center gap-3">
-                <h1 className="text-xl font-semibold text-gray-700 leading-tight">
+            <div className="flex-1 flex flex-col justify-between h-14 py-0.5 min-w-0">
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                <h1 className="text-lg sm:text-xl font-semibold text-gray-700 leading-tight truncate">
                   Lincoln Academy
                 </h1>
                 <svg
-                  className="w-5 h-5 text-blue-600"
+                  className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 flex-shrink-0"
                   viewBox="0 0 30 30"
                   fill="currentColor"
                 >
@@ -64,16 +64,16 @@ const Header = ({
                 </svg>
               </div>
 
-              <div className="flex items-center gap-4">
-                <span className="bg-green-400 text-green-800 px-3 py-1 rounded-md text-xs font-semibold uppercase tracking-wider shadow-sm">
+              <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+                <span className="bg-green-400 text-green-800 px-2 sm:px-3 py-1 rounded-md text-xs font-semibold uppercase tracking-wider shadow-sm">
                   #1 in Arts
                 </span>
-                <div className="flex items-center gap-2 text-gray-700">
-                  <span className="font-semibold text-green-600">4.8</span>
+                <div className="flex items-center gap-1 sm:gap-2 text-gray-700">
+                  <span className="font-semibold text-green-600 text-sm">4.8</span>
                   <span className="text-green-600">★</span>
-                  <span className="text-gray-500 text-sm">(9 reviews)</span>
+                  <span className="text-gray-500 text-xs sm:text-sm">(9 reviews)</span>
                 </div>
-                <nav className="flex items-center max-sm:hidden gap-8 ml-6">
+                <nav className="hidden sm:flex items-center gap-6 ml-4">
                   {navTabs.map((tab) => (
                     <a
                       key={tab.id}
@@ -98,14 +98,15 @@ const Header = ({
 
           {/* Add to List Button */}
           <div className="flex items-center h-full">
-            <button className="flex items-center self-center gap-2 bg-teal-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-teal-600 transition-colors">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <button className="flex items-center self-center gap-1 sm:gap-2 bg-teal-500 text-white px-3 sm:px-4 py-2 rounded-md font-semibold hover:bg-teal-600 transition-colors text-sm sm:text-base">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path
                   d="M16 9a7 7 0 1 1 0 14 7 7 0 1 1 0-14zm4-7a2 2 0 0 1 2 2v4h-1.5V3.5h-17v17H8V22H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16zm-3 10h-2v3h-3v2h3v3h2v-3h3v-2h-3v-3z"
                   fillRule="nonzero"
                 />
               </svg>
-              Add To List
+              <span className="hidden sm:inline">Add To List</span>
+              <span className="sm:hidden">Add</span>
             </button>
           </div>
         </div>

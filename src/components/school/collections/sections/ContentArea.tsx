@@ -139,12 +139,12 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
   };
 
   return (
-    <div className="flex p-6 min-h-[400px]">
+    <div className="flex flex-col md:flex-row p-3 sm:p-4 md:p-6 min-h-[400px]">
       <div className="flex-1 transition-all duration-300">
         <div
-          className={`grid gap-6 ${
-            layout === "card" ? "grid-cols-3" : "hidden"
-          } ${isMapActive ? "grid-cols-2" : ""}`}
+          className={`grid gap-3 sm:gap-4 md:gap-6 ${
+            layout === "card" ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3" : "hidden"
+          } ${isMapActive ? "grid-cols-1 md:grid-cols-2" : ""}`}
         >
           {schoolData
             .slice(0, cardCounts.grid)
@@ -163,7 +163,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             ))}
         </div>
         <div
-          className={`flex flex-col gap-4 ${
+          className={`flex flex-col gap-3 sm:gap-4 ${
             layout === "list" ? "block" : "hidden"
           }`}
         >
@@ -184,8 +184,8 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             ))}
         </div>
         <div
-          className={`grid gap-6 ${
-            layout === "hybrid" ? "grid-cols-2" : "hidden"
+          className={`grid gap-3 sm:gap-4 md:gap-6 ${
+            layout === "hybrid" ? "grid-cols-1 sm:grid-cols-2" : "hidden"
           } ${isMapActive ? "grid-cols-1" : ""}`}
         >
           {schools
@@ -205,7 +205,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             ))}
         </div>
         <div
-          className={`grid gap-6 ${
+          className={`grid gap-3 sm:gap-4 md:gap-6 ${
             layout === "table" ? "grid-cols-1" : "hidden"
           } ${isMapActive ? "grid-cols-1" : ""}`}
         >
@@ -225,9 +225,9 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             ))}
         </div>
         <div
-          className={`grid gap-6 ${
-            layout === "classic" ? "grid-cols-4" : "hidden"
-          } ${isMapActive ? "grid-cols-3" : ""}`}
+          className={`grid gap-3 sm:gap-4 md:gap-6 ${
+            layout === "classic" ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4" : "hidden"
+          } ${isMapActive ? "grid-cols-2 sm:grid-cols-3" : ""}`}
         >
           {schools
             .slice(0, cardCounts.classic)
@@ -246,9 +246,9 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             ))}
         </div>
         <div
-          className={`grid gap-6 ${
-            layout === "grid" ? "grid-cols-3" : "hidden"
-          } ${isMapActive ? "grid-cols-2" : ""}`}
+          className={`grid gap-3 sm:gap-4 md:gap-6 ${
+            layout === "grid" ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3" : "hidden"
+          } ${isMapActive ? "grid-cols-1 md:grid-cols-2" : ""}`}
         >
           {schools
             .slice(0, cardCounts.classic)
@@ -267,7 +267,11 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             ))}
         </div>
       </div>
-      <MapContainer isMapActive={isMapActive} />
+      {isMapActive && (
+        <div className="hidden md:block w-full md:w-1/3 lg:w-1/4">
+          <MapContainer isMapActive={isMapActive} />
+        </div>
+      )}
       <NoteModal
         isOpen={isNoteModalOpen}
         title={isEditing ? "Edit Note" : "Create Note"}

@@ -12,8 +12,8 @@ const CollectionsPage = () => {
 
   return (
     <div
-      className={`transition-all duration-300 ease-in-out mx-auto ${
-        isExpanded ? "w-[1350px]" : "w-[1080px]"
+      className={`transition-all duration-300 ease-in-out mx-auto px-3 sm:px-4 md:px-6 ${
+        isExpanded ? "w-full max-w-[1350px]" : "w-full max-w-[1080px]"
       }`}
     >
       <FiltersSection />
