@@ -13,10 +13,41 @@ import Input from "@/components/ui/form/input/Input";
 import Checkbox from "@/components/ui/form/checkbox/Checkbox";
 import Button from "@/components/ui/form/button/Button";
 import Divider from "@/components/ui/form/divider/Divider";
+import { createClient } from "@/lib/supabase_utils/client";
+import { useState } from "react";
 
 const LoginPage: React.FC = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const supabase = createClient();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    window.location.href = "/";
+  };
+
+  const handleOAuth = async (provider: "google" | "facebook" | "twitter") => {
+    setError(null);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=/` },
+    });
+    if (error) setError(error.message);
+  };
+
   return (
-    <div className="absolute inset-0 flex z-[100] items-center justify-center bg-[#F2F2F2] font-inter">
+    <div className="absolute inset-0 flex z-[100] items-center justify-center bg-[#F2F2F2] font-inter max-md:mt-16">
       {/* Desktop close button - hidden on mobile */}
       <AppLink
         href={ROUTES.HOME}
@@ -58,12 +89,14 @@ const LoginPage: React.FC = () => {
             </AppLink>
           </p>
 
-          <form className="w-full">
+          <form className="w-full" onSubmit={handleSubmit}>
             <div className="mb-4">
               <Input
                 type="email"
                 placeholder="Email address"
                 required
+                value={email}
+                onChange={(e) => setEmail((e.target as HTMLInputElement).value)}
                 className="w-full border border-[#ddd] rounded-md text-[14px] focus:border-[#356EF5] focus:outline-none"
               />
             </div>
@@ -74,6 +107,8 @@ const LoginPage: React.FC = () => {
                 placeholder="Password"
                 showPasswordToggle
                 required
+                value={password}
+                onChange={(e) => setPassword((e.target as HTMLInputElement).value)}
                 className="w-full border border-[#ddd] rounded-md text-[14px] focus:border-[#356EF5] focus:outline-none"
               />
             </div>
@@ -86,13 +121,18 @@ const LoginPage: React.FC = () => {
               />
             </div>
 
+            {error && (
+              <div className="mb-3 text-[13px] text-red-600">{error}</div>
+            )}
+
             <Button
               type="submit"
               variant="primary"
               fullWidth
-              className="w-full p-3 bg-[#356EF5] text-white rounded-md text-[15px] font-medium hover:bg-[#2a5cd9] transition-colors duration-200"
+              disabled={loading}
+              className="w-full p-3 bg-[#356EF5] disabled:opacity-70 text-white rounded-md text-[15px] font-medium hover:bg-[#2a5cd9] transition-colors duration-200"
             >
-              Sign in
+              {loading ? "Signing in..." : "Sign in"}
             </Button>
 
             <div className="my-4">
@@ -123,6 +163,7 @@ const LoginPage: React.FC = () => {
                 fullWidth
                 icon={<GoogleIcon />}
                 className="flex items-center justify-center gap-[10px] w-full p-3 border border-[#ddd] rounded-md bg-white text-[#333] text-[14px] font-semibold hover:bg-[#f8f8f8] hover:border-[#ccc] transition-all duration-200"
+                onClick={() => handleOAuth("google")}
               >
                 Continue with Google
               </Button>
@@ -131,6 +172,7 @@ const LoginPage: React.FC = () => {
                 fullWidth
                 icon={<FacebookIcon />}
                 className="flex items-center justify-center gap-[10px] w-full p-3 border border-[#ddd] rounded-md bg-white text-[#333] text-[14px] font-semibold hover:bg-[#f8f8f8] hover:border-[#ccc] transition-all duration-200"
+                onClick={() => handleOAuth("facebook")}
               >
                 Continue with Facebook
               </Button>
@@ -139,6 +181,7 @@ const LoginPage: React.FC = () => {
                 fullWidth
                 icon={<XIcon />}
                 className="flex items-center justify-center gap-[10px] w-full p-3 border border-[#ddd] rounded-md bg-white text-[#333] text-[14px] font-semibold hover:bg-[#f8f8f8] hover:border-[#ccc] transition-all duration-200"
+                onClick={() => handleOAuth("twitter")}
               >
                 Continue with X
               </Button>

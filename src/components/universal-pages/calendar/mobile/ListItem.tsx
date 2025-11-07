@@ -8,6 +8,8 @@ interface ListItemProps {
   month: string;
   isCurrent?: boolean;
   events: Event[];
+  onDateClick?: (date: number) => void;
+  onEventClick?: (eventId: string) => void;
 }
 
 export const ListItem: React.FC<ListItemProps> = ({
@@ -16,6 +18,8 @@ export const ListItem: React.FC<ListItemProps> = ({
   month,
   isCurrent,
   events,
+  onDateClick,
+  onEventClick,
 }) => {
   return (
     <div className="flex flex-col py-2 w-full items-start px-4">
@@ -33,14 +37,24 @@ export const ListItem: React.FC<ListItemProps> = ({
               fillRule="evenodd"
             ></path>
           </svg>
-          {weekday}, {month} {date}
+          <span
+            onClick={() => onDateClick && onDateClick(date)}
+            className="cursor-pointer hover:bg-gray-100 rounded px-2"
+          >
+            {weekday}, {month} {date}
+          </span>
         </div>
       </div>
       <div className="flex-1 flex flex-col w-full gap-3">
         {events.map((event, index) => (
           <div
             key={index}
-            className={`flex items-center gap-3 border-l-2 p-3 rounded-e-xl shadow-[0_2px_8px_rgba(0,_0,_0,_0.05)] bg-white w-full ${
+            onClick={() => {
+              if (event.id && onEventClick) {
+                onEventClick(event.id);
+              }
+            }}
+            className={`flex items-center gap-3 border-l-2 p-3 rounded-e-xl shadow-[0_2px_8px_rgba(0,_0,_0,_0.05)] bg-white w-full cursor-pointer hover:bg-gray-50 ${
               event.type
             } ${
               events[0].type === "zoom-meeting" ||

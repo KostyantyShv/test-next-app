@@ -8,6 +8,8 @@ interface CalendarCellProps {
   isNextMonth?: boolean;
   events?: Event[];
   isToday?: boolean;
+  onDateClick?: (date: number) => void;
+  onEventClick?: (eventId: string) => void;
 }
 
 export const CalendarCell: React.FC<CalendarCellProps> = ({
@@ -16,6 +18,8 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
   isNextMonth,
   events,
   isToday,
+  onDateClick,
+  onEventClick,
 }) => {
   const [expandedEvent, setExpandedEvent] = useState<string | null>(null);
   const [showMore, setShowMore] = useState(false);
@@ -28,6 +32,18 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
     setShowMore(!showMore);
   };
 
+  const handleDateClick = () => {
+    if (!isPrevMonth && !isNextMonth && onDateClick) {
+      onDateClick(date);
+    }
+  };
+
+  const handleEventClick = (eventId: string | undefined) => {
+    if (eventId && onEventClick) {
+      onEventClick(eventId);
+    }
+  };
+
   return (
     <div
       className={`flex flex-col min-h-[120px] p-2 gap-0.5 relative bg-white ${
@@ -35,13 +51,14 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
       }`}
     >
       <div
-        className={`text-sm font-medium ${
+        onClick={handleDateClick}
+        className={`text-sm font-medium cursor-pointer ${
           isPrevMonth || isNextMonth ? "text-[#5F6368]" : "text-[#202124]"
         } ${
           isToday
             ? "w-6 h-6 flex items-center justify-center text-[#6A82C0] bg-[#EEF5FB] rounded-full"
             : ""
-        }`}
+        } ${!isPrevMonth && !isNextMonth ? "hover:bg-gray-100 rounded" : ""}`}
       >
         {date}
       </div>
@@ -51,7 +68,14 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
           className={`p-1 rounded cursor-pointer transition-all duration-200 mb-0.5 ${
             event.type
           } ${expandedEvent === event.title ? "p-2 bg-[#F8F9FA]" : ""}`}
-          onClick={() => toggleEvent(event.title)}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (event.id) {
+              handleEventClick(event.id);
+            } else {
+              toggleEvent(event.title);
+            }
+          }}
         >
           <div className="flex items-center gap-1">
             <div

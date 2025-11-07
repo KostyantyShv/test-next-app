@@ -4,12 +4,18 @@ import { getIconSvg } from "./getIconSvg";
 
 interface EventCardProps {
   event: Event;
+  onEventClick?: (eventId: string) => void;
 }
 
-export const EventCard: React.FC<EventCardProps> = ({ event }) => {
+export const EventCard: React.FC<EventCardProps> = ({ event, onEventClick }) => {
   return (
     <div
-      className={`flex items-center gap-3 border-l-2 p-3 rounded-e-xl shadow-[0_2px_8px_rgba(0,_0,_0,_0.05)] bg-white w-full ${
+      onClick={() => {
+        if (event.id && onEventClick) {
+          onEventClick(event.id);
+        }
+      }}
+      className={`flex items-center gap-3 border-l-2 p-3 rounded-e-xl shadow-[0_2px_8px_rgba(0,_0,_0,_0.05)] bg-white w-full cursor-pointer hover:bg-gray-50 ${
         event.type
       } ${
         event.type === "zoom-meeting" || event.type === "zoom-webinar"

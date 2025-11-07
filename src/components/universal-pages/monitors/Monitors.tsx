@@ -236,7 +236,7 @@ export default function Monitors() {
 
   return (
     <div className="min-h-screen bg-[#E1E7EE] p-4">
-      <div className="max-w-[1400px] mx-auto">
+      <div className="w-full max-w-[1400px] mx-auto max-md:max-w-[390px]">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold text-[#464646]">Monitors</h1>
@@ -249,7 +249,7 @@ export default function Monitors() {
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white rounded-xl p-5 shadow-sm flex items-center">
             <div className="w-12 h-12 rounded-full bg-[#EBFCF4] flex items-center justify-center mr-4 flex-shrink-0">
               <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6 text-[#016853]">
@@ -304,8 +304,8 @@ export default function Monitors() {
         {/* Table Container */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
            {/* Filters Row */}
-           <div className="flex justify-between items-center p-4 border-b border-[#eaeaea] overflow-visible">
-             <div className="relative w-80 overflow-visible">
+           <div className="flex justify-between items-center p-4 border-b border-[#eaeaea] overflow-visible max-md:flex-col max-md:items-stretch max-md:gap-3">
+             <div className="relative w-full md:w-80 overflow-visible">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5F5F5F]">
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -319,7 +319,7 @@ export default function Monitors() {
               />
             </div>
 
-            <div className="flex gap-3 overflow-visible">
+            <div className="flex gap-3 overflow-visible flex-wrap md:flex-nowrap">
               {/* Sort Dropdown */}
               <div className="relative overflow-visible">
                 <button
@@ -410,7 +410,7 @@ export default function Monitors() {
 
           {/* Table */}
           <div className="overflow-x-auto overflow-y-visible">
-            <table className="w-full overflow-visible">
+            <table className="w-full min-w-[720px] md:min-w-0 overflow-visible">
               <thead className="overflow-visible">
                 <tr className="overflow-visible">
                   <th className="bg-[#f8f9fa] px-4 py-3 text-left overflow-visible">

@@ -1,15 +1,16 @@
 import { WEEKDAYS } from "../constants";
-import { events } from "../mock/event";
 import { CalendarCellData } from "../types/calendar";
 import { Event } from "../types/event";
 import { FilterType } from "../types/filter";
 import { ListItemData } from "../types/list";
+import { useCalendarEvents } from "@/hooks/useCalendarEvents.hook";
 
 export const useCalendarData = (
   currentDate: Date,
   today: Date,
   filter: FilterType
 ) => {
+  const { events, loading } = useCalendarEvents();
   // Helper functions
   const filterEvents = (eventsList: Event[]) => {
     return eventsList.filter((event) => {

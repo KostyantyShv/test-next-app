@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useAccountForm } from "./useAccountForm.hook";
+import { useAccountForm } from "@/hooks/useAccountForm.hook";
 import Section from "./Section";
 import PersonalDetails from "./PersonalDetails";
 import SocialProfile from "./SocialProfile";

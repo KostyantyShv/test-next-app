@@ -42,7 +42,7 @@ const ComparisonPricing: React.FC = () => {
 
   return (
     <div className="bg-[#F9FAFB] px-4 md:px-5 py-6">
-      <div className="max-w-[1440px] mx-auto">
+      <div className="w-full max-w-[1440px] mx-auto max-md:max-w-[390px]">
         <h2 className="font-semibold text-2xl md:text-4xl text-center mb-8 md:mb-6">Detailed Feature Comparison</h2>
 
         {/* Toggle */}
@@ -73,8 +73,10 @@ const ComparisonPricing: React.FC = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto -mx-4 md:mx-0">
-          {view === "individual" ? <IndividualTable /> : <OwnersTable />}
+        <div className="w-full overflow-x-auto">
+          <div className="inline-block min-w-full align-middle">
+            {view === "individual" ? <IndividualTable /> : <OwnersTable />}
+          </div>
         </div>
       </div>
     </div>
@@ -83,7 +85,7 @@ const ComparisonPricing: React.FC = () => {
 
 const IndividualTable: React.FC = () => {
   return (
-    <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.07)] overflow-hidden min-w-[800px] md:min-w-0">
+    <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.07)] overflow-hidden min-w-[720px] md:min-w-0">
       {/* Sticky header */}
       <div className="sticky top-0 z-10 flex bg-white/90 backdrop-blur-md">
         <div className="flex-[0_0_28%] min-w-[200px] md:min-w-[250px]" />
@@ -112,7 +114,7 @@ const IndividualTable: React.FC = () => {
 
 const OwnersTable: React.FC = () => {
   return (
-    <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.07)] overflow-hidden min-w-[700px] md:min-w-0">
+    <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.07)] overflow-hidden min-w-[640px] md:min-w-0">
       {/* Sticky header */}
       <div className="sticky top-0 z-10 flex bg-white/90 backdrop-blur-md">
         <div className="flex-[0_0_28%] min-w-[200px] md:min-w-[250px]" />

@@ -6,6 +6,8 @@ interface CalendarGridProps {
   events: Event[];
   selectedDate: number;
   setSelectedDate: (date: number) => void;
+  onDateClick?: (date: number) => void;
+  onEventClick?: (eventId: string) => void;
 }
 
 export const CalendarGrid: React.FC<CalendarGridProps> = ({
@@ -13,6 +15,8 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
   events,
   selectedDate,
   setSelectedDate,
+  onDateClick,
+  onEventClick,
 }) => {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -89,6 +93,8 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
           isSelected={
             cell.date === selectedDate && !cell.isPrevMonth && !cell.isNextMonth
           }
+          onDateClick={onDateClick}
+          onEventClick={onEventClick}
         />
       ))}
     </div>

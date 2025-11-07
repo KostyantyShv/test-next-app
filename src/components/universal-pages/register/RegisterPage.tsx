@@ -12,15 +12,54 @@ import { Logo } from "@/components/ui/Logo";
 import Input from "@/components/ui/form/input/Input";
 import Button from "@/components/ui/form/button/Button";
 import Divider from "@/components/ui/form/divider/Divider";
+import { createClient } from "@/lib/supabase_utils/client";
+import { useState } from "react";
 
 const RegisterPage: React.FC = () => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const supabase = createClient();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Account creation submitted");
+    setError(null);
+    setLoading(true);
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: fullName },
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/`,
+      },
+    });
+    setLoading(false);
+    if (error) {
+      // Перевіряємо, чи помилка пов'язана з вже існуючим email
+      if (error.message.includes('already registered') || 
+          error.message.includes('User already registered') ||
+          error.message.includes('already exists')) {
+        setError(
+          `Цей email вже зареєстровано. Будь ласка, увійдіть або використайте інший email.`
+        );
+      } else {
+        setError(error.message);
+      }
+      return;
+    }
+    // Supabase відправить лист підтвердження; повідомимо користувача
+    if (data.user && !data.session) {
+      // Користувач створений, але потребує підтвердження email
+      setError(null);
+      alert("Будь ласка, перевірте вашу пошту для підтвердження акаунту.");
+    }
   };
 
   return (
-    <div className="absolute inset-0 flex z-[100] items-center justify-center bg-[#F2F2F2] font-inter">
+    <div className="absolute inset-0 flex z-[100] items-center justify-center bg-[#F2F2F2] font-inter max-md:mt-16">
       {/* Desktop close button - hidden on mobile */}
       <AppLink
         href={ROUTES.HOME}
@@ -68,6 +107,8 @@ const RegisterPage: React.FC = () => {
                 type="text"
                 placeholder="Full Name"
                 required
+                value={fullName}
+                onChange={(e) => setFullName((e.target as HTMLInputElement).value)}
                 className="w-full p-3 border border-[#ddd] rounded-md text-[14px] focus:border-[#356EF5] focus:outline-none"
               />
             </div>
@@ -77,6 +118,8 @@ const RegisterPage: React.FC = () => {
                 type="email"
                 placeholder="Email address"
                 required
+                value={email}
+                onChange={(e) => setEmail((e.target as HTMLInputElement).value)}
                 className="w-full p-3 border border-[#ddd] rounded-md text-[14px] focus:border-[#356EF5] focus:outline-none"
               />
             </div>
@@ -87,17 +130,36 @@ const RegisterPage: React.FC = () => {
                 placeholder="Password"
                 showPasswordToggle
                 required
+                value={password}
+                onChange={(e) => setPassword((e.target as HTMLInputElement).value)}
                 className="w-full p-3 border border-[#ddd] rounded-md text-[14px] focus:border-[#356EF5] focus:outline-none"
               />
             </div>
+
+            {error && (
+              <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-md text-[13px] text-red-600">
+                {error}
+                {(error.includes('вже зареєстровано') || error.includes('already registered')) && (
+                  <div className="mt-2">
+                    <AppLink
+                      href={ROUTES.LOGIN}
+                      className="text-[#356EF5] font-medium hover:underline"
+                    >
+                      Перейти на сторінку входу →
+                    </AppLink>
+                  </div>
+                )}
+              </div>
+            )}
 
             <Button
               type="submit"
               variant="primary"
               fullWidth
-              className="w-full p-3 bg-[#356EF5] text-white rounded-md text-[15px] font-medium hover:bg-[#2a5cd9] transition-colors duration-200"
+              disabled={loading}
+              className="w-full p-3 bg-[#356EF5] disabled:opacity-70 text-white rounded-md text-[15px] font-medium hover:bg-[#2a5cd9] transition-colors duration-200"
             >
-              Get Started
+              {loading ? "Creating account..." : "Get Started"}
             </Button>
 
             <p className="text-[#666] text-[11px] my-4 leading-relaxed">

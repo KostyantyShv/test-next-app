@@ -4,7 +4,9 @@ import { ListItem } from "./ListItem";
 // List View Component
 export const ListView: React.FC<{
   listData: ListItemData[];
-}> = ({ listData }) => (
+  onDateClick?: (date: number) => void;
+  onEventClick?: (eventId: string) => void;
+}> = ({ listData, onDateClick, onEventClick }) => (
   <div className="bg-white border-none">
     {listData.length === 0 ? (
       <div className="text-center text-[#5F6368] py-6">
@@ -18,6 +20,8 @@ export const ListView: React.FC<{
           weekday={item.weekday}
           isCurrent={item.isCurrent}
           events={item.events}
+          onDateClick={onDateClick}
+          onEventClick={onEventClick}
         />
       ))
     )}

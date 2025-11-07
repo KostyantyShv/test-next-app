@@ -323,7 +323,7 @@ const BasicPricing: React.FC = () => {
 
         {/* Individual User Plans */}
         {activePlan === 'individual-plans' && (
-          <div className="flex flex-col md:flex-row md:justify-center gap-6 mb-12 md:flex-wrap max-w-[1400px] mx-auto mt-4">
+          <div className="flex flex-col md:flex-row md:justify-center gap-6 mb-12 md:flex-wrap max-w-[1400px] mx-auto mt-4 max-md:px-4 max-md:items-center">
             {/* Explorer Plan */}
             <PricingCard
               title="Explorer"
@@ -430,9 +430,9 @@ const BasicPricing: React.FC = () => {
 
         {/* Listing Owner Plans */}
         {activePlan === 'owner-plans' && (
-          <div className="flex flex-col items-center gap-6 mb-12 mt-4">
+          <div className="flex flex-col items-center gap-6 mb-12 mt-4 max-md:px-4">
             {/* Basic Listing */}
-            <div className="w-full max-w-[900px] bg-white rounded-2xl shadow-md border border-[#E7E7E7] flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-8 p-6 md:p-8 hover:shadow-lg hover:-translate-y-1 transition-all">
+            <div className="w-full max-w-[900px] max-md:max-w-[390px] mx-auto bg-white rounded-2xl shadow-md border border-[#E7E7E7] flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-8 p-6 md:p-8 hover:shadow-lg hover:-translate-y-1 transition-all">
               <div className="flex flex-col gap-5 order-1">
                 <div>
                   <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-3 text-[#1B1B1B]">Basic Listing</h2>
@@ -631,7 +631,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
 
   return (
     <div
-      className={`w-full md:w-[340px] bg-white rounded-2xl p-6 md:p-8 relative overflow-hidden flex flex-col min-h-auto md:min-h-[520px] shadow-md transition-all hover:-translate-y-1 hover:shadow-lg border border-[#E7E7E7] ${
+      className={`w-full max-md:max-w-[360px] md:w-[340px] bg-white rounded-2xl p-6 md:p-8 relative overflow-hidden flex flex-col min-h-auto md:min-h-[520px] shadow-md transition-all hover:-translate-y-1 hover:shadow-lg border border-[#E7E7E7] ${
         accentColor ? `border-t-4 ${accentColors[accentColor]}` : ''
       }`}
     >
@@ -763,7 +763,7 @@ const ProfileManagementCard: React.FC<any> = ({
   setShowMoreFeatures
 }) => {
   return (
-    <div className="w-full max-w-[900px] bg-white rounded-2xl shadow-md border border-[#E7E7E7] border-t-4 border-t-[#0B6333] flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-8 p-6 md:p-8 hover:shadow-lg hover:-translate-y-1 transition-all">
+    <div className="w-full max-w-[900px] max-md:max-w-[390px] mx-auto bg-white rounded-2xl shadow-md border border-[#E7E7E7] border-t-4 border-t-[#0B6333] flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-8 p-6 md:p-8 hover:shadow-lg hover:-translate-y-1 transition-all">
       <div className="flex flex-col gap-5 order-1">
         <div>
           <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-3 text-[#1B1B1B]">Profile Management</h2>
@@ -924,7 +924,8 @@ const ProfileManagementCard: React.FC<any> = ({
         </div>
 
         {/* Price Breakdown */}
-        <div className="bg-transparent p-0 mb-4 md:mb-6">
+        <div className="bg-transparent p-0 mb-4 md:mb-6 max-md:overflow-x-auto">
+          <div className="max-md:min-w-[420px]">
           {profileModel === 'subscription' && (
             <>
               <div className="flex justify-between mb-2 text-[13px] md:text-sm">
@@ -967,6 +968,7 @@ const ProfileManagementCard: React.FC<any> = ({
               </div>
             </>
           )}
+          </div>
         </div>
 
         <div className="w-full h-px bg-[#E2E8F0] my-4 md:my-5" />

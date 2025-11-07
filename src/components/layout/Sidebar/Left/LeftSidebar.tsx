@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useState, useLayoutEffect } from "react";
+import { FC, useState, useLayoutEffect, useEffect } from "react";
 import { Icon, IconName } from "@/components/ui/Icon";
 import { Logo } from "@/components/ui/Logo";
 import { cn } from "@/lib/utils";
@@ -13,6 +13,89 @@ import { useLeftSidebar } from "@/store/use-left-sidebar";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { Avatar } from "@/components/ui/Avatar";
 import { ContactUsModal } from "@/components/ui/ContactUsModal";
+import { createClient } from "@/lib/supabase_utils/client";
+
+// Компонент для відображення імені користувача
+const UserProfileName: FC = () => {
+  const [userName, setUserName] = useState("User");
+  const supabase = createClient();
+
+  useEffect(() => {
+    const loadUserName = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name, first_name, last_name, email")
+          .eq("id", user.id)
+          .single();
+
+        if (profile) {
+          const name = profile.full_name || 
+            `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 
+            profile.email?.split('@')[0] || 
+            'User';
+          setUserName(name);
+        } else {
+          setUserName(user.email?.split('@')[0] || 'User');
+        }
+      } catch (error) {
+        console.error('Error loading user name:', error);
+      }
+    };
+
+    loadUserName();
+  }, []);
+
+  return (
+    <div className="flex-1">
+      <div className="text-sm font-semibold text-gray-700">{userName}</div>
+    </div>
+  );
+};
+
+// Компонент для tooltip при згорнутій sidebar
+const UserProfileTooltip: FC = () => {
+  const [userName, setUserName] = useState("User");
+  const supabase = createClient();
+
+  useEffect(() => {
+    const loadUserName = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name, first_name, last_name, email")
+          .eq("id", user.id)
+          .single();
+
+        if (profile) {
+          const name = profile.full_name || 
+            `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 
+            profile.email?.split('@')[0] || 
+            'User';
+          setUserName(name);
+        } else {
+          setUserName(user.email?.split('@')[0] || 'User');
+        }
+      } catch (error) {
+        console.error('Error loading user name:', error);
+      }
+    };
+
+    loadUserName();
+  }, []);
+
+  return (
+    <div className="absolute left-16 top-1/2 -translate-x-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
+      {userName}
+    </div>
+  );
+};
 
 interface NavItem {
   icon: IconName;
@@ -520,22 +603,13 @@ export const LeftSidebar: FC = () => {
           )}>
             <Avatar 
               size="sm"
-              user={{
-                name: 'Ira Taylor',
-                email: 'ira.taylor@example.com',
-                plan: 'Professional until Apr 30, 2024'
-              }}
               className="shrink-0"
             />
             {!isCollapsed && (
-              <div className="flex-1">
-                <div className="text-sm font-semibold text-gray-700">Ira Taylor</div>
-              </div>
+              <UserProfileName />
             )}
             {isCollapsed && (
-              <div className="absolute left-16 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
-                Ira Taylor
-              </div>
+              <UserProfileTooltip />
             )}
           </div>
         </div>

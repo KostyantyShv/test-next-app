@@ -6,12 +6,14 @@ interface EventListProps {
   events: Event[];
   selectedDate: number;
   currentDate: Date;
+  onEventClick?: (eventId: string) => void;
 }
 
 export const EventList: React.FC<EventListProps> = ({
   events,
   selectedDate,
   currentDate,
+  onEventClick,
 }) => {
   const filteredEvents = events.filter(
     (event) =>
@@ -62,7 +64,7 @@ export const EventList: React.FC<EventListProps> = ({
       ) : (
         <div className="space-y-4">
           {filteredEvents.map((event, index) => (
-            <EventCard key={index} event={event} />
+            <EventCard key={index} event={event} onEventClick={onEventClick} />
           ))}
         </div>
       )}

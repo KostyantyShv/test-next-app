@@ -9,6 +9,7 @@ import { CalendarHeader } from "./Header";
 import { CalendarGrid } from "./CalendarGrid";
 import { ListView } from "./ListView";
 import { ViewControls } from "./ViewToggle";
+import CalendarEventModal from "../components/CalendarEventModal";
 
 const CalendarDesktop: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -19,6 +20,9 @@ const CalendarDesktop: React.FC = () => {
   const [view, setView] = useState<ViewType>("calendar");
   const [currentDate, setCurrentDate] = useState(today);
   const [filter, setFilter] = useState<FilterType>("ALL");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [selectedEventId, setSelectedEventId] = useState<string | undefined>(undefined);
 
   const handlePrevMonth = () => {
     setCurrentDate(
@@ -46,6 +50,19 @@ const CalendarDesktop: React.FC = () => {
     MONTHS[currentDate.getMonth()]
   } ${currentDate.getFullYear()}`;
 
+  const handleDateClick = (date: number) => {
+    const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), date);
+    setSelectedDate(clickedDate);
+    setSelectedEventId(undefined);
+    setIsModalOpen(true);
+  };
+
+  const handleEventClick = (eventId: string) => {
+    setSelectedEventId(eventId);
+    setSelectedDate(undefined);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="flex justify-center font-sans">
       <div className="w-full bg-white rounded-xl shadow-md p-6 relative overflow-hidden">
@@ -72,12 +89,31 @@ const CalendarDesktop: React.FC = () => {
 
         <div className="relative z-0">
           {view === "calendar" ? (
-            <CalendarGrid calendarData={calendarData} />
+            <CalendarGrid 
+              calendarData={calendarData} 
+              onDateClick={handleDateClick}
+              onEventClick={handleEventClick}
+            />
           ) : (
-            <ListView listData={listData} />
+            <ListView 
+              listData={listData}
+              onDateClick={handleDateClick}
+              onEventClick={handleEventClick}
+            />
           )}
         </div>
       </div>
+
+      <CalendarEventModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedDate(undefined);
+          setSelectedEventId(undefined);
+        }}
+        selectedDate={selectedDate}
+        eventId={selectedEventId}
+      />
     </div>
   );
 };

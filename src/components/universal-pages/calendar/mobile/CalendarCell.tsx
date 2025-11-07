@@ -8,6 +8,8 @@ interface CalendarCellProps {
   isToday?: boolean;
   onSelectDate?: (date: number) => void;
   isSelected?: boolean;
+  onDateClick?: (date: number) => void;
+  onEventClick?: (eventId: string) => void;
 }
 
 export const CalendarCell: React.FC<CalendarCellProps> = ({
@@ -18,7 +20,17 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
   isToday,
   onSelectDate,
   isSelected,
+  onDateClick,
+  onEventClick,
 }) => {
+  const handleClick = () => {
+    if (onSelectDate && !isPrevMonth && !isNextMonth) {
+      onSelectDate(date);
+    }
+    if (onDateClick && !isPrevMonth && !isNextMonth) {
+      onDateClick(date);
+    }
+  };
   return (
     <div
       className={`flex flex-row w-[51px] h-[51px] items-center justify-center gap-2 px-2 ${
@@ -32,14 +44,20 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
         events.length > 0 &&
         "bg-[rgba(0,_223,_139,_0.05)] rounded-full"
       }`}
-      onClick={() => onSelectDate && onSelectDate(date)}
+      onClick={handleClick}
     >
       {events && events.length > 0 && (
         <div className="flex gap-[2px] mt-1 flex-col">
           {events.slice(0, 3).map((event, index) => (
             <div
               key={index}
-              className={`w-2 h-2 rounded-full ${
+              onClick={(e) => {
+                e.stopPropagation();
+                if (event.id && onEventClick) {
+                  onEventClick(event.id);
+                }
+              }}
+              className={`w-2 h-2 rounded-full cursor-pointer ${
                 event.type === "zoom-meeting" || event.type === "zoom-webinar"
                   ? "bg-[#15B7C3]"
                   : event.type === "teams-meeting"

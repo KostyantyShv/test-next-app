@@ -4,7 +4,9 @@ import { CalendarCell } from "./CalendarCell";
 
 export const CalendarGrid: React.FC<{
   calendarData: CalendarCellData[];
-}> = ({ calendarData }) => (
+  onDateClick?: (date: number) => void;
+  onEventClick?: (eventId: string) => void;
+}> = ({ calendarData, onDateClick, onEventClick }) => (
   <div className="grid grid-cols-7 gap-[1px] bg-[#E0E0E0] border border-[#E0E0E0]">
     {RENDER_WEEKDAYS.map((day) => (
       <div
@@ -22,6 +24,8 @@ export const CalendarGrid: React.FC<{
         isNextMonth={cell.isNextMonth}
         events={cell.events}
         isToday={cell.isToday}
+        onDateClick={onDateClick}
+        onEventClick={onEventClick}
       />
     ))}
   </div>

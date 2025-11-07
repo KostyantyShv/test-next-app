@@ -6,6 +6,8 @@ interface ListItemProps {
   weekday: string;
   isCurrent?: boolean;
   events: Event[];
+  onDateClick?: (date: number) => void;
+  onEventClick?: (eventId: string) => void;
 }
 
 export const ListItem: React.FC<ListItemProps> = ({
@@ -13,7 +15,20 @@ export const ListItem: React.FC<ListItemProps> = ({
   weekday,
   isCurrent,
   events,
+  onDateClick,
+  onEventClick,
 }) => {
+  const handleDateClick = () => {
+    if (onDateClick) {
+      onDateClick(date);
+    }
+  };
+
+  const handleEventClick = (eventId: string | undefined) => {
+    if (eventId && onEventClick) {
+      onEventClick(eventId);
+    }
+  };
   return (
     <div className="flex py-6 border-b border-[#E0E0E0] items-start">
       <div className={`w-20 text-center pr-4 relative ${events[0].type}`}>
@@ -25,7 +40,8 @@ export const ListItem: React.FC<ListItemProps> = ({
           {weekday}
         </div>
         <div
-          className={`text-3xl font-semibold ${
+          onClick={handleDateClick}
+          className={`text-3xl font-semibold cursor-pointer hover:bg-gray-100 rounded px-2 ${
             isCurrent ? "text-[#1A73E8]" : "text-[#202124]"
           }`}
         >
@@ -49,7 +65,11 @@ export const ListItem: React.FC<ListItemProps> = ({
       </div>
       <div className="flex-1 pl-0 flex flex-col gap-2">
         {events.map((event, index) => (
-          <div key={index} className={`flex items-start gap-4 ${event.type}`}>
+          <div
+            key={index}
+            onClick={() => handleEventClick(event.id)}
+            className={`flex items-start gap-4 cursor-pointer hover:bg-gray-50 rounded p-2 ${event.type}`}
+          >
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-1">
                 <div

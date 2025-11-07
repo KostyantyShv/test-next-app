@@ -1,9 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase_utils/client';
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState(true);
+  const [isChecking, setIsChecking] = useState(true);
+  const router = useRouter();
+  const supabase = createClient();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push('/login');
+        return;
+      }
+      setIsChecking(false);
+    };
+    checkAuth();
+  }, [router, supabase]);
+
+  if (isChecking) {
+    return null;
+  }
 
   if (!isVisible) {
     return null;

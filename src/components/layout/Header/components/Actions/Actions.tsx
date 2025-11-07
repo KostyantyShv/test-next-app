@@ -166,11 +166,6 @@ export const Actions: FC = () => {
       {/* Avatar */}
       <Avatar 
         size="md"
-        user={{
-          name: 'Daniel Lopez',
-          email: 'daniellopez@gmail.com',
-          plan: 'Professional until Apr 30, 2024'
-        }}
         className="border border-[#e9ecef] hover:border-[#0B6333]"
       />
 

@@ -41,8 +41,9 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
         label="Username"
         id="username"
         name="username"
+        placeholder="Username"
         value={formData.username}
-        readOnly
+        onChange={handleChange}
       />
       <FormField label="Email" id="email" name="email">
         <div className="relative">
@@ -67,8 +68,10 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
         label="Account ID"
         id="account-id"
         name="accountId"
-        value={formData.accountId}
+        placeholder="Account ID"
+        value={formData.accountId ?? ""}
         readOnly
+        hint="Your unique account identifier"
       />
       <FormField label="Avatar" id="avatar" name="">
         <AvatarUpload defaultSrc="https://via.placeholder.com/80" />

@@ -92,7 +92,7 @@ const BoostedPricing: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-[900px]">
+    <div className="w-full max-w-[900px] max-md:max-w-[390px] mx-auto max-md:px-4">
       <div className="flex flex-col items-center gap-6">
         {/* Boosted Listings Card */}
         <div className="w-full bg-white rounded-2xl shadow-md border border-[#E7E7E7] border-t-4 border-t-[#1D77BD] flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-8 p-6 md:p-8 hover:shadow-lg hover:-translate-y-1 transition-all">
@@ -172,8 +172,9 @@ const BoostedPricing: React.FC = () => {
               <span className="text-base md:text-lg font-medium text-[#5F5F5F] ml-2">total</span>
             </div>
 
-            {/* Price Breakdown */}
-            <div className="bg-transparent p-0 mb-4 md:mb-6">
+          {/* Price Breakdown */}
+          <div className="bg-transparent p-0 mb-4 md:mb-6 max-md:overflow-x-auto">
+            <div className="max-md:min-w-[420px]">
               <div className="flex justify-between mb-2 text-[13px] md:text-sm">
                 <span className="text-left">Base Cost ({formatNumber(impressions)} × ${pricing.selectedPageData.rate.toFixed(2)})</span>
                 <span className="flex-shrink-0 ml-2">${formatNumber(Math.round(pricing.baseCost))}</span>
@@ -194,6 +195,7 @@ const BoostedPricing: React.FC = () => {
                 <span className="flex-shrink-0">${formatNumber(Math.round(pricing.total))}</span>
               </div>
             </div>
+          </div>
 
             <div className="w-full h-px bg-[#E2E8F0] my-4 md:my-5" />
 

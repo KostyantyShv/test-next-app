@@ -8,12 +8,17 @@ import { MonthSelector } from "./MonthSelector";
 import { ViewToggle } from "./ViewToggle";
 import { Event } from "../types/event";
 import { MONTHS, WEEKDAYS } from "../constants";
-import { events } from "../mock/event";
+import { useCalendarEvents } from "@/hooks/useCalendarEvents.hook";
+import CalendarEventModal from "../components/CalendarEventModal";
 
 const CalendarMobile: React.FC = () => {
   const [view, setView] = useState<"calendar" | "list">("calendar");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date().getDate());
+  const { events, loading } = useCalendarEvents();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalSelectedDate, setModalSelectedDate] = useState<Date | undefined>(undefined);
+  const [selectedEventId, setSelectedEventId] = useState<string | undefined>(undefined);
 
   const generateListData = () => {
     const year = currentDate.getFullYear();
@@ -52,6 +57,19 @@ const CalendarMobile: React.FC = () => {
 
   const listData = generateListData();
 
+  const handleDateClick = (date: number) => {
+    const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), date);
+    setModalSelectedDate(clickedDate);
+    setSelectedEventId(undefined);
+    setIsModalOpen(true);
+  };
+
+  const handleEventClick = (eventId: string) => {
+    setSelectedEventId(eventId);
+    setModalSelectedDate(undefined);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="mb-24 bg-[#F8F9FA]">
       <MobileHeader />
@@ -70,11 +88,14 @@ const CalendarMobile: React.FC = () => {
               events={events}
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
+              onDateClick={handleDateClick}
+              onEventClick={handleEventClick}
             />
             <EventList
               events={events}
               selectedDate={selectedDate}
               currentDate={currentDate}
+              onEventClick={handleEventClick}
             />
           </>
         ) : (
@@ -93,6 +114,8 @@ const CalendarMobile: React.FC = () => {
                     month={item.month}
                     isCurrent={item.isCurrent}
                     events={item.events}
+                    onDateClick={handleDateClick}
+                    onEventClick={handleEventClick}
                   />
                 ))}
               </div>
@@ -100,6 +123,17 @@ const CalendarMobile: React.FC = () => {
           </div>
         )}
       </div>
+
+      <CalendarEventModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setModalSelectedDate(undefined);
+          setSelectedEventId(undefined);
+        }}
+        selectedDate={modalSelectedDate}
+        eventId={selectedEventId}
+      />
     </div>
   );
 };

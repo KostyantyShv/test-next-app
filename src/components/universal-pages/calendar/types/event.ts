@@ -1,4 +1,5 @@
 export interface Event {
+  id?: string; // Database event ID (optional for backward compatibility with mock data)
   type: string;
   title: string;
   time: string;

@@ -3,6 +3,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { createClient } from '@/lib/supabase_utils/client';
+import { useRouter } from 'next/navigation';
 
 interface AvatarProps {
   src?: string;
@@ -29,10 +31,113 @@ export const Avatar: React.FC<AvatarProps> = ({
   alt = 'Avatar',
   size = 'md',
   className = '',
-  user,
+  user: userProp,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [user, setUser] = useState<{
+    name: string;
+    email: string;
+    plan?: string;
+    avatar?: string;
+  } | null>(userProp || null);
+  const [loading, setLoading] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const supabase = createClient();
+  const router = useRouter();
+
+  // Завантажити дані користувача з Supabase
+  useEffect(() => {
+    const loadUser = async () => {
+      if (userProp) {
+        setUser(userProp);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser) {
+          setLoading(false);
+          return;
+        }
+
+        // Завантажити профіль
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', authUser.id)
+          .single();
+
+        if (profile) {
+          setUser({
+            name: profile.full_name || `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || authUser.email || 'User',
+            email: profile.email || authUser.email || '',
+            avatar: profile.avatar_url || undefined,
+            plan: 'Professional until Apr 30, 2025', // TODO: додати реальний план з бази
+          });
+        } else {
+          setUser({
+            name: authUser.email?.split('@')[0] || 'User',
+            email: authUser.email || '',
+            avatar: undefined,
+          });
+        }
+      } catch (error) {
+        console.error('Error loading user:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUser();
+
+    // Підписка на зміни профілю через Realtime та оновлення при фокусі
+    let channel: any = null;
+    const handleFocus = () => {
+      loadUser();
+    };
+
+    if (!userProp) {
+      (async () => {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (authUser) {
+          // Realtime підписка на зміни профілю
+          channel = supabase
+            .channel(`profile_changes_${authUser.id}`)
+            .on(
+              'postgres_changes',
+              {
+                event: 'UPDATE',
+                schema: 'public',
+                table: 'profiles',
+                filter: `id=eq.${authUser.id}`
+              },
+              (payload) => {
+                // Оновити аватар при зміні профілю
+                if (payload.new.avatar_url !== payload.old?.avatar_url) {
+                  loadUser();
+                }
+              }
+            )
+            .subscribe();
+
+          // Оновлювати при фокусі вікна
+          window.addEventListener('focus', handleFocus);
+          
+          // Оновлювати при події profileUpdated
+          window.addEventListener('profileUpdated', handleFocus);
+        }
+      })();
+    }
+
+    return () => {
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('profileUpdated', handleFocus);
+    };
+  }, [userProp]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -49,22 +154,53 @@ export const Avatar: React.FC<AvatarProps> = ({
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/login');
+    router.refresh();
+  };
+
+  const avatarSrc = src || user?.avatar;
+  const displayName = user?.name || 'User Name';
+  const displayEmail = user?.email || 'user@example.com';
+  
+  // Debug: перевірка наявності аватара
+  useEffect(() => {
+    if (avatarSrc) {
+      console.log('Avatar URL:', avatarSrc);
+    } else {
+      console.log('No avatar URL, will show initials');
+    }
+  }, [avatarSrc]);
+
+  if (loading) {
+    return (
+      <div className={`relative rounded-full overflow-hidden ${sizeClasses[size]} ${className} bg-gray-200 animate-pulse`} />
+    );
+  }
+
   return (
     <div className="relative" ref={dropdownRef}>
       <div
         className={`relative cursor-pointer rounded-full overflow-hidden ${sizeClasses[size]} ${className}`}
         onClick={handleAvatarClick}
       >
-        {src ? (
+        {avatarSrc && avatarSrc.trim() !== '' ? (
           <Image
-            src={src}
+            src={avatarSrc}
             alt={alt}
             fill
             className="object-cover"
+            unoptimized={avatarSrc.includes('supabase.co')}
+            onError={() => {
+              console.error('Error loading avatar image:', avatarSrc);
+              // Fallback буде показано автоматично, оскільки умова avatarSrc не виконається
+              setUser(prev => prev ? { ...prev, avatar: undefined } : null);
+            }}
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
-            {user?.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase() : 'U'}
+            {displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'}
           </div>
         )}
       </div>
@@ -78,14 +214,16 @@ export const Avatar: React.FC<AvatarProps> = ({
           {/* Top Section */}
           <div className="p-4 border-b border-[#D7F7E9]">
             <h3 className="text-base font-semibold text-[#464646] mb-1">
-              {user?.name || 'User Name'}
+              {displayName}
             </h3>
             <p className="text-sm text-[#5F5F5F] mb-3">
-              {user?.email || 'user@example.com'}
+              {displayEmail}
             </p>
-            <div className="text-xs text-[#016853] bg-[#D7F7E9] px-3 py-1.5 rounded-md inline-block font-medium">
-              {user?.plan || 'Professional until Apr 30, 2024'}
-            </div>
+            {user?.plan && (
+              <div className="text-xs text-[#016853] bg-[#D7F7E9] px-3 py-1.5 rounded-md inline-block font-medium">
+                {user.plan}
+              </div>
+            )}
           </div>
 
           {/* Menu Section */}
@@ -157,7 +295,10 @@ export const Avatar: React.FC<AvatarProps> = ({
 
           {/* Logout Section */}
           <div className="border-t border-[#DFDDDB] pt-2">
-            <button className="flex items-center w-full px-4 py-2 text-[#4A4A4A] hover:bg-[#E1E7EE] transition-all duration-200 group">
+            <button 
+              onClick={handleLogout}
+              className="flex items-center w-full px-4 py-2 text-[#4A4A4A] hover:bg-[#E1E7EE] transition-all duration-200 group"
+            >
               <svg className="w-6 h-6 mr-3 text-[#5F5F5F] group-hover:text-[#4A4A4A] transition-colors" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
               </svg>
