@@ -66,7 +66,7 @@ export const CardTable: React.FC<SchoolCardProps> = ({
     setIsStatusOpen(true);
   };
 
-  const specialtyIcons: Record<string, React.ReactNode> = {
+  const specialtyIcons: Record<string, React.ReactElement> = {
     hot: (
       <svg
         width="16"
@@ -102,7 +102,8 @@ export const CardTable: React.FC<SchoolCardProps> = ({
     sponsored: "Sponsored",
   };
 
-  const specialtyBadgeSmall = school.specialty ? (
+  const specialtyIcon = school.specialty ? specialtyIcons[school.specialty] : null;
+  const specialtyBadgeSmall = school.specialty && specialtyIcon ? (
     <div
       className={`specialty-badge-small flex items-center justify-center w-8 h-8 rounded-full border-2 border-white relative group ${
         school.specialty === "hot"
@@ -112,7 +113,7 @@ export const CardTable: React.FC<SchoolCardProps> = ({
           : "bg-[rgba(255,153,0,0.1)]"
       } hover:-translate-y-0.5 transition-all duration-200`}
     >
-      {React.cloneElement(specialtyIcons[school.specialty], {
+      {React.cloneElement(specialtyIcon as React.ReactElement<{ className?: string }>, {
         className: `fill-current ${
           school.specialty === "hot"
             ? "text-[#FF4D4D]"
@@ -122,7 +123,7 @@ export const CardTable: React.FC<SchoolCardProps> = ({
         }`,
       })}
       <div className="tooltip absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-[#333] text-white text-xs rounded px-2.5 py-1.5 whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-10">
-        {specialtyText[school.specialty]}
+        {specialtyText[school.specialty] || school.specialty}
         <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-6 border-transparent border-t-[#333]" />
       </div>
     </div>

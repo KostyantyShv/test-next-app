@@ -41,7 +41,7 @@ export default function VendorProfile() {
       case "members":
         return <MembersGrid />;
       default:
-        <div>no content yet</div>;
+        return <div>no content yet</div>;
     }
   };
   return (
