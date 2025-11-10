@@ -6,7 +6,7 @@ export default function SupportPage() {
       <div className="text-center">
         <h1 className="text-4xl font-bold text-[#1B1B1B] mb-4">Support Page</h1>
         <p className="text-lg text-[#4A4A4A] mb-8">
-          Click the "Contact Us" button below to get help.
+          Click the &quot;Contact Us&quot; button below to get help.
         </p>
         <div className="bg-white p-8 rounded-lg shadow-lg max-w-md mx-auto">
           <h2 className="text-2xl font-semibold text-[#464646] mb-4">How can we help?</h2>

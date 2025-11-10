@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useRef, useEffect, JSX } from "react";
+import React, { useState, useRef, useEffect, ReactNode } from "react";
 
 interface PrivacyOption {
   value: string;
   label: string;
   description: string;
-  icon: JSX.Element;
+  icon: ReactNode;
 }
 
 const privacyOptions: PrivacyOption[] = [

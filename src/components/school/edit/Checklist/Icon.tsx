@@ -1,4 +1,4 @@
-import { JSX } from "react";
+import { ReactNode } from "react";
 
 interface IconProps {
   name: string;
@@ -6,7 +6,7 @@ interface IconProps {
 }
 
 export const Icon: React.FC<IconProps> = ({ name, className }) => {
-  const icons: { [key: string]: JSX.Element } = {
+  const icons: { [key: string]: ReactNode } = {
     announcement: (
       <svg
         viewBox="0 0 24 24"

@@ -1,4 +1,4 @@
-import React, { JSX, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { CollectionsSchool, Note, RatingCheckmarks } from "../Card";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { NotesModal } from "../../modals/NotesModal";
@@ -66,7 +66,7 @@ export const CardTable: React.FC<SchoolCardProps> = ({
     setIsStatusOpen(true);
   };
 
-  const specialtyIcons: Record<string, JSX.Element> = {
+  const specialtyIcons: Record<string, React.ReactNode> = {
     hot: (
       <svg
         width="16"

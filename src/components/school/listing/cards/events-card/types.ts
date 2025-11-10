@@ -1,4 +1,4 @@
-import { JSX } from "react";
+import { ReactNode } from "react";
 
 export interface Attendee {
   image: string;
@@ -8,7 +8,7 @@ export interface Attendee {
 export interface EventType {
   name: string;
   color: string;
-  icon: JSX.Element;
+  icon: ReactNode;
 }
 
 export interface Event {

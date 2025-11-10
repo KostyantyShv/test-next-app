@@ -247,6 +247,42 @@ const BasicPricing: React.FC = () => {
   const reportPrice = getReportPrice();
   const teamPrice = getTeamPrice();
 
+  // Refs for Plan Toggle
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const bgRef = useRef<HTMLDivElement | null>(null);
+  const btnLeftRef = useRef<HTMLButtonElement | null>(null);
+  const btnRightRef = useRef<HTMLButtonElement | null>(null);
+
+  // Update background pill size/position based on active button
+  useEffect(() => {
+    const container = containerRef.current;
+    const bg = bgRef.current;
+    const targetBtn =
+      activePlan === 'individual-plans' ? btnLeftRef.current : btnRightRef.current;
+    if (!container || !bg || !targetBtn) return;
+    const containerRect = container.getBoundingClientRect();
+    const targetRect = targetBtn.getBoundingClientRect();
+    const width = targetRect.width;
+    const translateX = targetRect.left - containerRect.left;
+    bg.style.width = `${width}px`;
+    bg.style.transform = `translateX(${translateX}px)`;
+  }, [activePlan]);
+
+  // Initial sync after mount for correct positioning
+  useEffect(() => {
+    const id = setTimeout(() => {
+      const container = containerRef.current;
+      const bg = bgRef.current;
+      const targetBtn = btnLeftRef.current;
+      if (!container || !bg || !targetBtn) return;
+      const containerRect = container.getBoundingClientRect();
+      const targetRect = targetBtn.getBoundingClientRect();
+      bg.style.width = `${targetRect.width}px`;
+      bg.style.transform = `translateX(${targetRect.left - containerRect.left}px)`;
+    }, 0);
+    return () => clearTimeout(id);
+  }, []);
+
   return (
     <div className="bg-[#E1E7EE] py-6 px-4 md:px-5">
       <div className="max-w-[1400px] mx-auto">
@@ -256,69 +292,30 @@ const BasicPricing: React.FC = () => {
 
         {/* Plan Toggle */}
         <div className="flex justify-center mb-8">
-          {(() => {
-            const containerRef = useRef<HTMLDivElement | null>(null);
-            const bgRef = useRef<HTMLDivElement | null>(null);
-            const btnLeftRef = useRef<HTMLButtonElement | null>(null);
-            const btnRightRef = useRef<HTMLButtonElement | null>(null);
-
-            // Update background pill size/position based on active button
-            useEffect(() => {
-              const container = containerRef.current;
-              const bg = bgRef.current;
-              const targetBtn =
-                activePlan === 'individual-plans' ? btnLeftRef.current : btnRightRef.current;
-              if (!container || !bg || !targetBtn) return;
-              const containerRect = container.getBoundingClientRect();
-              const targetRect = targetBtn.getBoundingClientRect();
-              const width = targetRect.width;
-              const translateX = targetRect.left - containerRect.left;
-              bg.style.width = `${width}px`;
-              bg.style.transform = `translateX(${translateX}px)`;
-            }, [activePlan]);
-
-            // Initial sync after mount for correct positioning
-            useEffect(() => {
-              const id = setTimeout(() => {
-                const container = containerRef.current;
-                const bg = bgRef.current;
-                const targetBtn = btnLeftRef.current;
-                if (!container || !bg || !targetBtn) return;
-                const containerRect = container.getBoundingClientRect();
-                const targetRect = targetBtn.getBoundingClientRect();
-                bg.style.width = `${targetRect.width}px`;
-                bg.style.transform = `translateX(${targetRect.left - containerRect.left}px)`;
-              }, 0);
-              return () => clearTimeout(id);
-            }, []);
-
-            return (
-              <div ref={containerRef} className="inline-flex bg-[#E7F0F5] rounded-full p-1 md:p-1.5 relative w-full max-w-[320px] md:max-w-none md:w-auto">
-                <div
-                  ref={bgRef}
-                  className="absolute top-1 md:top-1.5 left-1 md:left-1.5 h-[calc(100%-8px)] md:h-[calc(100%-12px)] bg-white rounded-full shadow-md transition-[transform,width] duration-300 ease-[cubic-bezier(0.68,-0.55,0.27,1.55)]"
-                />
-                <button
-                  ref={btnLeftRef}
-                  className={`flex-1 md:flex-none px-4 md:px-7 py-3 text-sm md:text-base font-semibold rounded-full border-none cursor-pointer transition-colors duration-300 relative z-10 ${
-                    activePlan === 'individual-plans' ? 'text-[#1D77BD]' : 'text-[#5F5F5F]'
-                  }`}
-                  onClick={() => setActivePlan('individual-plans')}
-                >
-                  Individual User
-                </button>
-                <button
-                  ref={btnRightRef}
-                  className={`flex-1 md:flex-none px-4 md:px-7 py-3 text-sm md:text-base font-semibold rounded-full border-none cursor-pointer transition-colors duration-300 relative z-10 ${
-                    activePlan === 'owner-plans' ? 'text-[#1D77BD]' : 'text-[#5F5F5F]'
-                  }`}
-                  onClick={() => setActivePlan('owner-plans')}
-                >
-                  Listing Owners
-                </button>
-              </div>
-            );
-          })()}
+          <div ref={containerRef} className="inline-flex bg-[#E7F0F5] rounded-full p-1 md:p-1.5 relative w-full max-w-[320px] md:max-w-none md:w-auto">
+            <div
+              ref={bgRef}
+              className="absolute top-1 md:top-1.5 left-1 md:left-1.5 h-[calc(100%-8px)] md:h-[calc(100%-12px)] bg-white rounded-full shadow-md transition-[transform,width] duration-300 ease-[cubic-bezier(0.68,-0.55,0.27,1.55)]"
+            />
+            <button
+              ref={btnLeftRef}
+              className={`flex-1 md:flex-none px-4 md:px-7 py-3 text-sm md:text-base font-semibold rounded-full border-none cursor-pointer transition-colors duration-300 relative z-10 ${
+                activePlan === 'individual-plans' ? 'text-[#1D77BD]' : 'text-[#5F5F5F]'
+              }`}
+              onClick={() => setActivePlan('individual-plans')}
+            >
+              Individual User
+            </button>
+            <button
+              ref={btnRightRef}
+              className={`flex-1 md:flex-none px-4 md:px-7 py-3 text-sm md:text-base font-semibold rounded-full border-none cursor-pointer transition-colors duration-300 relative z-10 ${
+                activePlan === 'owner-plans' ? 'text-[#1D77BD]' : 'text-[#5F5F5F]'
+              }`}
+              onClick={() => setActivePlan('owner-plans')}
+            >
+              Listing Owners
+            </button>
+          </div>
         </div>
 
         {/* Individual User Plans */}

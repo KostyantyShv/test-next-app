@@ -1,11 +1,11 @@
 // components/SocialCard.tsx
 import Image from "next/image";
-import { FC, JSX } from "react";
+import { FC, ReactNode } from "react";
 
 interface SocialCardProps {
   thumbnailSrc: string;
   avatarSrc: string;
-  platformIcon: JSX.Element;
+  platformIcon: ReactNode;
   authorName: string;
   username: string;
   content: string;
@@ -14,9 +14,9 @@ interface SocialCardProps {
   likes: number;
   comments: number;
   shares: number;
-  likeIcon: JSX.Element;
-  commentIcon: JSX.Element;
-  shareIcon: JSX.Element;
+  likeIcon: ReactNode;
+  commentIcon: ReactNode;
+  shareIcon: ReactNode;
 }
 
 const SocialCard: FC<SocialCardProps> = ({

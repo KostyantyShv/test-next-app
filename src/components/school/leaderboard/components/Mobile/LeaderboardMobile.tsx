@@ -100,7 +100,7 @@ export default function LeaderboardMobile() {
       <div className="bg-white rounded-2xl shadow-md p-4 mb-4">
         <div className="text-center mb-5">
           <h2 className="text-[18px] font-bold text-[#016853]">Top Performers</h2>
-          <p className="text-[12px] text-[#5F5F5F]">This week's champions</p>
+          <p className="text-[12px] text-[#5F5F5F]">This week&apos;s champions</p>
         </div>
         <div className="flex flex-col gap-3.5">
           {topPerformers.map((p) => (

@@ -1,6 +1,6 @@
 import { FilterData } from "@/types/filter";
 import { SubcategoryType } from "@/types/schools-collections";
-import { JSX } from "react";
+import { ReactNode } from "react";
 import { CATEGORIES_ENUM } from "./enums";
 import { SUBCATEGORIES_ENUM } from "@/store/enum";
 
@@ -25,7 +25,7 @@ export type DropdownCategoryType =
 
 export interface DropdownValueType {
   id: string;
-  icon: JSX.Element;
+  icon: ReactNode;
   title: SUBCATEGORIES_ENUM;
   viewsCount: string;
 }
@@ -34,6 +34,6 @@ export type DropdownType = Record<DropdownCategoryType, DropdownValueType[]>;
 
 export type DropdownCategoryIconType = Record<
   DropdownCategoryType,
-  JSX.Element
+  ReactNode
 >;
-export type DropdownSubcategoryIconType = Record<SubcategoryType, JSX.Element>;
+export type DropdownSubcategoryIconType = Record<SubcategoryType, ReactNode>;

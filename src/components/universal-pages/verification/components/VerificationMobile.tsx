@@ -276,7 +276,7 @@ const VerificationMobile: React.FC<VerificationMobileProps> = ({ onClose }) => {
           ) : (
             <div id="paypal-form" className="text-center py-10 px-5">
               <div className="text-5xl mb-4">🟦</div>
-              <p className="text-[#4A4A4A]">You'll be redirected to PayPal to complete verification</p>
+              <p className="text-[#4A4A4A]">You&apos;ll be redirected to PayPal to complete verification</p>
               <button className="mt-5 w-[200px] inline-flex items-center justify-center rounded-xl border-2 border-[#1D77BD] bg-[#1D77BD] text-white px-4 py-2 text-[15px] font-semibold hover:bg-[#1565c0]">Connect PayPal</button>
             </div>
           )}
@@ -302,7 +302,7 @@ const VerificationMobile: React.FC<VerificationMobileProps> = ({ onClose }) => {
           </div>
           <div className="rounded-xl border border-[#089E68] bg-[#EBFCF4] text-[#016853] p-4">
             <div className="text-[14px] font-semibold mb-2 flex items-center gap-2">📧 Verification Process</div>
-            <div className="text-[13px] leading-snug">We'll send a verification email to your business email address. Click the link in the email to confirm your business ownership.</div>
+            <div className="text-[13px] leading-snug">We&apos;ll send a verification email to your business email address. Click the link in the email to confirm your business ownership.</div>
           </div>
         </div>
 
@@ -310,7 +310,7 @@ const VerificationMobile: React.FC<VerificationMobileProps> = ({ onClose }) => {
         <div className={`${!showSuccess && currentStep === 3 ? 'block' : 'hidden'} px-4 py-5`}>
           <div className="text-center mb-6">
             <h2 className="text-[20px] font-semibold text-[#016853] mb-2">{stepTitles.phone}</h2>
-            <p className="text-[14px] text-[#5F5F5F] leading-snug">We'll send you a verification code via SMS</p>
+            <p className="text-[14px] text-[#5F5F5F] leading-snug">We&apos;ll send you a verification code via SMS</p>
           </div>
           <div className="mb-4">
             <label className="block text-[14px] font-medium text-[#464646] mb-2">Phone Number</label>
@@ -349,7 +349,7 @@ const VerificationMobile: React.FC<VerificationMobileProps> = ({ onClose }) => {
                 ))}
               </div>
               <button className="mt-4 w-[200px] inline-flex items-center justify-center rounded-xl border-2 border-[#1D77BD] bg-[#1D77BD] text-white px-4 py-2 text-[15px] font-semibold hover:bg-[#1565c0]">Verify Number</button>
-              <p className="text-[13px] text-[#5F5F5F] mt-4">Didn't receive the code? <a href="#" className="text-[#1D77BD]">Resend</a></p>
+              <p className="text-[13px] text-[#5F5F5F] mt-4">Didn&apos;t receive the code? <a href="#" className="text-[#1D77BD]">Resend</a></p>
             </div>
           )}
         </div>
@@ -416,16 +416,16 @@ const VerificationMobile: React.FC<VerificationMobileProps> = ({ onClose }) => {
             </div>
           </div>
           <div className="rounded-xl border border-[#089E68] bg-[#EBFCF4] text-[#016853] p-4 mb-4">
-            <div className="text-[14px] font-semibold mb-2">Add this meta tag to your website's <span>&lt;head&gt;</span> section:</div>
-            <div className="bg-[#2d3748] text-[#e2e8f0] p-3 rounded font-mono text-[13px] overflow-x-auto">&lt;meta name="verification-code" content="abc123def456ghi789"&gt;</div>
+            <div className="text-[14px] font-semibold mb-2">Add this meta tag to your website&apos;s <span>&lt;head&gt;</span> section:</div>
+            <div className="bg-[#2d3748] text-[#e2e8f0] p-3 rounded font-mono text-[13px] overflow-x-auto">&lt;meta name=&quot;verification-code&quot; content=&quot;abc123def456ghi789&quot;&gt;</div>
             <button className="mt-2 inline-flex items-center justify-center rounded border border-gray-300 bg-white text-[#4A4A4A] px-3 py-2 text-[12px] hover:bg-gray-50" onClick={() => navigator.clipboard.writeText('<meta name="verification-code" content="abc123def456ghi789">')}>Copy Code</button>
           </div>
           <div className="rounded-xl border border-[#c8e6c9] bg-[#e8f5e9] p-4 text-[#2e7d32]">
             <div className="text-[14px] font-semibold mb-2">✅ Next Steps</div>
             <ol className="text-[13px] leading-snug ml-4 list-decimal">
               <li>Copy the verification code above</li>
-              <li>Add it to your website's HTML &lt;head&gt; section</li>
-              <li>Click "Verify Website" below to complete verification</li>
+              <li>Add it to your website&apos;s HTML &lt;head&gt; section</li>
+              <li>Click &quot;Verify Website&quot; below to complete verification</li>
             </ol>
           </div>
         </div>

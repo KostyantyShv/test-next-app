@@ -410,7 +410,7 @@ const Verification: React.FC<VerificationProps> = ({ isOpen = true, onClose }) =
               ) : (
                 <div className="text-center py-10">
                   <div className="text-5xl mb-4">🟦</div>
-                  <p className="mb-5">You'll be redirected to PayPal to complete verification</p>
+                  <p className="mb-5">You&apos;ll be redirected to PayPal to complete verification</p>
                   <button className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
                     Connect PayPal
                   </button>
@@ -461,7 +461,7 @@ const Verification: React.FC<VerificationProps> = ({ isOpen = true, onClose }) =
               <div className="bg-gray-50 p-4 rounded-lg">
                 <div className="text-sm font-medium text-gray-600 mb-2">📧 Verification Process</div>
                 <div className="text-xs text-gray-500 leading-relaxed">
-                  We'll send a verification email to your business email address. Click the link in the email to confirm your business ownership.
+                  We&apos;ll send a verification email to your business email address. Click the link in the email to confirm your business ownership.
                 </div>
               </div>
             </div>
@@ -471,7 +471,7 @@ const Verification: React.FC<VerificationProps> = ({ isOpen = true, onClose }) =
           {currentStep === 3 && (
             <div className="animate-[stepFadeIn_0.3s_ease-out]">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Verify Phone Number</h3>
-              <p className="text-sm text-gray-500 mb-5">We'll send you a verification code via SMS</p>
+              <p className="text-sm text-gray-500 mb-5">We&apos;ll send you a verification code via SMS</p>
               
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-600 mb-2">Phone Number</label>
@@ -531,7 +531,7 @@ const Verification: React.FC<VerificationProps> = ({ isOpen = true, onClose }) =
                   </button>
                   
                   <p className="text-xs text-gray-500 mt-4">
-                    Didn't receive the code? <a href="#" className="text-blue-500">Resend</a>
+                    Didn&apos;t receive the code? <a href="#" className="text-blue-500">Resend</a>
                   </p>
                 </div>
               )}
@@ -636,9 +636,9 @@ const Verification: React.FC<VerificationProps> = ({ isOpen = true, onClose }) =
               </div>
 
               <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                <div className="text-sm font-medium text-gray-600 mb-3">Add this meta tag to your website's &lt;head&gt; section:</div>
+                <div className="text-sm font-medium text-gray-600 mb-3">Add this meta tag to your website&apos;s &lt;head&gt; section:</div>
                 <div className="bg-gray-800 text-gray-200 p-3 rounded font-mono text-xs overflow-x-auto mb-2">
-                  &lt;meta name="verification-code" content="abc123def456ghi789"&gt;
+                  &lt;meta name=&quot;verification-code&quot; content=&quot;abc123def456ghi789&quot;&gt;
                 </div>
                 <button className="bg-white border border-gray-300 px-3 py-2 rounded text-xs hover:bg-gray-50 transition-colors">
                   Copy Code
@@ -649,8 +649,8 @@ const Verification: React.FC<VerificationProps> = ({ isOpen = true, onClose }) =
                 <div className="text-sm font-medium text-green-700 mb-2">✅ Next Steps</div>
                 <ol className="text-xs text-green-700 leading-relaxed ml-4">
                   <li>Copy the verification code above</li>
-                  <li>Add it to your website's HTML &lt;head&gt; section</li>
-                  <li>Click "Verify Website" below to complete verification</li>
+                  <li>Add it to your website&apos;s HTML &lt;head&gt; section</li>
+                  <li>Click &quot;Verify Website&quot; below to complete verification</li>
                 </ol>
               </div>
             </div>

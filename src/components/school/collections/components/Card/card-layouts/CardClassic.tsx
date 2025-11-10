@@ -1,4 +1,4 @@
-import React, { JSX, useState } from "react";
+import React, { useState } from "react";
 import { CollectionsSchool, Note, RatingCheckmarks } from "../Card";
 import { NotesModal } from "../../modals/NotesModal";
 
@@ -90,7 +90,7 @@ export const CardClassic: React.FC<Props> = ({
     sponsored: { bg: "bg-yellow-100", text: "text-yellow-600" },
   };
 
-  const specialtyIcons: Record<string, JSX.Element> = {
+  const specialtyIcons: Record<string, React.ReactNode> = {
     hot: (
       <svg
         width="14"

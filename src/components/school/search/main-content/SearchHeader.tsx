@@ -1,5 +1,5 @@
 "use client";
-import React, { JSX, useState, useMemo } from "react";
+import React, { ReactNode, useState, useMemo } from "react";
 import { useSchoolsExplore } from "@/store/use-schools-explore";
 import { establishmentTypes } from "../../explore/main-content/mock";
 import K12Filters from "../../explore/filter-sidebar/filters/k12-filters";
@@ -25,7 +25,7 @@ interface SearchHeaderProps {
   dropdownValue: string;
   layouts: {
     type: string;
-    icon: JSX.Element;
+    icon: ReactNode;
   }[];
   renderDropdownItems: () => React.ReactNode;
   isSearchActive: boolean;

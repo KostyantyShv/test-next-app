@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useState } from 'react';
+import { FC, useState, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/ui/Logo';
 import { Avatar } from '@/components/ui/Avatar';
@@ -13,7 +13,7 @@ interface MobileLeftSidebarProps {
 }
 
 interface NavItem {
-  icon: JSX.Element;
+  icon: ReactNode;
   label: string;
   href: string;
   hasSubmenu?: boolean;

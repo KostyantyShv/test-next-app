@@ -1,11 +1,11 @@
 "use client";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import React, { JSX } from "react";
+import React, { ReactNode } from "react";
 
 interface CategoryDropdownProps {
   value: string;
   renderDropdownItems: () => React.ReactNode;
-  dropdownIcon?: JSX.Element;
+  dropdownIcon?: ReactNode;
 }
 
 const CategoryDropdown: React.FC<CategoryDropdownProps> = ({

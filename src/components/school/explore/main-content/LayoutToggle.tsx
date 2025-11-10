@@ -1,9 +1,9 @@
-import React, { JSX } from "react";
+import React, { ReactNode } from "react";
 
 interface LayoutToggleProps {
   layout: string;
   setLayout: (value: string) => void;
-  layouts: { type: string; icon: JSX.Element }[];
+  layouts: { type: string; icon: ReactNode }[];
   width: number;
 }
 

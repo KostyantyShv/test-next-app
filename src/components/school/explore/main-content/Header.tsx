@@ -1,4 +1,4 @@
-import React, { JSX, useState, useMemo } from "react";
+import React, { ReactNode, useState, useMemo } from "react";
 import CategoryDropdown from "./CategoryDropdown";
 import SearchBox from "./SearchBox";
 import MapButton from "./MapButton";
@@ -33,10 +33,10 @@ interface HeaderProps {
   setLayout: (value: string) => void;
   renderDropdownItems: () => React.ReactNode;
   dropdownValue: string;
-  dropdownIcon?: JSX.Element;
+  dropdownIcon?: ReactNode;
   layouts: {
     type: string;
-    icon: JSX.Element;
+    icon: ReactNode;
   }[];
   layoutToggleWidth: number;
   renderActionsButton?: () => React.ReactNode;

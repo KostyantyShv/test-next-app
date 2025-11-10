@@ -34,7 +34,7 @@ interface CreateEventData {
   color?: string;
 }
 
-interface UpdateEventData extends CreateEventData {}
+type UpdateEventData = CreateEventData;
 
 // Convert database event to UI Event format
 const convertToUIEvent = (dbEvent: CalendarEvent): Event => {

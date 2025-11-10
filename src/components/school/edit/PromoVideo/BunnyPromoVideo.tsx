@@ -74,7 +74,7 @@ const BunnyPromoVideo: React.FC = () => {
           Promotional Video
         </h1>
         <p className="text-[#5F5F5F] text-base leading-relaxed">
-          Showcase your school's unique atmosphere, facilities, and student life
+          Showcase your school&apos;s unique atmosphere, facilities, and student life
           through an engaging video tour powered by Bunny Stream for optimal quality
           and performance.
         </p>
