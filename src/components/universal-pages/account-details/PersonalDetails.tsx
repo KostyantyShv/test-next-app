@@ -54,7 +54,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
             value={formData.email}
             onChange={handleChange}
             readOnly={emailReadOnly}
-            className="w-full p-2.5 border border-border-color rounded bg-input-bg text-text-color focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors pr-24"
+            className="w-full p-2.5 border border-border-color rounded bg-white text-text-color focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors pr-24"
           />
           <span
             onClick={handleEmailChangeToggle}

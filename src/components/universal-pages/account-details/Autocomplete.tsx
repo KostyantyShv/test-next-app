@@ -68,7 +68,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
         value={query}
         onChange={handleInputChange}
         placeholder={placeholder}
-        className="w-full p-2.5 border border-border-color rounded bg-input-bg text-text-color focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+        className="w-full p-2.5 border border-border-color rounded bg-white text-text-color focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
       />
       <div
         className={`absolute top-[calc(100%+2px)] left-0 right-0 bg-white border border-border-color rounded shadow-search max-h-64 overflow-y-auto z-10 ${
@@ -79,7 +79,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
           <div
             key={item}
             onClick={() => handleSelect(item)}
-            className="p-2.5 cursor-pointer hover:bg-readonly-bg border-b border-gray-200 last:border-b-0"
+            className="p-2.5 cursor-pointer hover:bg-gray-50 border-b border-gray-200 last:border-b-0"
           >
             {item.toLowerCase().includes(query.toLowerCase()) ? (
               <>
