@@ -4,6 +4,7 @@ import AdmissionsStatsSection from "./AdmissionsStatsSection";
 import DeadlinesSection from "./DeadlinesSection";
 import RequirementsSection from "./RequirementsSection";
 import WillYouGetInSection from "./WillYouGetInSection";
+import styles from "./AdmissionsModalDesktop.module.css";
 
 interface PopupProps {
   isOpen: boolean;
@@ -30,7 +31,7 @@ export default function AdmissionsModalDesktop({
       onClick={onClose}
     >
       <div
-        className="bg-white w-[875px] max-h-[90vh] rounded-xl p-8 relative overflow-y-auto shadow-[0_4px_24px_rgba(0,0,0,0.15)]"
+        className={`${styles.scrollbar} bg-white w-[875px] max-h-[90vh] rounded-xl p-8 relative overflow-y-auto shadow-[0_4px_24px_rgba(0,0,0,0.15)]`}
         onClick={(e) => e.stopPropagation()}
       >
         <button

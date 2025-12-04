@@ -25,7 +25,7 @@ export default function FiltersSection({
             onChange={() => onFilterChange("accepted")}
             className="w-[18px] h-[18px] cursor-pointer accent-[#0B6333] rounded-sm"
           />
-          <span className="text-[#0B6333] font-medium">Accepted</span>
+          <span className="text-[#0B6333] font-semibold">Accepted</span>
         </label>
         <label className="checkbox-item flex items-center gap-2 cursor-pointer">
           <input
@@ -34,7 +34,7 @@ export default function FiltersSection({
             onChange={() => onFilterChange("rejected")}
             className="w-[18px] h-[18px] cursor-pointer accent-[#FF4B4B] rounded-sm"
           />
-          <span className="text-[#FF4B4B] font-medium">Rejected</span>
+          <span className="text-[#FF4B4B] font-semibold">Rejected</span>
         </label>
         <label className="checkbox-item flex items-center gap-2 cursor-pointer">
           <input
@@ -43,7 +43,7 @@ export default function FiltersSection({
             onChange={() => onFilterChange("considering")}
             className="w-[18px] h-[18px] cursor-pointer accent-[#1D77BD] rounded-sm"
           />
-          <span className="text-[#1D77BD] font-medium">Considering</span>
+          <span className="text-[#1D77BD] font-semibold">Considering</span>
         </label>
       </div>
       <select

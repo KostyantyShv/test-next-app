@@ -2,8 +2,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import Header from "./header/Header";
 import SchoolInfo from "./school-info/SchoolInfo";
+import SchoolInfoDesktop from "./school-info/SchoolInfoDesktop";
 import Content from "./content/Content";
 import ImagesGrid from "./images-grid/ImagesGrid";
+import ImagesGrigDesktop from "./images-grid/ImagesGrigDesktop";
 import PhotoGallery from "./photo-gallery/PhotoGalleryDesktop";
 import FooterMobile from "./footer-mobile/FooterMobile";
 import { SchoolInfoInterface } from "@/types/school-listings";
@@ -68,22 +70,33 @@ const Listing: React.FC<ListingProps> = ({
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center">
       {/* Desktop Header - Hidden on mobile */}
       <div className="hidden md:block">
         <Header />
       </div>
       
       {/* School Info Section with ref for mobile footer visibility */}
-      <div ref={schoolInfoRef}>
-        <SchoolInfo 
-          schoolInfo={schoolInfo || defaultSchoolInfo} 
-          images={images} 
-        />
+      <div ref={schoolInfoRef} className="max-w-[1077px]">
+        {/* Mobile - separate components */}
+        <div className="block md:hidden">
+          <SchoolInfo 
+            schoolInfo={schoolInfo || defaultSchoolInfo} 
+            images={images} 
+          />
+          <ImagesGrid images={images} />
+        </div>
+        
+        {/* Desktop - combined in one wrapper */}
+        <div className="hidden md:block">
+          <div className="school-info-wrapper block text-[0] leading-none bg-white rounded-lg">
+            <div className="school-photos flex gap-[2px] w-full rounded-t-lg overflow-hidden text-base leading-normal max-w-[1077px]">
+              <ImagesGrigDesktop images={images} />
+            </div>
+            <SchoolInfoDesktop schoolInfo={schoolInfo || defaultSchoolInfo} />
+          </div>
+        </div>
       </div>
-      
-      {/* Images Grid */}
-      <ImagesGrid images={images} />
       
       {/* Photo Gallery */}
       <PhotoGallery 

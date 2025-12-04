@@ -122,7 +122,14 @@ export const AudioPlayer: FC = () => {
     link.download = 'How to Talk to Anyone - Chapter 1.mp3';
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+    if (link.parentNode === document.body) {
+      try {
+        document.body.removeChild(link);
+      } catch (error) {
+        // Link might have been removed already, ignore the error
+        console.warn('Failed to remove download link:', error);
+      }
+    }
   };
 
   if (isExpanded) {

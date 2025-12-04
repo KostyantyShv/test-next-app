@@ -18,7 +18,8 @@ interface SchoolInfo {
 
 const CameraIcon = () => (
   <svg
-    className="w-4 h-4 sm:w-5 sm:h-5"
+    width="16"
+    height="16"
     xmlns="http://www.w3.org/2000/svg"
     fill="white"
     viewBox="0 0 16 16"
@@ -49,20 +50,26 @@ const ImagesGrigDesktop = ({ images }: { images: Array<string> }) => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-0.5">
-      <div className="relative w-full h-64 sm:h-96 sm:col-span-2">
+    <div className="flex gap-[2px] w-full max-w-[1077px]">
+      <div className="relative flex-[0_0_750px] h-[400px]">
         <Image
-          src={images[0]}
+          src="https://i.ibb.co/fzzhd5tf/school4.webp"
           alt="Main School Photo"
           fill
           className="object-cover"
         />
+        <div className="absolute bottom-[5px] left-[10px] bg-white px-2 py-1 font-bold text-sm">
+          COLLEGE
+        </div>
+        <div className="absolute bottom-[5px] left-[87px] bg-[#eee] px-2 py-1 font-bold text-sm text-[#5F5F5F]">
+          GRAD SCHOOL
+        </div>
       </div>
-      <div className="grid grid-rows-2 gap-0.5 sm:col-span-1">
-        {images.slice(1).map((img, idx) => (
-          <div key={idx} className="relative w-full h-32 sm:h-[188px]">
+      <div className="flex flex-col gap-[2px] flex-[0_0_325px]">
+        {images.slice(1, 3).map((img, idx) => (
+          <div key={idx} className="relative w-full h-[199px]">
             <Image
-              src={img}
+              src="https://i.ibb.co/fzzhd5tf/school4.webp"
               alt={`School Photo ${idx + 2}`}
               fill
               className="object-cover"
@@ -70,18 +77,17 @@ const ImagesGrigDesktop = ({ images }: { images: Array<string> }) => {
             {idx === 0 && (
               <button
                 onClick={() => setIsGalleryOpen(true)}
-                className="absolute top-2 right-2 bg-black bg-opacity-70 text-white px-2 sm:px-3 py-1 sm:py-2 rounded flex items-center gap-1 sm:gap-2 text-xs sm:text-sm"
+                className="absolute top-[10px] right-[10px] bg-[rgba(0,0,0,0.7)] text-white px-3 py-2 rounded flex items-center gap-2 text-sm cursor-pointer"
               >
                 <CameraIcon />
                 View all photos
               </button>
             )}
             {idx === 1 && (
-              <div className="absolute top-2 right-2 flex items-center gap-1 sm:gap-2 bg-white text-green-700 px-2 sm:px-3 py-1 sm:py-2 rounded cursor-pointer font-semibold text-xs sm:text-sm">
+              <div className="absolute top-[10px] right-[10px] flex items-center gap-2 bg-white text-[#016853] px-3 py-2 rounded cursor-pointer font-semibold text-sm">
                 <svg
-                  width="16"
-                  height="16"
-                  // sm={{ width: "20", height: "20" }}
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"

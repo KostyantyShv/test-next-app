@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "./StudentsModalContent.module.css";
 
 const StudentsModalContent: React.FC<{ closeModal: () => void }> = ({
   closeModal,
@@ -120,7 +121,7 @@ const StudentsModalContent: React.FC<{ closeModal: () => void }> = ({
                 className="mb-8 max-md:bg-[#FAFAFA] rounded-xl max-md:p-4"
               >
                 <div className="flex items-center gap-2 mb-6">
-                  <div className="relative h-4 w-4 before:content-[''] before:absolute before:top-[2px] before:left-2 before:w-[3px] before:h-[10px] before:bg-[#c5e4b8] before:shadow-[4px_4px_0_#f78f6a,-8px_4px_0_#9eddf8,0_0_0_transparent,-4px_2px_0_#6bbef2] before:clip-[rect(0,8px,10px,-10px)]"></div>
+                  <div className={styles.pollIcon}></div>
                   <div className="text-[#1D77BD] text-[13px] font-semibold uppercase tracking-wider">
                     POLL
                   </div>

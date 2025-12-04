@@ -19,7 +19,7 @@ const MajorsModal = () => {
   };
 
   return (
-    <>
+    <div>
       <a
         href="#"
         onClick={openModal}
@@ -47,7 +47,7 @@ const MajorsModal = () => {
           <MajorsModalContent closeModal={closeModal} />
         </MobileDrawer>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -51,7 +51,7 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
           ref={buttonRef}
           className={`w-8 h-8 rounded-md flex items-center justify-center shrink-0 transition-all duration-200 ease-in-out relative ${
             isAttending
-              ? "bg-[rgba(22,163,74,0.1)] md:bg-[#00DF8B] text-[#16a34a] md:text-white"
+              ? "bg-[#00e28f] md:bg-[#00e28f] text-white md:text-white"
               : "bg-[rgba(59,110,145,0.08)] hover:bg-[rgba(59,110,145,0.12)]"
           }`}
           onClick={handleJoinClick}
@@ -126,13 +126,7 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
       <div className="flex-1 flex flex-col gap-3">
         {titleAndAddButton("desktop")}
         <div className="flex items-center gap-3 flex-wrap mb-2 md:mb-3">
-          <div
-            className="flex items-center gap-1.5 font-medium text-sm"
-            style={{ color: event.type.color }}
-          >
-            <div className="w-5 h-5">{event.type.icon}</div>
-            {event.type.name}
-          </div>
+          
           <div className="flex items-center gap-1.5 text-[#3B6E91] text-sm">
             <svg
               className="w-4 h-4 text-[#828282]"
@@ -147,8 +141,10 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
               />
             </svg>
             {event.date}
+
+            <div className="flex items-center gap-1 text-[#00e28f]">
             <svg
-              className="w-4 h-4 text-[#828282]"
+              className="w-4 h-4 text-[#00e28f]"
               fill="none"
               viewBox="0 0 32 32"
             >
@@ -160,25 +156,39 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
               />
             </svg>
             {event.time}
+            </div>
+
+            <div
+            className="flex items-center gap-1.5 font-medium text-sm"
+            style={{ color: event.type.color }}
+          >
+            <div className="w-5 flex items-center justify-center h-5">{event.type.icon}</div>
+            {event.type.name}
+          </div>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
           <div className="flex items-center">
-            {event.attendees.map((attendee, index) => (
+            {event.attendees.slice(0, 3).map((attendee, index) => (
               <div key={index} className={`${index !== 0 ? "-ml-2" : ""}`}>
                 <Image
                   src={attendee.image}
                   alt={attendee.alt}
                   width={24}
                   height={24}
-                  className="w-6 h-6 rounded-full border-2 border-white object-cover shadow-[0_2px_4px_rgba(20,46,83,0.1)]"
+                  className="w-6 h-6 rounded-full border-[1.5px] border-white object-cover"
                 />
               </div>
             ))}
+            {event.attendeeCount > 3 && (
+              <div className="w-6 h-6 rounded-full bg-[#F5F5F7] border-[1.5px] border-white flex items-center justify-center text-[10px] font-semibold text-[#5F5F5F] -ml-2">
+                +{event.attendeeCount - 3}
+              </div>
+            )}
           </div>
-          <span className="bg-[rgba(59,110,145,0.08)] text-[#3B6E91] text-xs py-1 px-2.5 rounded-xl font-medium">
-            +{event.attendeeCount}
+          <span className="text-[#5F5F5F] text-[13px]">
+            {event.attendeeCount} participant{event.attendeeCount !== 1 ? "s" : ""}
           </span>
         </div>
       </div>

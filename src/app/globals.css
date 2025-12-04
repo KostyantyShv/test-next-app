@@ -238,3 +238,36 @@ body {
   padding: 5px;
   font-size: 18px;
 }
+
+.tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1B1B1B;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.4;
+  width: 280px;
+  text-align: center;
+  display: none;
+  margin-bottom: 8px;
+  z-index: 100;
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -6px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: #1B1B1B transparent transparent transparent;
+}
+
+.tooltip-container:hover .tooltip {
+  display: block;
+}

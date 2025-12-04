@@ -9,7 +9,7 @@ const CardWrapper: React.FC<{ children: React.ReactNode; id: string }> = ({
       id={id}
       className="font-inter flex justify-center my-cardMargin text-[#4A4A4A]"
     >
-      <div className="max-w-[875px] w-full bg-cardBackground p-cardPadding rounded-cardBorderRadius shadow-cardShadow">
+      <div className="max-w-[875px] w-full bg-cardBackground p-cardPadding rounded-cardBorderRadius shadow-cardShadow md:px-[87px] md:py-cardPadding">
         {children}
       </div>
     </div>

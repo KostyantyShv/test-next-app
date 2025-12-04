@@ -2,7 +2,6 @@
 import { Icon } from "@/components/ui/Icon";
 import React, { useEffect, useRef, useState } from "react";
 import ActionButton from "../action-button/ActionButton";
-import Header from "../header/Header";
 import { SchoolInfoInterface } from "@/types/school-listings";
 
 const LocationIcon = () => (
@@ -34,46 +33,12 @@ const SchoolInfoDesktop = ({
   schoolInfo: SchoolInfoInterface;
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isFixed, setIsFixed] = useState(false);
-  const [showFixedHeader, setShowFixedHeader] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (containerRef.current) {
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          setIsFixed(!entry.isIntersecting);
-        },
-        {
-          threshold: 0,
-          rootMargin: "-1px 0px 0px 0px",
-        }
-      );
-
-      observer.observe(containerRef.current);
-
-      return () => {
-        if (containerRef.current) {
-          observer.unobserve(containerRef.current);
-        }
-        observer.disconnect();
-      };
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isFixed) {
-      setShowFixedHeader(true);
-    } else {
-      const timeout = setTimeout(() => setShowFixedHeader(false), 300); // Match animation duration
-      return () => clearTimeout(timeout);
-    }
-  }, [isFixed]);
 
   return (
     <>
       <div ref={containerRef}>
-        <div className="rounded-b-cardBorderRadius p-4 sm:p-6 flex flex-col sm:flex-row justify-between gap-4">
+        <div className="rounded-b-cardBorderRadius p-4 sm:p-6 flex flex-col sm:flex-row justify-between gap-4 max-w-[1077px]">
           <div className="flex-1">
             <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
               <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#464646]">
@@ -144,15 +109,6 @@ const SchoolInfoDesktop = ({
           </div>
         )}
       </div>
-
-      {showFixedHeader && (
-        <Header
-          imageSizes="h-14 w-14"
-          classes={`fixed top-0 left-0 py-[3px] right-0 pl-16 w-full border z-50 transition-all duration-300 ${
-            isFixed ? "animate-slideDown" : "animate-slideUp"
-          }`}
-        />
-      )}
     </>
   );
 };

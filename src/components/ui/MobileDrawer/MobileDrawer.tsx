@@ -28,7 +28,7 @@ export function MobileDrawer({ children, isOpen, onClose }: MobileDrawerProps) {
           isOpen ? "bottom-0 visible" : "bottom-[-100%] invisible"
         }`}
       >
-        <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mt-3 mb-2" />
+        
         {children}
       </div>
     </div>

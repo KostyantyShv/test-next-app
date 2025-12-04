@@ -31,7 +31,7 @@ export default function AdmissionsScatterPlotCard({ id }: { id: string }) {
 
   return (
     <div id={id} className="flex justify-center items-center">
-      <div className="w-full p-cardPadding md:max-w-[875px] bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] overflow-hidden">
+      <div className="w-full p-cardPadding md:max-w-[875px] bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] overflow-hidden md:px-[87px] md:py-cardPadding">
         <div className="mb-5 md:mb-6">
           <h1 className="text-[#016853] text-xl md:text-2xl font-semibold mb-4 md:mb-5">
             Will You Get Into Lincoln University?

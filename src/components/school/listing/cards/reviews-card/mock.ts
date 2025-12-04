@@ -12,31 +12,33 @@ export const REVIEWS: Review[] = [
   {
     avatar:
       "https://i.ibb.co/87nXCrv/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
-    author: "Shuwang Y.",
-    rating: 4.9,
-    date: "Jun 22, 2022",
-    title: "Learning Python for Data Analysis and Visualization",
-    content:
-      "Ansatzweise glaubwdurch Humor oder zufällige Wörter wel che nicht einmal ansatzweiseurdig aussehen. Wenn du eine Passage des Lorem Ipsum nutzt, solltest du aufpassen.",
-    published: "Published 3 weeks ago",
-    helpful: 24,
-    hasReply: true,
-    replyAvatar: "https://i.ibb.co/KpsVRD83/AVATAR-midtone-ux-instrgram.jpg",
-    replyAuthor: "Lincoln Academy",
-    replyDate: "Replied on Jun 23, 2022",
-    replyContent:
-      "Thank you for your detailed feedback! We're glad to hear that you found the course material helpful and comprehensive. Your input helps us continue to improve our programs and provide the best possible learning experience for our students.",
-  },
-  {
-    avatar: "https://i.ibb.co/mFj8fCs/AVATAR-couponcodefinder.jpg",
-    author: "Kiking A.",
+    author: "Kelly R.",
     rating: 5.0,
-    date: "Jun 22, 2022",
-    title: "Learning Python for Data Analysis and Visualization",
+    date: "6 months ago",
+    title: "Dream College",
     content:
-      "Ansatzweise glaubwdurch Humor oder zufällige Wörter wel che nicht einmal ansatzweiseurdig aussehen. Wenn du eine Passage des Lorem Ipsum nutzt, solltest du aufpassen.",
-    published: "Published 3 weeks ago",
+      "Great college with diverse academic opportunities. Affordable local education with transfer programs and career-focused tracks for students in the area. I am significantly more prepared and qualified for furthering my education after attending this college.",
+    published: "Published 6 months ago",
     helpful: 24,
     hasReply: false,
+    location: "Linz, Austria",
+    flagUrl: "https://flagcdn.com/at.svg",
+    tags: ["Algorithm", "C# Programming", "Trading"],
+  },
+  {
+    avatar:
+      "https://i.ibb.co/87nXCrv/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
+    author: "Kelly R.",
+    rating: 5.0,
+    date: "6 months ago",
+    title: "Dream College",
+    content:
+      "Great college with diverse academic opportunities. Affordable local education with transfer programs and career-focused tracks for students in the area. I am significantly more prepared and qualified for furthering my education after attending this college.",
+    published: "Published 6 months ago",
+    helpful: 24,
+    hasReply: false,
+    location: "Linz, Austria",
+    flagUrl: "https://flagcdn.com/at.svg",
+    tags: ["Algorithm", "C# Programming", "Trading"],
   },
 ];

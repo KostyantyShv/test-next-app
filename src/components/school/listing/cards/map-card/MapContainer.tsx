@@ -1,10 +1,16 @@
-import { useEffect, useRef } from "react";
+"use client";
+import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 import { School } from "./types";
 
 interface MapContainerProps {
-  mapType: "roadmap" | "hybrid";
   schools: School[];
-  setActiveTooltip: (school: School | null) => void;
+  mapType: "roadmap" | "satellite";
+  showTerrain: boolean;
+  showLabels: boolean;
+}
+
+export interface MapContainerRef {
+  exitStreetView: () => void;
 }
 
 const getMarkerColor = (grade: string): string => {
@@ -18,86 +24,187 @@ const getMarkerColor = (grade: string): string => {
   return colors[grade] || colors["C+"];
 };
 
-export default function MapContainer({
-  mapType,
-  schools,
-  setActiveTooltip,
-}: MapContainerProps) {
-  const mapRef = useRef<HTMLDivElement>(null);
+const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
+  ({ schools, mapType, showTerrain, showLabels }, ref) => {
+    const mapRef = useRef<HTMLDivElement>(null);
+    const mapInstanceRef = useRef<google.maps.Map | null>(null);
+    const markersRef = useRef<google.maps.Marker[]>([]);
+    const infoWindowsRef = useRef<google.maps.InfoWindow[]>([]);
 
-  const initMap = () => {
-    if (!mapRef.current || typeof google === "undefined") return;
-
-    const map = new google.maps.Map(mapRef.current, {
-      center: { lat: 35.1983, lng: -111.6513 },
-      zoom: 13,
-      styles: [
-        // ... map styles (unchanged)
-      ],
-      disableDefaultUI: true,
-      zoomControl: true,
-      zoomControlOptions: {
-        position: google.maps.ControlPosition.RIGHT_BOTTOM,
+    useImperativeHandle(ref, () => ({
+      exitStreetView: () => {
+        if (mapInstanceRef.current) {
+          (mapInstanceRef.current as any).setStreetView(null);
+        }
       },
-      mapTypeId:
-        mapType === "roadmap"
-          ? google.maps.MapTypeId.ROADMAP
-          : google.maps.MapTypeId.HYBRID,
-    });
+    }));
 
-    schools.forEach((school) => {
-      const marker = new google.maps.Marker({
-        position: school.position,
-        map: map,
-        icon: {
-          url:
-            "data:image/svg+xml;charset=UTF-8," +
-            encodeURIComponent(`
-              <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="18" cy="18" r="18" fill="${getMarkerColor(
-                  school.grade
-                )}"/>
-                <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-weight="bold" font-size="14">${
-                  school.grade
-                }</text>
-              </svg>
-            `),
-          scaledSize: new google.maps.Size(36, 36),
-        },
-      });
+    useEffect(() => {
+      if (!mapRef.current) return;
 
-      const infoWindow = new google.maps.InfoWindow({
-        content: `
-          <div class="school-tooltip flex gap-3 p-3 bg-white rounded-lg shadow-lg w-[250px] md:w-[280px]">
-            <img src="${school.image}" alt="${school.name}" class="w-[80px] md:w-[100px] h-[80px] md:h-[100px] rounded-md object-cover">
-            <div class="flex-1 flex flex-col justify-between">
-              <h3 class="school-name text-[#464646] text-[15px] md:text-base font-semibold m-0">${school.name}</h3>
-              <p class="school-location text-[#5f5f5f] text-[13px] md:text-sm m-0">${school.location}</p>
-            </div>
-          </div>
-        `,
-        pixelOffset: new google.maps.Size(0, -45),
-      });
+      const initMap = () => {
+        if (typeof google === "undefined" || !mapRef.current) return;
 
-      marker.addListener("mouseover", () => {
-        infoWindow.open({ anchor: marker, map, shouldFocus: false });
-      });
-      marker.addListener("mouseout", () => {
-        infoWindow.close();
-      });
-      marker.addListener("click", () => {
-        setActiveTooltip(school);
-        map.setCenter(school.position);
-        map.setZoom(15);
-      });
-    });
-  };
+        const map = new google.maps.Map(mapRef.current, {
+          center: { lat: 35.1983, lng: -111.6513 },
+          zoom: 13,
+          styles: [
+            {
+              featureType: "all",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#464646" }],
+            },
+            {
+              featureType: "landscape",
+              elementType: "all",
+              stylers: [{ color: "#f2f2f2" }],
+            },
+            {
+              featureType: "water",
+              elementType: "all",
+              stylers: [{ color: "#d1e6ea" }],
+            },
+          ],
+          disableDefaultUI: false,
+          zoomControl: true,
+          zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_BOTTOM,
+          },
+          mapTypeControl: false,
+          streetViewControl: true,
+          streetViewControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_BOTTOM,
+          },
+          fullscreenControl: true,
+          fullscreenControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_TOP,
+          },
+        });
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && typeof google !== "undefined") {
-      initMap();
-    }
-  }, [mapType]);
+        mapInstanceRef.current = map;
 
-  return <div ref={mapRef} className="w-full h-full" />;
-}
+        // Listen for street view changes to show/hide markers
+        (map as any).addListener("streetview_changed", () => {
+          const streetView = (map as any).getStreetView();
+          const isStreetViewActive = streetView && streetView.getVisible();
+          
+          markersRef.current.forEach((marker) => {
+            if (isStreetViewActive) {
+              (marker as any).setMap(null);
+            } else {
+              (marker as any).setMap(map);
+            }
+          });
+        });
+
+        // Clear existing markers
+        markersRef.current.forEach((marker) => (marker as any).setMap(null));
+        infoWindowsRef.current.forEach((iw) => iw.close());
+        markersRef.current = [];
+        infoWindowsRef.current = [];
+
+        schools.forEach((school) => {
+          const marker = new google.maps.Marker({
+            position: school.position,
+            map: map,
+            icon: {
+              url:
+                "data:image/svg+xml;charset=UTF-8," +
+                encodeURIComponent(`
+                  <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="20" cy="20" r="20" fill="${getMarkerColor(
+                      school.grade
+                    )}"/>
+                    <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-weight="bold" font-size="16">${
+                      school.grade
+                    }</text>
+                  </svg>
+                `),
+              scaledSize: new google.maps.Size(40, 40),
+            },
+          });
+
+          const infoWindow = new google.maps.InfoWindow({
+            content: `
+              <div style="display: flex; gap: 12px; padding: 12px; width: 280px;">
+                <img src="${school.image}" alt="${school.name}" style="width: 100px; height: 100px; border-radius: 6px; object-fit: cover;">
+                <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                  <h3 style="color: #464646; font-size: 16px; font-weight: 600; margin: 0 0 4px;">${school.name}</h3>
+                  <p style="color: #5F5F5F; font-size: 14px; margin: 0;">${school.location}</p>
+                </div>
+              </div>
+            `,
+            pixelOffset: new google.maps.Size(0, -45),
+          });
+
+          marker.addListener("mouseover", () => {
+            infoWindow.open({ anchor: marker, map, shouldFocus: false });
+          });
+
+          marker.addListener("mouseout", () => {
+            infoWindow.close();
+          });
+
+          markersRef.current.push(marker);
+          infoWindowsRef.current.push(infoWindow);
+        });
+      };
+
+      // Check if Google Maps is already loaded
+      if (typeof google !== "undefined" && google.maps) {
+        initMap();
+      } else {
+        // Wait for Google Maps to load
+        const checkGoogle = setInterval(() => {
+          if (typeof google !== "undefined" && google.maps) {
+            clearInterval(checkGoogle);
+            initMap();
+          }
+        }, 100);
+
+        return () => clearInterval(checkGoogle);
+      }
+    }, [schools]);
+
+    // Handle map type changes
+    useEffect(() => {
+      if (!mapInstanceRef.current || typeof google === "undefined") return;
+
+      const map = mapInstanceRef.current;
+
+      // Exit street view if active
+      const streetView = (map as any).getStreetView();
+      if (streetView && streetView.getVisible()) {
+        (map as any).setStreetView(null);
+      }
+
+      // Set map type
+      if (mapType === "satellite") {
+        // Use HYBRID for satellite with labels, SATELLITE for satellite without labels
+        if (showLabels) {
+          map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+        } else {
+          map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+        }
+      } else {
+        // Use TERRAIN for terrain view, ROADMAP for regular map
+        if (showTerrain) {
+          map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+        } else {
+          map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+        }
+      }
+
+      // Show markers
+      markersRef.current.forEach((marker) => {
+        (marker as any).setMap(map);
+      });
+    }, [mapType, showTerrain, showLabels]);
+
+    return <div ref={mapRef} id="schoolMap" className="w-full h-full" />;
+  }
+);
+
+MapContainer.displayName = "MapContainer";
+
+export default MapContainer;

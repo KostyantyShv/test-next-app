@@ -3,6 +3,7 @@ import Modal from "./AfterCollegeModal";
 import CardWrapper from "../../card-wrapper/CardWrapper";
 import { DesktopModal } from "@/components/ui/DesktopModal/DesktopModal";
 import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
+import styles from "./AfterCollegeCard.module.css";
 
 const AfterCollege: React.FC<{ id: string }> = ({ id }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,23 +57,19 @@ const AfterCollege: React.FC<{ id: string }> = ({ id }) => {
           </div>
         </div>
 
-        <div className="bg-[#F8FCFF] rounded-xl p-6 mb-6">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="flex items-center gap-2 h-8">
-              <div className="relative h-8 w-8 flex items-center before:content-[''] before:bg-[#c5e4b8] before:shadow-[4px_4px_0_#f78f6a,-8px_4px_0_#9eddf8] before:clip-[rect(0,16px,20px,-20px)] before:h-5 before:left-4 before:absolute before:top-1 before:w-[6px]"></div>
-              <div className="text-[#1D77BD] text-[28px] font-semibold tracking-[0.05em] leading-8">
-                POLL
-              </div>
+        <div className={styles.pollSection}>
+          <div className={styles.pollContent}>
+            <div className={styles.pollHeader}>
+              <div className={styles.pollIcon}></div>
+              <div className={styles.pollTitle}>POLL</div>
             </div>
-            <div className="text-[#1B1B1B] text-[32px] font-bold leading-8">
-              87%
-            </div>
+            <div className={styles.pollStat}>87%</div>
           </div>
-          <div className="text-[#4A4A4A] text-sm leading-[1.5] mb-2">
+          <div className={styles.pollDescription}>
             of students feel confident they will find a job in their field after
             graduation.
           </div>
-          <div className="text-[#5F5F5F] text-[13px]">282 responses</div>
+          <div className={styles.pollResponses}>282 responses</div>
         </div>
 
         <a
@@ -85,7 +82,7 @@ const AfterCollege: React.FC<{ id: string }> = ({ id }) => {
         >
           Read More About Life After Graduation
           <svg
-            className="w-4 h-4 transition-transform hover:translate-x-[2px]"
+            className="w-4 h-4 text-[#565656] transition-transform hover:translate-x-[2px]"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"

@@ -2,142 +2,9 @@
 
 import { Fragment, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useMonitors, type Monitor, type MonitorDetail } from '@/hooks/useMonitors.hook';
+import NewMonitorModal from './NewMonitorModal';
 
-interface Monitor {
-  id: number;
-  name: string;
-  item: {
-    title: string;
-    id: string;
-    image: string;
-  };
-  country: {
-    code: string;
-    flag: string;
-    site: string;
-  };
-  interval: string;
-  lastCheck: string;
-  lastCheckTooltip: string;
-  fields: string[];
-  usage: {
-    used: number;
-    total: number;
-    percentage: number;
-  };
-  isActive: boolean;
-  alerts: string[];
-  details: MonitorDetail[];
-  unreadCount: number;
-}
-
-interface MonitorDetail {
-  field: string;
-  triggers: string[];
-  type: string;
-  currentValue: string;
-  currentValueFull: string;
-  previousValue: string;
-  previousValueFull: string;
-  magnitude: number;
-  modified: string;
-  unreadCount: number;
-}
-
-const mockMonitors: Monitor[] = [
-  {
-    id: 1,
-    name: 'Price Tracker Pro',
-    item: {
-      title: 'The Complete Guide to Machine Learning',
-      id: 'ITM-A7B9C3',
-      image: 'https://i.ibb.co/XZwpwsqp/product1.webp',
-    },
-    country: {
-      code: 'us',
-      flag: 'https://cdn.jsdelivr.net/npm/flag-icon-css@3.5.0/flags/4x3/us.svg',
-      site: 'Amazon.com',
-    },
-    interval: '5 min',
-    lastCheck: '21 min',
-    lastCheckTooltip: 'Last: Fri, Dec 25, 2025 4:33:16 PM\nCreated: Sun, Dec 20, 2025 4:39:16 PM\nModified: Wed, Dec 23, 2025 2:33:11 PM',
-    fields: ['Price', 'Stock', 'Title', 'Rating', 'Reviews'],
-    usage: {
-      used: 1200,
-      total: 2000,
-      percentage: 65,
-    },
-    isActive: true,
-    alerts: ['Email', 'Slack', 'Web', 'Webhook'],
-    unreadCount: 6,
-    details: [
-      {
-        field: 'price',
-        triggers: ['If Price decreases', 'Or Price increases'],
-        type: 'decreases by 10%',
-        currentValue: '$29.99',
-        currentValueFull: '$29.99 (was $39.99) - 25% discount applied',
-        previousValue: '$39.99',
-        previousValueFull: '$39.99',
-        magnitude: 25,
-        modified: '5 hours ago',
-        unreadCount: 1,
-      },
-      {
-        field: 'stock',
-        triggers: ['If Stock becomes unavailable'],
-        type: 'contains',
-        currentValue: 'In Stock',
-        currentValueFull: 'In Stock - 47 units available, fast shipping',
-        previousValue: 'In Stock',
-        previousValueFull: 'In Stock - 52 units available',
-        magnitude: 10,
-        modified: '3 hours ago',
-        unreadCount: 5,
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Inventory Watch',
-    item: {
-      title: 'Advanced Analytics Dashboard',
-      id: 'ITM-B8C4D5',
-      image: 'https://i.ibb.co/BHcDXgQt/product5.webp',
-    },
-    country: {
-      code: 'ca',
-      flag: 'https://cdn.jsdelivr.net/npm/flag-icon-css@3.5.0/flags/4x3/ca.svg',
-      site: 'Amazon.ca',
-    },
-    interval: '1 hour',
-    lastCheck: '3 hours',
-    lastCheckTooltip: 'Last: Fri, Dec 25, 2025 1:33:16 PM\nCreated: Mon, Dec 18, 2025 2:15:30 PM\nModified: Thu, Dec 22, 2025 9:45:22 AM',
-    fields: ['Stock', 'Rating', 'Reviews', 'Price', 'Availability', 'Shipping', 'Category', 'Brand', 'Model', 'Features'],
-    usage: {
-      used: 230,
-      total: 1000,
-      percentage: 23,
-    },
-    isActive: false,
-    alerts: ['Email'],
-    unreadCount: 3,
-    details: [
-      {
-        field: 'stock',
-        triggers: ['If Stock becomes unavailable'],
-        type: 'equals',
-        currentValue: 'Out of Stock',
-        currentValueFull: 'Out of Stock - Expected restocking on January 5th, 2025',
-        previousValue: 'In Stock',
-        previousValueFull: 'In Stock - 15 units available',
-        magnitude: 100,
-        modified: '2 hours ago',
-        unreadCount: 3,
-      },
-    ],
-  },
-];
 
 // Dropdown Portal Component
 function DropdownPortal({ children, isOpen, buttonRef }: { 
@@ -166,25 +33,24 @@ function DropdownPortal({ children, isOpen, buttonRef }: {
 }
 
 export default function Monitors() {
-  const [selectedMonitors, setSelectedMonitors] = useState<Set<number>>(new Set());
-  const [expandedMonitor, setExpandedMonitor] = useState<number | null>(null);
-  const [monitorStatuses, setMonitorStatuses] = useState<Record<number, boolean>>(
-    mockMonitors.reduce((acc, m) => ({ ...acc, [m.id]: m.isActive }), {})
-  );
+  const { monitors, loading, error, toggleMonitorStatus, deleteMonitor } = useMonitors();
+  const [selectedMonitors, setSelectedMonitors] = useState<Set<string>>(new Set());
+  const [expandedMonitor, setExpandedMonitor] = useState<string | null>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [buttonRefs, setButtonRefs] = useState<Record<string, React.RefObject<HTMLButtonElement | null>>>({});
+  const [isNewMonitorModalOpen, setIsNewMonitorModalOpen] = useState(false);
 
   const toggleSelectAll = () => {
-    if (selectedMonitors.size === mockMonitors.length) {
+    if (selectedMonitors.size === monitors.length) {
       setSelectedMonitors(new Set());
     } else {
-      setSelectedMonitors(new Set(mockMonitors.map((m) => m.id)));
+      setSelectedMonitors(new Set(monitors.map((m) => m.id)));
     }
   };
 
-  const toggleSelectMonitor = (id: number) => {
+  const toggleSelectMonitor = (id: string) => {
     const newSelected = new Set(selectedMonitors);
     if (newSelected.has(id)) {
       newSelected.delete(id);
@@ -194,12 +60,30 @@ export default function Monitors() {
     setSelectedMonitors(newSelected);
   };
 
-  const toggleExpand = (id: number) => {
+  const toggleExpand = (id: string) => {
     setExpandedMonitor(expandedMonitor === id ? null : id);
   };
 
-  const toggleStatus = (id: number) => {
-    setMonitorStatuses((prev) => ({ ...prev, [id]: !prev[id] }));
+  const handleToggleStatus = async (id: string) => {
+    try {
+      await toggleMonitorStatus(id);
+    } catch (err) {
+      console.error('Failed to toggle monitor status:', err);
+    }
+  };
+
+  const handleDeleteMonitor = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this monitor?')) return;
+    try {
+      await deleteMonitor(id);
+      setSelectedMonitors((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
+    } catch (err) {
+      console.error('Failed to delete monitor:', err);
+    }
   };
 
   const toggleDropdown = (dropdownId: string) => {
@@ -240,7 +124,10 @@ export default function Monitors() {
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold text-[#464646]">Monitors</h1>
-          <button className="px-5 py-2.5 rounded-lg text-sm font-medium border border-[#0B6333] bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9] transition-colors flex items-center gap-2">
+          <button 
+            onClick={() => setIsNewMonitorModalOpen(true)}
+            className="px-5 py-2.5 rounded-lg text-sm font-medium border border-[#0B6333] bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9] transition-colors flex items-center gap-2"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16" className="w-4 h-4">
               <path fill="currentColor" d="M9 4H7V7H4V9H7V12H9V9H12V7H9V4Z" clipRule="evenodd" fillRule="evenodd" />
             </svg>
@@ -258,7 +145,7 @@ export default function Monitors() {
             </div>
             <div>
               <h3 className="text-sm text-[#5F5F5F] font-medium mb-1">Total Monitors</h3>
-              <div className="text-xl font-semibold text-[#464646]">2,847</div>
+              <div className="text-xl font-semibold text-[#464646]">{monitors.length}</div>
             </div>
           </div>
 
@@ -270,7 +157,7 @@ export default function Monitors() {
             </div>
             <div>
               <h3 className="text-sm text-[#5F5F5F] font-medium mb-1">Active</h3>
-              <div className="text-xl font-semibold text-[#464646]">2,563</div>
+              <div className="text-xl font-semibold text-[#464646]">{monitors.filter(m => m.isActive).length}</div>
             </div>
           </div>
 
@@ -282,7 +169,7 @@ export default function Monitors() {
             </div>
             <div>
               <h3 className="text-sm text-[#5F5F5F] font-medium mb-1">Unread Changes</h3>
-              <div className="text-xl font-semibold text-[#464646]">1,284</div>
+              <div className="text-xl font-semibold text-[#464646]">{monitors.reduce((sum, m) => sum + m.unreadCount, 0)}</div>
             </div>
           </div>
 
@@ -296,7 +183,7 @@ export default function Monitors() {
             </div>
             <div>
               <h3 className="text-sm text-[#5F5F5F] font-medium mb-1">Issues</h3>
-              <div className="text-xl font-semibold text-[#464646]">23</div>
+              <div className="text-xl font-semibold text-[#464646]">{monitors.filter(m => !m.isActive).length}</div>
             </div>
           </div>
         </div>
@@ -417,12 +304,12 @@ export default function Monitors() {
                     <div
                       onClick={toggleSelectAll}
                       className={`w-[18px] h-[18px] border-2 rounded cursor-pointer transition-all ${
-                        selectedMonitors.size === mockMonitors.length
+                        monitors.length > 0 && selectedMonitors.size === monitors.length
                           ? 'bg-[#0B6333] border-[#0B6333]'
                           : 'bg-white border-[#eaeaea]'
                       } relative`}
                     >
-                      {selectedMonitors.size === mockMonitors.length && (
+                      {monitors.length > 0 && selectedMonitors.size === monitors.length && (
                         <div className="absolute left-[4px] top-[1px] w-[5px] h-[10px] border-white border-r-2 border-b-2 rotate-45" />
                       )}
                     </div>
@@ -441,7 +328,37 @@ export default function Monitors() {
                 </tr>
               </thead>
               <tbody className="overflow-visible">
-                 {mockMonitors.map((monitor) => {
+                {loading ? (
+                  <tr>
+                    <td colSpan={12} className="px-4 py-8 text-center text-[#5F5F5F]">
+                      Loading monitors...
+                    </td>
+                  </tr>
+                ) : error ? (
+                  <tr>
+                    <td colSpan={12} className="px-4 py-8 text-center text-red-600">
+                      Error: {error}
+                    </td>
+                  </tr>
+                ) : monitors.length === 0 ? (
+                  <tr>
+                    <td colSpan={12} className="px-4 py-8 text-center text-[#5F5F5F]">
+                      No monitors found. Create your first monitor to get started.
+                    </td>
+                  </tr>
+                ) : (
+                 monitors
+                   .filter((monitor) => {
+                     if (!searchQuery) return true;
+                     const query = searchQuery.toLowerCase();
+                     return (
+                       monitor.name.toLowerCase().includes(query) ||
+                       monitor.item.title.toLowerCase().includes(query) ||
+                       monitor.item.id.toLowerCase().includes(query) ||
+                       monitor.country.site.toLowerCase().includes(query)
+                     );
+                   })
+                   .map((monitor) => {
                    const { visible: visibleFields, hidden: hiddenFieldsCount } = getVisibleFields(monitor.fields);
                    const isExpanded = expandedMonitor === monitor.id;
  
@@ -567,14 +484,14 @@ export default function Monitors() {
                          <td className="px-3 py-3 overflow-visible">
                            <div className="flex items-center gap-2">
                              <div
-                               onClick={() => toggleStatus(monitor.id)}
+                               onClick={() => handleToggleStatus(monitor.id)}
                                className={`relative w-11 h-6 rounded-full cursor-pointer transition-colors ${
-                                 monitorStatuses[monitor.id] ? 'bg-[#089E68]' : 'bg-[#d1d5db]'
+                                 monitor.isActive ? 'bg-[#089E68]' : 'bg-[#d1d5db]'
                                }`}
                              >
                                <div
                                  className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
-                                   monitorStatuses[monitor.id] ? 'translate-x-5' : 'translate-x-0.5'
+                                   monitor.isActive ? 'translate-x-5' : 'translate-x-0.5'
                                  }`}
                                />
                              </div>
@@ -643,7 +560,7 @@ export default function Monitors() {
                                     <rect x="6" y="4" width="4" height="16" />
                                     <rect x="14" y="4" width="4" height="16" />
                                   </svg>
-                                  {monitorStatuses[monitor.id] ? 'Pause' : 'Resume'}
+                                  {monitor.isActive ? 'Pause' : 'Resume'}
                                 </a>
                                 <a href="#" className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-[#4A4A4A] hover:bg-[#f9fafb] rounded-md transition-colors">
                                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-[#5F5F5F]">
@@ -779,7 +696,8 @@ export default function Monitors() {
                        )}
                      </Fragment>
                    );
-                 })}
+                 })
+                )}
                </tbody>
             </table>
           </div>
@@ -801,7 +719,7 @@ export default function Monitors() {
       )}
 
       {/* Dropdown Portal */}
-      {mockMonitors.map((monitor) => (
+      {monitors.map((monitor) => (
         <DropdownPortal
           key={`portal-${monitor.id}`}
           isOpen={openDropdown === `options-${monitor.id}`}
@@ -814,12 +732,19 @@ export default function Monitors() {
             </svg>
             Edit
           </a>
-          <a href="#" className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-[#4A4A4A] hover:bg-[#f9fafb] rounded-md transition-colors">
+          <a 
+            href="#" 
+            onClick={(e) => {
+              e.preventDefault();
+              handleToggleStatus(monitor.id);
+            }}
+            className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-[#4A4A4A] hover:bg-[#f9fafb] rounded-md transition-colors"
+          >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-[#5F5F5F]">
               <rect x="6" y="4" width="4" height="16" />
               <rect x="14" y="4" width="4" height="16" />
             </svg>
-            {monitorStatuses[monitor.id] ? 'Pause' : 'Resume'}
+            {monitor.isActive ? 'Pause' : 'Resume'}
           </a>
           <a href="#" className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-[#4A4A4A] hover:bg-[#f9fafb] rounded-md transition-colors">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-[#5F5F5F]">
@@ -829,7 +754,14 @@ export default function Monitors() {
             </svg>
             Export
           </a>
-          <a href="#" className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-[#4A4A4A] hover:text-white hover:bg-[#ff4d4f] rounded-md transition-colors">
+          <a 
+            href="#" 
+            onClick={(e) => {
+              e.preventDefault();
+              handleDeleteMonitor(monitor.id);
+            }}
+            className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-[#4A4A4A] hover:text-white hover:bg-[#ff4d4f] rounded-md transition-colors"
+          >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
               <polyline points="3 6 5 6 21 6" />
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
@@ -838,6 +770,12 @@ export default function Monitors() {
           </a>
         </DropdownPortal>
       ))}
+
+      {/* New Monitor Modal */}
+      <NewMonitorModal
+        isOpen={isNewMonitorModalOpen}
+        onClose={() => setIsNewMonitorModalOpen(false)}
+      />
     </div>
   );
 }

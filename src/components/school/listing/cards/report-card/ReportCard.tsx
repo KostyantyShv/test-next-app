@@ -15,7 +15,7 @@ type GradeItem = {
 // Mock overall grade
 const mockOverallGrade: GradeItem = {
   grade: "A-",
-  subject: "Overall SkoolScout Grade",
+  subject: "Overall SchoolScout Grade",
   badgeColor: "#1ad598",
 };
 
@@ -57,7 +57,7 @@ const ReportCard: React.FC<{ id: string }> = ({ id }) => {
             >
               {mockOverallGrade.grade}
             </div>
-            <div className="text-[15px] text-[var(--bold-text)] font-medium text-center">
+            <div className="text-[15px] text-[var(--bold-text)] font-semibold text-center">
               {mockOverallGrade.subject}
             </div>
             <div className="hidden sm:flex flex-col items-center gap-2 mt-3">
@@ -90,7 +90,7 @@ const ReportCard: React.FC<{ id: string }> = ({ id }) => {
                   >
                     {item.grade}
                   </div>
-                  <div className="text-[14px] sm:text-[15px] text-[var(--bold-text)] font-medium text-center sm:text-left">
+                  <div className="text-[14px] sm:text-[15px] text-[var(--bold-text)] font-semibold text-center sm:text-left">
                     {item.subject}
                   </div>
                 </div>
@@ -111,7 +111,7 @@ const ReportCard: React.FC<{ id: string }> = ({ id }) => {
                     >
                       {item.grade}
                     </div>
-                    <div className="text-[14px] sm:text-[15px] text-[var(--bold-text)] font-medium text-center sm:text-left">
+                    <div className="text-[14px] sm:text-[15px] text-[var(--bold-text)] font-semibold text-center sm:text-left">
                       {item.subject}
                     </div>
                   </div>
@@ -126,7 +126,7 @@ const ReportCard: React.FC<{ id: string }> = ({ id }) => {
           className="p-4 sm:p-6 border-t border-gray-100 flex justify-center items-center gap-2 cursor-pointer hover:bg-gray-50 transition-colors duration-200"
           onClick={toggleExpand}
         >
-          <span className="text-[14px] text-[var(--subtle-text)] font-medium">
+          <span className="text-[14px] text-[var(--subtle-text)] font-semibold">
             {isExpanded ? "Hide" : "View Full Report Card"}
           </span>
           <svg

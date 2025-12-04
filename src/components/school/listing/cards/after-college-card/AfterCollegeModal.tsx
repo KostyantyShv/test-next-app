@@ -16,7 +16,7 @@ const AfterCollegeModal: React.FC<AfterCollegeModalProps> = ({ onClose }) => {
             Overall Value
           </h1>
           <button
-            className="bg-transparent border-none cursor-pointer text-[#5F5F5F] p-1 w-8 h-8 flex items-center justify-center"
+            className="bg-transparent border-none cursor-pointer text-[#565656] p-1 w-8 h-8 flex items-center justify-center"
             onClick={onClose}
           >
             <svg
@@ -117,7 +117,7 @@ const AfterCollegeModal: React.FC<AfterCollegeModalProps> = ({ onClose }) => {
             <div className="flex flex-col gap-3">
               <div className="text-[#4A4A4A] text-sm md:text-[15px] font-semibold mb-2 flex items-center gap-2">
                 2 Years After Graduation
-                <span className="text-[#5F5F5F]">
+                <span className="text-[#565656]">
                   <svg
                     viewBox="0 0 24 24"
                     fill="currentColor"
@@ -141,7 +141,7 @@ const AfterCollegeModal: React.FC<AfterCollegeModalProps> = ({ onClose }) => {
             <div className="flex flex-col gap-3">
               <div className="text-[#4A4A4A] text-sm md:text-[15px] font-semibold mb-2 flex items-center gap-2">
                 6 Years After Graduation
-                <span className="text-[#5F5F5F]">
+                <span className="text-[#565656]">
                   <svg
                     viewBox="0 0 24 24"
                     fill="currentColor"
@@ -324,7 +324,7 @@ const AfterCollegeModal: React.FC<AfterCollegeModalProps> = ({ onClose }) => {
                       <div className="flex items-center gap-1">4 yr</div>
                       <div className="flex items-center gap-1">
                         <svg
-                          className="w-3 md:w-[14px] h-3 md:h-[14px] text-[#089E68]"
+                          className="w-3 md:w-[14px] h-3 md:h-[14px] text-[#565656]"
                           viewBox="0 0 24 24"
                           fill="none"
                         >
@@ -336,7 +336,7 @@ const AfterCollegeModal: React.FC<AfterCollegeModalProps> = ({ onClose }) => {
                         </svg>
                         Boston, MA
                       </div>
-                      <div className="flex items-center gap-1 text-[#089E68] font-medium">
+                      <div className="flex items-center gap-1 text-[#565656] font-medium">
                         <svg viewBox="0 0 24 24" width="12" height="12">
                           <path
                             fill="currentColor"

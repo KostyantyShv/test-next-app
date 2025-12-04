@@ -22,7 +22,7 @@ export default function RequirementsSection() {
               High School Rank
             </td>
             <td className="py-3 text-[13px] text-[#089E68] text-right md:py-4 md:text-sm">
-              Not required
+            Neither required nor recommended
             </td>
           </tr>
           <tr className="border-b border-black/10">
@@ -52,7 +52,7 @@ export default function RequirementsSection() {
               Recommendations
             </td>
             <td className="py-3 text-[13px] text-[#089E68] text-right md:py-4 md:text-sm">
-              Not required
+            Neither required nor recommended
             </td>
           </tr>
         </tbody>

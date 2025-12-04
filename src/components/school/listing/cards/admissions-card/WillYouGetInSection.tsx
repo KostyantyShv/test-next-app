@@ -223,7 +223,7 @@ export default function WillYouGetInSection() {
         <canvas ref={canvasRef} className="w-full h-full" />
       </div>
       <div className="text-right text-[#5F5F5F] text-[11px] md:text-xs">
-        Data provided by 17,865 Niche users
+        Data provided by 17,865 SchoolScouts users
       </div>
     </div>
   );

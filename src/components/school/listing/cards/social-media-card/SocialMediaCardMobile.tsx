@@ -116,32 +116,35 @@ const SocialMediaCardMobile: React.FC<{ id: string }> = ({ id }) => {
                     <div className="relative mr-3 after:content-['•'] after:absolute after:right-[-7px]">
                       {data.date}
                     </div>
+                    {data.time && <div className="ml-1">{data.time}</div>}
                   </div>
                   <a
                     href="#"
                     className="text-xs sm:text-[13px] text-[#346DC2] font-medium no-underline"
                   >
-                    Full post here
+                    {data.linkText || "Full post here"}
                   </a>
                 </div>
-                <div className="p-2 sm:p-3 border-t border-[rgba(0,0,0,0.08)] flex justify-between items-center">
-                  <div className="flex items-center text-xs sm:text-[13px] text-[#5F5F5F]">
-                    <div className="flex items-center mr-3 sm:mr-4">
-                      <div className="w-4 h-4 sm:w-[18px] sm:h-[18px] mr-1 flex items-center justify-center">
-                        {data.likeIcon}
+                <div className="p-3 border-t border-[rgba(0,0,0,0.08)] flex justify-between items-center">
+                  <div className="flex items-center text-[13px] text-[#5F5F5F]">
+                    <div className="flex items-center mr-4">
+                      <div className="w-[18px] h-[18px] mr-1 flex items-center justify-center">
+                        {interactionIcons.heart}
                       </div>
                       <span>{data.likes}</span>
                     </div>
-                    <div className="flex items-center mr-3 sm:mr-4">
-                      <div className="w-4 h-4 sm:w-[18px] sm:h-[18px] mr-1 flex items-center justify-center">
-                        {data.commentIcon}
+                    <div className="flex items-center mr-4">
+                      <div className="w-[18px] h-[18px] mr-1 flex items-center justify-center">
+                        {data.platform === "Twitter"
+                          ? interactionIcons.retweet
+                          : interactionIcons.comment}
                       </div>
                       <span>{data.comments}</span>
                     </div>
                   </div>
-                  <div className="flex items-center text-xs sm:text-[13px] text-[#5F5F5F]">
-                    <div className="w-4 h-4 sm:w-[18px] sm:h-[18px] mr-1 flex items-center justify-center">
-                      {data.shareIcon}
+                  <div className="flex items-center text-[13px] text-[#5F5F5F]">
+                    <div className="w-[18px] h-[18px] mr-1 flex items-center justify-center">
+                      {interactionIcons.share}
                     </div>
                     <span>{data.shares}</span>
                   </div>

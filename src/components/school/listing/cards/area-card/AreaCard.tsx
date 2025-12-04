@@ -12,7 +12,7 @@ const AreaCard: React.FC<{ id: string }> = ({ id }) => {
     <>
       <div
         id={id}
-        className="w-full bg-cardBackground rounded-cardBorderRadius shadow-cardShadow overflow-hidden my-cardMargin"
+        className="w-full bg-cardBackground rounded-cardBorderRadius shadow-cardShadow overflow-hidden my-cardMargin md:px-[87px]"
       >
         <div className="bg-[#F2F7EF] p-8 border-b border-[rgba(0,0,0,0.05)]">
           <div className="flex items-center gap-2 mb-1.5">
@@ -62,7 +62,7 @@ const AreaCard: React.FC<{ id: string }> = ({ id }) => {
                 <div className="w-9 h-9 rounded-full flex items-center justify-center text-base font-semibold text-white bg-[#4CAF50]">
                   B
                 </div>
-                <div className="text-[15px] text-[#464646] font-medium">
+                <div className="text-[15px] text-[#464646] font-semibold">
                   Cost of Living
                 </div>
               </div>
@@ -70,7 +70,7 @@ const AreaCard: React.FC<{ id: string }> = ({ id }) => {
                 <div className="w-9 h-9 rounded-full flex items-center justify-center text-base font-semibold text-white bg-[#8BC34A]">
                   B-
                 </div>
-                <div className="text-[15px] text-[#464646] font-medium">
+                <div className="text-[15px] text-[#464646] font-semibold">
                   Good for Families
                 </div>
               </div>
@@ -78,7 +78,7 @@ const AreaCard: React.FC<{ id: string }> = ({ id }) => {
                 <div className="w-9 h-9 rounded-full flex items-center justify-center text-base font-semibold text-white bg-[#8BC34A]">
                   B-
                 </div>
-                <div className="text-[15px] text-[#464646] font-medium">
+                <div className="text-[15px] text-[#464646] font-semibold">
                   Housing
                 </div>
               </div>
@@ -125,7 +125,7 @@ const AreaCard: React.FC<{ id: string }> = ({ id }) => {
         <div className="flex justify-center md:justify-end p-4 border-t border-[rgba(0,0,0,0.08)]">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center text-[#346DC2] text-[15px] font-medium gap-2 hover:underline transition duration-200 ease-in-out"
+            className="flex items-center text-[#346DC2] text-[15px] font-semibold gap-2 hover:underline transition duration-200 ease-in-out"
           >
             Read More About Panama City
             <svg className="w-4 h-4 fill-[#346DC2]" viewBox="0 0 24 24">

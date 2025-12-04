@@ -19,25 +19,27 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
   }, []);
 
   return (
-    <div className="w-full h-full md:max-w-[1100px] md:h-[90vh] bg-white md:rounded-2xl overflow-hidden relative shadow-[0_4px_24px_rgba(0,0,0,0.15)] transition-all duration-300 ease-in-out">
-      {/* Header */}
-      <div className="bg-[#016853] text-white p-4 md:p-6 flex justify-between items-center sticky top-0 z-10 border-b border-[rgba(255,255,255,0.1)]">
-        <div>
-          <h1 className="text-xl md:text-3xl font-bold m-0">Panama City</h1>
-          <p className="mt-1 md:mt-2 text-sm md:text-base font-normal opacity-90">
-            Florida
-          </p>
+    <div className="w-full h-full md:max-w-[1100px] md:h-[90vh] bg-white md:rounded-2xl relative shadow-[0_4px_24px_rgba(0,0,0,0.15)] transition-all duration-300 ease-in-out flex flex-col overflow-hidden">
+      {/* Scrollable container */}
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <div className="bg-[#016853] text-white p-4 md:p-6 flex justify-between items-center sticky top-0 z-10 border-b border-white/10 flex-shrink-0">
+          <div>
+            <h1 className="text-xl md:text-3xl font-bold m-0">Panama City</h1>
+            <p className="mt-1 md:mt-2 text-sm md:text-base font-normal opacity-90">
+              Florida
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="bg-transparent border-none text-white text-2xl md:text-3xl cursor-pointer w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full hover:bg-[rgba(255,255,255,0.1)] transition duration-300"
+          >
+            ×
+          </button>
         </div>
-        <button
-          onClick={onClose}
-          className="bg-transparent border-none text-white text-2xl md:text-3xl cursor-pointer w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full hover:bg-[rgba(255,255,255,0.1)] transition duration-300"
-        >
-          ×
-        </button>
-      </div>
 
-      {/* Content */}
-      <div className="overflow-y-auto h-[calc(100%-60px)] md:h-[calc(90vh-100px)] p-4 md:p-8">
+        {/* Content */}
+        <div className="p-4 md:p-8">
         {/* Section 1: Living in the Area */}
         <div className="mb-4 md:mb-7">
           <h2 className="mb-3 md:mb-4 text-lg md:text-[22px] text-[#016853] font-semibold">
@@ -52,7 +54,7 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
                 </div>
                 <div>
                   <div className="text-sm md:text-[15px] text-[#464646] md:text-center font-medium">
-                    Overall SkoolScout Grade
+                    Overall SchoolScout Grade
                   </div>
                   <div className="flex flex-col md:items-center md:gap-2 md:mt-3">
                     <a
@@ -159,9 +161,7 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
 
         {/* Section 3: Panama City Rankings */}
         <div className="mb-4 md:mb-7">
-          <h2 className="mb-3 md:mb-4 text-xl md:text-[22px] mx-0 md:mx-6 text-[#016853] font-semibold mt-4">
-            Panama City Rankings
-          </h2>
+          
           <div className="w-full md:w-[95%] max-w-[1000px] mx-auto bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.05)] md:shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-[rgba(0,0,0,0.05)] overflow-hidden">
             <div className="h-[6px] bg-gradient-to-r from-[#016853] to-[#089E68] rounded-t-xl" />
             <div className="p-4 md:p-7">
@@ -572,7 +572,7 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
                   >
                     <a
                       href="#"
-                      className="text-sm md:text-[15px] text-[#346DC2] font-medium no-underline hover:underline"
+                      className="text-sm md:text-[15px] text-[#346DC2] font-semibold no-underline hover:underline"
                     >
                       {item.name}
                     </a>
@@ -605,7 +605,7 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
                     key={tab}
                     className={`py-2 md:py-3 px-4 md:px-6 text-sm md:text-base font-medium text-[#4A4A4A] cursor-pointer transition-all duration-300 ${
                       activeTab === tab
-                        ? "text-[#016853] border-b-2 md:border-b-2 border-[#016853]"
+                        ? "text-[#016853] border-b-2 font-semibold md:border-b-2 border-[#016853]"
                         : ""
                     }`}
                     onClick={() => setActiveTab(tab)}
@@ -880,6 +880,7 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

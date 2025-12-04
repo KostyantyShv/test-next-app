@@ -24,7 +24,7 @@ const RankCard: React.FC<{ id: string }> = ({ id }) => {
   return (
     <>
       <div id={id} className="flex justify-center my-cardMargin md:p-0">
-        <div className="w-full bg-cardBackground rounded-cardBorderRadius shadow-cardShadow overflow-hidden md:max-w-[875px] md:shadow-cardShadow">
+        <div className="w-full bg-cardBackground rounded-cardBorderRadius shadow-cardShadow overflow-hidden md:max-w-[875px] md:shadow-cardShadow md:px-[87px] md:py-cardPadding">
           <div className="bg-[#016853] max-md:h-4 h-1.5 md:bg-gradient-to-r md:from-[#016853] md:to-[#089E68] md:flex md:items-center md:justify-center md:text-white md:text-sm md:font-semibold mb-6 md:mb-7" />
           <div className="px-5 pb-9 md:px-9">
             <div className="flex flex-col md:flex-row items-start gap-4 mb-6 md:gap-6 md:mb-8">
@@ -76,7 +76,7 @@ const RankCard: React.FC<{ id: string }> = ({ id }) => {
             <div className="border-t border-[#E5E5E5] pt-5 flex justify-end items-center md:border-[rgba(0,0,0,0.08)] md:pt-6">
               <a
                 href="#"
-                className="text-[#346DC2] text-base font-medium flex items-center gap-2 md:px-4 md:py-2 md:rounded-lg md:bg-[rgba(52,109,194,0.05)] md:hover:text-[#1D77BD] md:hover:bg-[rgba(52,109,194,0.1)] md:transition-all md:duration-200"
+                className="text-[#346DC2] text-base font-semibold flex items-center gap-2 md:px-4 md:py-2 md:rounded-lg md:bg-[rgba(52,109,194,0.05)] md:hover:text-[#1D77BD] md:hover:bg-[rgba(52,109,194,0.1)] md:transition-all md:duration-200"
                 onClick={(e) => {
                   e.preventDefault();
                   setIsPopupOpen(true);

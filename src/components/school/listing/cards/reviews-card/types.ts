@@ -12,4 +12,7 @@ export interface Review {
   replyAuthor?: string;
   replyDate?: string;
   replyContent?: string;
+  location?: string;
+  flagUrl?: string;
+  tags?: string[];
 }

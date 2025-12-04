@@ -51,7 +51,7 @@ const ContentDesktop = () => {
   };
 
   return (
-    <div className="py-5 flex flex-col md:flex-row gap-6">
+    <div className="py-5 flex flex-col md:flex-row gap-14">
       <aside className="w-full md:w-64 flex-shrink-0 md:sticky md:top-20 self-start max-sm:hidden h-[calc(100vh-5rem)]">
         <ul className="flex flex-col pl-[40px] overflow-y-auto h-full scrollbar-hide">
           {Object.values(SIDE_TABS_DESKTOP).map((value, index) => {

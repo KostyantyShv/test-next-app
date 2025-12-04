@@ -20,7 +20,7 @@ const AboutPage: React.FC<{ id: string }> = ({ id }) => {
 
   return (
     <div id={id} className="flex justify-center my-cardMargin">
-      <div className="w-full max-w-[875px] bg-cardBackground rounded-cardBorderRadius shadow-cardShadow max-md:p-4 p-cardPadding">
+      <div className="w-full max-w-[875px] bg-cardBackground rounded-cardBorderRadius shadow-cardShadow max-md:p-4 p-cardPadding md:px-[87px] md:py-cardPadding">
         {/* Profile Header */}
         <div className="flex flex-col md:flex-row gap-6 mb-8 items-center">
           <Image
@@ -42,7 +42,7 @@ const AboutPage: React.FC<{ id: string }> = ({ id }) => {
               ].map((badge, index) => (
                 <span
                   key={index}
-                  className="bg-[#EBFCF4] text-[#016853] px-3 py-1.5 rounded-full text-sm md:text-base font-medium"
+                  className="bg-[#EBFCF4] text-[#016853] px-3 py-1.5 rounded-full text-sm md:text-base font-semibold"
                 >
                   {badge}
                 </span>
@@ -122,7 +122,7 @@ const AboutPage: React.FC<{ id: string }> = ({ id }) => {
                   <div className="text-xs text-[#5F5F5F] uppercase tracking-[0.5px] mb-1">
                     {field.label}
                   </div>
-                  <div className="text-sm text-[#4A4A4A] font-medium">
+                  <div className="text-sm text-[#4A4A4A] font-semibold">
                     {field.value}
                   </div>
                 </div>
@@ -226,7 +226,7 @@ const AboutPage: React.FC<{ id: string }> = ({ id }) => {
         <div className="md:mb-8 max-md:border rounded-cardBorderRadius max-md:p-4 max-md:mt-4">
           <div className="flex items-center md:justify-between gap-5 mb-4">
             <h2 className="text-lg font-semibold text-[#464646]">Followers</h2>
-            <span className="bg-[#EBFCF4] text-[#016853] px-3 py-1 rounded-full text-sm font-medium md:bg-[#EBFCF4] md:text-[#016853]">
+            <span className="bg-[#f2f2f2] text-[#000000] px-3 py-1 rounded-full text-sm font-semibold md:bg-[#EBFCF4] md:text-[#016853]">
               111
             </span>
           </div>
@@ -252,7 +252,7 @@ const AboutPage: React.FC<{ id: string }> = ({ id }) => {
           </div>
           <a
             href="#"
-            className="more-followers text-[#346DC2] text-sm font-medium hover:underline transition-all duration-200"
+            className="more-followers text-[#346DC2] text-sm font-semibold hover:underline transition-all duration-200"
             onClick={(e) => {
               e.preventDefault();
               // Add click animation logic if needed
@@ -281,7 +281,7 @@ const AboutPage: React.FC<{ id: string }> = ({ id }) => {
             ].map((tag, index) => (
               <span
                 key={index}
-                className="tag bg-[#F8F9FD] text-[#4A4A4A] px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer transition-all duration-200 hover:bg-[#EBFCF4] hover:text-[#016853] hover:-translate-y-0.5 active:scale-95"
+                className="tag bg-[#F8F9FD] text-[#4A4A4A] px-3 py-1.5 rounded-md text-sm font-semibold cursor-pointer transition-all duration-200 hover:bg-[#EBFCF4] hover:text-[#016853] hover:-translate-y-0.5 active:scale-95"
                 onClick={() => {
                   // Add click logic if needed
                 }}

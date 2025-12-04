@@ -1,0 +1,20 @@
+.pollIcon {
+  position: relative;
+  height: 16px;
+  width: 16px;
+  margin-right: 12px;
+}
+
+.pollIcon::before {
+  background-color: #c5e4b8;
+  box-shadow: 4px 4px 0 #f78f6a, -8px 4px 0 #9eddf8, 0 0 0 transparent, -4px 2px 0 #6bbef2;
+  clip: rect(0, 8px, 10px, -10px);
+  content: "";
+  height: 10px;
+  left: 8px;
+  position: absolute;
+  top: 2px;
+  width: 3px;
+}
+
+

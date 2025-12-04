@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function DataSource() {
   return (
     <div className="text-right text-[#5F5F5F] text-xs mt-4 md:mt-5 pt-2.5 md:pt-3 border-t border-[#DFDDDB] flex justify-center md:justify-end items-center gap-1">
-      <span>Data provided by 16,970 Niche users</span>
+      <span>Data provided by 16,970 SchoolScouts users</span>
       <Image
         height={12}
         width={12}

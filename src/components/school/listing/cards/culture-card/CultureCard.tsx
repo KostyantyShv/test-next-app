@@ -2,6 +2,7 @@
 import { useState } from "react";
 import CardWrapper from "../../card-wrapper/CardWrapper";
 import { truncateText } from "@/utils/truncateText";
+import styles from "./CultureCard.module.css";
 
 const CultureSafety: React.FC<{ id: string }> = ({ id }) => {
   const [showMore, setShowMore] = useState(false);
@@ -22,9 +23,7 @@ const CultureSafety: React.FC<{ id: string }> = ({ id }) => {
           {/* Safety Assessment */}
           <div className="bg-white rounded-cardBorderRadius p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[rgba(0,0,0,0.06)] mb-6">
             <div className="flex items-center mb-6">
-              <div className="relative h-4 w-4 mr-3">
-                <div className="absolute bg-[#c5e4b8] shadow-[4px_4px_0_#f78f6a,-8px_4px_0_#9eddf8,0_0_0_transparent,-4px_2px_0_#6bbef2] h-[10px] w-[3px] left-2 top-[2px]" />
-              </div>
+              <div className={styles.pollIcon}></div>
               <div className="text-[#346DC2] text-[13px] font-semibold uppercase tracking-[0.05em]">
                 SAFETY ASSESSMENT
               </div>
@@ -69,9 +68,7 @@ const CultureSafety: React.FC<{ id: string }> = ({ id }) => {
           {/* Happiness Index */}
           <div className="bg-white rounded-cardBorderRadius p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[rgba(0,0,0,0.06)]">
             <div className="flex items-center mb-6">
-              <div className="relative h-4 w-4 mr-3">
-                <div className="absolute bg-[#c5e4b8] shadow-[4px_4px_0_#f78f6a,-8px_4px_0_#9eddf8,0_0_0_transparent,-4px_2px_0_#6bbef2] h-[10px] w-[3px] left-2 top-[2px]" />
-              </div>
+              <div className={styles.pollIcon}></div>
               <div className="text-[#346DC2] text-[13px] font-semibold uppercase tracking-[0.05em]">
                 HAPPINESS INDEX
               </div>
@@ -117,9 +114,7 @@ const CultureSafety: React.FC<{ id: string }> = ({ id }) => {
         {/* Right Column - Bar Chart */}
         <div className="p-6 rounded-cardBorderRadius shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[rgba(0,0,0,0.06)]">
           <div className="relative">
-            <div className="relative h-4 w-4 mb-5">
-              <div className="absolute bg-[#c5e4b8] shadow-[4px_4px_0_#f78f6a,-8px_4px_0_#9eddf8,0_0_0_transparent,-4px_2px_0_#6bbef2] h-[10px] w-[3px] left-2 top-[2px]" />
-            </div>
+            <div className={styles.pollIcon} style={{ marginBottom: "20px" }}></div>
             <h3 className="text-[#4A4A4A] text-[15px] font-medium mb-5 tracking-[-0.01em] leading-[1.4]">
               What are your favorite school events or traditions?
             </h3>

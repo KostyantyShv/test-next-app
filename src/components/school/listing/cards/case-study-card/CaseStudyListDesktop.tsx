@@ -55,39 +55,8 @@ export default function CaseStudyListDesktop({
         Case Studies
       </h2>
       <div className="bg-gradient-to-br from-[#016853] to-[#089E68] rounded-[20px] p-8 flex relative min-h-[280px] mb-6">
-        <svg
-          className="absolute bottom-[-30%] left-[-10%] w-[120%] h-[120%] pointer-events-none opacity-15 rotate-[15deg]"
-          viewBox="0 0 800 600"
-        >
-          <defs>
-            <linearGradient
-              id="circleGradient"
-              x1="0%"
-              y1="0%"
-              x2="100%"
-              y2="100%"
-            >
-              <stop
-                offset="0%"
-                style={{ stopColor: "#244fe7", stopOpacity: 0.3 }}
-              />
-              <stop
-                offset="100%"
-                style={{ stopColor: "#0a0e5c", stopOpacity: 0.1 }}
-              />
-            </linearGradient>
-          </defs>
-          <circle
-            cx="200"
-            cy="250"
-            r="250"
-            stroke="url(#circleGradient)"
-            strokeWidth="180"
-            fill="none"
-          />
-        </svg>
 
-        <div className="w-[395px] h-[280px] rounded-[20px] relative border-4 border-white/20 shadow-lg -translate-y-[30%] z-10 overflow-hidden">
+        <div className="w-[355px] h-[230px] rounded-[20px] relative border-4 border-white/20 shadow-lg -translate-y-[30%] z-10 overflow-hidden">
           <img
             src={currentStudy.image}
             alt="Case Study"
@@ -95,18 +64,18 @@ export default function CaseStudyListDesktop({
           />
         </div>
 
-        <div className="flex-1 pl-8 text-white mt-[-32px]">
-          <h3 className="text-3xl font-semibold mb-4">{currentStudy.title}</h3>
-          <p className="text-base leading-relaxed opacity-90 max-w-[600px]">
+        <div className="flex flex-col w-80 pl-4 text-white mt-[-32px]">
+          <h3 className="text-xl mt-7 font-semibold mb-4">{currentStudy.title}</h3>
+          <p className="text-xs leading-relaxed opacity-90 max-w-[600px]">
             {currentStudy.description}
           </p>
-          <div className="flex justify-between items-center mt-auto">
-            <span className="text-sm opacity-80">{currentStudy.date}</span>
+          <div className="flex justify-between items-center mt-7">
+            <span className="text-xs opacity-80">{currentStudy.date}</span>
             <div className="flex gap-3">
               {currentStudy.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="bg-white/20 px-4 py-1.5 rounded-full text-sm"
+                  className="bg-white/20 px-4 py-1.5 rounded-full text-xs"
                 >
                   {tag}
                 </span>
@@ -122,7 +91,7 @@ export default function CaseStudyListDesktop({
             }`}
             onClick={() => updateCaseStudy(currentIndex - 1)}
           >
-            <svg className="w-6 h-6" viewBox="0 0 24 24">
+            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
               <path
                 d="M15 18L9 12L15 6"
                 stroke="#1B1B1B"
@@ -138,7 +107,7 @@ export default function CaseStudyListDesktop({
             }`}
             onClick={() => updateCaseStudy(currentIndex + 1)}
           >
-            <svg className="w-6 h-6" viewBox="0 0 24 24">
+            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
               <path
                 d="M9 18L15 12L9 6"
                 stroke="#1B1B1B"

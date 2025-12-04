@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 const Header = ({
@@ -11,6 +11,23 @@ const Header = ({
   imageSizes?: string;
 }) => {
   const [activeTab, setActiveTab] = useState("about");
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Only show header on desktop when scrolled down
+      if (window.innerWidth >= 768) {
+        setIsScrolled(window.scrollY > 100);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Check initial state
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navTabs = [
     { id: "about", label: "About" },
@@ -23,9 +40,11 @@ const Header = ({
 
   return (
     <header
-      className={`z-50 transition-all duration-300 min-h-fit bg-white pt-4 sm:pt-6${
-        classes || ""
-      }`}
+      className={`z-50 transition-all duration-300 min-h-fit bg-white pt-4 sm:pt-6 ${
+        isScrolled
+          ? "fixed top-0 left-0 right-0 shadow-md md:pt-[52px] opacity-100 pointer-events-auto transition-all duration-300"
+          : "relative md:opacity-0 md:pointer-events-none md:hidden transition-all duration-300"
+      }${classes || ""}`}
     >
       <div className="max-w-full flex justify-center">
         <div className="px-4 sm:px-5 flex w-full max-w-[1080px] justify-between">

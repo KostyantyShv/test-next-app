@@ -3,31 +3,55 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { Project } from "./project.type";
 
 interface SpotlightModalProps {
   onClose: () => void;
   isOpen: boolean;
+  project: Project;
+  allProjects: Project[];
+  onProjectChange?: (project: Project) => void;
 }
 
-const SpotlightModal: React.FC<SpotlightModalProps> = ({ onClose, isOpen }) => {
-  const [currentProject, setCurrentProject] = useState(1);
-  const totalProjects = 11;
+const SpotlightModal: React.FC<SpotlightModalProps> = ({ 
+  onClose, 
+  isOpen, 
+  project,
+  allProjects,
+  onProjectChange
+}) => {
+  const currentProjectIndex = allProjects.findIndex(p => p.id === project.id) + 1;
+  const totalProjects = allProjects.length;
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchMove, setTouchMove] = useState<number | null>(null);
 
+  // Reset active image index when project changes
+  useEffect(() => {
+    setActiveImageIndex(0);
+  }, [project.id]);
+
+  // Generate project images array - use coverImage and additional images
   const projectImages = [
-    "https://i.ibb.co/jJ4GHXP/img1.jpg",
+    project.coverImage,
     "https://i.ibb.co/LJwrLdW/coaching-image.webp",
     "https://i.ibb.co/fVRCnNZY/school2.webp",
-  ];
+  ].slice(0, project.imageCount || 3);
 
   const handlePrev = () => {
-    if (currentProject > 1) setCurrentProject(currentProject - 1);
+    const currentIndex = allProjects.findIndex(p => p.id === project.id);
+    if (currentIndex > 0 && onProjectChange) {
+      const prevProject = allProjects[currentIndex - 1];
+      onProjectChange(prevProject);
+    }
   };
 
   const handleNext = () => {
-    if (currentProject < totalProjects) setCurrentProject(currentProject + 1);
+    const currentIndex = allProjects.findIndex(p => p.id === project.id);
+    if (currentIndex < allProjects.length - 1 && onProjectChange) {
+      const nextProject = allProjects[currentIndex + 1];
+      onProjectChange(nextProject);
+    }
   };
 
   const handleSetActiveImage = (index: number) => {
@@ -48,14 +72,14 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({ onClose, isOpen }) => {
       <div className="p-4 md:p-6 border-b border-[#E0E0E0] flex items-center justify-between sticky top-0 bg-white z-10">
         <div className="author-info flex items-center gap-3">
           <Image
-            src="https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png"
-            alt="Author"
+            src={project.authorAvatar}
+            alt={project.authorName}
             width={36}
             height={36}
             className="rounded-full object-cover w-9 h-9 md:w-10 md:h-10"
           />
           <span className="text-sm md:text-base font-semibold text-[#464646] md:text-[#262B3D]">
-            Dr. Sarah Anderson
+            {project.authorName}
           </span>
         </div>
         <div className="flex items-center gap-4">
@@ -63,7 +87,7 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({ onClose, isOpen }) => {
             <button
               className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center hover:bg-[#f5f5f5] transition-all duration-200 disabled:opacity-50"
               onClick={handlePrev}
-              disabled={currentProject === 1}
+              disabled={currentProjectIndex === 1}
             >
               <svg
                 viewBox="0 0 24 24"
@@ -77,12 +101,12 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({ onClose, isOpen }) => {
               </svg>
             </button>
             <span className="text-xs md:text-sm text-[#5F5F5F] md:text-[#4A4A4A] mx-1 md:mx-2">
-              {currentProject} of {totalProjects}
+              {currentProjectIndex} of {totalProjects}
             </span>
             <button
               className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center hover:bg-[#f5f5f5] transition-all duration-200 disabled:opacity-50"
               onClick={handleNext}
-              disabled={currentProject === totalProjects}
+              disabled={currentProjectIndex === totalProjects}
             >
               <svg
                 viewBox="0 0 24 24"
@@ -121,27 +145,13 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({ onClose, isOpen }) => {
       <div className="flex-1 overflow-y-auto md:flex md:gap-6">
         <div className="p-4 md:p-6 md:flex-1 md:min-w-0">
           <div className="text-xs md:text-sm text-[#5F5F5F] mb-2 md:mb-3">
-            March 2023
+            {project.date}
           </div>
           <h1 className="text-xl md:text-2xl font-semibold text-[#464646] md:text-[#262B3D] mb-3 md:mb-4">
-            Campus Learning Management System Redesign
+            {project.title}
           </h1>
           <div className="text-sm md:text-[15px] leading-relaxed text-[#4A4A4A] mb-5 md:mb-6">
-            <p className="mb-3">
-              Our team undertook a comprehensive redesign of the university`s
-              learning management system to enhance student engagement and
-              improve the overall learning experience.
-            </p>
-            <p className="mb-3">
-              The redesigned platform features a modern, accessibility-compliant
-              interface that prioritizes user experience while maintaining
-              robust functionality.
-            </p>
-            <p>
-              Special attention was given to mobile responsiveness and offline
-              capabilities, ensuring students can access course materials
-              regardless of their location or internet connectivity.
-            </p>
+            <p>{project.description}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mb-6 md:mb-8">
@@ -193,7 +203,7 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({ onClose, isOpen }) => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 md:gap-4 mb-6 md:mb-8">
+          <div className="flex flex-col gap-3 md:gap-4 mb-6 md:mb-8 ">
             {[
               "Schedule a Demo Session",
               "Download Technical Documentation",
@@ -203,7 +213,7 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({ onClose, isOpen }) => {
                 key={index}
                 className="flex items-center justify-between p-3 md:p-4 border border-[#E0E0E0] rounded-lg"
               >
-                <div className="text-sm md:text-[15px] font-medium text-[#464646] md:text-[#262B3D]">
+                <div className="text-sm md:text-[15px] font-semibold text-[#464646] md:text-[#262B3D]">
                   {text}
                 </div>
                 <button className="px-3 py-1 md:px-4 md:py-2 rounded-md bg-[#EBFCF4] text-[#016853] md:bg-[#02C5AF] md:text-white border-none font-semibold cursor-pointer hover:bg-[#D7F7E9] md:hover:bg-[#00b19d] transition-all duration-200 text-xs md:text-base">
@@ -217,14 +227,8 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({ onClose, isOpen }) => {
             ))}
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-6 md:mb-8">
-            {[
-              "Education Technology",
-              "UX Design",
-              "Learning Management",
-              "Higher Education",
-              "Mobile Learning",
-            ].map((tag, index) => (
+          <div className="flex flex-wrap gap-2 mb-6 md:mb-8 font-semibold">
+            {project.tags.map((tag, index) => (
               <span
                 key={index}
                 className="px-3 py-1.5 bg-[#EBFCF4] text-[#016853] rounded-full text-xs md:text-sm"
@@ -232,6 +236,11 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({ onClose, isOpen }) => {
                 {tag}
               </span>
             ))}
+            {project.tagCount > 0 && (
+              <span className="px-3 py-1.5 bg-[#EBFCF4] text-[#016853] rounded-full text-xs md:text-sm font-semibold">
+                +{project.tagCount}
+              </span>
+            )}
           </div>
 
           <div className="bg-[#F8F9FD] rounded-lg p-4 md:p-6 flex items-center gap-3 md:gap-4 mb-6 md:mb-0">
@@ -283,7 +292,7 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({ onClose, isOpen }) => {
               <a
                 key={index}
                 href={link.href}
-                className="flex items-center gap-2 text-[#142E53] text-sm font-medium hover:text-[#02C5AF] transition-all duration-200 py-2 md:py-0"
+                className="flex items-center gap-2 text-[#142E53] text-sm font-semibold hover:text-[#02C5AF] transition-all duration-200 py-2 md:py-0"
               >
                 <svg viewBox="0 0 20 20" className="w-4 h-4">
                   <path d="M9.73423 5.4902L10.1013 5.06529C10.7403 4.43601 11.6014 4.08294 12.499 4.08301C13.4052 4.08307 14.2743 4.44313 14.915 5.08397C15.5558 5.72481 15.9157 6.59395 15.9157 7.50017C15.9156 8.39808 15.5621 9.25952 14.9323 9.89853L14.5081 10.2671C14.1954 10.5388 14.1622 11.0125 14.4339 11.3252C14.7055 11.6379 15.1792 11.6711 15.4919 11.3994L15.9369 11.0127C15.9501 11.0013 15.9629 10.9893 15.9753 10.977C16.8975 10.0549 17.4156 8.80433 17.4157 7.50028C17.4158 6.19623 16.8978 4.94555 15.9758 4.02339C15.0537 3.10122 13.8031 2.5831 12.4991 2.58301C11.195 2.58292 9.94437 3.10086 9.0222 4.0229C9.00929 4.0358 8.99686 4.04918 8.98492 4.06299L8.59909 4.50966C8.32832 4.82312 8.36293 5.29673 8.67639 5.5675C8.98985 5.83827 9.46346 5.80366 9.73423 5.4902Z" />

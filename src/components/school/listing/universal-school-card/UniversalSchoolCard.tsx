@@ -1,6 +1,7 @@
 // components/UniversalSchoolCard.tsx
 import React from "react";
 import CardWrapper from "../card-wrapper/CardWrapper";
+import styles from "./UniversalSchoolCard.module.css";
 
 interface PollData {
   percentage: string;
@@ -34,6 +35,29 @@ const UniversalSchoolCard: React.FC<UniversalSchoolCardProps> = ({
   section,
   onReadMoreClick,
 }) => {
+  const getGradeColor = (grade: string) => {
+    const gradeColors: Record<string, string> = {
+      "A+": "#00DF8B",
+      A: "#089E68",
+      "A-": "#10B981",
+      "B+": "#4CAF50",
+      B: "#346DC2",
+      "B-": "#60A5FA",
+      C: "#FF8C00",
+      "C+": "#FF8C00",
+      "C-": "#FF8C00",
+      D: "#F59E0B",
+      "D+": "#F59E0B",
+      "D-": "#F59E0B",
+      F: "#D92D20",
+    };
+
+    // Normalize grade (remove spaces, handle case)
+    const normalizedGrade = grade.trim().toUpperCase();
+    
+    return gradeColors[normalizedGrade] || "#00DF8B"; // Default to A+ color if not found
+  };
+
   return (
     <CardWrapper id={id}>
       <h2 className="text-[#016853] text-2xl font-semibold mb-8 tracking-[-0.02em]">
@@ -45,7 +69,10 @@ const UniversalSchoolCard: React.FC<UniversalSchoolCardProps> = ({
         <div className="md:border-r border-[rgba(0,0,0,0.1)] md:pr-8">
           <div className="mb-8">
             <div className="flex items-center gap-4 mb-3">
-              <div className="w-12 h-12 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-xl font-semibold">
+              <div
+                className="w-12 h-12 rounded-full flex items-center justify-center text-white text-xl font-semibold"
+                style={{ backgroundColor: getGradeColor(section.grade) }}
+              >
                 {section.grade}
               </div>
               <h3 className="text-[#4A4A4A] text-base font-semibold">
@@ -101,7 +128,7 @@ const UniversalSchoolCard: React.FC<UniversalSchoolCardProps> = ({
         {/* Polls Section */}
         <div className="bg-[#F8FCFF] rounded-xl p-6">
           <div className="flex items-center gap-2 mb-6">
-            <div className="relative h-4 w-4 before:content-[''] before:absolute before:top-[2px] before:left-2 before:w-[3px] before:h-[10px] before:bg-[#c5e4b8] before:shadow-[4px_4px_0_#f78f6a,-8px_4px_0_#9eddf8,-4px_2px_0_#6bbef2]" />
+            <div className={styles.pollIcon}></div>
             <div className="text-[#1D77BD] text-base font-semibold uppercase tracking-[0.05em]">
               POLLS
             </div>
@@ -128,15 +155,17 @@ const UniversalSchoolCard: React.FC<UniversalSchoolCardProps> = ({
       {onReadMoreClick && (
         <a
           onClick={onReadMoreClick}
-          className="flex items-center justify-end text-[#346DC2] text-sm font-medium mt-6 hover:underline cursor-pointer"
+          className="flex items-center justify-center bg-[#EBFCF4] text-[#016853] text-sm font-semibold py-3 px-4 rounded-lg mt-2 cursor-pointer hover:bg-[#D7F7E9] transition-colors duration-200"
         >
           Read More About {section.title}
           <svg
-            className="ml-1 w-4 h-4"
+            className="ml-1.5 w-4 h-4"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
             <path d="M9 18l6-6-6-6" />
           </svg>

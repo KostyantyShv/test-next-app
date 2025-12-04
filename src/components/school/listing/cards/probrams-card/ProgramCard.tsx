@@ -34,7 +34,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
   const descId = `${tab}-desc-${index}`;
 
   return (
-    <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl p-6 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all">
+    <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl p-6 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all min-h-[630px]">
       <div className="text-[#5F5F5F] text-xs font-semibold uppercase tracking-wide mb-2">
         {program.university}
       </div>

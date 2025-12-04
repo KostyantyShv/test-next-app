@@ -12,7 +12,7 @@ export default function DeadlinesSection() {
                 <td className="py-2.5 text-sm text-[#4A4A4A] md:py-3">
                   Application Deadline
                 </td>
-                <td className="py-2.5 text-sm text-[#089E68] font-medium text-right md:py-3">
+                <td className="py-2.5 text-sm text-[#089E68] font-semibold text-right md:py-3">
                   January 15
                 </td>
               </tr>
@@ -20,7 +20,7 @@ export default function DeadlinesSection() {
                 <td className="py-2.5 text-sm text-[#4A4A4A] md:py-3">
                   Early Decision Deadline
                 </td>
-                <td className="py-2.5 text-sm text-[#089E68] font-medium text-right md:py-3">
+                <td className="py-2.5 text-sm text-[#089E68] font-semibold text-right md:py-3">
                   —
                 </td>
               </tr>
@@ -28,7 +28,7 @@ export default function DeadlinesSection() {
                 <td className="py-2.5 text-sm text-[#4A4A4A] md:py-3">
                   Early Action Deadline
                 </td>
-                <td className="py-2.5 text-sm text-[#089E68] font-medium text-right md:py-3">
+                <td className="py-2.5 text-sm text-[#089E68] font-semibold text-right md:py-3">
                   November 1
                 </td>
               </tr>
@@ -36,7 +36,7 @@ export default function DeadlinesSection() {
                 <td className="py-2.5 text-sm text-[#4A4A4A] md:py-3">
                   Offers Early Decision
                 </td>
-                <td className="py-2.5 text-sm text-[#089E68] font-medium text-right md:py-3">
+                <td className="py-2.5 text-sm text-[#089E68] font-semibold text-right md:py-3">
                   —
                 </td>
               </tr>
@@ -44,7 +44,7 @@ export default function DeadlinesSection() {
                 <td className="py-2.5 text-sm text-[#4A4A4A] md:py-3">
                   Offers Early Action
                 </td>
-                <td className="py-2.5 text-sm text-[#089E68] font-medium text-right md:py-3">
+                <td className="py-2.5 text-sm text-[#089E68] font-semibold text-right md:py-3">
                   Yes
                 </td>
               </tr>
@@ -58,7 +58,7 @@ export default function DeadlinesSection() {
                 <td className="py-2.5 text-sm text-[#4A4A4A] md:py-3">
                   Application Fee
                 </td>
-                <td className="py-2.5 text-sm text-[#089E68] font-medium text-right md:py-3">
+                <td className="py-2.5 text-sm text-[#089E68] font-semibold text-right md:py-3">
                   $50
                 </td>
               </tr>
@@ -66,7 +66,7 @@ export default function DeadlinesSection() {
                 <td className="py-2.5 text-sm text-[#4A4A4A] md:py-3">
                   Application Website
                 </td>
-                <td className="py-2.5 text-sm text-[#346DC2] font-medium text-right md:py-3">
+                <td className="py-2.5 text-sm text-[#346DC2] font-semibold text-right md:py-3">
                   admissions.lincoln.edu
                 </td>
               </tr>
@@ -74,7 +74,7 @@ export default function DeadlinesSection() {
                 <td className="py-2.5 text-sm text-[#4A4A4A] md:py-3">
                   Accepts Common App
                 </td>
-                <td className="py-2.5 text-sm text-[#089E68] font-medium text-right md:py-3">
+                <td className="py-2.5 text-sm text-[#089E68] font-semibold text-right md:py-3">
                   —
                 </td>
               </tr>
@@ -82,7 +82,7 @@ export default function DeadlinesSection() {
                 <td className="py-2.5 text-sm text-[#4A4A4A] md:py-3">
                   Accepts Coalition App
                 </td>
-                <td className="py-2.5 text-sm text-[#089E68] font-medium text-right md:py-3">
+                <td className="py-2.5 text-sm text-[#089E68] font-semibold text-right md:py-3">
                   Yes
                 </td>
               </tr>
