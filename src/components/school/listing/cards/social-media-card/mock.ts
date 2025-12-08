@@ -17,6 +17,9 @@ export const mockSocialData = [
     likes: 247,
     comments: 42,
     shares: 189,
+    likeIcon: interactionIcons.heart,
+    commentIcon: interactionIcons.comment,
+    shareIcon: interactionIcons.share,
   },
   {
     thumbnailSrc:
@@ -34,6 +37,9 @@ export const mockSocialData = [
     likes: 584,
     comments: 32,
     shares: 76,
+    likeIcon: interactionIcons.heart,
+    commentIcon: interactionIcons.comment,
+    shareIcon: interactionIcons.share,
   },
   {
     thumbnailSrc:
@@ -51,5 +57,8 @@ export const mockSocialData = [
     likes: 312,
     comments: 47,
     shares: 129,
+    likeIcon: interactionIcons.heart,
+    commentIcon: interactionIcons.comment,
+    shareIcon: interactionIcons.share,
   },
 ];

@@ -107,7 +107,7 @@ interface UseMonitorsReturn {
   refreshMonitors: () => Promise<void>;
 }
 
-interface CreateMonitorData {
+export interface CreateMonitorData {
   name: string;
   itemId: string;
   itemTitle: string;
