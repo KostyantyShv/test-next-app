@@ -7,6 +7,7 @@ import {
   schools,
 } from "../components/Card/Card";
 import MapContainer from "../../explore/main-content/MapContainer";
+import { School } from "../../explore/types";
 import { CardList } from "../components/Card/card-layouts/CardList";
 import { CardGrid } from "../components/Card/card-layouts/CardGrid";
 import { CardHybrid } from "../components/Card/card-layouts/CardHybrid";
@@ -269,7 +270,27 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
       </div>
       {isMapActive && (
         <div className="hidden md:block w-full md:w-1/3 lg:w-1/4">
-          <MapContainer isMapActive={isMapActive} />
+          <MapContainer
+            isMapActive={isMapActive}
+            schools={schoolData.map((school) => ({
+              name: school.name,
+              schoolType: school.schoolType,
+              location: school.location,
+              ratio: "",
+              rating: school.rating,
+              image: school.image,
+              avatar: school.avatar,
+              ranking: school.ranking || "",
+              grade: school.grade,
+              students: school.students,
+              price: "",
+              grades: school.grades,
+              specialty: school.specialty as "hot" | "instant-book" | "sponsored" | undefined,
+              specialtyLabel: school.specialty,
+              description: school.description,
+              reviews: school.reviews,
+            }))}
+          />
         </div>
       )}
       <NoteModal
