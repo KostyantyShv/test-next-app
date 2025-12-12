@@ -45,7 +45,7 @@ const SearchContentArea: React.FC<SearchContentAreaProps> = ({
             </div>
           )}
           {layout === "hybrid" && (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               {schools
                 .slice(0, 4)
                 .map((school: School, i: number) => (
@@ -68,8 +68,8 @@ const SearchContentArea: React.FC<SearchContentAreaProps> = ({
         <div className="hidden md:block">
           <div
             className={`grid gap-6 ${
-              layout === "grid" ? "grid-cols-3" : "hidden"
-            } ${isMapActive ? "grid-cols-2" : ""}`}
+              layout === "grid" ? (isMapActive ? "grid-cols-2" : "grid-cols-3") : "hidden"
+            }`}
           >
             {schools
               .slice(0, cardCounts.grid)
@@ -90,8 +90,8 @@ const SearchContentArea: React.FC<SearchContentAreaProps> = ({
           </div>
           <div
             className={`grid gap-6 ${
-              layout === "hybrid" ? "grid-cols-2" : "hidden"
-            } ${isMapActive ? "grid-cols-1" : ""}`}
+              layout === "hybrid" ? (isMapActive ? "grid-cols-1" : "grid-cols-2") : "hidden"
+            }`}
           >
             {schools
               .slice(0, cardCounts.hybrid)
@@ -101,8 +101,8 @@ const SearchContentArea: React.FC<SearchContentAreaProps> = ({
           </div>
           <div
             className={`grid gap-6 ${
-              layout === "classic" ? "grid-cols-4" : "hidden"
-            } ${isMapActive ? "grid-cols-3" : ""}`}
+              layout === "classic" ? (isMapActive ? "grid-cols-3" : "grid-cols-4") : "hidden"
+            }`}
           >
             {schools
               .slice(0, cardCounts.classic)
@@ -112,7 +112,7 @@ const SearchContentArea: React.FC<SearchContentAreaProps> = ({
           </div>
         </div>
       </div>
-      <SearchMapContainer isMapActive={isMapActive} />
+      <SearchMapContainer isMapActive={isMapActive} schools={schools} />
     </div>
   );
 };

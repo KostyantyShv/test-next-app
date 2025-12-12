@@ -3,7 +3,12 @@ import LeaderboardMobile from './components/Mobile/LeaderboardMobile';
 
 const Leaderboard = () => {
   return (
-    <div className="min-h-screen bg-[#E1E7EE] flex flex-col items-center py-5 px-5 w-full">
+    <div 
+      className="min-h-screen flex flex-col items-center py-5 px-5 w-full"
+      style={{ 
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' 
+      }}
+    >
       {/* Mobile */}
       <div className="w-full md:hidden">
         <LeaderboardMobile />

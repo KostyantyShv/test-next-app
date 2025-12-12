@@ -130,7 +130,7 @@ const libraryItems: NavItem[] = [
     ]
   },
   { icon: "history-clock", label: "Recently Viewed", href: "/recent" },
-  { icon: "users", label: "My Listings", href: "/listings" },
+  { icon: "users", label: "My Listings", href: "/listing" },
   { icon: "calendar", label: "Calendar", href: "/calendar" },
   { 
     icon: "zap", 

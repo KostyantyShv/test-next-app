@@ -12,7 +12,7 @@ const SocialProfile: React.FC<SocialProfileProps> = ({
   handleChange,
 }) => {
   return (
-    <div className="bg-card-bg rounded-lg p-7 mb-7 shadow-card border border-[#e7eaf3] last:mb-0">
+    <div className="bg-white rounded-lg p-7 mb-7 shadow-card border border-[#e7eaf3] last:mb-0">
       <FormField
         label="Bio"
         id="bio"

@@ -1,83 +1,292 @@
-import React from "react";
+"use client";
+import React, { useState, useRef, useEffect, useImperativeHandle, forwardRef } from "react";
+import Script from "next/script";
+import MapControls from "./MapControls";
+import { School } from "../types";
 
 interface MapContainerProps {
   isMapActive: boolean;
+  schools: School[];
 }
 
-const MapContainer: React.FC<MapContainerProps> = ({ isMapActive }) => {
-  return (
-    <div
-      className={`min-h-[600px] bg-white rounded-xl overflow-hidden transition-all duration-300 ${
-        isMapActive ? "w-[400px] ml-6 border border-[rgba(0,0,0,0.1)]" : "w-0"
-      }`}
-    >
-      <div className="h-full relative">
-        <div id="map" className="w-full h-full bg-[#f5f5f7]"></div>
-        <button className="absolute top-2.5 left-2.5 bg-white border-none rounded w-8 h-8 flex items-center justify-center cursor-pointer shadow-[0_2px_4px_rgba(0,0,0,0.1)]">
-          <svg
-            className="text-[#333121]"
-            viewBox="0 0 24 24"
-            width="20"
-            height="20"
-          >
-            <path
-              fill="currentColor"
-              d="M16.7161 20.704C16.3259 21.0948 15.6927 21.0953 15.3019 20.705L7.2934 12.7076C7.10562 12.5201 7.00008 12.2656 7.00002 12.0002C6.99996 11.7349 7.10539 11.4803 7.29308 11.2927L15.2943 3.2953C15.6849 2.90487 16.3181 2.90502 16.7085 3.29564C17.0989 3.68625 17.0988 4.31942 16.7082 4.70985L9.41489 11.9997L16.7151 19.2898C17.1059 19.6801 17.1064 20.3132 16.7161 20.704Z"
-              fillRule="evenodd"
-              clipRule="evenodd"
-            ></path>
-          </svg>
-        </button>
-        <button className="absolute top-2.5 right-2.5 bg-white border-none rounded h-8 px-3 flex items-center justify-center cursor-pointer shadow-[0_2px_4px_rgba(0,0,0,0.1)]">
-          <svg viewBox="0 0 24 24" width="20" height="20">
-            <path
-              d="M11.9897 18.9994L5.02891 13.5876C4.6678 13.3068 4.16223 13.3069 3.80118 13.5877L3.76488 13.6159C3.25014 14.0163 3.25014 14.7943 3.76488 15.1946L11.3861 21.1222C11.7472 21.4031 12.2528 21.4031 12.6139 21.1222L20.236 15.1939C20.7505 14.7938 20.7508 14.0163 20.2367 13.6158L20.1888 13.5784C19.8277 13.2971 19.3216 13.2969 18.9602 13.5779L11.9897 18.9994ZM11.3858 15.9114C11.747 16.1922 12.2528 16.192 12.6139 15.911L19.5644 10.4997L20.2312 9.98337C20.7475 9.58356 20.7483 8.80426 20.2329 8.40337L12.6139 2.47751C12.2528 2.19665 11.7472 2.19665 11.3861 2.47751L3.76399 8.40578C3.24952 8.80593 3.24919 9.58339 3.76332 9.98397L4.42528 10.4997L11.3858 15.9114ZM12 4.60028L17.8994 9.19444L12 13.7886L6.10056 9.19444L12 4.60028Z"
-              fill="currentColor"
-            ></path>
-          </svg>
-          <span className="text-sm font-semibold ml-1 text-[#464646]">Map</span>
-        </button>
-        <div className="absolute right-2.5 top-[50px] flex flex-col gap-2">
-          <button className="w-8 h-8 bg-white border-none rounded flex items-center justify-center cursor-pointer shadow-[0_2px_4px_rgba(0,0,0,0.1)]">
-            <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
-              <path
-                d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z"
-                fill="currentColor"
-              />
-            </svg>
-          </button>
-          <button className="w-8 h-8 bg-white border-none rounded flex items-center justify-center cursor-pointer shadow-[0_2px_4px_rgba(0,0,0,0.1)]">
-            <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
-              <path
-                d="M5 12a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z"
-                fill="currentColor"
-              />
-            </svg>
-          </button>
-        </div>
-        <button className="absolute bottom-2.5 right-2.5 w-6 h-6 flex items-center justify-center text-[#0093B0] opacity-80 hover:opacity-100">
-          <svg
-            fill="currentColor"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            width="16"
-            height="16"
-          >
-            <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7 c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z"></path>
-            <path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3 c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8 C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1 c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1 C18.6,5.5,19.8,8.4,19.2,11.2z"></path>
-          </svg>
-        </button>
-        <button className="absolute top-2.5 left-2.5 bg-white border-none rounded w-8 h-8 flex items-center justify-center cursor-pointer shadow-[0_2px_4px_rgba(0,0,0,0.1)] hidden">
-          <svg viewBox="0 0 24 24" width="20" height="20">
-            <path
-              fill="currentColor"
-              d="M7.2839 20.704C7.6741 21.0948 8.3073 21.0953 8.6981 20.705L16.7066 12.7076C16.8944 12.5201 16.9999 12.2656 17 12.0002C17.0001 11.7349 16.8946 11.4803 16.7069 11.2927L8.7057 3.2953C8.3151 2.90487 7.6819 2.90502 7.2915 3.29564C6.9011 3.68625 6.9012 4.31942 7.2918 4.70985L14.5851 11.9997L7.2849 19.2898C6.8941 19.6801 6.8936 20.3132 7.2839 20.704Z"
-            />
-          </svg>
-        </button>
-      </div>
-    </div>
-  );
+export interface MapContainerRef {
+  exitStreetView: () => void;
+}
+
+// Helper function to get position from location string
+const getPositionFromLocation = (location: string, index: number): { lat: number; lng: number } => {
+  // Map of known locations to coordinates
+  const locationMap: Record<string, { lat: number; lng: number }> = {
+    "Cambridge, MA": { lat: 42.3736, lng: -71.1097 },
+    "Stanford, CA": { lat: 37.4241, lng: -122.1661 },
+    "Pasadena, CA": { lat: 34.1478, lng: -118.1445 },
+    "Houston, TX": { lat: 29.7604, lng: -95.3698 },
+    "New York, NY": { lat: 40.7128, lng: -74.0060 },
+    "Los Angeles, CA": { lat: 34.0522, lng: -118.2437 },
+    "Chicago, IL": { lat: 41.8781, lng: -87.6298 },
+    "Boston, MA": { lat: 42.3601, lng: -71.0589 },
+  };
+
+  // Try to find exact match
+  if (locationMap[location]) {
+    return locationMap[location];
+  }
+
+  // Try to find partial match
+  for (const [key, value] of Object.entries(locationMap)) {
+    if (location.includes(key.split(",")[0])) {
+      // Add small random offset based on index to avoid overlapping
+      return {
+        lat: value.lat + (index % 5) * 0.01,
+        lng: value.lng + (index % 5) * 0.01,
+      };
+    }
+  }
+
+  // Default to a location with small offsets based on index
+  return {
+    lat: 35.1983 + (index % 10) * 0.05,
+    lng: -111.6513 + (index % 10) * 0.05,
+  };
 };
+
+const getMarkerColor = (grade: string): string => {
+  const colors: Record<string, string> = {
+    "A+": "#00DF8B",
+    A: "#1ad598",
+    "B+": "#4CAF50",
+    B: "#8BC34A",
+    "C+": "#FFC107",
+  };
+  return colors[grade] || colors["C+"];
+};
+
+const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
+  ({ isMapActive, schools }, ref) => {
+    const [mapType, setMapType] = useState<"roadmap" | "satellite">("roadmap");
+    const [showTerrain, setShowTerrain] = useState(false);
+    const [showLabels, setShowLabels] = useState(true);
+    const mapRef = useRef<HTMLDivElement>(null);
+    const mapInstanceRef = useRef<google.maps.Map | null>(null);
+    const markersRef = useRef<google.maps.Marker[]>([]);
+    const infoWindowsRef = useRef<google.maps.InfoWindow[]>([]);
+
+    useImperativeHandle(ref, () => ({
+      exitStreetView: () => {
+        if (mapInstanceRef.current) {
+          (mapInstanceRef.current as any).setStreetView(null);
+        }
+      },
+    }));
+
+    useEffect(() => {
+      if (!mapRef.current || !isMapActive) return;
+
+      const initMap = () => {
+        if (typeof google === "undefined" || !mapRef.current) return;
+
+        const map = new google.maps.Map(mapRef.current, {
+          center: { lat: 42.3736, lng: -71.1097 },
+          zoom: 10,
+          styles: [
+            {
+              featureType: "all",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#464646" }],
+            },
+            {
+              featureType: "landscape",
+              elementType: "all",
+              stylers: [{ color: "#f2f2f2" }],
+            },
+            {
+              featureType: "water",
+              elementType: "all",
+              stylers: [{ color: "#d1e6ea" }],
+            },
+          ],
+          disableDefaultUI: false,
+          zoomControl: true,
+          zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_BOTTOM,
+          },
+          mapTypeControl: false,
+          streetViewControl: true,
+          streetViewControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_BOTTOM,
+          },
+          fullscreenControl: true,
+          fullscreenControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_TOP,
+          },
+        });
+
+        mapInstanceRef.current = map;
+
+        // Listen for street view changes to show/hide markers
+        (map as any).addListener("streetview_changed", () => {
+          const streetView = (map as any).getStreetView();
+          const isStreetViewActive = streetView && streetView.getVisible();
+          
+          markersRef.current.forEach((marker) => {
+            if (isStreetViewActive) {
+              (marker as any).setMap(null);
+            } else {
+              (marker as any).setMap(map);
+            }
+          });
+        });
+
+        // Clear existing markers
+        markersRef.current.forEach((marker) => (marker as any).setMap(null));
+        infoWindowsRef.current.forEach((iw) => iw.close());
+        markersRef.current = [];
+        infoWindowsRef.current = [];
+
+        // Convert schools to map format and create markers
+        schools.forEach((school, index) => {
+          const position = getPositionFromLocation(school.location, index);
+          
+          const marker = new google.maps.Marker({
+            position: position,
+            map: map,
+            icon: {
+              url:
+                "data:image/svg+xml;charset=UTF-8," +
+                encodeURIComponent(`
+                  <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="20" cy="20" r="20" fill="${getMarkerColor(school.grade)}"/>
+                    <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-weight="bold" font-size="16">${
+                      school.grade
+                    }</text>
+                  </svg>
+                `),
+              scaledSize: new google.maps.Size(40, 40),
+            },
+          });
+
+          const infoWindow = new google.maps.InfoWindow({
+            content: `
+              <div style="display: flex; gap: 12px; padding: 12px; width: 280px;">
+                <img src="${school.image}" alt="${school.name}" style="width: 100px; height: 100px; border-radius: 6px; object-fit: cover;">
+                <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                  <h3 style="color: #464646; font-size: 16px; font-weight: 600; margin: 0 0 4px;">${school.name}</h3>
+                  <p style="color: #5F5F5F; font-size: 14px; margin: 0;">${school.location}</p>
+                </div>
+              </div>
+            `,
+            pixelOffset: new google.maps.Size(0, -45),
+          });
+
+          marker.addListener("mouseover", () => {
+            infoWindow.open({ anchor: marker, map, shouldFocus: false });
+          });
+
+          marker.addListener("mouseout", () => {
+            infoWindow.close();
+          });
+
+          markersRef.current.push(marker);
+          infoWindowsRef.current.push(infoWindow);
+        });
+      };
+
+      // Check if Google Maps is already loaded
+      if (typeof google !== "undefined" && google.maps) {
+        initMap();
+      } else {
+        // Wait for Google Maps to load
+        const checkGoogle = setInterval(() => {
+          if (typeof google !== "undefined" && google.maps) {
+            clearInterval(checkGoogle);
+            initMap();
+          }
+        }, 100);
+
+        return () => clearInterval(checkGoogle);
+      }
+    }, [schools, isMapActive]);
+
+    // Handle map type changes
+    useEffect(() => {
+      if (!mapInstanceRef.current || typeof google === "undefined" || !isMapActive) return;
+
+      const map = mapInstanceRef.current;
+
+      // Exit street view if active
+      const streetView = (map as any).getStreetView();
+      if (streetView && streetView.getVisible()) {
+        (map as any).setStreetView(null);
+      }
+
+      // Set map type
+      if (mapType === "satellite") {
+        // Use HYBRID for satellite with labels, SATELLITE for satellite without labels
+        if (showLabels) {
+          map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+        } else {
+          map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+        }
+      } else {
+        // Use TERRAIN for terrain view, ROADMAP for regular map
+        if (showTerrain) {
+          map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+        } else {
+          map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+        }
+      }
+
+      // Show markers
+      markersRef.current.forEach((marker) => {
+        (marker as any).setMap(map);
+      });
+    }, [mapType, showTerrain, showLabels, isMapActive]);
+
+    const handleMapTypeChange = (type: "roadmap" | "satellite") => {
+      if (mapInstanceRef.current) {
+        (mapInstanceRef.current as any).exitStreetView();
+      }
+    };
+
+  return (
+      <>
+        <div
+          className={`h-[600px] bg-white rounded-xl overflow-hidden transition-all duration-300 ${
+            isMapActive ? "w-[400px] mr-6 mt-6 border border-[rgba(0,0,0,0.1)]" : "w-0 overflow-hidden"
+          }`}
+        >
+          {isMapActive && (
+            <>
+              <div className="px-6 py-5 border-b border-black/8 flex-shrink-0">
+                <h2 className="text-[#333] text-2xl font-semibold m-0">Map</h2>
+        </div>
+              <div className="relative h-[calc(600px-73px)] flex-1">
+                <MapControls 
+                  mapType={mapType} 
+                  setMapType={setMapType}
+                  onMapTypeChange={handleMapTypeChange}
+                  showTerrain={showTerrain}
+                  setShowTerrain={setShowTerrain}
+                  showLabels={showLabels}
+                  setShowLabels={setShowLabels}
+                />
+                <div ref={mapRef} id="exploreMap" className="w-full h-full" />
+      </div>
+            </>
+          )}
+    </div>
+        {isMapActive && (
+          <Script
+            id="google-maps-explore"
+            src={`https://maps.googleapis.com/maps/api/js?key=AIzaSyBuuN90JoSkfCGWSO_i5MOqMZnQiZ9skiY`}
+            strategy="afterInteractive"
+          />
+        )}
+      </>
+    );
+  }
+);
+
+MapContainer.displayName = "MapContainer";
 
 export default MapContainer;

@@ -15,10 +15,13 @@ export interface School {
   price: string;
   grades: string;
   specialty?: "hot" | "instant-book" | "sponsored";
+  specialtyLabel?: string;
   description: string;
   reviews: number;
+  verified?: boolean; // Optional, indicates if school is verified
   acceptanceRate?: string; // Optional, e.g., "20%"
   duration?: string; // Optional, e.g., "4 Year"
+  sat?: string; // Optional, e.g., "1440-1550"
 }
 
 export type FilterMockType = Record<

@@ -51,10 +51,10 @@ const FormField = forwardRef<
     ref
   ) => {
     const baseStyles =
-      "w-full p-2.5 border border-border-color rounded bg-white text-text-color focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors";
+      "w-full p-2.5 border border-border-color rounded !bg-white text-text-color focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors";
     const readOnlyStyles =
       readOnly || disabled
-        ? "bg-white cursor-not-allowed opacity-80"
+        ? "!bg-white cursor-not-allowed opacity-80"
         : "";
     const inputStyles = `${baseStyles} ${readOnlyStyles} ${className}`;
 
@@ -95,7 +95,7 @@ const FormField = forwardRef<
               value={value}
               onChange={onChange}
               disabled={disabled}
-              className={`${inputStyles} appearance-none pr-10 bg-white bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns%3d%22http%3a%2f%2fwww.w3.org%2f2000%2fsvg%22%20viewBox%3d%220%200%2024%2024%22%20fill%3d%22none%22%20stroke%3d%22%234A4A4A%22%20stroke-width%3d%222%22%20stroke-linecap%3d%22round%22%20stroke-linejoin%3d%22round%22%3e%3cpolyline%20points%3d%226%209%2012%2015%2018%209%22%3e%3c%2fpolyline%3e%3c%2fsvg%3e')] bg-no-repeat bg-[right_0.75rem_center] bg-[length:16px]`}
+              className={`${inputStyles} appearance-none pr-10 !bg-white bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns%3d%22http%3a%2f%2fwww.w3.org%2f2000%2fsvg%22%20viewBox%3d%220%200%2024%2024%22%20fill%3d%22none%22%20stroke%3d%22%234A4A4A%22%20stroke-width%3d%222%22%20stroke-linecap%3d%22round%22%20stroke-linejoin%3d%22round%22%3e%3cpolyline%20points%3d%226%209%2012%2015%2018%209%22%3e%3c%2fpolyline%3e%3c%2fsvg%3e')] bg-no-repeat bg-[right_0.75rem_center] bg-[length:16px]`}
             >
               {options?.map((option) => (
                 <option key={option.value} value={option.value}>

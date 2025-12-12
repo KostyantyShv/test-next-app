@@ -22,7 +22,7 @@ export const LeaderboardCard: React.FC<LeaderboardCardProps> = ({ title, items, 
       case 3:
         return 'text-[#0B6333] font-bold';
       default:
-        return 'text-[#5F5F5F]';
+        return 'text-[#5F5F5F] font-semibold';
     }
   };
 
@@ -42,7 +42,7 @@ export const LeaderboardCard: React.FC<LeaderboardCardProps> = ({ title, items, 
             key={index}
             className="flex items-center py-3 border-b border-[#F8F9FA]"
           >
-            <span className={`w-6 font-semibold ${getRankClass(item.rank)} mr-3`}>
+            <span className={`w-6 ${getRankClass(item.rank)} mr-3`}>
               {item.rank}
             </span>
             <div className="flex items-center flex-1">

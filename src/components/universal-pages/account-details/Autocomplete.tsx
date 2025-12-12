@@ -68,7 +68,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
         value={query}
         onChange={handleInputChange}
         placeholder={placeholder}
-        className="w-full p-2.5 border border-border-color rounded bg-white text-text-color focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+        className="w-full p-2.5 border border-border-color rounded !bg-white text-text-color focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
       />
       <div
         className={`absolute top-[calc(100%+2px)] left-0 right-0 bg-white border border-border-color rounded shadow-search max-h-64 overflow-y-auto z-10 ${

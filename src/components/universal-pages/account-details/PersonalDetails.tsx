@@ -18,7 +18,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
   handleEmailChangeToggle,
 }) => {
   return (
-    <div className="bg-card-bg rounded-lg p-7 mb-7 shadow-card border border-[#e7eaf3] last:mb-0">
+    <div className="bg-white rounded-lg p-7 mb-7 shadow-card border border-[#e7eaf3] last:mb-0">
       <div className="grid grid-cols-2 gap-5 max-md:grid-cols-1">
         <FormField
           label="First Name"
@@ -44,6 +44,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
         placeholder="Username"
         value={formData.username}
         onChange={handleChange}
+        className="!bg-[#f7f7f7]"
       />
       <FormField label="Email" id="email" name="email">
         <div className="relative">
@@ -54,7 +55,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
             value={formData.email}
             onChange={handleChange}
             readOnly={emailReadOnly}
-            className="w-full p-2.5 border border-border-color rounded bg-white text-text-color focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors pr-24"
+            className="w-full p-2.5 border border-border-color rounded !bg-white text-text-color focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors pr-24"
           />
           <span
             onClick={handleEmailChangeToggle}
@@ -72,6 +73,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
         value={formData.accountId ?? ""}
         readOnly
         hint="Your unique account identifier"
+        className="!bg-[#f7f7f7]"
       />
       <FormField label="Avatar" id="avatar" name="">
         <AvatarUpload defaultSrc="https://via.placeholder.com/80" />

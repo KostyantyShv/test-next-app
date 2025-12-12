@@ -42,7 +42,7 @@ export default function Checkout() {
   };
 
   return (
-    <div className="min-h-screen bg-[#E1E7EE] py-4 md:py-10 pb-6 md:pb-10">
+    <div className="min-h-screen py-4 md:py-10 pb-6 md:pb-10">
       <div className="max-w-[1220px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-6 px-4 md:px-6">
         {/* Main Content */}
         <div className="flex-1">

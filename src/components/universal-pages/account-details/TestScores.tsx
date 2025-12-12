@@ -24,7 +24,7 @@ const TestScores: React.FC<TestScoresProps> = ({
             name="noTests"
             checked={formData.noTests}
             onChange={handleCheckboxChange}
-            className="w-4 h-4 text-primary border-border-color focus:ring-0 cursor-pointer"
+            className="w-4 h-4 text-primary border-border-color !bg-white focus:ring-0 cursor-pointer"
           />
           <label
             htmlFor="no-tests"

@@ -1,12 +1,14 @@
+"use client";
+
 import React, { RefObject, useEffect } from "react";
 import ConfirmationPopupContent from "./ConfirmationPopupContent";
-import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 
 interface ConfirmationPopupProps {
   isOpen: boolean;
   onClose: () => void;
   provider: string | null;
   popupRef: RefObject<HTMLDivElement | null>;
+  onConfirm: () => void;
 }
 
 const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
@@ -14,6 +16,7 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
   onClose,
   provider,
   popupRef,
+  onConfirm,
 }) => {
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -30,38 +33,28 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
     : "";
 
   return (
-    <>
-      <div className="max-md:hidden block">
-        <div
-          ref={popupRef}
-          className={`fixed inset-0 bg-[rgba(0,0,0,0.6)] flex items-center justify-center z-[1000] transition-opacity duration-300 ${
-            isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-          }`}
-          onClick={(e) => {
-            if (e.target === popupRef.current) onClose();
-          }}
-        >
-          <div
-            className={`bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.15)] w-full max-w-[480px] p-2.5 text-center transform transition-transform duration-300 ${
-              isOpen ? "scale-100" : "scale-95"
-            }`}
-          >
-            <ConfirmationPopupContent
-              onClose={onClose}
-              providerName={providerName}
-            />
-          </div>
-        </div>
+    <div
+      ref={popupRef}
+      className={`popup-overlay fixed inset-0 bg-[rgba(0,0,0,0.6)] flex items-center justify-center z-[1000] transition-opacity duration-300 ${
+        isOpen ? "active opacity-100 visible" : "opacity-0 invisible"
+      }`}
+      onClick={(e) => {
+        if (e.target === popupRef.current) onClose();
+      }}
+    >
+      <div
+        className={`popup bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.15)] w-full max-w-[480px] p-6 relative transform transition-transform duration-300 ${
+          isOpen ? "scale-100" : "scale-95"
+        }`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <ConfirmationPopupContent
+          onClose={onClose}
+          providerName={providerName}
+          onConfirm={onConfirm}
+        />
       </div>
-      <div className="max-md:block hidden">
-        <MobileDrawer isOpen={isOpen} onClose={onClose}>
-          <ConfirmationPopupContent
-            onClose={onClose}
-            providerName={providerName}
-          />
-        </MobileDrawer>
-      </div>
-    </>
+    </div>
   );
 };
 

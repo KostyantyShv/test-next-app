@@ -151,7 +151,7 @@ const FiltersSection = () => {
   };
 
   const renderFilterButtons = () => (
-    <div className="flex items-center gap-3 flex-wrap flex-1">
+    <div className="flex items-center gap-3 text-gray-600">
       {FILTER_CONFIG[establishment]?.map(
         ({
           category,

@@ -119,7 +119,7 @@ export default function Monitors() {
   };
 
   return (
-    <div className="min-h-screen bg-[#E1E7EE] p-4">
+    <div className="min-h-screen p-4">
       <div className="w-full max-w-[1400px] mx-auto max-md:max-w-[390px]">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">

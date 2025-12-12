@@ -172,8 +172,14 @@ export default function LeaderboardMobile() {
         <div className={`flex flex-col gap-2.5 p-4 ${loading ? "animate-pulse" : ""}`}>
           {items.map((it) => (
             <div key={it.rank} className="flex items-center p-3 bg-[#F8F9FA] rounded-xl">
-              <div className={`w-7 h-7 rounded-md flex items-center justify-center font-bold mr-3 text-white ${
-                it.rank === 1 ? "bg-[#00DF8B]" : it.rank === 2 ? "bg-[#089E68]" : it.rank === 3 ? "bg-[#0B6333]" : "bg-white text-[#464646]"
+              <div className={`w-7 h-7 rounded-md flex items-center justify-center mr-3 ${
+                it.rank === 1 
+                  ? "bg-[#00DF8B] text-white font-bold" 
+                  : it.rank === 2 
+                  ? "bg-[#089E68] text-white font-bold" 
+                  : it.rank === 3 
+                  ? "bg-[#0B6333] text-white font-bold" 
+                  : "bg-white text-[#5F5F5F] font-bold"
               }`}>{it.rank}</div>
               <img src={it.imageUrl} alt={it.schoolName} className="w-9 h-9 rounded-lg object-cover mr-3" />
               <div className="flex-1 text-[13px] font-semibold text-[#464646] truncate">{it.schoolName}</div>

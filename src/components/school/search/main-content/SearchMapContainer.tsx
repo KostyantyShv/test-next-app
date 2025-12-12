@@ -1,44 +1,292 @@
-import React from "react";
+"use client";
+import React, { useState, useRef, useEffect, useImperativeHandle, forwardRef } from "react";
+import Script from "next/script";
+import MapControls from "../../listing/cards/map-card/MapControls";
+import { School } from "../../explore/types";
 
 interface SearchMapContainerProps {
   isMapActive: boolean;
+  schools: School[];
 }
 
-const SearchMapContainer: React.FC<SearchMapContainerProps> = ({
-  isMapActive,
-}) => {
-  if (!isMapActive) return null;
+export interface SearchMapContainerRef {
+  exitStreetView: () => void;
+}
 
-  return (
-    <div className="w-full md:w-96 h-96 md:h-auto bg-gray-100 border-l border-gray-200 flex flex-col">
-      <div className="p-4 border-b border-gray-200 bg-white">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-800">Map</h3>
-          <div className="flex items-center gap-2">
-            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </button>
-            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-      <div className="flex-1 bg-gray-200 flex items-center justify-center">
-        <div className="text-center text-gray-500">
-          <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m-6 3l6-3" />
-          </svg>
-          <p className="text-lg font-medium">Map View</p>
-          <p className="text-sm">Interactive map will be displayed here</p>
-        </div>
-      </div>
-    </div>
-  );
+// Helper function to get position from location string
+const getPositionFromLocation = (location: string, index: number): { lat: number; lng: number } => {
+  // Map of known locations to coordinates
+  const locationMap: Record<string, { lat: number; lng: number }> = {
+    "Cambridge, MA": { lat: 42.3736, lng: -71.1097 },
+    "Stanford, CA": { lat: 37.4241, lng: -122.1661 },
+    "Pasadena, CA": { lat: 34.1478, lng: -118.1445 },
+    "Houston, TX": { lat: 29.7604, lng: -95.3698 },
+    "New York, NY": { lat: 40.7128, lng: -74.0060 },
+    "Los Angeles, CA": { lat: 34.0522, lng: -118.2437 },
+    "Chicago, IL": { lat: 41.8781, lng: -87.6298 },
+    "Boston, MA": { lat: 42.3601, lng: -71.0589 },
+  };
+
+  // Try to find exact match
+  if (locationMap[location]) {
+    return locationMap[location];
+  }
+
+  // Try to find partial match
+  for (const [key, value] of Object.entries(locationMap)) {
+    if (location.includes(key.split(",")[0])) {
+      // Add small random offset based on index to avoid overlapping
+      return {
+        lat: value.lat + (index % 5) * 0.01,
+        lng: value.lng + (index % 5) * 0.01,
+      };
+    }
+  }
+
+  // Default to a location with small offsets based on index
+  return {
+    lat: 35.1983 + (index % 10) * 0.05,
+    lng: -111.6513 + (index % 10) * 0.05,
+  };
 };
 
-export default SearchMapContainer; 
+const getMarkerColor = (grade: string): string => {
+  const colors: Record<string, string> = {
+    "A+": "#00DF8B",
+    A: "#1ad598",
+    "B+": "#4CAF50",
+    B: "#8BC34A",
+    "C+": "#FFC107",
+  };
+  return colors[grade] || colors["C+"];
+};
+
+const SearchMapContainer = forwardRef<SearchMapContainerRef, SearchMapContainerProps>(
+  ({ isMapActive, schools }, ref) => {
+    const [mapType, setMapType] = useState<"roadmap" | "satellite">("roadmap");
+    const [showTerrain, setShowTerrain] = useState(false);
+    const [showLabels, setShowLabels] = useState(true);
+    const mapRef = useRef<HTMLDivElement>(null);
+    const mapInstanceRef = useRef<google.maps.Map | null>(null);
+    const markersRef = useRef<google.maps.Marker[]>([]);
+    const infoWindowsRef = useRef<google.maps.InfoWindow[]>([]);
+
+    useImperativeHandle(ref, () => ({
+      exitStreetView: () => {
+        if (mapInstanceRef.current) {
+          (mapInstanceRef.current as any).setStreetView(null);
+        }
+      },
+    }));
+
+    useEffect(() => {
+      if (!mapRef.current || !isMapActive) return;
+
+      const initMap = () => {
+        if (typeof google === "undefined" || !mapRef.current) return;
+
+        const map = new google.maps.Map(mapRef.current, {
+          center: { lat: 42.3736, lng: -71.1097 },
+          zoom: 10,
+          styles: [
+            {
+              featureType: "all",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#464646" }],
+            },
+            {
+              featureType: "landscape",
+              elementType: "all",
+              stylers: [{ color: "#f2f2f2" }],
+            },
+            {
+              featureType: "water",
+              elementType: "all",
+              stylers: [{ color: "#d1e6ea" }],
+            },
+          ],
+          disableDefaultUI: false,
+          zoomControl: true,
+          zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_BOTTOM,
+          },
+          mapTypeControl: false,
+          streetViewControl: true,
+          streetViewControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_BOTTOM,
+          },
+          fullscreenControl: true,
+          fullscreenControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_TOP,
+          },
+        });
+
+        mapInstanceRef.current = map;
+
+        // Listen for street view changes to show/hide markers
+        (map as any).addListener("streetview_changed", () => {
+          const streetView = (map as any).getStreetView();
+          const isStreetViewActive = streetView && streetView.getVisible();
+          
+          markersRef.current.forEach((marker) => {
+            if (isStreetViewActive) {
+              (marker as any).setMap(null);
+            } else {
+              (marker as any).setMap(map);
+            }
+          });
+        });
+
+        // Clear existing markers
+        markersRef.current.forEach((marker) => (marker as any).setMap(null));
+        infoWindowsRef.current.forEach((iw) => iw.close());
+        markersRef.current = [];
+        infoWindowsRef.current = [];
+
+        // Convert schools to map format and create markers
+        schools.forEach((school, index) => {
+          const position = getPositionFromLocation(school.location, index);
+          
+          const marker = new google.maps.Marker({
+            position: position,
+            map: map,
+            icon: {
+              url:
+                "data:image/svg+xml;charset=UTF-8," +
+                encodeURIComponent(`
+                  <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="20" cy="20" r="20" fill="${getMarkerColor(school.grade)}"/>
+                    <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-weight="bold" font-size="16">${
+                      school.grade
+                    }</text>
+                  </svg>
+                `),
+              scaledSize: new google.maps.Size(40, 40),
+            },
+          });
+
+          const infoWindow = new google.maps.InfoWindow({
+            content: `
+              <div style="display: flex; gap: 12px; padding: 12px; width: 280px;">
+                <img src="${school.image}" alt="${school.name}" style="width: 100px; height: 100px; border-radius: 6px; object-fit: cover;">
+                <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                  <h3 style="color: #464646; font-size: 16px; font-weight: 600; margin: 0 0 4px;">${school.name}</h3>
+                  <p style="color: #5F5F5F; font-size: 14px; margin: 0;">${school.location}</p>
+                </div>
+              </div>
+            `,
+            pixelOffset: new google.maps.Size(0, -45),
+          });
+
+          marker.addListener("mouseover", () => {
+            infoWindow.open({ anchor: marker, map, shouldFocus: false });
+          });
+
+          marker.addListener("mouseout", () => {
+            infoWindow.close();
+          });
+
+          markersRef.current.push(marker);
+          infoWindowsRef.current.push(infoWindow);
+        });
+      };
+
+      // Check if Google Maps is already loaded
+      if (typeof google !== "undefined" && google.maps) {
+        initMap();
+      } else {
+        // Wait for Google Maps to load
+        const checkGoogle = setInterval(() => {
+          if (typeof google !== "undefined" && google.maps) {
+            clearInterval(checkGoogle);
+            initMap();
+          }
+        }, 100);
+
+        return () => clearInterval(checkGoogle);
+      }
+    }, [schools, isMapActive]);
+
+    // Handle map type changes
+    useEffect(() => {
+      if (!mapInstanceRef.current || typeof google === "undefined" || !isMapActive) return;
+
+      const map = mapInstanceRef.current;
+
+      // Exit street view if active
+      const streetView = (map as any).getStreetView();
+      if (streetView && streetView.getVisible()) {
+        (map as any).setStreetView(null);
+      }
+
+      // Set map type
+      if (mapType === "satellite") {
+        // Use HYBRID for satellite with labels, SATELLITE for satellite without labels
+        if (showLabels) {
+          map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+        } else {
+          map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+        }
+      } else {
+        // Use TERRAIN for terrain view, ROADMAP for regular map
+        if (showTerrain) {
+          map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+        } else {
+          map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+        }
+      }
+
+      // Show markers
+      markersRef.current.forEach((marker) => {
+        (marker as any).setMap(map);
+      });
+    }, [mapType, showTerrain, showLabels, isMapActive]);
+
+    const handleMapTypeChange = (type: "roadmap" | "satellite") => {
+      if (mapInstanceRef.current) {
+        (mapInstanceRef.current as any).exitStreetView();
+      }
+    };
+
+    return (
+      <>
+        <div
+          className={`h-[600px] bg-white rounded-xl overflow-hidden transition-all duration-300 ${
+            isMapActive ? "w-[400px] ml-6 border border-[rgba(0,0,0,0.1)]" : "w-0 overflow-hidden"
+          }`}
+        >
+          {isMapActive && (
+            <>
+              <div className="px-6 py-5 border-b border-black/8 flex-shrink-0">
+                <h2 className="text-[#333] text-2xl font-semibold m-0">Map</h2>
+              </div>
+              <div className="relative h-[calc(600px-73px)] flex-1">
+                <MapControls 
+                  mapType={mapType} 
+                  setMapType={setMapType}
+                  onMapTypeChange={handleMapTypeChange}
+                  showTerrain={showTerrain}
+                  setShowTerrain={setShowTerrain}
+                  showLabels={showLabels}
+                  setShowLabels={setShowLabels}
+                />
+                <div ref={mapRef} id="searchMap" className="w-full h-full" />
+              </div>
+            </>
+          )}
+        </div>
+        {isMapActive && (
+          <Script
+            id="google-maps-search"
+            src={`https://maps.googleapis.com/maps/api/js?key=AIzaSyBuuN90JoSkfCGWSO_i5MOqMZnQiZ9skiY`}
+            strategy="afterInteractive"
+          />
+        )}
+      </>
+    );
+  }
+);
+
+SearchMapContainer.displayName = "SearchMapContainer";
+
+export default SearchMapContainer;

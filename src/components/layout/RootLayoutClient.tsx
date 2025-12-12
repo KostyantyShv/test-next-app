@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { LeftSidebar } from "@/components/layout/Sidebar/Left";
 import { MobileNavigation } from "@/components/layout/MobileNavigation";
@@ -12,6 +13,9 @@ import { useAudioPlayer } from "@/store/use-audio-player";
 import { cn } from "@/lib/utils";
 import PageContainer from "./PageContainer";
 
+// Routes where header and sidebars should be hidden
+const AUTH_ROUTES = ["/login", "/register", "/forgot-password", "/verification"];
+
 export const RootLayoutClient = ({
   children,
 }: {
@@ -19,6 +23,15 @@ export const RootLayoutClient = ({
 }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const { isPlayerVisible, isPlaylistVisible } = useAudioPlayer();
+  const pathname = usePathname();
+  
+  // Check if current route is an auth route
+  const isAuthRoute = AUTH_ROUTES.some(route => pathname?.startsWith(route));
+
+  // If auth route, render children without layout
+  if (isAuthRoute) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-screen bg-background">

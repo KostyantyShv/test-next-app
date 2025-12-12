@@ -12,7 +12,7 @@ const FiltersButton: React.FC<FiltersButtonProps> = ({
 }) => {
   return (
     <button
-      className="more-filters-button flex items-center gap-2 px-4 py-2 bg-[#F2F2F2] border-none rounded-md text-textDefault font-medium text-sm hover:bg-[#e2e8f0] transition-all"
+      className="text-gray-600 more-filters-button flex items-center gap-2 px-4 py-2 bg-[#F2F2F2] border-none rounded-md text-textDefault font-medium text-sm hover:bg-[#e2e8f0] transition-all"
       id="moreFiltersBtn"
       onClick={onClick}
     >

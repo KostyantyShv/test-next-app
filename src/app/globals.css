@@ -132,9 +132,9 @@ body {
     grid-template-columns: none !important;
   }
   
-  .mobile-school-stats > * {
+  /* .mobile-school-stats > * {
     width: 100% !important;
-  }
+  } */
   
   /* Override any grid styles for mobile */
   .school-stats.mobile-school-stats {
@@ -143,20 +143,20 @@ body {
     grid-template-columns: none !important;
   }
   
-  .school-stats.mobile-school-stats > * {
+  /* .school-stats.mobile-school-stats > * {
     width: 100% !important;
-  }
+  } */
   
-  /* Force single column for grid and hybrid layouts on mobile */
+  /* Force single column for grid and hybrid layouts on mobile
   .school-stats {
     display: flex !important;
     flex-direction: column !important;
     grid-template-columns: none !important;
-  }
+  } */
   
-  .school-stats > * {
+  /* .school-stats > * {
     width: 100% !important;
-  }
+  } */
   
   /* Force single column for hybrid layout on mobile */
   .hybrid-school-stats {
@@ -269,5 +269,170 @@ body {
 }
 
 .tooltip-container:hover .tooltip {
+  display: block;
+}
+
+/* Hybrid Layout Stats Tooltips */
+.stat-hybrid:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(70, 70, 70, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  z-index: 5;
+  margin-bottom: 6px;
+  pointer-events: none;
+  opacity: 0;
+  animation: fadeInTooltip 0.2s ease forwards;
+}
+
+@keyframes fadeInTooltip {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Grade tooltip - show only on hover on grade-circle, not on entire card */
+.grade-circle:hover ~ .grade-tooltip {
+  opacity: 1;
+}
+
+/* Options Button Tooltip Styles */
+.tooltip-container {
+  position: absolute;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  width: 240px;
+  z-index: 1000;
+}
+
+.tooltip-container::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: 18px;
+  transform: rotate(45deg);
+  width: 16px;
+  height: 16px;
+  background: white;
+  box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.tooltip-section-title {
+  padding: 8px 12px 4px;
+  font-size: 12px;
+  color: #5F5F5F;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tooltip-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+  position: relative;
+  margin: 2px 0;
+}
+
+.tooltip-item:hover {
+  background-color: #F7F9FC;
+}
+
+.tooltip-item.apply-now {
+  background-color: #EBFCF4;
+}
+
+.tooltip-item.apply-now:hover {
+  background-color: #D7F7E9;
+}
+
+.tooltip-item.apply-now .tooltip-icon,
+.tooltip-item.apply-now .tooltip-text {
+  color: #016853;
+}
+
+.nested-tooltip {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  margin-left: 8px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  width: 240px;
+  z-index: 1001;
+}
+
+.nested-tooltip::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 15px;
+  transform: rotate(45deg);
+  width: 16px;
+  height: 16px;
+  background: white;
+  box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.nested-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.nested-item:hover {
+  background-color: #F7F9FC;
+}
+
+.nested-item.selected .item-check {
+  opacity: 1;
+}
+
+.multi-select .nested-item:not(.selected):hover .item-check {
+  opacity: 0.5;
+}
+
+.multi-select .nested-item.selected:hover .check-icon {
+  display: none;
+}
+
+.multi-select .nested-item.selected:hover .remove-icon {
+  display: block;
+}
+
+.multi-select .nested-item {
+  position: relative;
+}
+
+.multi-select .nested-item:not(.selected):hover .item-check {
+  opacity: 0.5;
+}
+
+.multi-select .nested-item.selected .item-check {
+  opacity: 1;
+}
+
+.multi-select .nested-item.selected:hover .check-icon {
+  display: none;
+}
+
+.multi-select .nested-item.selected:hover .remove-icon {
   display: block;
 }
