@@ -5,7 +5,7 @@ import AddMemberModal from "./modals/AddMemberModal";
 import EditMemberModal from "./modals/EditMemberModal";
 import DeleteConfirmationModal from "./modals/DeleteConfirmationModal";
 import ActivityLogModal from "./modals/ActivityLogModal";
-import { teamMembers } from "../data/teamMembers";
+// import { teamMembers } from "../data/teamMembers";
 import { TeamMember } from "../types";
 import { Checkbox } from "../Checkbox";
 import { FilterDropdown } from "./FilterDropdown";
@@ -18,11 +18,39 @@ import {
   statusOptions,
 } from "../data/filter-options";
 import { usePagination } from "../hooks/usePagination";
+import { createClient } from "@/lib/supabase_utils/client";
+
+interface TeamMembersDashboardDesktopProps {
+  initialMembers?: TeamMember[];
+  ownerId: string;
+}
+
+const AVAILABLE_LISTINGS: TeamMember["listings"] = [
+  {
+    id: 1,
+    name: "Harvard University",
+    image: "https://i.ibb.co/fGKH7fDq/product2.png",
+  },
+  {
+    id: 2,
+    name: "Stanford University",
+    image: "https://i.ibb.co/fGKH7fDq/product2.png",
+  },
+  {
+    id: 3,
+    name: "Massachusetts Institute of Technology",
+    image: "https://i.ibb.co/63Y8x85/product3.jpg",
+  },
+];
 
 // Main component
-const TeamMembersDashboardDesktop: React.FC = () => {
+const TeamMembersDashboardDesktop: React.FC<
+  TeamMembersDashboardDesktopProps
+> = ({ initialMembers, ownerId }) => {
   // State
-  const [members, setMembers] = useState<TeamMember[]>(teamMembers);
+  const [members, setMembers] = useState<TeamMember[]>(
+    initialMembers && initialMembers.length > 0 ? initialMembers : []
+  );
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [sortFilter, setSortFilter] = useState<string>("name");
   const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
@@ -34,6 +62,10 @@ const TeamMembersDashboardDesktop: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
+  const [isSavingMember, setIsSavingMember] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  const supabase = createClient();
 
   // Filters and sorting
   const filterMembers = () => {
@@ -134,6 +166,201 @@ const TeamMembersDashboardDesktop: React.FC = () => {
     setIsDeleteModalOpen(false);
     setIsActivityModalOpen(false);
     setSelectedMemberId(null);
+    setSaveError(null);
+  };
+
+  const handleAddMember = async (data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    isAdmin: boolean;
+  }) => {
+    try {
+      setIsSavingMember(true);
+      setSaveError(null);
+
+      const fullName = `${data.firstName} ${data.lastName}`.trim();
+
+      const { data: inserted, error } = await supabase
+        .from("team_members")
+        .insert({
+          email: data.email,
+          team_owner_id: ownerId,
+          role: data.isAdmin ? "admin" : "member",
+          name: fullName || data.email.split("@")[0] || "Member",
+          status: "pending",
+        })
+        .select("*")
+        .single();
+
+      if (error) {
+        setSaveError(error.message);
+        return;
+      }
+
+      const nextId =
+        members.length > 0
+          ? Math.max(...members.map((m) => m.id)) + 1
+          : 1;
+
+      const rawDate = inserted.updated_at || inserted.created_at;
+      const formattedLastActive =
+        rawDate && !isNaN(new Date(rawDate).getTime())
+          ? new Date(rawDate).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+            })
+          : "";
+
+      const newMember: TeamMember = {
+        id: nextId,
+        firstName:
+          data.firstName ||
+          inserted.name?.split(" ")[0] ||
+          inserted.email.split("@")[0] ||
+          "Member",
+        lastName:
+          data.lastName ||
+          (inserted.name
+            ? inserted.name.split(" ").slice(1).join(" ")
+            : ""),
+        email: inserted.email,
+        avatar: "https://via.placeholder.com/80",
+        status:
+          inserted.status === "accepted" ||
+          inserted.status === "pending" ||
+          inserted.status === "rejected"
+            ? (inserted.status as TeamMember["status"])
+            : "pending",
+        lastActive: formattedLastActive,
+        isAdmin: data.isAdmin,
+        listings: [],
+      };
+
+      setMembers((prev) => [newMember, ...prev]);
+      closeModal();
+    } finally {
+      setIsSavingMember(false);
+    }
+  };
+
+  const handleUpdateMember = async (data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    isAdmin: boolean;
+  }) => {
+    if (!selectedMemberId) return;
+
+    const existing = members.find((m) => m.id === selectedMemberId);
+    if (!existing) return;
+
+    try {
+      setIsSavingMember(true);
+      setSaveError(null);
+
+      const fullName = `${data.firstName} ${data.lastName}`.trim();
+
+      const { error } = await supabase
+        .from("team_members")
+        .update({
+          email: data.email,
+          role: data.isAdmin ? "admin" : "member",
+          name: fullName || data.email.split("@")[0] || "Member",
+        })
+        .eq("team_owner_id", ownerId)
+        .eq("email", existing.email);
+
+      if (error) {
+        setSaveError(error.message);
+        return;
+      }
+
+      const updated: TeamMember = {
+        ...existing,
+        firstName: data.firstName || existing.firstName,
+        lastName: data.lastName || existing.lastName,
+        email: data.email,
+        isAdmin: data.isAdmin,
+      };
+
+      setMembers((prev) =>
+        prev.map((m) => (m.id === selectedMemberId ? updated : m))
+      );
+      closeModal();
+    } finally {
+      setIsSavingMember(false);
+    }
+  };
+
+  const handleResendInvitation = async (memberId: number) => {
+    const existing = members.find((m) => m.id === memberId);
+    if (!existing) return;
+
+    try {
+      setIsSavingMember(true);
+      setSaveError(null);
+
+      const { error } = await supabase
+        .from("team_members")
+        .update({
+          status: "pending",
+          invited_at: new Date().toISOString(),
+        })
+        .eq("team_owner_id", ownerId)
+        .eq("email", existing.email);
+
+      if (error) {
+        setSaveError(error.message);
+        return;
+      }
+
+      setMembers((prev) =>
+        prev.map((m) =>
+          m.id === memberId ? { ...m, status: "pending" } : m
+        )
+      );
+    } finally {
+      setIsSavingMember(false);
+    }
+  };
+
+  const handleUpdateListings = async (
+    memberId: number,
+    listingIds: number[]
+  ) => {
+    const existing = members.find((m) => m.id === memberId);
+    if (!existing) return;
+
+    const selectedListings = AVAILABLE_LISTINGS.filter((l) =>
+      listingIds.includes(l.id)
+    );
+
+    try {
+      setIsSavingMember(true);
+      setSaveError(null);
+
+      const { error } = await supabase
+        .from("team_members")
+        .update({
+          permissions: selectedListings,
+        })
+        .eq("team_owner_id", ownerId)
+        .eq("email", existing.email);
+
+      if (error) {
+        setSaveError(error.message);
+        return;
+      }
+
+      setMembers((prev) =>
+        prev.map((m) =>
+          m.id === memberId ? { ...m, listings: selectedListings } : m
+        )
+      );
+    } finally {
+      setIsSavingMember(false);
+    }
   };
 
   return (
@@ -183,7 +410,7 @@ const TeamMembersDashboardDesktop: React.FC = () => {
       <table className="members-table w-full border-separate border-spacing-0">
         <thead>
           <tr>
-            <th className="w-10 p-3 text-left text-xs font-medium text-gray-600 uppercase bg-gray-100 border-b border-gray-200">
+            <th className="w-10 text-left text-xs font-medium py-3 pl-4 text-gray-600 uppercase bg-gray-100 border-b border-gray-200">
               <Checkbox
                 checked={
                   selectedMemberIds.length === displayedMembers.length &&
@@ -219,6 +446,9 @@ const TeamMembersDashboardDesktop: React.FC = () => {
               onManageClick={toggleDropdown}
               isDropdownOpen={isDropdownOpen}
               openModal={openModal}
+              availableListings={AVAILABLE_LISTINGS}
+              onResendInvitation={handleResendInvitation}
+              onUpdateListings={handleUpdateListings}
             />
           ))}
         </tbody>
@@ -259,9 +489,22 @@ const TeamMembersDashboardDesktop: React.FC = () => {
         }
         onClose={closeModal}
       >
-        {isAddModalOpen && <AddMemberModal onClose={closeModal} />}
+        {isAddModalOpen && (
+          <AddMemberModal
+            onClose={closeModal}
+            onSubmit={handleAddMember}
+            isSubmitting={isSavingMember}
+            error={saveError}
+          />
+        )}
         {isEditModalOpen && selectedMemberId && (
-          <EditMemberModal memberId={selectedMemberId} onClose={closeModal} />
+          <EditMemberModal
+            member={members.find((m) => m.id === selectedMemberId)!}
+            onClose={closeModal}
+            onSave={handleUpdateMember}
+            isSubmitting={isSavingMember}
+            error={saveError}
+          />
         )}
         {isDeleteModalOpen && selectedMemberId && (
           <DeleteConfirmationModal

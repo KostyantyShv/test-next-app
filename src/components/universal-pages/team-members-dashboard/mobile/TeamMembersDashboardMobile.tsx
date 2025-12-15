@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { activityLogs } from "../data/activityLogs";
-import { teamMembers } from "../data/teamMembers";
+// import { teamMembers } from "../data/teamMembers";
 import { usePagination } from "../hooks/usePagination";
 import { TeamMember } from "../types";
 import { ActivityLogDrawer } from "./drawers/ActivityLogDrawer";
@@ -18,9 +18,19 @@ import { SearchBar } from "./SearchBar";
 import { ActionsDrawer } from "./drawers/ActionsDrawer";
 // import { FiltersDrawer } from "./drawers/FiltersDrawer";
 
-const TeamMembersMobile: React.FC = () => {
+interface TeamMembersMobileProps {
+  initialMembers?: TeamMember[];
+  ownerId: string;
+}
+
+const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
+  initialMembers,
+  ownerId,
+}) => {
   // State
-  const [members, setMembers] = useState<TeamMember[]>(teamMembers);
+  const [members, setMembers] = useState<TeamMember[]>(
+    initialMembers && initialMembers.length > 0 ? initialMembers : []
+  );
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [sortFilter, setSortFilter] = useState<string>("name");
   const [currentMemberId, setCurrentMemberId] = useState<number | null>(null);
@@ -41,6 +51,7 @@ const TeamMembersMobile: React.FC = () => {
   const [isOptionsDrawerOpen, setIsOptionsDrawerOpen] = useState(false);
   const [hideRead, setHideRead] = useState<boolean>(false);
   const [activitySearchTerm, setActivitySearchTerm] = useState<string>("");
+  const [isSavingMember, setIsSavingMember] = useState(false);
 
   // Filter and sort members
   const filterMembers = (): TeamMember[] => {
@@ -199,6 +210,31 @@ const TeamMembersMobile: React.FC = () => {
 
   const activityLogsToDisplay = renderActivityLogs();
 
+  const handleAddMember = (data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    isAdmin: boolean;
+  }) => {
+    const nextId =
+      members.length > 0 ? Math.max(...members.map((m) => m.id)) + 1 : 1;
+
+    const newMember: TeamMember = {
+      id: nextId,
+      firstName: data.firstName || data.email.split("@")[0] || "Member",
+      lastName: data.lastName || "",
+      email: data.email,
+      avatar: "https://via.placeholder.com/80",
+      status: "pending",
+      lastActive: "",
+      isAdmin: data.isAdmin,
+      listings: [],
+    };
+
+    setMembers((prev) => [newMember, ...prev]);
+    setIsAddMemberDrawerOpen(false);
+  };
+
   return (
     <div className="h-[740px] overflow-hidden flex flex-col">
       <Header
@@ -281,9 +317,7 @@ const TeamMembersMobile: React.FC = () => {
       <AddMemberDrawer
         isOpen={isAddMemberDrawerOpen}
         onClose={closeDrawer}
-        onSendInvitation={() => {
-          closeDrawer(); /* Placeholder */
-        }}
+        onSendInvitation={handleAddMember}
       />
       <EditMemberDrawer
         isOpen={isEditMemberDrawerOpen}

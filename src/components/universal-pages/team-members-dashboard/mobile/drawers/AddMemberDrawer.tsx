@@ -1,9 +1,15 @@
+import { useState } from "react";
 import { Drawer } from "./Drawer";
 
 interface AddMemberDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  onSendInvitation: () => void;
+  onSendInvitation: (data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    isAdmin: boolean;
+  }) => void;
 }
 
 export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
@@ -11,6 +17,15 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
   onClose,
   onSendInvitation,
 }) => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const handleSubmit = () => {
+    if (!email.trim()) return;
+    onSendInvitation({ firstName, lastName, email, isAdmin });
+  };
   const listings = [
     {
       id: 1,
@@ -43,8 +58,9 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
             Cancel
           </button>
           <button
-            className="px-5 py-3 rounded-lg text-sm font-medium text-white bg-black hover:bg-gray-900"
-            onClick={onSendInvitation}
+            className="px-5 py-3 rounded-lg text-sm font-medium text-white bg-black hover:bg-gray-900 disabled:opacity-60"
+            onClick={handleSubmit}
+            disabled={!email.trim()}
           >
             Send Invitation
           </button>
@@ -64,6 +80,8 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
             id="firstName"
             className="w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-600 focus:outline-none focus:border-green-800 focus:ring-2 focus:ring-green-100"
             required
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
           />
         </div>
         <div className="mb-4">
@@ -78,6 +96,8 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
             id="lastName"
             className="w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-600 focus:outline-none focus:border-green-800 focus:ring-2 focus:ring-green-100"
             required
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
           />
         </div>
         <div className="mb-4">
@@ -92,6 +112,8 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
             id="email"
             className="w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-600 focus:outline-none focus:border-green-800 focus:ring-2 focus:ring-green-100"
             required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="flex items-center gap-2.5 mb-4">
@@ -99,6 +121,8 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
             type="checkbox"
             id="adminCheckbox"
             className="appearance-none h-5 w-5 border-2 border-gray-300 rounded checked:bg-green-800 checked:border-green-800 focus:outline-none"
+            checked={isAdmin}
+            onChange={(e) => setIsAdmin(e.target.checked)}
           />
           <label
             htmlFor="adminCheckbox"

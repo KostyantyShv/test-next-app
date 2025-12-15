@@ -714,6 +714,7 @@ export type Database = {
           id: string
           invited_at: string | null
           joined_at: string | null
+          name: string | null
           permissions: Json | null
           role: string
           status: string | null
@@ -727,6 +728,7 @@ export type Database = {
           id?: string
           invited_at?: string | null
           joined_at?: string | null
+          name?: string | null
           permissions?: Json | null
           role?: string
           status?: string | null
@@ -740,6 +742,7 @@ export type Database = {
           id?: string
           invited_at?: string | null
           joined_at?: string | null
+          name?: string | null
           permissions?: Json | null
           role?: string
           status?: string | null

@@ -2,10 +2,31 @@ import React, { useState } from "react";
 
 interface AddMemberModalProps {
   onClose: () => void;
+  onSubmit: (data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    isAdmin: boolean;
+  }) => void;
+  isSubmitting?: boolean;
+  error?: string | null;
 }
 
-const AddMemberModal: React.FC<AddMemberModalProps> = ({ onClose }) => {
+const AddMemberModal: React.FC<AddMemberModalProps> = ({
+  onClose,
+  onSubmit,
+  isSubmitting,
+  error,
+}) => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+
+  const handleSubmit = () => {
+    if (!email.trim()) return;
+    onSubmit({ firstName, lastName, email, isAdmin });
+  };
 
   return (
     <div className="add-member-modal-content">
@@ -39,6 +60,8 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({ onClose }) => {
             <input
               type="text"
               id="firstName"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
               className="form-input w-full p-2.5 border border-gray-300 rounded-md text-sm text-[#464646] focus:outline-none focus:border-[#016853] focus:shadow-[0_0_0_2px_rgba(1,104,83,0.1)]"
             />
           </div>
@@ -52,6 +75,8 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({ onClose }) => {
             <input
               type="text"
               id="lastName"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
               className="form-input w-full p-2.5 border border-gray-300 rounded-md text-sm text-[#464646] focus:outline-none focus:border-[#016853] focus:shadow-[0_0_0_2px_rgba(1,104,83,0.1)]"
             />
           </div>
@@ -66,21 +91,26 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({ onClose }) => {
           <input
             type="email"
             id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="form-input w-full p-2.5 border border-gray-300 rounded-md text-sm text-[#464646] focus:outline-none focus:border-[#016853] focus:shadow-[0_0_0_2px_rgba(1,104,83,0.1)]"
           />
         </div>
         <div className="admin-checkbox flex items-center gap-2 mb-6 mt-4">
-          <label className="checkbox-wrapper inline-flex items-center justify-center cursor-pointer">
+          <label
+            className="checkbox-wrapper inline-flex items-center justify-center cursor-pointer"
+            htmlFor="adminCheckbox"
+          >
             <input
               type="checkbox"
+              id="adminCheckbox"
               checked={isAdmin}
               onChange={() => setIsAdmin(!isAdmin)}
-              className="absolute opacity-0 h-0 w-0"
+              className="peer absolute opacity-0 h-0 w-0"
             />
             <span
-              className={`checkmark relative h-4 w-4 bg-white border-2 border-gray-300 rounded transition-all ${
-                isAdmin ? "bg-[#0B6333] border-[#0B6333]" : ""
-              }`}
+              className="checkmark relative h-4 w-4 bg-white border-2 border-gray-300 rounded transition-all
+              peer-checked:bg-[#0B6333] peer-checked:border-[#0B6333]"
             ></span>
           </label>
           <label
@@ -95,11 +125,17 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({ onClose }) => {
             <div className="listing-section-title text-sm font-medium text-[#464646] mb-4">
               Assign to Listings
             </div>
-            <div className="listing-item-checkbox flex items-center gap-4 py-3 border-b border-gray-200">
-              <label className="checkbox-wrapper inline-flex items-center justify-center cursor-pointer">
-                <input type="checkbox" className="absolute opacity-0 h-0 w-0" />
-                <span className="checkmark relative h-4 w-4 bg-white border-2 border-gray-300 rounded transition-all"></span>
-              </label>
+            <label className="listing-item-checkbox flex items-center gap-4 py-3 border-b border-gray-200 cursor-pointer">
+              <span className="checkbox-wrapper inline-flex items-center justify-center">
+                <input
+                  type="checkbox"
+                  className="peer absolute opacity-0 h-0 w-0"
+                />
+                <span
+                  className="checkmark relative h-4 w-4 bg-white border-2 border-gray-300 rounded transition-all
+                  peer-checked:bg-[#0B6333] peer-checked:border-[#0B6333]"
+                ></span>
+              </span>
               <img
                 src="https://i.ibb.co/fGKH7fDq/product2.png"
                 alt="Harvard University"
@@ -108,12 +144,18 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({ onClose }) => {
               <span className="listing-title text-sm text-[#464646]">
                 Harvard University
               </span>
-            </div>
-            <div className="listing-item-checkbox flex items-center gap-4 py-3 border-b border-gray-200">
-              <label className="checkbox-wrapper inline-flex items-center justify-center cursor-pointer">
-                <input type="checkbox" className="absolute opacity-0 h-0 w-0" />
-                <span className="checkmark relative h-4 w-4 bg-white border-2 border-gray-300 rounded transition-all"></span>
-              </label>
+            </label>
+            <label className="listing-item-checkbox flex items-center gap-4 py-3 border-b border-gray-200 cursor-pointer">
+              <span className="checkbox-wrapper inline-flex items-center justify-center">
+                <input
+                  type="checkbox"
+                  className="peer absolute opacity-0 h-0 w-0"
+                />
+                <span
+                  className="checkmark relative h-4 w-4 bg-white border-2 border-gray-300 rounded transition-all
+                  peer-checked:bg-[#0B6333] peer-checked:border-[#0B6333]"
+                ></span>
+              </span>
               <img
                 src="https://i.ibb.co/fGKH7fDq/product2.png"
                 alt="Stanford University"
@@ -122,12 +164,18 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({ onClose }) => {
               <span className="listing-title text-sm text-[#464646]">
                 Stanford University
               </span>
-            </div>
-            <div className="listing-item-checkbox flex items-center gap-4 py-3">
-              <label className="checkbox-wrapper inline-flex items-center justify-center cursor-pointer">
-                <input type="checkbox" className="absolute opacity-0 h-0 w-0" />
-                <span className="checkmark relative h-4 w-4 bg-white border-2 border-gray-300 rounded transition-all"></span>
-              </label>
+            </label>
+            <label className="listing-item-checkbox flex items-center gap-4 py-3 cursor-pointer">
+              <span className="checkbox-wrapper inline-flex items-center justify-center">
+                <input
+                  type="checkbox"
+                  className="peer absolute opacity-0 h-0 w-0"
+                />
+                <span
+                  className="checkmark relative h-4 w-4 bg-white border-2 border-gray-300 rounded transition-all
+                  peer-checked:bg-[#0B6333] peer-checked:border-[#0B6333]"
+                ></span>
+              </span>
               <img
                 src="https://i.ibb.co/63Y8x85/product3.jpg"
                 alt="MIT"
@@ -136,11 +184,21 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({ onClose }) => {
               <span className="listing-title text-sm text-[#464646]">
                 Massachusetts Institute of Technology
               </span>
-            </div>
+            </label>
           </div>
         )}
-        <button className="send-invitation-btn w-full py-3 bg-[#3B82F6] text-white rounded-md font-medium text-sm hover:bg-[#2563EB] transition-colors">
-          Send Invitation
+        {error && (
+          <div className="mb-3 text-sm text-red-600">
+            {error}
+          </div>
+        )}
+        <button
+          type="button"
+          className="send-invitation-btn w-full py-3 bg-[#3B82F6] text-white rounded-md font-medium text-sm hover:bg-[#2563EB] transition-colors disabled:opacity-60"
+          onClick={handleSubmit}
+          disabled={isSubmitting || !email.trim()}
+        >
+          {isSubmitting ? "Sending..." : "Send Invitation"}
         </button>
       </div>
     </div>
