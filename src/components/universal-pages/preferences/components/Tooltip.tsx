@@ -5,8 +5,8 @@ interface TooltipProps {
 }
 
 export const Tooltip: FC<TooltipProps> = ({ text }) => (
-  <div className="tooltip relative inline-block group">
-    <svg className="w-4 h-4 opacity-60 cursor-help transition-opacity duration-200 group-hover:opacity-100 group-hover:text-[#0B6333]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <div className="tooltip relative inline-flex items-center group z-50">
+    <svg className="w-4 h-4 text-[#0B6333] cursor-help transition-all duration-200 flex-shrink-0 relative z-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
       <circle cx="12" cy="12" r="10"/>
       <path d="M12 16v-4m0-4h.01"/>
     </svg>

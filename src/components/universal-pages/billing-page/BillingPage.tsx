@@ -14,8 +14,11 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function BillingPage() {
   const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [currentBadge, setCurrentBadge] = useState<HTMLElement | null>(null);
-  const [addonName, setAddonName] = useState<string>("");
+  const [activeBadges, setActiveBadges] = useState<string[]>([
+    "Analytics",
+    "Reporting",
+  ]);
+  const [pendingAddonName, setPendingAddonName] = useState<string | null>(null);
   const [confirmationType, setConfirmationType] = useState<
     "add" | "remove" | null
   >(null);
@@ -30,36 +33,37 @@ export default function BillingPage() {
     document.body.style.overflow = ""; // Restore scrolling
   };
 
-  const handleRemoveBadge = (badge: HTMLElement | null) => {
-    if (badge) {
-      setCurrentBadge(badge);
-      setConfirmationType("remove");
-      openModal("confirmation");
-    }
+  const requestRemoveAddon = (name: string) => {
+    setPendingAddonName(name);
+    setConfirmationType("remove");
+    openModal("confirmation");
   };
 
-  const handleAddBadge = (badge: HTMLElement | null, name: string) => {
-    if (badge) {
-      setCurrentBadge(badge);
-      setAddonName(name);
-      setConfirmationType("add");
-      openModal("confirmation");
-    }
+  const requestAddAddon = (name: string) => {
+    // Додаємо аддон одразу, без модального підтвердження
+    setActiveBadges((prev) =>
+      prev.includes(name) ? prev : [...prev, name]
+    );
   };
 
-  const confirmRemove = () => {
-    if (currentBadge) {
-      currentBadge.classList.remove("active");
-      // Logic to update UI would be handled by state in a real implementation
+  const handleConfirmAddonChange = () => {
+    if (!pendingAddonName || !confirmationType) {
+      closeModal();
+      return;
     }
-    closeModal();
-  };
 
-  const confirmAdd = () => {
-    if (currentBadge) {
-      currentBadge.classList.add("active");
-      // Logic to update UI would be handled by state in a real implementation
+    if (confirmationType === "remove") {
+      setActiveBadges((prev) =>
+        prev.filter((badge) => badge !== pendingAddonName)
+      );
+    } else if (confirmationType === "add") {
+      setActiveBadges((prev) =>
+        prev.includes(pendingAddonName) ? prev : [...prev, pendingAddonName]
+      );
     }
+
+    setPendingAddonName(null);
+    setConfirmationType(null);
     closeModal();
   };
 
@@ -81,6 +85,9 @@ export default function BillingPage() {
 
         {/* Billing Information Section */}
         <BillingInformation
+          activeBadges={activeBadges}
+          onRequestAddAddon={requestAddAddon}
+          onRequestRemoveAddon={requestRemoveAddon}
           openPastInvoices={() => openModal("past-invoices")}
           openEditPayment={() => openModal("edit-payment")}
         />
@@ -118,11 +125,9 @@ export default function BillingPage() {
           <ConfirmationModal
             isOpen={activeModal === "confirmation"}
             type={confirmationType}
-            addonName={addonName}
+            addonName={pendingAddonName || ""}
             onCancel={closeModal}
-            onConfirm={
-              confirmationType === "remove" ? confirmRemove : confirmAdd
-            }
+            onConfirm={handleConfirmAddonChange}
           />
         )}
       </div>

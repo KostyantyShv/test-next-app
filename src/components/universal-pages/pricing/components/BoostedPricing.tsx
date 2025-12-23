@@ -131,9 +131,30 @@ const BoostedPricing: React.FC = () => {
                   Number of Impressions
                 </label>
                 <div className="relative mb-4">
+                  <style dangerouslySetInnerHTML={{__html: `
+                    .boosted-slider::-webkit-slider-thumb {
+                      appearance: none;
+                      width: 20px;
+                      height: 20px;
+                      border-radius: 50%;
+                      background: #1D77BD;
+                      cursor: pointer;
+                      border: 2px solid white;
+                      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                    }
+                    .boosted-slider::-moz-range-thumb {
+                      width: 20px;
+                      height: 20px;
+                      border-radius: 50%;
+                      background: #1D77BD;
+                      cursor: pointer;
+                      border: 2px solid white;
+                      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                    }
+                  `}} />
                   <input
                     type="range"
-                    className="w-full h-2 bg-[#E2E8F0] rounded-lg outline-none appearance-none cursor-pointer"
+                    className="boosted-slider w-full h-2 bg-[#E2E8F0] rounded-lg outline-none appearance-none cursor-pointer"
                     min="1000"
                     max="100000"
                     step="1000"
@@ -235,42 +256,42 @@ const BoostFeatureItem: React.FC<BoostFeatureItemProps> = ({ icon, text, bold })
 
 // SVG Icons
 const CheckIcon = () => (
-  <svg fill="#1D77BD" viewBox="0 0 24 24">
-    <path d="M5 13l4 4L19 7" stroke="#1D77BD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+  <svg fill="#0B6333" viewBox="0 0 24 24">
+    <path d="M5 13l4 4L19 7" stroke="#0B6333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
   </svg>
 );
 
 const LightningIcon = () => (
-  <svg fill="#1D77BD" viewBox="0 0 24 24">
-    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="#1D77BD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+  <svg fill="#0B6333" viewBox="0 0 24 24">
+    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="#0B6333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
   </svg>
 );
 
 const EyeIcon = () => (
-  <svg fill="#1D77BD" viewBox="0 0 24 24">
-    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="#1D77BD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-    <circle cx="12" cy="12" r="3" stroke="#1D77BD" strokeWidth="2" fill="none"/>
+  <svg fill="#0B6333" viewBox="0 0 24 24">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="#0B6333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+    <circle cx="12" cy="12" r="3" stroke="#0B6333" strokeWidth="2" fill="none"/>
   </svg>
 );
 
 const ChartIcon = () => (
-  <svg fill="#1D77BD" viewBox="0 0 24 24">
-    <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke="#1D77BD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+  <svg fill="#0B6333" viewBox="0 0 24 24">
+    <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke="#0B6333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
   </svg>
 );
 
 const UsersIcon = () => (
-  <svg fill="#1D77BD" viewBox="0 0 24 24">
-    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="#1D77BD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-    <circle cx="9" cy="7" r="4" stroke="#1D77BD" strokeWidth="2" fill="none"/>
-    <path d="M23 21v-2a4 4 0 00-3-3.87" stroke="#1D77BD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-    <path d="M16 3.13a4 4 0 010 7.75" stroke="#1D77BD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+    <svg fill="#0B6333" viewBox="0 0 24 24">
+    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="#0B6333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+    <circle cx="9" cy="7" r="4" stroke="#0B6333" strokeWidth="2" fill="none"/>
+    <path d="M23 21v-2a4 4 0 00-3-3.87" stroke="#0B6333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+    <path d="M16 3.13a4 4 0 010 7.75" stroke="#0B6333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
   </svg>
 );
 
 const ClockIcon = () => (
-  <svg fill="#1D77BD" viewBox="0 0 24 24">
-    <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#1D77BD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+  <svg fill="#0B6333" viewBox="0 0 24 24">
+    <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#0B6333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
   </svg>
 );
 

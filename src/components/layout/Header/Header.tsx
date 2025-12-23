@@ -28,7 +28,7 @@ export const Header: FC<HeaderProps> = ({ className, onOpenSidebar }) => {
 
   return (
     <>
-      <header className={cn('bg-white/80 backdrop-blur-sm sticky top-0 z-[1000] transition-all duration-300 border-b border-gray-100', className)}>
+      <header className={cn('bg-white/80 backdrop-blur-sm sticky top-0 z-[1000] transition-all duration-300 ', className)}>
         {/* Desktop Header */}
         <div className="hidden md:block">
           <div className="max-w-[1400px] mx-auto px-6 flex items-center justify-center h-18 gap-6">
@@ -42,7 +42,9 @@ export const Header: FC<HeaderProps> = ({ className, onOpenSidebar }) => {
               <Actions />
             </div>
           </div>
+          <div className="h-[12px] bg-[#f8fcff] flex-shrink-0 border-t border-gray-100"></div>
         </div>
+        
 
         {/* Mobile Header */}
         <div className="md:hidden flex items-center justify-between px-5 py-4">
@@ -58,6 +60,7 @@ export const Header: FC<HeaderProps> = ({ className, onOpenSidebar }) => {
 
           {/* Mobile Actions */}
           <MobileActions />
+
         </div>
 
         {/* Scroll Progress Indicator */}
@@ -66,7 +69,10 @@ export const Header: FC<HeaderProps> = ({ className, onOpenSidebar }) => {
             className="h-full bg-[#00DF8B] transition-all duration-150"
             style={{ width: `${scrollProgress}%` }}
           />
+          <div className="h-[12px] bg-[#f8fcff] flex-shrink-0 border-t border-gray-100"></div>
+
         </div>
+
       </header>
     </>
   );

@@ -6,13 +6,13 @@ export const Checkbox: React.FC<{
     <label className="checkbox-wrapper inline-flex items-center justify-center cursor-pointer">
       <input
         type="checkbox"
-        className="peer absolute opacity-0 h-0 w-0"
+        className="peer absolute opacity-0 h-0 w-0 !bg-white"
         checked={checked}
         onChange={onChange}
       />
       <span
         className={`relative h-4 w-4 border-2 rounded transition-colors duration-200
-        bg-white border-gray-300 hover:border-gray-400
+        !bg-white border-gray-300 hover:border-gray-400
         peer-checked:bg-[#0B6333] peer-checked:border-[#0B6333]`}
       >
         {checked && (

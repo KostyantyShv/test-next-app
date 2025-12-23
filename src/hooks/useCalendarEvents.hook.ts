@@ -125,7 +125,7 @@ export const useCalendarEvents = (): UseCalendarEventsReturn => {
         throw new Error("User not authenticated");
       }
 
-      const { error: insertError } = await supabase
+      const { data: insertedData, error: insertError } = await supabase
         .from("calendar_events")
         .insert({
           user_id: user.id,
@@ -135,11 +135,14 @@ export const useCalendarEvents = (): UseCalendarEventsReturn => {
           end_time: eventData.end_time?.toISOString() || null,
           all_day: eventData.all_day || false,
           color: eventData.color || null,
-        });
+        })
+        .select()
+        .single();
 
       if (insertError) throw insertError;
 
-      // Reload events
+      // Reload events immediately to show the new event
+      // This ensures the event appears right away
       await loadEvents();
     } catch (err: any) {
       console.error("Error creating event:", err);
@@ -149,7 +152,7 @@ export const useCalendarEvents = (): UseCalendarEventsReturn => {
 
   const updateEvent = async (eventId: string, eventData: UpdateEventData) => {
     try {
-      const { error: updateError } = await supabase
+      const { data: updatedData, error: updateError } = await supabase
         .from("calendar_events")
         .update({
           title: eventData.title,
@@ -159,12 +162,24 @@ export const useCalendarEvents = (): UseCalendarEventsReturn => {
           all_day: eventData.all_day || false,
           color: eventData.color || null,
         })
-        .eq("id", eventId);
+        .eq("id", eventId)
+        .select()
+        .single();
 
       if (updateError) throw updateError;
 
-      // Reload events
-      await loadEvents();
+      // Optimistically update the event in the list immediately
+      if (updatedData) {
+        const updatedEvent = convertToUIEvent(updatedData);
+        setEvents((prevEvents) =>
+          prevEvents.map((event) => (event.id === eventId ? updatedEvent : event))
+        );
+      }
+
+      // Reload events after a short delay to ensure sync with database
+      setTimeout(() => {
+        loadEvents();
+      }, 100);
     } catch (err: any) {
       console.error("Error updating event:", err);
       throw err;
@@ -180,8 +195,13 @@ export const useCalendarEvents = (): UseCalendarEventsReturn => {
 
       if (deleteError) throw deleteError;
 
-      // Reload events
-      await loadEvents();
+      // Optimistically remove the event from the list immediately
+      setEvents((prevEvents) => prevEvents.filter((event) => event.id !== eventId));
+
+      // Reload events after a short delay to ensure sync with database
+      setTimeout(() => {
+        loadEvents();
+      }, 100);
     } catch (err: any) {
       console.error("Error deleting event:", err);
       throw err;
@@ -192,23 +212,35 @@ export const useCalendarEvents = (): UseCalendarEventsReturn => {
     loadEvents();
 
     // Subscribe to real-time updates
-    const channel = supabase
-      .channel("calendar_events_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "calendar_events",
-        },
-        () => {
-          loadEvents();
-        }
-      )
-      .subscribe();
+    let channel: any = null;
+    
+    const setupRealtime = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      channel = supabase
+        .channel("calendar_events_changes")
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "calendar_events",
+            filter: `user_id=eq.${user.id}`,
+          },
+          () => {
+            loadEvents();
+          }
+        )
+        .subscribe();
+    };
+
+    setupRealtime();
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
   }, []);
 

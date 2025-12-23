@@ -155,11 +155,11 @@ const VerificationMobile: React.FC<VerificationMobileProps> = ({ onClose }) => {
             <label className="block text-[14px] font-medium text-[#464646] mb-2">Personal Information</label>
             <div className="grid grid-cols-2 gap-3">
               <div className="relative">
-                <input className="w-full h-[52px] rounded-xl border-2 border-[#D1D5DB] px-4 text-[16px] bg-white focus:outline-none focus:border-[#1D77BD] valid:[&]:border-[#089E68]" placeholder="First name" value={formData.firstName} onChange={e => handleInputChange('firstName', e.target.value)} />
+                <input className="w-full h-[52px] rounded-xl border-2 border-[#D1D5DB] px-4 text-[16px] !bg-white focus:outline-none focus:border-[#1D77BD] valid:[&]:border-[#089E68]" placeholder="First name" value={formData.firstName} onChange={e => handleInputChange('firstName', e.target.value)} />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[#089E68] font-bold">✓</span>
               </div>
               <div className="relative">
-                <input className="w-full h-[52px] rounded-xl border-2 border-[#D1D5DB] px-4 text-[16px] bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="Last name" value={formData.lastName} onChange={e => handleInputChange('lastName', e.target.value)} />
+                <input className="w-full h-[52px] rounded-xl border-2 border-[#D1D5DB] px-4 text-[16px] !bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="Last name" value={formData.lastName} onChange={e => handleInputChange('lastName', e.target.value)} />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[#089E68] font-bold">✓</span>
               </div>
             </div>
@@ -167,7 +167,7 @@ const VerificationMobile: React.FC<VerificationMobileProps> = ({ onClose }) => {
 
           <div className="form-group">
             <div className="relative">
-              <input className="w-full h-[52px] rounded-xl border-2 border-[#D1D5DB] px-4 text-[16px] bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="Address" value={formData.address} onChange={e => handleInputChange('address', e.target.value)} />
+              <input className="w-full h-[52px] rounded-xl border-2 border-[#D1D5DB] px-4 text-[16px] !bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="Address" value={formData.address} onChange={e => handleInputChange('address', e.target.value)} />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[#089E68] font-bold">✓</span>
             </div>
           </div>
@@ -175,7 +175,7 @@ const VerificationMobile: React.FC<VerificationMobileProps> = ({ onClose }) => {
           <div className="form-group">
             <div className="grid grid-cols-2 gap-3">
               <div className="relative">
-                <input type="date" className="w-full h-[52px] rounded-xl border-2 border-[#D1D5DB] px-4 text-[16px] bg-white focus:outline-none focus:border-[#1D77BD]" value={formData.dateOfBirth} onChange={e => handleInputChange('dateOfBirth', e.target.value)} />
+                <input type="date" className="w-full h-[52px] rounded-xl border-2 border-[#D1D5DB] px-4 text-[16px] !bg-white focus:outline-none focus:border-[#1D77BD]" value={formData.dateOfBirth} onChange={e => handleInputChange('dateOfBirth', e.target.value)} />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[#089E68] font-bold">✓</span>
               </div>
               <div className="relative">
@@ -256,21 +256,21 @@ const VerificationMobile: React.FC<VerificationMobileProps> = ({ onClose }) => {
             <div id="credit-card-form">
               <div className="mb-4">
                 <label className="block text-[14px] font-medium text-[#464646] mb-2">Card Number</label>
-                <input className="w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="1234 5678 9012 3456" maxLength={19} value={formData.cardNumber} onChange={e => handleInputChange('cardNumber', formatCardNumber(e.target.value))} />
+                <input className="w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] !bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="1234 5678 9012 3456" maxLength={19} value={formData.cardNumber} onChange={e => handleInputChange('cardNumber', formatCardNumber(e.target.value))} />
               </div>
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <div>
                   <label className="block text-[14px] font-medium text-[#464646] mb-2">Expiry Date</label>
-                  <input className="w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="MM/YY" maxLength={5} value={formData.expiryDate} onChange={e => handleInputChange('expiryDate', formatExpiryDate(e.target.value))} />
+                  <input className="w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] !bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="MM/YY" maxLength={5} value={formData.expiryDate} onChange={e => handleInputChange('expiryDate', formatExpiryDate(e.target.value))} />
                 </div>
                 <div>
                   <label className="block text-[14px] font-medium text-[#464646] mb-2">CVV</label>
-                  <input className="w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="123" maxLength={4} value={formData.cvv} onChange={e => handleInputChange('cvv', e.target.value)} />
+                  <input className="w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] !bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="123" maxLength={4} value={formData.cvv} onChange={e => handleInputChange('cvv', e.target.value)} />
                 </div>
               </div>
               <div className="mb-4">
                 <label className="block text-[14px] font-medium text-[#464646] mb-2">Cardholder Name</label>
-                <input className="w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="John Doe" value={formData.cardholderName} onChange={e => handleInputChange('cardholderName', e.target.value)} />
+                <input className="w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] !bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="John Doe" value={formData.cardholderName} onChange={e => handleInputChange('cardholderName', e.target.value)} />
               </div>
             </div>
           ) : (
@@ -290,15 +290,15 @@ const VerificationMobile: React.FC<VerificationMobileProps> = ({ onClose }) => {
           </div>
           <div className="mb-4">
             <label className="block text-[14px] font-medium text-[#464646] mb-2">Business Email</label>
-            <input className="w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="admin@yourcompany.com" value={formData.businessEmail} onChange={e => handleInputChange('businessEmail', e.target.value)} />
+            <input className="w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] !bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="admin@yourcompany.com" value={formData.businessEmail} onChange={e => handleInputChange('businessEmail', e.target.value)} />
           </div>
           <div className="mb-4">
             <label className="block text-[14px] font-medium text-[#464646] mb-2">Business Name</label>
-            <input className="w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="Your Company Name" value={formData.businessName} onChange={e => handleInputChange('businessName', e.target.value)} />
+            <input className="w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] !bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="Your Company Name" value={formData.businessName} onChange={e => handleInputChange('businessName', e.target.value)} />
           </div>
           <div className="mb-4">
             <label className="block text-[14px] font-medium text-[#464646] mb-2">Business Website</label>
-            <input className="w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="https://yourcompany.com" value={formData.businessWebsite} onChange={e => handleInputChange('businessWebsite', e.target.value)} />
+            <input className="w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] !bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="https://yourcompany.com" value={formData.businessWebsite} onChange={e => handleInputChange('businessWebsite', e.target.value)} />
           </div>
           <div className="rounded-xl border border-[#089E68] bg-[#EBFCF4] text-[#016853] p-4">
             <div className="text-[14px] font-semibold mb-2 flex items-center gap-2">📧 Verification Process</div>
@@ -328,7 +328,7 @@ const VerificationMobile: React.FC<VerificationMobileProps> = ({ onClose }) => {
                   </div>
                 )}
               </div>
-              <input className="col-span-3 w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="(555) 123-4567" value={formData.phoneNumber} onChange={e => handleInputChange('phoneNumber', e.target.value)} />
+              <input className="col-span-3 w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] !bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="(555) 123-4567" value={formData.phoneNumber} onChange={e => handleInputChange('phoneNumber', e.target.value)} />
             </div>
           </div>
           {showPhoneCode && (
@@ -405,7 +405,7 @@ const VerificationMobile: React.FC<VerificationMobileProps> = ({ onClose }) => {
           </div>
           <div className="mb-4">
             <label className="block text-[14px] font-medium text-[#464646] mb-2">Website URL</label>
-            <input className="w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="https://yourwebsite.com" value={formData.websiteUrl} onChange={e => handleInputChange('websiteUrl', e.target.value)} />
+            <input className="w-full h-[52px] rounded-xl border-2 border-gray-300 px-4 text-[16px] !bg-white focus:outline-none focus:border-[#1D77BD]" placeholder="https://yourwebsite.com" value={formData.websiteUrl} onChange={e => handleInputChange('websiteUrl', e.target.value)} />
           </div>
           <div className="mb-4">
             <label className="block text-[14px] font-medium text-[#464646] mb-2">Verification Method</label>

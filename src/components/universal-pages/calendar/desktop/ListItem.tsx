@@ -30,10 +30,14 @@ export const ListItem: React.FC<ListItemProps> = ({
     }
   };
   return (
-    <div className="flex py-6 border-b border-[#E0E0E0] items-start">
-      <div className={`w-20 text-center pr-4 relative ${events[0].type}`}>
+    <div className="list-item flex py-6 border-b border-[#E0E0E0] items-start">
+      <div
+        className={`list-date w-20 text-center pr-4 relative ${
+          isCurrent ? "current" : ""
+        } ${events[0]?.type || ""}`}
+      >
         <div
-          className={`text-base font-medium ${
+          className={`list-weekday text-base font-medium mb-1 ${
             isCurrent ? "text-[#1A73E8]" : "text-[#5F6368]"
           }`}
         >
@@ -41,40 +45,44 @@ export const ListItem: React.FC<ListItemProps> = ({
         </div>
         <div
           onClick={handleDateClick}
-          className={`text-3xl font-semibold cursor-pointer hover:bg-gray-100 rounded px-2 ${
+          className={`list-day text-3xl font-semibold cursor-pointer hover:bg-gray-100 rounded px-2 ${
             isCurrent ? "text-[#1A73E8]" : "text-[#202124]"
           }`}
         >
           {date}
         </div>
-        <div
-          className={`absolute right-0 top-0 bottom-0 w-[3px] ${
-            events[0].type === "zoom-meeting"
-              ? "bg-[#15B7C3]"
-              : events[0].type === "teams-meeting"
-              ? "bg-[#608CFD]"
-              : events[0].type === "one-on-one"
-              ? "bg-[#E47EF4]"
-              : events[0].type === "webex-meeting"
-              ? "bg-[#F89E6C]"
-              : events[0].type === "group-session"
-              ? "bg-[#EE4206]"
-              : ""
-          }`}
-        ></div>
+        {events[0] && (
+          <div
+            className={`absolute right-0 top-0 bottom-0 w-[3px] ${
+              events[0].type === "zoom-meeting" || events[0].type === "zoom-webinar"
+                ? "bg-[#15B7C3]"
+                : events[0].type === "teams-meeting"
+                ? "bg-[#608CFD]"
+                : events[0].type === "one-on-one"
+                ? "bg-[#E47EF4]"
+                : events[0].type === "webex-meeting"
+                ? "bg-[#F89E6C]"
+                : events[0].type === "group-session"
+                ? "bg-[#EE4206]"
+                : ""
+            }`}
+          ></div>
+        )}
       </div>
-      <div className="flex-1 pl-0 flex flex-col gap-2">
+      <div className="list-content flex-1 pl-0 flex flex-col gap-2">
         {events.map((event, index) => (
           <div
             key={index}
-            onClick={() => handleEventClick(event.id)}
-            className={`flex items-start gap-4 cursor-pointer hover:bg-gray-50 rounded p-2 ${event.type}`}
+            className="list-item-content flex items-start gap-4 w-full"
           >
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-1">
+            <div
+              onClick={() => handleEventClick(event.id)}
+              className={`event flex flex-col gap-2 cursor-pointer hover:bg-gray-50 rounded p-2 ${event.type}`}
+            >
+              <div className="event-header">
                 <div
-                  className={`text-base font-medium pl-1.5 ${
-                    event.type === "zoom-meeting"
+                  className={`event-title text-base font-medium pl-1.5 mt-1 ${
+                    event.type === "zoom-meeting" || event.type === "zoom-webinar"
                       ? "text-[#15B7C3]"
                       : event.type === "teams-meeting"
                       ? "text-[#608CFD]"
@@ -90,8 +98,8 @@ export const ListItem: React.FC<ListItemProps> = ({
                   {event.title}
                 </div>
               </div>
-              <div className="flex items-center gap-1 text-sm text-[#5F6368]">
-                <div className="w-4 h-4 flex items-center justify-center">
+              <div className="event-time flex items-center gap-1 text-sm text-[#5F6368]">
+                <div className="event-icon w-4 h-4 flex items-center justify-center">
                   {event.type === "zoom-meeting" && (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -104,6 +112,21 @@ export const ListItem: React.FC<ListItemProps> = ({
                         strokeWidth="1.2"
                         stroke="#15B7C3"
                         d="M22.8865 17.1133L27.3332 14.42V23.5867L22.8865 20.8867M10.6665 14.42H20.8532C21.3925 14.42 21.9096 14.6342 22.291 15.0155C22.6723 15.3969 22.8865 15.9141 22.8865 16.4533V23.5867H12.6998C12.4323 23.5867 12.1673 23.5339 11.9202 23.4313C11.6731 23.3287 11.4486 23.1783 11.2597 22.9888C11.0708 22.7992 10.9212 22.5743 10.8194 22.3268C10.7176 22.0794 10.6656 21.8142 10.6665 21.5467V14.42Z"
+                      ></path>
+                    </svg>
+                  )}
+                  {event.type === "zoom-webinar" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 38 38"
+                    >
+                      <path
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        strokeWidth="1.2"
+                        stroke="#22C376"
+                        d="M22.887 17.1133L27.3337 14.42V23.5866L22.887 20.8866M10.667 14.42H20.8537C21.3929 14.42 21.9101 14.6342 22.2915 15.0155C22.6728 15.3969 22.887 15.914 22.887 16.4533V23.5866H12.7003C12.4328 23.5867 12.1678 23.5338 11.9207 23.4312C11.6735 23.3286 11.4491 23.1783 11.2602 22.9887C11.0713 22.7992 10.9217 22.5743 10.8199 22.3268C10.7181 22.0794 10.6661 21.8142 10.667 21.5466V14.42Z"
                       ></path>
                     </svg>
                   )}
@@ -164,36 +187,36 @@ export const ListItem: React.FC<ListItemProps> = ({
                   )}
                 </div>
                 {event.time}
-                <div className="flex mr-1">
+                <div className="avatar-group flex mr-1">
                   <Image
                     width={24}
                     height={24}
                     src={event.avatar1}
-                    className="w-6 h-6 rounded-full border-2 border-white -ml-2 first:ml-0"
+                    className="avatar w-6 h-6 rounded-full border-2 border-white -ml-2 first:ml-0"
                     alt="Attendee 1"
                   />
                   <Image
                     width={24}
                     height={24}
                     src={event.avatar2}
-                    className="w-6 h-6 rounded-full border-2 border-white -ml-2"
+                    className="avatar w-6 h-6 rounded-full border-2 border-white -ml-2"
                     alt="Attendee 2"
                   />
                 </div>
-                <span className="text-xs text-[#5F6368] px-1.5 py-0.5 bg-[#F1F3F4] rounded-xl">
-                  {event.attendees}+
+                <span className="attendee-count text-xs text-[#5F6368] px-1.5 py-0.5 bg-[#F1F3F4] rounded-xl">
+                  {event.attendees > 2 ? `${event.attendees}+` : event.attendees}
                 </span>
               </div>
             </div>
             <Image
-              height={112}
-              width={80}
+              height={80}
+              width={120}
               src={
-                event.type === "zoom-meeting"
+                event.type === "zoom-meeting" || event.type === "zoom-webinar"
                   ? "https://i.ibb.co/jJ4GHXP/img1.jpg"
                   : "https://i.ibb.co/LJwrLdW/coaching-image.webp"
               }
-              className="w-28 h-20 rounded-lg object-cover ml-auto"
+              className="event-image w-[120px] h-20 rounded-lg object-cover ml-auto"
               alt="Event Image"
             />
           </div>

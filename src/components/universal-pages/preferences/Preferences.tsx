@@ -56,7 +56,7 @@ export const Preferences: FC = () => {
   };
 
   return (
-    <div className="bg-[#E1E7EE] min-h-screen">
+    <div className="min-h-screen">
       <div className="w-full md:max-w-[1220px] mx-auto px-4 md:px-5 py-5 md:py-10 pb-24 md:pb-10 overflow-x-hidden">
         <h1 className="text-[20px] md:text-[28px] font-semibold md:font-bold text-[#464646] mb-5 md:mb-10">Preferences</h1>
 

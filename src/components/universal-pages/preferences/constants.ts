@@ -20,13 +20,13 @@ export const LAYOUTS: LayoutOption[] = [
 ];
 
 export const STUDENT_NOTIFICATIONS: NotificationItem[] = [
-  { id: 'badge-earned', name: 'New Badge Earned', tooltip: 'Receive a notification when you earn a new badge for activities like writing your first review.' },
-  { id: 'new-review', name: 'New Review on My Schools', tooltip: 'Get an alert when a school you\'ve bookmarked receives a new review.' },
-  { id: 'deadline-reminder', name: 'Application Deadline Reminders', tooltip: 'Get a reminder when an application deadline for a school on your list is approaching.' },
-  { id: 'school-updates', name: 'Updates to My Schools', tooltip: 'Be notified when a school on your list updates its profile.' },
-  { id: 'review-published', name: 'My Review is Published', tooltip: 'Receive a confirmation after a review you\'ve written has been approved and published.' },
-  { id: 'school-suggestions', name: 'Similar School Suggestions', tooltip: 'Get recommendations for other schools you might like.' },
-  { id: 'review-helpful', name: 'My Review Was Helpful', tooltip: 'Get an alert when another user upvotes your review.' },
+  { id: 'badge-earned', name: 'New Badge Earned', tooltip: 'Receive a notification when you earn a new badge for activities like writing your first review. This helps celebrate your contributions to the community.' },
+  { id: 'new-review', name: 'New Review on My Schools', tooltip: 'Get an alert when a school you\'ve bookmarked receives a new review. This keeps you up-to-date with the latest student feedback on schools you\'re interested in.' },
+  { id: 'deadline-reminder', name: 'Application Deadline Reminders', tooltip: 'Get a reminder when an application deadline for a school on your list is approaching. This helps you stay on track and avoid missing important dates.' },
+  { id: 'school-updates', name: 'Updates to My Schools', tooltip: 'Be notified when a school on your list updates its profile, such as adding new programs. This ensures you have the most current information.' },
+  { id: 'review-published', name: 'My Review is Published', tooltip: 'Receive a confirmation after a review you\'ve written has been approved and published. This lets you know your contribution is live.' },
+  { id: 'school-suggestions', name: 'Similar School Suggestions', tooltip: 'Get recommendations for other schools you might like, based on the ones you\'ve shown interest in. This can help you discover new options.' },
+  { id: 'review-helpful', name: 'My Review Was Helpful', tooltip: 'Get an alert when another user upvotes your review, marking it as helpful. This provides positive feedback and recognizes your valuable contributions.' },
 ];
 
 export const VENDOR_NOTIFICATIONS: NotificationItem[] = [

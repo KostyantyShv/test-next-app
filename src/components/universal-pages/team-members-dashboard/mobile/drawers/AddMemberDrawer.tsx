@@ -78,7 +78,7 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
           <input
             type="text"
             id="firstName"
-            className="w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-600 focus:outline-none focus:border-green-800 focus:ring-2 focus:ring-green-100"
+            className="w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-600 !bg-white focus:outline-none focus:border-green-800 focus:ring-2 focus:ring-green-100"
             required
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
@@ -94,7 +94,7 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
           <input
             type="text"
             id="lastName"
-            className="w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-600 focus:outline-none focus:border-green-800 focus:ring-2 focus:ring-green-100"
+            className="w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-600 !bg-white focus:outline-none focus:border-green-800 focus:ring-2 focus:ring-green-100"
             required
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
@@ -110,7 +110,7 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
           <input
             type="email"
             id="email"
-            className="w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-600 focus:outline-none focus:border-green-800 focus:ring-2 focus:ring-green-100"
+            className="w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-600 !bg-white focus:outline-none focus:border-green-800 focus:ring-2 focus:ring-green-100"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -120,7 +120,7 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
           <input
             type="checkbox"
             id="adminCheckbox"
-            className="appearance-none h-5 w-5 border-2 border-gray-300 rounded checked:bg-green-800 checked:border-green-800 focus:outline-none"
+            className="appearance-none h-5 w-5 border-2 border-gray-300 rounded !bg-white checked:bg-green-800 checked:border-green-800 focus:outline-none"
             checked={isAdmin}
             onChange={(e) => setIsAdmin(e.target.checked)}
           />
@@ -145,7 +145,7 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
               <input
                 type="checkbox"
                 id={`listing${listing.id}`}
-                className="appearance-none h-5 w-5 border-2 border-gray-300 rounded checked:bg-green-800 checked:border-green-800 focus:outline-none"
+                className="appearance-none h-5 w-5 border-2 border-gray-300 rounded !bg-white checked:bg-green-800 checked:border-green-800 focus:outline-none"
                 value={listing.id}
               />
               <img

@@ -53,6 +53,9 @@ export const RootLayoutClient = ({
         <div className="flex-1 flex flex-col">
           {/* Header with mobile menu button */}
           <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} />
+          
+          {/* Spacer to maintain gap under sticky header */}
+          <div className="h-[12px] flex-shrink-0" />
 
           {/* Main Content */}
           <main

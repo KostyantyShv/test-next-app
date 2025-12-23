@@ -324,7 +324,7 @@ const Support: React.FC = () => {
                         type="checkbox"
                         checked={debugChecked}
                         onChange={(e) => setDebugChecked(e.target.checked)}
-                        className="w-4.5 h-4.5 cursor-pointer accent-[#0B6333]"
+                        className="w-4.5 h-4.5 cursor-pointer accent-[#0B6333] !bg-white"
                       />
                       Send debug information together with my message.
                     </label>
@@ -382,7 +382,7 @@ const Support: React.FC = () => {
                             handleScreenshot();
                           }
                         }}
-                        className="w-4.5 h-4.5 cursor-pointer accent-[#0B6333]"
+                        className="w-4.5 h-4.5 cursor-pointer accent-[#0B6333] !bg-white"
                       />
                       Include screenshot
                     </label>
@@ -413,7 +413,7 @@ const Support: React.FC = () => {
                         type="checkbox"
                         checked={fileChecked}
                         onChange={(e) => setFileChecked(e.target.checked)}
-                        className="w-4.5 h-4.5 cursor-pointer accent-[#0B6333]"
+                        className="w-4.5 h-4.5 cursor-pointer accent-[#0B6333] !bg-white"
                       />
                       Upload File
                     </label>
@@ -483,7 +483,7 @@ const Support: React.FC = () => {
                         type="checkbox"
                         checked={locationChecked}
                         onChange={handleLocationToggle}
-                        className="w-4.5 h-4.5 cursor-pointer accent-[#0B6333]"
+                        className="w-4.5 h-4.5 cursor-pointer accent-[#0B6333] !bg-white"
                       />
                       Include my location
                     </label>
@@ -595,7 +595,7 @@ const Support: React.FC = () => {
                         type="checkbox"
                         checked={debugChecked}
                         onChange={(e) => setDebugChecked(e.target.checked)}
-                        className="w-4.5 h-4.5 cursor-pointer accent-[#0B6333]"
+                        className="w-4.5 h-4.5 cursor-pointer accent-[#0B6333] !bg-white"
                       />
                       Include debug information
                     </label>
@@ -653,7 +653,7 @@ const Support: React.FC = () => {
                             handleScreenshot();
                           }
                         }}
-                        className="w-4.5 h-4.5 cursor-pointer accent-[#0B6333]"
+                        className="w-4.5 h-4.5 cursor-pointer accent-[#0B6333] !bg-white"
                       />
                       Include screenshot
                     </label>
@@ -684,7 +684,7 @@ const Support: React.FC = () => {
                         type="checkbox"
                         checked={fileChecked}
                         onChange={(e) => setFileChecked(e.target.checked)}
-                        className="w-4.5 h-4.5 cursor-pointer accent-[#0B6333]"
+                        className="w-4.5 h-4.5 cursor-pointer accent-[#0B6333] !bg-white"
                       />
                       Upload file
                     </label>
@@ -754,7 +754,7 @@ const Support: React.FC = () => {
                         type="checkbox"
                         checked={locationChecked}
                         onChange={handleLocationToggle}
-                        className="w-4.5 h-4.5 cursor-pointer accent-[#0B6333]"
+                        className="w-4.5 h-4.5 cursor-pointer accent-[#0B6333] !bg-white"
                       />
                       Include my location
                     </label>

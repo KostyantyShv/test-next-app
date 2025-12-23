@@ -33,7 +33,7 @@ const Input = ({
         type={inputType}
         className={`w-full p-2 ${
           icon ? "pl-10" : "pl-2"
-        } border border-[#ddd] rounded-md text-sm text-[#333] bg-white focus:outline-none focus:border-[#356EF5] transition-colors duration-200 ${className}`}
+        } border border-[#ddd] rounded-md text-sm text-[#333] !bg-white focus:outline-none focus:border-[#356EF5] transition-colors duration-200 ${className}`}
         {...props}
       />
       {showPasswordToggle && type === "password" && (

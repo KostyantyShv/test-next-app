@@ -18,7 +18,7 @@ const CalendarEventModal: React.FC<CalendarEventModalProps> = ({
   eventId,
 }) => {
   const supabase = createClient();
-  const { events, createEvent, updateEvent, deleteEvent } = useCalendarEvents();
+  const { events, createEvent, updateEvent, deleteEvent, refreshEvents } = useCalendarEvents();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -64,10 +64,17 @@ const CalendarEventModal: React.FC<CalendarEventModalProps> = ({
 
             setTitle(dbEvent.title || "");
             setDescription(dbEvent.description || "");
-            setStartDate(startDate.toISOString().split("T")[0]);
+            // Format date as YYYY-MM-DD using local time to avoid timezone issues
+            const formatLocalDate = (date: Date) => {
+              const year = date.getFullYear();
+              const month = String(date.getMonth() + 1).padStart(2, '0');
+              const day = String(date.getDate()).padStart(2, '0');
+              return `${year}-${month}-${day}`;
+            };
+            setStartDate(formatLocalDate(startDate));
             setStartTime(startDate.toTimeString().slice(0, 5));
             if (endDate) {
-              setEndDate(endDate.toISOString().split("T")[0]);
+              setEndDate(formatLocalDate(endDate));
               setEndTime(endDate.toTimeString().slice(0, 5));
             } else {
               setEndDate("");
@@ -84,7 +91,11 @@ const CalendarEventModal: React.FC<CalendarEventModalProps> = ({
         loadEventData();
       } else if (selectedDate) {
         // Creating new event
-        const dateStr = selectedDate.toISOString().split("T")[0];
+        // Format date as YYYY-MM-DD using local time to avoid timezone issues
+        const year = selectedDate.getFullYear();
+        const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+        const day = String(selectedDate.getDate()).padStart(2, '0');
+        const dateStr = `${year}-${month}-${day}`;
         setTitle("");
         setDescription("");
         setStartDate(dateStr);
@@ -135,8 +146,12 @@ const CalendarEventModal: React.FC<CalendarEventModalProps> = ({
           all_day: allDay,
           color: color,
         });
+        // Force refresh to ensure the event appears immediately
+        await refreshEvents();
       }
 
+      // Small delay to allow React to update the UI
+      await new Promise(resolve => setTimeout(resolve, 200));
       onClose();
     } catch (err: any) {
       setError(err.message || "Failed to save event");
@@ -278,7 +293,7 @@ const CalendarEventModal: React.FC<CalendarEventModalProps> = ({
                 type="checkbox"
                 checked={allDay}
                 onChange={(e) => setAllDay(e.target.checked)}
-                className="mr-2"
+                className="mr-2 !bg-white"
               />
               <span className="text-sm font-medium text-gray-700">All Day</span>
             </label>

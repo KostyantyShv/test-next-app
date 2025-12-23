@@ -7,7 +7,7 @@ export const CalendarGrid: React.FC<{
   onDateClick?: (date: number) => void;
   onEventClick?: (eventId: string) => void;
 }> = ({ calendarData, onDateClick, onEventClick }) => (
-  <div className="grid grid-cols-7 gap-[1px] bg-[#E0E0E0] border border-[#E0E0E0]">
+  <div className="grid grid-cols-7 gap-[2px] bg-[#E0E0E0] border border-[#E0E0E0]">
     {RENDER_WEEKDAYS.map((day) => (
       <div
         key={day}

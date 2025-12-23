@@ -36,7 +36,7 @@ export const PrivacySettings: FC<PrivacySettingsProps> = ({
                     onUpdatePreference('showGuests', false);
                   }
                 }}
-                className="w-5 h-5 md:w-[18px] md:h-[18px] border-2 border-[#DFDDDB] rounded cursor-pointer appearance-none relative transition-all checked:border-[#0B6333] checked:bg-[#0B6333] before:content-['✓'] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:text-white before:text-xs before:font-bold before:opacity-0 checked:before:opacity-100 flex-shrink-0 mt-[2px] md:mt-0"
+                className="w-5 h-5 md:w-[18px] md:h-[18px] border-2 border-[#DFDDDB] rounded cursor-pointer appearance-none relative transition-all !bg-white checked:border-[#0B6333] checked:bg-[#0B6333] before:content-['✓'] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:text-white before:text-xs before:font-bold before:opacity-0 checked:before:opacity-100 flex-shrink-0 mt-[2px] md:mt-0"
               />
               <div className="flex items-center gap-2 flex-1">
                 Show profile to logged-in users
@@ -50,7 +50,7 @@ export const PrivacySettings: FC<PrivacySettingsProps> = ({
                 checked={preferences.showGuests}
                 onChange={(e) => onUpdatePreference('showGuests', e.target.checked)}
                 disabled={!preferences.profileVisibility}
-                className="w-5 h-5 md:w-[18px] md:h-[18px] border-2 border-[#DFDDDB] rounded cursor-pointer appearance-none relative transition-all checked:border-[#0B6333] checked:bg-[#0B6333] disabled:opacity-50 disabled:cursor-not-allowed before:content-['✓'] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:text-white before:text-xs before:font-bold before:opacity-0 checked:before:opacity-100 flex-shrink-0 mt-[2px] md:mt-0"
+                className="w-5 h-5 md:w-[18px] md:h-[18px] border-2 border-[#DFDDDB] rounded cursor-pointer appearance-none relative transition-all !bg-white checked:border-[#0B6333] checked:bg-[#0B6333] disabled:opacity-50 disabled:cursor-not-allowed before:content-['✓'] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:text-white before:text-xs before:font-bold before:opacity-0 checked:before:opacity-100 flex-shrink-0 mt-[2px] md:mt-0"
               />
               <div className="flex items-center gap-2 flex-1">
                 Show profile to guests
@@ -70,7 +70,7 @@ export const PrivacySettings: FC<PrivacySettingsProps> = ({
                     checked={preferences[item.key]}
                     onChange={(e) => onUpdatePreference(item.key, e.target.checked)}
                     disabled={!visibilityOptionsEnabled}
-                    className="w-5 h-5 md:w-[18px] md:h-[18px] border-2 border-[#DFDDDB] rounded cursor-pointer appearance-none relative transition-all checked:border-[#0B6333] checked:bg-[#0B6333] disabled:opacity-50 disabled:cursor-not-allowed before:content-['✓'] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:text-white before:text-xs before:font-bold before:opacity-0 checked:before:opacity-100 flex-shrink-0 mt-[2px] md:mt-0"
+                    className="w-5 h-5 md:w-[18px] md:h-[18px] border-2 border-[#DFDDDB] rounded cursor-pointer appearance-none relative transition-all !bg-white checked:border-[#0B6333] checked:bg-[#0B6333] disabled:opacity-50 disabled:cursor-not-allowed before:content-['✓'] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:text-white before:text-xs before:font-bold before:opacity-0 checked:before:opacity-100 flex-shrink-0 mt-[2px] md:mt-0"
                   />
                   <div className="flex items-center gap-2 flex-1">
                     {item.label}

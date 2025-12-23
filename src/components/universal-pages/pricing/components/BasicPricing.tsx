@@ -284,7 +284,7 @@ const BasicPricing: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-[#E1E7EE] py-6 px-4 md:px-5">
+    <div className="py-6 px-4 md:px-5">
       <div className="max-w-[1400px] mx-auto">
         <h1 className="text-[32px] md:text-5xl font-bold text-center mb-8 md:mb-6 text-[#1B1B1B]">
           Choose your plan
@@ -345,10 +345,10 @@ const BasicPricing: React.FC = () => {
               accentColor="blue"
               features={[
                 { icon: <CheckIcon />, text: 'All Explorer features, plus:', bold: true },
-                { icon: <NoAdsIcon />, text: 'Ad-Free Experience' },
+                { icon: <NoAdsBlueIcon />, text: 'Ad-Free Experience' },
                 { icon: <GridIcon />, text: 'Compare up to 10 Listings' },
                 { icon: <CollectionIcon />, text: 'Create Custom Collections' },
-                { icon: <ChartIcon />, text: 'View Historical Data Trends' },
+                { icon: <ChartBlueIcon />, text: 'View Historical Data Trends' },
                 { icon: <DownloadIcon />, text: 'Export Data to CSV' }
               ]}
               buttonText="Choose Researcher"
@@ -681,11 +681,11 @@ interface PricingToggleProps {
 
 const PricingToggle: React.FC<PricingToggleProps> = ({ options, active, onChange }) => {
   return (
-    <ul className="list-none flex bg-[#E7F0F5] rounded-full p-1 relative my-4 md:my-5 w-full md:w-fit self-center">
+    <ul className="list-none flex bg-[#E7F0F5] rounded-full p-1 my-4 md:my-5 w-full md:w-fit self-center">
       {options.map((option, index) => (
         <li
           key={option.value}
-          className={`flex-1 md:flex-none px-3 md:px-5 py-2 text-[13px] md:text-sm font-semibold cursor-pointer relative z-10 transition-colors flex items-center justify-center gap-1 md:gap-1.5 whitespace-nowrap ${
+          className={`flex-1 md:flex-none px-3 md:px-5 py-2 text-[13px] md:text-sm font-semibold cursor-pointer transition-colors flex items-center justify-center gap-1 md:gap-1.5 whitespace-nowrap ${
             active === option.value ? 'text-[#1D77BD]' : 'text-[#5F5F5F]'
           }`}
           onClick={() => onChange(option.value)}
@@ -698,13 +698,6 @@ const PricingToggle: React.FC<PricingToggleProps> = ({ options, active, onChange
           )}
         </li>
       ))}
-      <li
-        className="absolute top-1 left-1 h-[calc(100%-8px)] bg-white rounded-full shadow-md transition-all duration-300 ease-[cubic-bezier(0.68,-0.55,0.27,1.55)] z-0"
-        style={{
-          width: options.findIndex(o => o.value === active) === 0 ? '50%' : '50%',
-          transform: `translateX(${options.findIndex(o => o.value === active) * 100}%)`
-        }}
-      />
     </ul>
   );
 };
@@ -852,10 +845,10 @@ const ProfileManagementCard: React.FC<any> = ({
               ].map(({ months, discount }) => (
                 <button
                   key={months}
-                  className={`flex-1 min-w-0 md:min-w-[80px] py-2 px-2 md:px-3 border rounded-md bg-white text-xs md:text-sm font-medium cursor-pointer transition-all text-center ${
+                  className={`flex-1 min-w-0 md:min-w-[80px] py-2 px-2 md:px-3 border rounded-md text-xs md:text-sm font-medium cursor-pointer transition-all text-center ${
                     subscriptionDuration === months
                       ? 'bg-[#1D77BD] text-white border-[#1D77BD]'
-                      : 'border-[#CBD5E0] hover:border-[#1D77BD] hover:bg-[#F0F8FF]'
+                      : 'bg-white border-[#CBD5E0] text-[#4A4A4A] hover:border-[#1D77BD] hover:bg-[#F0F8FF]'
                   }`}
                   onClick={() => setSubscriptionDuration(months)}
                 >
@@ -1089,9 +1082,15 @@ const CheckIcon = () => (
   </svg>
 );
 
-const NoAdsIcon = () => (
+const NoAdsBlueIcon = () => (
   <svg fill="#1D77BD" viewBox="0 0 24 24">
     <path d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#1D77BD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+  </svg>
+);
+
+const NoAdsIcon = () => (
+  <svg fill="#0B6333" viewBox="0 0 24 24">
+    <path d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#0B6333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
   </svg>
 );
 
@@ -1101,9 +1100,15 @@ const CollectionIcon = () => (
   </svg>
 );
 
-const ChartIcon = () => (
+const ChartBlueIcon = () => (
   <svg fill="#1D77BD" viewBox="0 0 24 24">
     <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke="#1D77BD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+  </svg>
+);
+
+const ChartIcon = () => (
+  <svg fill="#0B6333" viewBox="0 0 24 24">
+    <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke="#0B6333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
   </svg>
 );
 

@@ -21,13 +21,18 @@ export default function ContentBadge({
     <div
       className={`relative flex items-center justify-center w-10 h-10 rounded-full 
         ${isActive ? "bg-[#1D77BD] text-white" : "bg-[#E1E7EE] text-[#4A4A4A]"} 
-        cursor-pointer`}
+        cursor-pointer group`}
       data-addon-name={name}
+      // Клік по самому аддону: якщо синій (активний) — видаляємо, якщо сірий — додаємо
+      onClick={() => {
+        if (isActive) onRemove();
+        else onAdd();
+      }}
     >
       {icon}
       <div
         className={`absolute -top-1 -right-1 w-[18px] h-[18px] rounded-full flex items-center justify-center cursor-pointer 
-          opacity-0 hover:opacity-100 transition-opacity duration-200 z-10
+          opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10
           ${
             isActive
               ? "bg-[#EEEEEE] text-[#464646] hover:bg-[#E0E0E0]"

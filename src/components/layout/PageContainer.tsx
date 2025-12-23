@@ -5,7 +5,7 @@ const PageContainer: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   return (
     <div className="flex flex-1">
-      <div className="flex-1 p-0 md:p-4">
+      <div className="flex-1 p-0 md:p-4 pt-[12px] md:pt-[12px]">
         <div className="w-full md:max-w-[1350px] mx-auto">{children}</div>
       </div>
     </div>

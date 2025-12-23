@@ -64,7 +64,7 @@ export const useCalendarData = (
 
     // Add next month's days
     const totalCells = calendarData.length;
-    const remainingCells = 42 - totalCells; // Ensure 6 rows (7 columns * 6 rows)
+    const remainingCells = 35 - totalCells; // Ensure 5 rows (7 columns * 5 rows)
     for (let i = 1; i <= remainingCells; i++) {
       calendarData.push({ date: i, isNextMonth: true });
     }

@@ -65,7 +65,7 @@ const EditMemberModal: React.FC<EditMemberModalProps> = ({
               id="editFirstName"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="form-input w-full p-2.5 border border-gray-300 rounded-md text-sm text-[#464646] focus:outline-none focus:border-[#016853] focus:shadow-[0_0_0_2px_rgba(1,104,83,0.1)]"
+              className="form-input w-full p-2.5 border border-gray-300 rounded-md text-sm text-[#464646] !bg-white focus:outline-none focus:border-[#016853] focus:shadow-[0_0_0_2px_rgba(1,104,83,0.1)]"
             />
           </div>
           <div className="form-group flex-1">
@@ -80,7 +80,7 @@ const EditMemberModal: React.FC<EditMemberModalProps> = ({
               id="editLastName"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className="form-input w-full p-2.5 border border-gray-300 rounded-md text-sm text-[#464646] focus:outline-none focus:border-[#016853] focus:shadow-[0_0_0_2px_rgba(1,104,83,0.1)]"
+              className="form-input w-full p-2.5 border border-gray-300 rounded-md text-sm text-[#464646] !bg-white focus:outline-none focus:border-[#016853] focus:shadow-[0_0_0_2px_rgba(1,104,83,0.1)]"
             />
           </div>
         </div>
@@ -96,7 +96,7 @@ const EditMemberModal: React.FC<EditMemberModalProps> = ({
             id="editEmail"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="form-input w-full p-2.5 border border-gray-300 rounded-md text-sm text-[#464646] focus:outline-none focus:border-[#016853] focus:shadow-[0_0_0_2px_rgba(1,104,83,0.1)]"
+            className="form-input w-full p-2.5 border border-gray-300 rounded-md text-sm text-[#464646] !bg-white focus:outline-none focus:border-[#016853] focus:shadow-[0_0_0_2px_rgba(1,104,83,0.1)]"
           />
         </div>
         <div className="admin-checkbox flex items-center gap-2 mb-6 mt-4">
@@ -105,7 +105,7 @@ const EditMemberModal: React.FC<EditMemberModalProps> = ({
               type="checkbox"
               checked={isAdmin}
               onChange={() => setIsAdmin(!isAdmin)}
-              className="peer absolute opacity-0 h-0 w-0"
+              className="peer absolute opacity-0 h-0 w-0 !bg-white"
             />
             <span
               className="checkmark relative h-4 w-4 bg-white border-2 border-gray-300 rounded transition-all
@@ -128,7 +128,7 @@ const EditMemberModal: React.FC<EditMemberModalProps> = ({
               <label className="checkbox-wrapper inline-flex items-center justify-center cursor-pointer">
                 <input
                   type="checkbox"
-                  className="peer absolute opacity-0 h-0 w-0"
+                  className="peer absolute opacity-0 h-0 w-0 !bg-white"
                 />
                 <span
                   className="checkmark relative h-4 w-4 bg-white border-2 border-gray-300 rounded transition-all
@@ -148,7 +148,7 @@ const EditMemberModal: React.FC<EditMemberModalProps> = ({
               <label className="checkbox-wrapper inline-flex items-center justify-center cursor-pointer">
                 <input
                   type="checkbox"
-                  className="peer absolute opacity-0 h-0 w-0"
+                  className="peer absolute opacity-0 h-0 w-0 !bg-white"
                 />
                 <span
                   className="checkmark relative h-4 w-4 bg-white border-2 border-gray-300 rounded transition-all
@@ -168,7 +168,7 @@ const EditMemberModal: React.FC<EditMemberModalProps> = ({
               <label className="checkbox-wrapper inline-flex items-center justify-center cursor-pointer">
                 <input
                   type="checkbox"
-                  className="peer absolute opacity-0 h-0 w-0"
+                  className="peer absolute opacity-0 h-0 w-0 !bg-white"
                 />
                 <span
                   className="checkmark relative h-4 w-4 bg-white border-2 border-gray-300 rounded transition-all

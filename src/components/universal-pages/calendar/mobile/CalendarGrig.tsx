@@ -60,7 +60,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
 
   // Add next month's days
   const totalCells = calendarData.length;
-  const remainingCells = 42 - totalCells;
+  const remainingCells = 35 - totalCells; // Ensure 5 rows (7 columns * 5 rows)
   for (let i = 1; i <= remainingCells; i++) {
     calendarData.push({
       date: i,

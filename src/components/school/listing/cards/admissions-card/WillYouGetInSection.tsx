@@ -179,7 +179,7 @@ export default function WillYouGetInSection() {
                   accepted: !prev.accepted,
                 }))
               }
-              className="w-4 h-4 cursor-pointer accent-[#0B6333] md:w-[18px] md:h-[18px]"
+              className="w-4 h-4 cursor-pointer accent-[#0B6333] md:w-[18px] md:h-[18px] !bg-white"
             />
             <span className="text-[#0B6333]">Accepted</span>
           </label>
@@ -193,7 +193,7 @@ export default function WillYouGetInSection() {
                   rejected: !prev.rejected,
                 }))
               }
-              className="w-4 h-4 cursor-pointer accent-[#FF4B4B] md:w-[18px] md:h-[18px]"
+              className="w-4 h-4 cursor-pointer accent-[#FF4B4B] md:w-[18px] md:h-[18px] !bg-white"
             />
             <span className="text-[#FF4B4B]">Rejected</span>
           </label>
@@ -207,7 +207,7 @@ export default function WillYouGetInSection() {
                   considering: !prev.considering,
                 }))
               }
-              className="w-4 h-4 cursor-pointer accent-[#1D77BD] md:w-[18px] md:h-[18px]"
+              className="w-4 h-4 cursor-pointer accent-[#1D77BD] md:w-[18px] md:h-[18px] !bg-white"
             />
             <span className="text-[#1D77BD]">Considering</span>
           </label>

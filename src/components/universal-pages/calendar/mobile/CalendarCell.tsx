@@ -34,7 +34,9 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
   return (
     <div
       className={`flex flex-row w-[51px] h-[51px] items-center justify-center gap-2 px-2 ${
-        isPrevMonth || isNextMonth
+        isNextMonth
+          ? "text-[#E0E0E0] bg-[#E0E0E0] cursor-default"
+          : isPrevMonth
           ? "text-[#B0B7C0] cursor-default"
           : isSelected
           ? "!bg-[#0B6333] text-white rounded-full"
@@ -42,6 +44,7 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
       } ${isToday ? "border border-[#0B6333] rounded-full" : ""} ${
         events &&
         events.length > 0 &&
+        !isNextMonth &&
         "bg-[rgba(0,_223,_139,_0.05)] rounded-full"
       }`}
       onClick={handleClick}

@@ -15,7 +15,7 @@ const CalendarMobile: React.FC = () => {
   const [view, setView] = useState<"calendar" | "list">("calendar");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date().getDate());
-  const { events, loading } = useCalendarEvents();
+  const { events, loading, refreshEvents } = useCalendarEvents();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalSelectedDate, setModalSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedEventId, setSelectedEventId] = useState<string | undefined>(undefined);
@@ -126,10 +126,12 @@ const CalendarMobile: React.FC = () => {
 
       <CalendarEventModal
         isOpen={isModalOpen}
-        onClose={() => {
+        onClose={async () => {
           setIsModalOpen(false);
           setModalSelectedDate(undefined);
           setSelectedEventId(undefined);
+          // Refresh events after modal closes to ensure new events appear
+          await refreshEvents();
         }}
         selectedDate={modalSelectedDate}
         eventId={selectedEventId}

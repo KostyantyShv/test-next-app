@@ -201,7 +201,7 @@ export const NotificationsPanelMobile: React.FC<NotificationsPanelMobileProps> =
                       type="checkbox"
                       checked={hideRead}
                       onChange={(e) => setHideRead(e.target.checked)}
-                      className="sr-only"
+                      className="sr-only !bg-white"
                     />
                     <div className={cn(
                       "w-9 h-5 rounded-full transition-colors duration-200",

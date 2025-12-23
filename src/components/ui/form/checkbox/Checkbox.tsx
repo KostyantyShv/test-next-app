@@ -12,7 +12,7 @@ const Checkbox = ({ label, id, className = "", ...props }: CheckboxProps) => {
       <input
         type="checkbox"
         id={id}
-        className={`w-3 h-3 border border-[#ddd] rounded-sm ${className}`}
+        className={`w-3 h-3 border border-[#ddd] rounded-sm !bg-white ${className}`}
         {...props}
       />
       <label htmlFor={id} className="text-xs text-[#333]">

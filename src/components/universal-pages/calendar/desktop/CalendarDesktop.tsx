@@ -10,6 +10,7 @@ import { CalendarGrid } from "./CalendarGrid";
 import { ListView } from "./ListView";
 import { ViewControls } from "./ViewToggle";
 import CalendarEventModal from "../components/CalendarEventModal";
+import { useCalendarEvents } from "@/hooks/useCalendarEvents.hook";
 
 const CalendarDesktop: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -23,6 +24,7 @@ const CalendarDesktop: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedEventId, setSelectedEventId] = useState<string | undefined>(undefined);
+  const { refreshEvents } = useCalendarEvents();
 
   const handlePrevMonth = () => {
     setCurrentDate(
@@ -65,7 +67,7 @@ const CalendarDesktop: React.FC = () => {
 
   return (
     <div className="flex justify-center font-sans">
-      <div className="w-full bg-white rounded-xl shadow-md p-6 relative overflow-hidden">
+      <div className="w-full bg-white rounded-xl shadow-md p-6 mt-6 relative overflow-hidden">
         <header className="flex items-center mb-6 relative z-10 bg-white">
           <h1 className="text-2xl font-semibold text-[#202124] flex items-center gap-2">
             What`s on this month?
@@ -106,10 +108,12 @@ const CalendarDesktop: React.FC = () => {
 
       <CalendarEventModal
         isOpen={isModalOpen}
-        onClose={() => {
+        onClose={async () => {
           setIsModalOpen(false);
           setSelectedDate(undefined);
           setSelectedEventId(undefined);
+          // Refresh events after modal closes to ensure new events appear
+          await refreshEvents();
         }}
         selectedDate={selectedDate}
         eventId={selectedEventId}

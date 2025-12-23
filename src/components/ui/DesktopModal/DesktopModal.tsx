@@ -15,7 +15,7 @@ export function DesktopModal({ children, isOpen, onClose }: DesktopModalProps) {
           onClick={onClose}
         >
           <div
-            className="bg-white w-[90%] max-w-4xl max-h-[90vh] rounded-2xl shadow-lg flex flex-col overflow-y-auto"
+            className="bg-white rounded-2xl shadow-lg flex flex-col overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {children}

@@ -23,7 +23,7 @@ export default function FiltersSection({
             type="checkbox"
             checked={filters.accepted}
             onChange={() => onFilterChange("accepted")}
-            className="w-[18px] h-[18px] cursor-pointer accent-[#0B6333] rounded-sm"
+            className="w-[18px] h-[18px] cursor-pointer accent-[#0B6333] rounded-sm !bg-white"
           />
           <span className="text-[#0B6333] font-semibold">Accepted</span>
         </label>
@@ -32,7 +32,7 @@ export default function FiltersSection({
             type="checkbox"
             checked={filters.rejected}
             onChange={() => onFilterChange("rejected")}
-            className="w-[18px] h-[18px] cursor-pointer accent-[#FF4B4B] rounded-sm"
+            className="w-[18px] h-[18px] cursor-pointer accent-[#FF4B4B] rounded-sm !bg-white"
           />
           <span className="text-[#FF4B4B] font-semibold">Rejected</span>
         </label>
@@ -41,7 +41,7 @@ export default function FiltersSection({
             type="checkbox"
             checked={filters.considering}
             onChange={() => onFilterChange("considering")}
-            className="w-[18px] h-[18px] cursor-pointer accent-[#1D77BD] rounded-sm"
+            className="w-[18px] h-[18px] cursor-pointer accent-[#1D77BD] rounded-sm !bg-white"
           />
           <span className="text-[#1D77BD] font-semibold">Considering</span>
         </label>

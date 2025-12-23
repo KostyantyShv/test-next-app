@@ -1,31 +1,23 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import ContentBadge from "./ContentBadge";
 
 interface BillingInformationProps {
   openPastInvoices: () => void;
   openEditPayment: () => void;
+  activeBadges: string[];
+  onRequestRemoveAddon: (name: string) => void;
+  onRequestAddAddon: (name: string) => void;
 }
 
 export default function BillingInformation({
   openPastInvoices,
   openEditPayment,
+  activeBadges,
+  onRequestRemoveAddon,
+  onRequestAddAddon,
 }: BillingInformationProps) {
-  const [activeBadges, setActiveBadges] = useState<string[]>([
-    "Analytics",
-    "Reporting",
-  ]);
-
-  const handleRemoveBadge = (name: string) => {
-    setActiveBadges(activeBadges.filter((badge) => badge !== name));
-  };
-
-  const handleAddBadge = (name: string) => {
-    setActiveBadges([...activeBadges, name]);
-  };
-
   return (
     <div className="flex flex-col lg:flex-row gap-8 mb-24">
       {/* Left Column: Title and Description */}
@@ -257,8 +249,8 @@ export default function BillingInformation({
               <ContentBadge
                 name="Analytics"
                 isActive={activeBadges.includes("Analytics")}
-                onRemove={() => handleRemoveBadge("Analytics")}
-                onAdd={() => handleAddBadge("Analytics")}
+                onRemove={() => onRequestRemoveAddon("Analytics")}
+                onAdd={() => onRequestAddAddon("Analytics")}
                 icon={
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -280,8 +272,8 @@ export default function BillingInformation({
               <ContentBadge
                 name="Reporting"
                 isActive={activeBadges.includes("Reporting")}
-                onRemove={() => handleRemoveBadge("Reporting")}
-                onAdd={() => handleAddBadge("Reporting")}
+                onRemove={() => onRequestRemoveAddon("Reporting")}
+                onAdd={() => onRequestAddAddon("Reporting")}
                 icon={
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -302,8 +294,8 @@ export default function BillingInformation({
               <ContentBadge
                 name="Security"
                 isActive={activeBadges.includes("Security")}
-                onRemove={() => handleRemoveBadge("Security")}
-                onAdd={() => handleAddBadge("Security")}
+                onRemove={() => onRequestRemoveAddon("Security")}
+                onAdd={() => onRequestAddAddon("Security")}
                 icon={
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -323,8 +315,8 @@ export default function BillingInformation({
               <ContentBadge
                 name="Storage"
                 isActive={activeBadges.includes("Storage")}
-                onRemove={() => handleRemoveBadge("Storage")}
-                onAdd={() => handleAddBadge("Storage")}
+                onRemove={() => onRequestRemoveAddon("Storage")}
+                onAdd={() => onRequestAddAddon("Storage")}
                 icon={
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -353,8 +345,8 @@ export default function BillingInformation({
               <ContentBadge
                 name="Scheduling"
                 isActive={activeBadges.includes("Scheduling")}
-                onRemove={() => handleRemoveBadge("Scheduling")}
-                onAdd={() => handleAddBadge("Scheduling")}
+                onRemove={() => onRequestRemoveAddon("Scheduling")}
+                onAdd={() => onRequestAddAddon("Scheduling")}
                 icon={
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -385,7 +377,7 @@ export default function BillingInformation({
                 <div className="h-full bg-[#1D77BD] rounded-md w-1/2"></div>
               </div>
 
-              <div className="flex md:justify-between max-md:flex-col mt-5 gap-2">
+              <div className="flex max-md:flex-col mt-5 gap-2">
                 <button className="bg-white text-[#4A4A4A] border border-[#E5E7EB] rounded px-4 py-2 text-sm font-medium">
                   Manage seats
                 </button>
@@ -395,7 +387,7 @@ export default function BillingInformation({
               </div>
             </div>
 
-            <div className="border-t border-[#E5E7EB] py-5 flex md:justify-between max-md:flex-col md:items-center max-md:gap-2">
+            <div className="border-t text-sm border-[#E5E7EB] py-5 flex md:justify-between max-md:flex-col md:items-center max-md:gap-2">
               <div className="text-[#4A4A4A]">Next billing date</div>
               <div className="flex md:items-center max-md:flex-col gap-2">
                 <span>December 13, 2023</span>
@@ -409,7 +401,7 @@ export default function BillingInformation({
               </div>
             </div>
 
-            <div className="border-t border-[#E5E7EB] py-5 flex md:justify-between md:items-center max-md:flex-col max-md:gap-2">
+            <div className="border-t text-sm border-[#E5E7EB] py-5 flex md:justify-between md:items-center max-md:flex-col max-md:gap-2">
               <div className="text-[#4A4A4A]">Payment method</div>
               <div className="flex md:items-center max-md:flex-col gap-2">
                 <span>Card ending in ***4692</span>
@@ -423,7 +415,7 @@ export default function BillingInformation({
             </div>
 
             <div className="border-t border-[#E5E7EB] pt-5 flex md:justify-between md:items-center max-md:flex-col max-md:gap-2">
-              <div className="text-[#4A4A4A]">
+              <div className="text-[#4A4A4A] text-sm">
                 Your free trial ends on Mon, December 5th 2023
               </div>
               <div className="flex items-center gap-2">

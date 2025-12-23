@@ -75,7 +75,7 @@ export const Analytics: FC = () => {
   }, [activeTab]);
 
   return (
-    <div className="bg-[#E1E7EE] min-h-screen">
+    <div className="min-h-screen">
       {/* Desktop Header */}
       <header className="hidden md:block bg-[#E1E7EE] px-4 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 sticky top-0 z-[100]">
         <div className="max-w-[1147px] mx-auto bg-[#E1E7EE] pb-3 rounded-lg relative">

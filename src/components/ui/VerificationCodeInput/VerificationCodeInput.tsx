@@ -21,7 +21,7 @@ const VerificationCodeInput = ({
         <input
           key={index}
           type="text"
-          className="w-[45px] h-[45px] border border-[#ddd] rounded-md text-center text-lg font-semibold text-[#333] focus:outline-none focus:border-[#0066b2] transition-colors duration-200"
+          className="w-[45px] h-[45px] border border-[#ddd] rounded-md text-center text-lg font-semibold text-[#333] !bg-white focus:outline-none focus:border-[#0066b2] transition-colors duration-200"
           maxLength={1}
           inputMode="numeric"
           pattern="[0-9]"
