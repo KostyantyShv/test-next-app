@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClient } from "@/lib/supabase_utils/client";
+import { mockMonitors } from "@/mocks/monitors";
 
 // UI Types (matching the component interface)
 export interface Monitor {
@@ -246,7 +246,6 @@ const convertToUIMonitor = (
 };
 
 export const useMonitors = (): UseMonitorsReturn => {
-  const supabase = createClient();
   const [monitors, setMonitors] = useState<Monitor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -255,77 +254,12 @@ export const useMonitors = (): UseMonitorsReturn => {
     try {
       setLoading(true);
       setError(null);
-
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) {
-        setError("User not authenticated");
-        setLoading(false);
-        return;
-      }
-
-      // Fetch monitors
-      const { data: dbMonitors, error: monitorsError } = await supabase
-        .from("monitors")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-
-      if (monitorsError) throw monitorsError;
-      if (!dbMonitors || dbMonitors.length === 0) {
-        setMonitors([]);
-        setLoading(false);
-        return;
-      }
-
-      const monitorIds = dbMonitors.map((m) => m.id);
-
-      // Fetch related data
-      const [fieldsResult, detailsResult, alertsResult] = await Promise.all([
-        supabase.from("monitor_fields").select("*").in("monitor_id", monitorIds),
-        supabase.from("monitor_details").select("*").in("monitor_id", monitorIds),
-        supabase.from("monitor_alerts").select("*").in("monitor_id", monitorIds),
-      ]);
-
-      if (fieldsResult.error) throw fieldsResult.error;
-      if (detailsResult.error) throw detailsResult.error;
-      if (alertsResult.error) throw alertsResult.error;
-
-      const fields = (fieldsResult.data || []) as DBMonitorField[];
-      const details = (detailsResult.data || []) as DBMonitorDetail[];
-      const alerts = (alertsResult.data || []) as DBMonitorAlert[];
-
-      // Group related data by monitor_id
-      const fieldsByMonitor = fields.reduce((acc, field) => {
-        if (!acc[field.monitor_id]) acc[field.monitor_id] = [];
-        acc[field.monitor_id].push(field);
-        return acc;
-      }, {} as Record<string, DBMonitorField[]>);
-
-      const detailsByMonitor = details.reduce((acc, detail) => {
-        if (!acc[detail.monitor_id]) acc[detail.monitor_id] = [];
-        acc[detail.monitor_id].push(detail);
-        return acc;
-      }, {} as Record<string, DBMonitorDetail[]>);
-
-      const alertsByMonitor = alerts.reduce((acc, alert) => {
-        if (!acc[alert.monitor_id]) acc[alert.monitor_id] = [];
-        acc[alert.monitor_id].push(alert);
-        return acc;
-      }, {} as Record<string, DBMonitorAlert[]>);
-
-      // Convert to UI format
-      const uiMonitors = dbMonitors.map((monitor) =>
-        convertToUIMonitor(
-          monitor as DBMonitor,
-          fieldsByMonitor[monitor.id] || [],
-          detailsByMonitor[monitor.id] || [],
-          alertsByMonitor[monitor.id] || []
-        )
-      );
-
-      setMonitors(uiMonitors);
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Use mock data
+      setMonitors([...mockMonitors]);
     } catch (err: any) {
       console.error("Error fetching monitors:", err);
       setError(err.message || "Failed to fetch monitors");
@@ -336,84 +270,43 @@ export const useMonitors = (): UseMonitorsReturn => {
 
   useEffect(() => {
     fetchMonitors();
-
-    // Subscribe to realtime changes
-    const channel = supabase
-      .channel("monitors_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "monitors",
-        },
-        () => {
-          fetchMonitors();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
   }, []);
 
   const createMonitor = async (data: CreateMonitorData) => {
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
-
-      // Create monitor
-      const { data: monitor, error: monitorError } = await supabase
-        .from("monitors")
-        .insert({
-          user_id: user.id,
-          name: data.name,
-          item_id: data.itemId,
-          item_title: data.itemTitle,
-          item_image_url: data.itemImageUrl || null,
-          site_name: data.siteName,
-          country_code: data.countryCode,
-          country_flag_url: data.countryFlagUrl || null,
-          interval_minutes: data.intervalMinutes || 60,
-          checks_total: data.checksTotal || 1000,
-          checks_used: 0,
-          is_active: true,
-        })
-        .select()
-        .single();
-
-      if (monitorError) throw monitorError;
-      if (!monitor) throw new Error("Failed to create monitor");
-
-      // Create fields
-      if (data.fields && data.fields.length > 0) {
-        const { error: fieldsError } = await supabase.from("monitor_fields").insert(
-          data.fields.map((field) => ({
-            monitor_id: monitor.id,
-            field_name: field.name,
-            field_type: field.type,
-          }))
-        );
-        if (fieldsError) throw fieldsError;
-      }
-
-      // Create alerts
-      if (data.alerts && data.alerts.length > 0) {
-        const { error: alertsError } = await supabase.from("monitor_alerts").insert(
-          data.alerts.map((alert) => ({
-            monitor_id: monitor.id,
-            alert_type: alert.type,
-            alert_config: alert.config || null,
-            is_active: true,
-          }))
-        );
-        if (alertsError) throw alertsError;
-      }
-
-      await fetchMonitors();
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Create new monitor from mock data structure
+      const newMonitor: Monitor = {
+        id: Date.now().toString(),
+        name: data.name,
+        item: {
+          title: data.itemTitle,
+          id: data.itemId,
+          image: data.itemImageUrl || '',
+        },
+        country: {
+          code: data.countryCode,
+          flag: data.countryFlagUrl || '',
+          site: data.siteName,
+        },
+        interval: data.intervalMinutes ? `${data.intervalMinutes} min` : '60 min',
+        lastCheck: 'Never',
+        lastCheckTooltip: 'No checks performed yet',
+        fields: data.fields?.map(f => f.name) || [],
+        usage: {
+          used: 0,
+          total: data.checksTotal || 1000,
+          percentage: 0,
+        },
+        isActive: true,
+        alerts: data.alerts?.map(a => a.type) || [],
+        unreadCount: 0,
+        details: [],
+      };
+      
+      setMonitors(prev => [newMonitor, ...prev]);
     } catch (err: any) {
       console.error("Error creating monitor:", err);
       throw err;
@@ -422,31 +315,27 @@ export const useMonitors = (): UseMonitorsReturn => {
 
   const updateMonitor = async (id: string, data: UpdateMonitorData) => {
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
-
-      const updateData: any = {};
-      if (data.name !== undefined) updateData.name = data.name;
-      if (data.itemId !== undefined) updateData.item_id = data.itemId;
-      if (data.itemTitle !== undefined) updateData.item_title = data.itemTitle;
-      if (data.itemImageUrl !== undefined) updateData.item_image_url = data.itemImageUrl;
-      if (data.siteName !== undefined) updateData.site_name = data.siteName;
-      if (data.countryCode !== undefined) updateData.country_code = data.countryCode;
-      if (data.countryFlagUrl !== undefined) updateData.country_flag_url = data.countryFlagUrl;
-      if (data.intervalMinutes !== undefined) updateData.interval_minutes = data.intervalMinutes;
-      if (data.checksTotal !== undefined) updateData.checks_total = data.checksTotal;
-      if (data.isActive !== undefined) updateData.is_active = data.isActive;
-
-      const { error } = await supabase
-        .from("monitors")
-        .update(updateData)
-        .eq("id", id)
-        .eq("user_id", user.id);
-
-      if (error) throw error;
-      await fetchMonitors();
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      setMonitors(prev => prev.map(monitor => {
+        if (monitor.id === id) {
+          return {
+            ...monitor,
+            ...(data.name !== undefined && { name: data.name }),
+            ...(data.itemTitle !== undefined && { item: { ...monitor.item, title: data.itemTitle } }),
+            ...(data.itemId !== undefined && { item: { ...monitor.item, id: data.itemId } }),
+            ...(data.itemImageUrl !== undefined && { item: { ...monitor.item, image: data.itemImageUrl } }),
+            ...(data.siteName !== undefined && { country: { ...monitor.country, site: data.siteName } }),
+            ...(data.countryCode !== undefined && { country: { ...monitor.country, code: data.countryCode } }),
+            ...(data.countryFlagUrl !== undefined && { country: { ...monitor.country, flag: data.countryFlagUrl } }),
+            ...(data.intervalMinutes !== undefined && { interval: `${data.intervalMinutes} min` }),
+            ...(data.checksTotal !== undefined && { usage: { ...monitor.usage, total: data.checksTotal } }),
+            ...(data.isActive !== undefined && { isActive: data.isActive }),
+          };
+        }
+        return monitor;
+      }));
     } catch (err: any) {
       console.error("Error updating monitor:", err);
       throw err;
@@ -455,19 +344,10 @@ export const useMonitors = (): UseMonitorsReturn => {
 
   const deleteMonitor = async (id: string) => {
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
-
-      const { error } = await supabase
-        .from("monitors")
-        .delete()
-        .eq("id", id)
-        .eq("user_id", user.id);
-
-      if (error) throw error;
-      await fetchMonitors();
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      setMonitors(prev => prev.filter(monitor => monitor.id !== id));
     } catch (err: any) {
       console.error("Error deleting monitor:", err);
       throw err;
@@ -479,7 +359,12 @@ export const useMonitors = (): UseMonitorsReturn => {
       const monitor = monitors.find((m) => m.id === id);
       if (!monitor) throw new Error("Monitor not found");
 
-      await updateMonitor(id, { isActive: !monitor.isActive });
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      setMonitors(prev => prev.map(m => 
+        m.id === id ? { ...m, isActive: !m.isActive } : m
+      ));
     } catch (err: any) {
       console.error("Error toggling monitor status:", err);
       throw err;

@@ -2,7 +2,10 @@ import Support from '@/components/ui/Support/Support';
 
 export default function SupportPage() {
   return (
-    <div className="min-h-screen bg-[#E1E7EE] flex items-center justify-center p-5">
+    <div
+      className="min-h-screen flex items-center justify-center p-5"
+      style={{ backgroundColor: 'var(--background-color)' }}
+    >
       <div className="text-center">
         <h1 className="text-4xl font-bold text-[#1B1B1B] mb-4">Support Page</h1>
         <p className="text-lg text-[#4A4A4A] mb-8">

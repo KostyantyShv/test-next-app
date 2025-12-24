@@ -63,44 +63,44 @@ export const NotificationPreferences: FC<NotificationPreferencesProps> = ({
           ))}
         </div>
 
-        {/* Vendor Notifications (Admin only) */}
-        {userRole === 'admin' && (
-          <div className="bg-white rounded-xl md:rounded-lg p-5 md:p-6 shadow-[0_2px_8px_rgba(0,0,0,0.1)] md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] mb-4 md:mb-8">
-            <h3 className="text-base font-semibold text-[#464646] mb-4 md:mb-5 flex items-center gap-2">
-              Vendor Notifications
-              <span className="inline-block bg-[#00DF8B] text-[#1B1B1B] text-[10px] md:text-[11px] font-semibold px-1.5 md:px-2 py-0.5 rounded-lg md:rounded-xl">ADMIN</span>
-            </h3>
-            
-            <div className="hidden md:grid grid-cols-[2fr_1fr_1fr] px-4 pb-3 border-b border-[#DFDDDB] mb-4">
-              <div className="text-[13px] font-medium text-[#5F5F5F]">Notification Type</div>
-              <div className="text-[13px] font-medium text-[#5F5F5F] text-center">Email</div>
-              <div className="text-[13px] font-medium text-[#5F5F5F] text-center">On Site</div>
-            </div>
-
-            {VENDOR_NOTIFICATIONS.map((notification) => (
-              <div key={notification.id} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] px-0 md:px-4 py-4 md:py-3 items-start md:items-center rounded-md transition-colors md:hover:bg-[#EBFCF4] gap-3 md:gap-0 border-b border-[#EBEDF0] md:border-b-0 last:border-b-0">
-                <div className="flex items-center gap-2 text-sm font-medium text-[#464646]">
-                  {notification.name}
-                  <Tooltip text={notification.tooltip} />
-                </div>
-                <div className="flex items-center justify-between md:justify-center gap-2 md:gap-0">
-                  <span className="text-[12px] text-[#5F5F5F] md:hidden">Email</span>
-                  <Toggle
-                    checked={preferences.notifications[notification.id]?.email ?? true}
-                    onChange={() => onUpdateNotification(notification.id, 'email', !preferences.notifications[notification.id]?.email)}
-                  />
-                </div>
-                <div className="flex items-center justify-between md:justify-center gap-2 md:gap-0">
-                  <span className="text-[12px] text-[#5F5F5F] md:hidden">On Site</span>
-                  <Toggle
-                    checked={preferences.notifications[notification.id]?.onSite ?? true}
-                    onChange={() => onUpdateNotification(notification.id, 'onSite', !preferences.notifications[notification.id]?.onSite)}
-                  />
-                </div>
-              </div>
-            ))}
+        {/* Vendor Notifications */}
+        <div className={`bg-white rounded-xl md:rounded-lg p-5 md:p-6 shadow-[0_2px_8px_rgba(0,0,0,0.1)] md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] mb-4 md:mb-8 transition-opacity ${userRole === 'admin' ? 'opacity-100' : 'opacity-60 pointer-events-none'}`}>
+          <h3 className="text-base font-semibold text-[#464646] mb-4 md:mb-5 flex items-center gap-2">
+            Vendor Notifications
+            <span className="inline-block bg-[#00DF8B] text-[#1B1B1B] text-[10px] md:text-[11px] font-semibold px-1.5 md:px-2 py-0.5 rounded-lg md:rounded-xl">ADMIN</span>
+          </h3>
+          
+          <div className="hidden md:grid grid-cols-[2fr_1fr_1fr] px-4 pb-3 border-b border-[#DFDDDB] mb-4">
+            <div className="text-[13px] font-medium text-[#5F5F5F]">Notification Type</div>
+            <div className="text-[13px] font-medium text-[#5F5F5F] text-center">Email</div>
+            <div className="text-[13px] font-medium text-[#5F5F5F] text-center">On Site</div>
           </div>
-        )}
+
+          {VENDOR_NOTIFICATIONS.map((notification) => (
+            <div key={notification.id} className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] px-0 md:px-4 py-4 md:py-3 items-start md:items-center rounded-md transition-colors md:hover:bg-[#EBFCF4] gap-3 md:gap-0 border-b border-[#EBEDF0] md:border-b-0 last:border-b-0">
+              <div className="flex items-center gap-2 text-sm font-medium text-[#464646]">
+                {notification.name}
+                <Tooltip text={notification.tooltip} />
+              </div>
+              <div className="flex items-center justify-between md:justify-center gap-2 md:gap-0">
+                <span className="text-[12px] text-[#5F5F5F] md:hidden">Email</span>
+                <Toggle
+                  checked={preferences.notifications[notification.id]?.email ?? true}
+                  onChange={() => onUpdateNotification(notification.id, 'email', !preferences.notifications[notification.id]?.email)}
+                  disabled={userRole !== 'admin'}
+                />
+              </div>
+              <div className="flex items-center justify-between md:justify-center gap-2 md:gap-0">
+                <span className="text-[12px] text-[#5F5F5F] md:hidden">On Site</span>
+                <Toggle
+                  checked={preferences.notifications[notification.id]?.onSite ?? true}
+                  onChange={() => onUpdateNotification(notification.id, 'onSite', !preferences.notifications[notification.id]?.onSite)}
+                  disabled={userRole !== 'admin'}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
 
         {/* System Notifications */}
         <div className="bg-white rounded-xl md:rounded-lg p-5 md:p-6 shadow-[0_2px_8px_rgba(0,0,0,0.1)] md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] mb-4 md:mb-8">

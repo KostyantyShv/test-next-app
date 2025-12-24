@@ -29,7 +29,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${montserrat.variable}`} suppressHydrationWarning>
       <body>
-        <ThemeProvider attribute="class">
+        <ThemeProvider
+          attribute="data-theme"
+          defaultTheme="light"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
           <RootLayoutClient>
             {children}
           </RootLayoutClient>

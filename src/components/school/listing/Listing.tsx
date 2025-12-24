@@ -70,7 +70,10 @@ const Listing: React.FC<ListingProps> = ({
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center">
+    <div 
+      className="min-h-screen flex flex-col items-center"
+      style={{ backgroundColor: 'var(--background-color)' }}
+    >
       {/* Desktop Header - Hidden on mobile */}
       <div className="hidden md:block">
         <Header />

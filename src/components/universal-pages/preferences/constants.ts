@@ -30,9 +30,9 @@ export const STUDENT_NOTIFICATIONS: NotificationItem[] = [
 ];
 
 export const VENDOR_NOTIFICATIONS: NotificationItem[] = [
-  { id: 'new-school-review', name: 'New Review on My School', tooltip: '(For School Admins) Receive an alert whenever a new review is posted for your school.' },
-  { id: 'review-flagged', name: 'A Review is Flagged', tooltip: '(For School Admins) Be notified when a review on your school\'s page is flagged for moderation.' },
-  { id: 'new-follower', name: 'New Follower', tooltip: '(For School Admins) Get a notification when a student follows your school\'s page.' },
+  { id: 'new-school-review', name: 'New Review on My School', tooltip: '(For School Admins) Receive an alert whenever a new review is posted for your school. This allows you to monitor feedback and stay engaged.' },
+  { id: 'review-flagged', name: 'A Review is Flagged', tooltip: '(For School Admins) Be notified when a review on your school\'s page is flagged for moderation. This keeps you aware of content issues.' },
+  { id: 'new-follower', name: 'New Follower', tooltip: '(For School Admins) Get a notification when a student follows your school\'s page. This helps you track audience growth and identify prospective students.' },
 ];
 
 export const SYSTEM_NOTIFICATIONS: NotificationItem[] = [

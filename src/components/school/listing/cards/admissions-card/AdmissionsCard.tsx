@@ -13,43 +13,44 @@ const Admissions: React.FC<{ id: string }> = ({ id }) => {
 
   return (
     <div id={id} className="w-full max-w-[875px] mx-auto my-cardMargin">
-      <div className="bg-white rounded-cardBorderRadius shadow-cardShadow p-5 md:p-8">
-        <h2 className="text-[#016853] text-[20px] md:text-[24px] font-semibold mb-6 md:mb-8 tracking-[-0.2px]">
+      <div className="bg-white rounded-[12px] shadow-[0_4px_12px_rgba(0,0,0,0.08)] p-8">
+        <h2 className="text-[#016853] text-[24px] font-semibold mb-8 tracking-[-0.2px]">
           Admissions
         </h2>
 
-        <div className="flex flex-col md:flex-row md:justify-between mb-6 md:mb-8 gap-0 md:gap-10">
+        <div className="flex flex-col md:flex-row md:justify-between mb-8 gap-0 md:gap-10">
           <div className="flex-1 mb-6 md:mb-0">
-            <div className="flex items-center text-[#4A4A4A] text-[14px] md:text-[16px] mb-2 md:mb-3 tracking-[0.2px] font-normal relative">
+            <div className="flex items-center text-[#4A4A4A] text-[16px] mb-3 tracking-[0.2px] font-normal relative">
               Application Deadline
-              <div className="tooltip-container relative inline-block ml-2">
+              <div className="relative inline-block ml-2 group">
                 <svg
-                  className="info-icon w-4 md:w-[18px] h-4 md:h-[18px] fill-[#5F5F5F] cursor-help"
+                  className="info-icon w-[18px] h-[18px] fill-[#5F5F5F] cursor-help"
                   viewBox="0 0 24 24"
                 >
                   <path d="M12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2ZM12 18.4C11.1 18.4 10.5 17.7 10.5 16.9C10.5 16.3 11 15.5 12 15.5C13 15.5 13.4 16.1 13.4 16.9C13.4 17.5 12.9 18.4 12 18.4ZM12.9 13.1C12.9 13.8 12.4 14.2 11.8 14.2C11.2 14.2 10.8 13.8 10.8 13.2C10.8 10.7 14 9.9 14.2 8.8C14.3 8.1 13.8 7.4 12.4 7.4C10.5 7.4 10.5 8.9 9.6 9.1C9.2 9.2 8.9 9.1 8.6 8.8C8.4 8.7 8.3 8.4 8.4 8C8.6 7.2 9.9 5.6 12.2 5.6C15.5 5.6 16.3 7.5 16.3 8.5C16.3 11.1 12.9 11.6 12.9 13.1Z" />
                 </svg>
-                <div className="tooltip">
+                <div className="absolute bottom-full left-6 bg-[#1B1B1B] text-white px-3 py-2 rounded text-[13px] leading-[1.4] w-[280px] text-center mb-2 z-[100] hidden group-hover:block pointer-events-none">
                   Deadline for application submissions. Please contact the school for more details.
+                  <div className="absolute top-full left-1/2 -ml-[6px] border-[6px] border-solid border-[#1B1B1B] border-t-transparent border-l-transparent border-r-transparent"></div>
                 </div>
               </div>
             </div>
-            <div className="text-[#464646] text-[32px] md:text-[36px] font-medium tracking-[-0.4px] mb-4 md:mb-8">
+            <div className="text-[#464646] text-[36px] font-medium tracking-[-0.4px] mb-8">
               January 2
             </div>
           </div>
 
           <div className="flex-1 mb-6 md:mb-0">
-            <div className="text-[#4A4A4A] text-[14px] md:text-[16px] mb-2 md:mb-3 tracking-[0.2px] font-normal">
+            <div className="text-[#4A4A4A] text-[16px] mb-3 tracking-[0.2px] font-normal">
               Acceptance Rate
             </div>
-            <div className="text-[#464646] text-[32px] md:text-[36px] font-medium tracking-[-0.4px] mb-4 md:mb-8">
+            <div className="text-[#464646] text-[36px] font-medium tracking-[-0.4px] mb-8">
               5%
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-5 mb-6 md:mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10">
           {[
             { label: "SAT Range", value: "1500-1580" },
             { label: "ACT Range", value: "33-35" },
@@ -66,7 +67,7 @@ const Admissions: React.FC<{ id: string }> = ({ id }) => {
               value: (
                 <a
                   href="https://admissions.yale.edu/first-year-application"
-                  className="text-[#346DC2] no-underline hover:underline font-semibold text-[14px] md:text-[14.5px]"
+                  className="text-[#346DC2] no-underline hover:underline text-[14.5px] font-medium"
                 >
                   admissions.yale.edu/first-y...
                 </a>
@@ -77,7 +78,7 @@ const Admissions: React.FC<{ id: string }> = ({ id }) => {
               value: (
                 <a
                   href="https://admissions.yale.edu"
-                  className="text-[#346DC2] no-underline hover:underline text-[14px] md:text-[14.5px] font-semibold"
+                  className="text-[#346DC2] no-underline hover:underline text-[14.5px] font-medium"
                 >
                   admissions.yale.edu
                 </a>
@@ -88,10 +89,10 @@ const Admissions: React.FC<{ id: string }> = ({ id }) => {
               key={index}
               className="flex justify-between py-3 border-b border-[#E1E7EE]"
             >
-              <span className="text-[#4A4A4A] text-[14px] font-semibold md:text-[14.5px] tracking-[0.1px]">
+              <span className="text-[#4A4A4A] text-[14.5px] tracking-[0.1px]">
                 {item.label}
               </span>
-              <span className="text-[#464646] text-[14px] md:text-[14.5px] font-semibold tracking-[0.1px] text-right">
+              <span className="text-[#464646] text-[14.5px] font-medium tracking-[0.1px] text-right">
                 {item.value}
               </span>
             </div>
@@ -99,10 +100,10 @@ const Admissions: React.FC<{ id: string }> = ({ id }) => {
         </div>
 
         <div className="mt-6 w-full">
-          <div className="text-[#4A4A4A] text-[15px] md:text-[16px] mb-4 md:mb-5 font-semibold tracking-[0.2px]">
+          <div className="text-[#4A4A4A] text-[16px] mb-5 font-medium tracking-[0.2px]">
             Students also applied to ...
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mb-4 font-semibold">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
             {[
               { name: "Harvard University", grade: "A+" },
               { name: "Princeton University", grade: "A+" },
@@ -110,12 +111,12 @@ const Admissions: React.FC<{ id: string }> = ({ id }) => {
               ...(expanded ? additionalSchools : []),
             ].map((school, index) => (
               <div key={index} className="flex items-center py-2">
-                <div className="bg-[#00DF8B] text-white w-6 md:w-[26px] h-6 md:h-[26px] rounded-full flex items-center justify-center text-[12px] mr-3 flex-shrink-0">
+                <div className="bg-[#00DF8B] text-white w-[26px] h-[26px] rounded-full flex items-center justify-center text-[12px] font-semibold mr-3 flex-shrink-0">
                   {school.grade}
                 </div>
                 <a
                   href="#"
-                  className="text-[#346DC2] no-underline hover:underline text-[14px] md:text-[15px] font-semibold leading-[1.4]"
+                  className="text-[#346DC2] no-underline hover:underline text-[15px] font-medium leading-[1.4] tracking-[0.1px]"
                 >
                   {school.name}
                 </a>
@@ -124,7 +125,7 @@ const Admissions: React.FC<{ id: string }> = ({ id }) => {
           </div>
           <a
             href="#"
-            className="text-[#346DC2] text-[14px] no-underline hover:underline flex items-center mt-4 font-semibold"
+            className="text-[#346DC2] text-[14px] no-underline hover:underline flex items-center mt-4 font-medium"
             onClick={(e) => {
               e.preventDefault();
               setExpanded(!expanded);
@@ -144,7 +145,7 @@ const Admissions: React.FC<{ id: string }> = ({ id }) => {
 
         <a
           href="#"
-          className="flex items-center text-[#346DC2] no-underline hover:underline text-[14px] md:text-[14.5px] mt-5 md:mt-6 pt-5 md:pt-6 border-t border-[#E1E7EE] font-semibold tracking-[0.2px] justify-center md:justify-end"
+          className="flex items-center text-[#346DC2] no-underline hover:underline text-[14.5px] mt-6 pt-6 border-t border-[#E1E7EE] font-medium tracking-[0.2px] justify-end"
           onClick={(e) => {
             e.preventDefault();
             setIsPopupOpen(true);

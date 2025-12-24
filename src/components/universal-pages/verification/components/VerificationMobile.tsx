@@ -138,12 +138,15 @@ const VerificationMobile: React.FC<VerificationMobileProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="w-full h-[100vh] bg-[#E1E7EE] flex flex-col">
+    <div
+      className="w-full h-[100vh] flex flex-col"
+      style={{ backgroundColor: 'var(--background-color)' }}
+    >
       <MobileHeader onOpenSteps={() => setDrawerOpen(true)} />
       <MobileProgress currentStep={currentStep} totalSteps={stepsOrder.length} completedSteps={new Set(Array.from(completedSteps).map(s => s))} stepsOrder={[...stepsOrder]} />
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto bg-[#E1E7EE] pb-32">
+      <div className="flex-1 overflow-y-auto pb-32">
         {/* STEP: Identity */}
         <div className={`${!showSuccess && currentStep === 0 ? 'block' : 'hidden'} px-4 py-5`}>
           <div className="text-center mb-6">
