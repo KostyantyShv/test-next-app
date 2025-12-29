@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { Portal } from '@/components/ui/Portal';
 
 interface CartItem {
   id: number;
@@ -88,27 +89,43 @@ export const CartMobile: React.FC<CartMobileProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[1001] md:hidden">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black bg-opacity-25 cursor-pointer" 
-        onClick={onClose}
-        data-backdrop="cart-mobile"
-      />
-      
-      {/* Mobile Cart Modal */}
-      <div 
-        ref={modalRef}
-        className={cn(
-          "absolute top-[72px] left-4 right-4 bg-white rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] border border-[#eaeaea]",
-          "opacity-0 visibility-hidden transform -translate-y-2.5 transition-all duration-300 ease-out",
-          "z-[1000] max-h-[calc(100vh-100px)] overflow-hidden flex flex-col",
-          isOpen && "opacity-100 visibility-visible transform translate-y-0",
-          className
-        )}
-      >
+    <Portal containerId="cart-panel-portal">
+      <div className="fixed inset-0 z-[1001] md:hidden">
+        {/* Backdrop */}
+        <div 
+          className="absolute inset-0 bg-black bg-opacity-25 transition-opacity duration-300" 
+          onClick={onClose}
+          data-backdrop="cart-mobile"
+        />
+        
+        {/* Mobile Cart Frame */}
+        <div 
+          ref={modalRef}
+          className={cn(
+            "fixed left-0 right-0 w-full bg-surface overflow-hidden"
+          )}
+          style={{ 
+            top: '64px',
+            height: 'calc(100vh - 64px)',
+            borderRadius: '20px 20px 0 0',
+            boxShadow: '0 -4px 12px var(--shadow-color)'
+          }}
+        >
+        {/* Drawer Handle */}
+        <div 
+          className="relative h-6 flex justify-center items-center bg-surface cursor-pointer py-2.5 z-[100]"
+          onClick={onClose}
+        >
+          <div className="w-8 h-1 rounded-full" style={{ backgroundColor: 'var(--gray-300)' }} />
+        </div>
+        
+        {/* Cart Content */}
+        <div 
+          className="h-[calc(100%-24px)] overflow-y-auto flex flex-col"
+          style={{ backgroundColor: 'transparent' }}
+        >
         {/* Modal Header */}
-        <div className="p-4 border-b border-[#eaeaea] flex-shrink-0">
+        <div className="p-4 border-b border-theme bg-surface sticky top-0 z-10 flex-shrink-0">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2 text-base font-semibold text-[#016853]">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
@@ -184,7 +201,9 @@ export const CartMobile: React.FC<CartMobileProps> = ({
             </button>
           </div>
         )}
+        </div>
+        </div>
       </div>
-    </div>
+    </Portal>
   );
 };

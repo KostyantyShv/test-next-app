@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { cn } from '@/lib/utils';
+import { Portal } from '@/components/ui/Portal';
 
 interface School {
   id: string;
@@ -259,26 +260,43 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
   }));
 
   return (
-    <div className="fixed inset-0 z-[1001] md:hidden">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black bg-opacity-25 cursor-pointer" 
-        onClick={onClose}
-        data-backdrop="compare-mobile"
-      />
-      
-      {/* Mobile Modal */}
-      <div 
-        ref={modalRef}
-        className={cn(
-          "absolute top-[72px] left-4 right-4 bg-white rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] border border-[#eaeaea]",
-          "opacity-0 visibility-hidden transform -translate-y-2.5 transition-all duration-300 ease-out",
-          "z-[1000] max-h-[calc(100vh-100px)] overflow-hidden flex flex-col",
-          isOpen && "opacity-100 visibility-visible transform translate-y-0"
-        )}
-      >
+    <Portal containerId="compare-panel-portal">
+      <div className="fixed inset-0 z-[1001] md:hidden">
+        {/* Backdrop */}
+        <div 
+          className="absolute inset-0 bg-black bg-opacity-25 transition-opacity duration-300" 
+          onClick={onClose}
+          data-backdrop="compare-mobile"
+        />
+        
+        {/* Mobile Frame */}
+        <div 
+          ref={modalRef}
+          className={cn(
+            "fixed left-0 right-0 w-full bg-surface overflow-hidden"
+          )}
+          style={{ 
+            top: '64px',
+            height: 'calc(100vh - 64px)',
+            borderRadius: '20px 20px 0 0',
+            boxShadow: '0 -4px 12px var(--shadow-color)'
+          }}
+        >
+        {/* Drawer Handle */}
+        <div 
+          className="relative h-6 flex justify-center items-center bg-surface cursor-pointer py-2.5 z-[100]"
+          onClick={onClose}
+        >
+          <div className="w-8 h-1 rounded-full" style={{ backgroundColor: 'var(--gray-300)' }} />
+        </div>
+        
+        {/* Content */}
+        <div 
+          className="h-[calc(100%-24px)] overflow-y-auto flex flex-col"
+          style={{ backgroundColor: 'transparent' }}
+        >
         {/* Header */}
-        <div className="p-4 border-b border-[#eaeaea] flex-shrink-0">
+        <div className="p-4 border-b border-theme bg-surface sticky top-0 z-10 flex-shrink-0">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-semibold text-[#016853]">Compare Schools</h2>
             <button 
@@ -293,7 +311,7 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
         </div>
 
         {/* School Navigation */}
-        <div className="p-4 border-b border-[#eaeaea] flex-shrink-0">
+        <div className="p-4 border-b border-theme bg-surface sticky top-[73px] z-10 flex-shrink-0">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <span className="text-sm text-[#5F5F5F]">School {currentSchool + 1} of {schools.length}</span>
@@ -333,7 +351,7 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
         <div className="flex-1 overflow-y-auto">
           {/* Current School Info */}
           {currentSchoolData && (
-            <div className="p-4 border-b border-[#eaeaea]">
+            <div className="p-4 border-b border-theme">
               <div className="flex items-start gap-3">
                 <img 
                   src={currentSchoolData.image} 
@@ -413,7 +431,7 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
         </div>
 
         {/* Footer Actions */}
-        <div className="p-4 border-t border-[#eaeaea] flex-shrink-0">
+        <div className="p-4 border-t border-theme bg-surface flex-shrink-0">
           <div className="flex gap-3">
             <button className="flex-1 py-3 px-4 bg-[#016853] text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors hover:bg-[#014d3f]">
               Apply Now
@@ -423,8 +441,10 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
             </button>
           </div>
         </div>
+        </div>
+        </div>
       </div>
-    </div>
+    </Portal>
   );
 };
 

@@ -16,7 +16,7 @@ const navigationItems: { href: string; label: string; icon: IconName }[] = [
     label: "Playlist",
     icon: "playlist",
   },
-  { href: "/player", label: "Me", icon: "finished" },
+  { href: "/me", label: "Me", icon: "finished" },
 ];
 
 export const MobileNavigation: FC = () => {
@@ -29,6 +29,7 @@ export const MobileNavigation: FC = () => {
     e.preventDefault();
     setPlaylistVisible(true);
   };
+
 
   return (
     <nav className="fixed z-30 bottom-0 left-0 right-0 bg-[#016853] md:hidden">

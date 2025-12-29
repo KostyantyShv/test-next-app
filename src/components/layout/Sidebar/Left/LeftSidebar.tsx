@@ -232,7 +232,7 @@ export const LeftSidebar: FC = () => {
         {/* Logo Container */}
         <div className={cn(
           "flex items-center gap-3 border-b border-gray-200 relative flex-shrink-0",
-          isCollapsed ? "px-6 py-2.5 h-13" : "px-5 py-4 h-16"
+          isCollapsed ? "px-6 py-4 h-16" : "px-5 py-4 h-16"
         )}>
           <Logo collapsed={isCollapsed} />
           {!isCollapsed && (
@@ -251,7 +251,7 @@ export const LeftSidebar: FC = () => {
         </div>
 
         {/* Scrollable Navigation Area */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden sidebar-scroll">
           {/* Custom scrollbar styles */}
           <style jsx>{`
             .sidebar-scroll::-webkit-scrollbar {
@@ -266,7 +266,7 @@ export const LeftSidebar: FC = () => {
             }
           `}</style>
           
-          <nav className="sidebar-scroll py-4">
+          <nav className="py-4">
             {/* Explore Section */}
             <div className="mb-4">
               <div className={cn(

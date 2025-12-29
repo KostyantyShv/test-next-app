@@ -31,12 +31,11 @@ export const Header: FC<HeaderProps> = ({ className, onOpenSidebar }) => {
       <header className={cn('bg-white/80 backdrop-blur-sm sticky top-0 z-[1000] transition-all duration-300 ', className)}>
         {/* Desktop Header */}
         <div className="hidden md:block">
-          <div className="max-w-[1400px] h-[63px] px-6 flex items-center justify-center h-18 gap-6">
+          <div className="max-w-[1400px] h-[63px] px-6 flex items-center justify-center h-18 gap-6 mx-auto">
             {/* Search Container */}
             <div className="flex-1 max-w-[800px] relative">
               <Search />
-            </div>
-
+            </div
             {/* Header Actions */}
             <div className="flex items-center gap-4">
               <Actions />

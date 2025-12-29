@@ -123,7 +123,14 @@ export const GeneralPreferences: FC<GeneralPreferencesProps> = ({
                       theme.id === 'teal' && "bg-[#F0F7F9]",
                       theme.id === 'oceanic' && "bg-[#F4F9FC]"
                     )}>
-                      <div className="h-full p-1.5 md:p-2 flex flex-col gap-0.5 md:gap-1">
+                      <div 
+                        className="h-full p-1.5 md:p-2 flex flex-col gap-0.5 md:gap-1"
+                        style={{ 
+                          backgroundColor: 'transparent !important',
+                          color: 'inherit !important',
+                          transition: 'none'
+                        }}
+                      >
                         <div className={cn("h-3 md:h-4 rounded flex items-center gap-0.5 md:gap-1 px-1 md:px-1.5", theme.id === 'midnight' ? "bg-[#1C2333]" : "bg-[#F8F9FA]")}>
                           <div className="w-1 h-1 rounded-full bg-[#ff5f57]" />
                           <div className="w-1 h-1 rounded-full bg-[#ffbd2e]" />

@@ -456,7 +456,7 @@ export const RightSidebar: FC = () => {
           windowWidth >= 768 && "transform-none"
         )}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full mt-16">
           {/* Header */}
           {isCollapsed ? (
             <div className="h-16 flex items-center justify-center border-b border-border">
