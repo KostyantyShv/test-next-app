@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 interface ChangeItem {
@@ -18,13 +18,16 @@ interface MonitorProps {
   isOpen: boolean;
   onClose: () => void;
   className?: string;
+  buttonRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
 export const Monitor: React.FC<MonitorProps> = ({
   isOpen,
   onClose,
   className,
+  buttonRef,
 }) => {
+  const [arrowPosition, setArrowPosition] = useState<number>(24); // default right-6 = 24px
   const [changesData, setChangesData] = useState<ChangeItem[]>([
     {
       id: 1,
@@ -82,10 +85,42 @@ export const Monitor: React.FC<MonitorProps> = ({
   const modalRef = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = useCallback((event: MouseEvent) => {
-    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-      onClose();
+    const target = event.target as HTMLElement;
+    // Перевіряємо, чи клік не на модалці
+    if (modalRef.current && !modalRef.current.contains(target as Node)) {
+      // Перевіряємо, чи клік на backdrop або поза модалкою (але не на header)
+      if (!target.closest('header')) {
+        onClose();
+      }
     }
   }, [onClose]);
+
+  // Calculate arrow position based on button position
+  useLayoutEffect(() => {
+    if (isOpen && buttonRef?.current) {
+      const updateArrowPosition = () => {
+        const button = buttonRef.current;
+        const modal = modalRef.current;
+        if (button && modal) {
+          const buttonRect = button.getBoundingClientRect();
+          const modalRect = modal.getBoundingClientRect();
+          // Calculate distance from right edge of modal to center of button
+          const buttonCenterX = buttonRect.left + buttonRect.width / 2;
+          const modalRight = modalRect.right;
+          const distanceFromRight = modalRight - buttonCenterX;
+          // Arrow is 16px wide (w-4), so center it
+          setArrowPosition(distanceFromRight - 8); // 8px = half of 16px
+        }
+      };
+      updateArrowPosition();
+      window.addEventListener('resize', updateArrowPosition);
+      window.addEventListener('scroll', updateArrowPosition, true);
+      return () => {
+        window.removeEventListener('resize', updateArrowPosition);
+        window.removeEventListener('scroll', updateArrowPosition, true);
+      };
+    }
+  }, [isOpen, buttonRef]);
 
   useEffect(() => {
     if (isOpen) {
@@ -148,7 +183,8 @@ export const Monitor: React.FC<MonitorProps> = ({
     <div className="fixed inset-0 z-[1001]">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black bg-opacity-25 cursor-pointer" 
+        className="absolute top-[75px] left-0 right-0 bottom-0 cursor-pointer" 
+        style={{ backgroundColor: 'rgba(0, 0, 0, 0.25)' }}
         onClick={onClose}
       />
       
@@ -156,35 +192,38 @@ export const Monitor: React.FC<MonitorProps> = ({
       <div 
         ref={modalRef}
         className={cn(
-          "absolute top-[72px] right-0 w-[440px] bg-white rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] border border-[#eaeaea]",
+          "absolute top-[72px] right-0 w-[440px] bg-[var(--surface-color)] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] border border-[var(--border-color)]",
           "opacity-0 visibility-hidden transform -translate-y-2.5 transition-all duration-300 ease-out",
           "z-[1000]",
           isOpen && "opacity-100 visibility-visible transform translate-y-0",
           className
         )}
         style={{
-          backgroundColor: 'white !important',
+          backgroundColor: 'var(--surface-color) !important',
           position: 'fixed',
           top: '72px',
-          right: '24px',
+          right: '88px',
         }}
       >
         {/* Arrow pointer */}
-        <div className="absolute -top-2 right-6 w-4 h-4 bg-white border border-[#eaeaea] border-b-0 border-r-0 transform rotate-45" />
+        <div 
+          className="absolute -top-2 w-4 h-4 bg-[var(--surface-color)] border border-[var(--border-color)] border-b-0 border-r-0 transform rotate-45" 
+          style={{ right: `${arrowPosition}px` }}
+        />
         
         {/* Modal Header */}
-        <div className="p-5 pb-4 border-b border-[#eaeaea]">
+        <div className="p-5 pb-4 border-b border-[var(--border-color)]">
           <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center gap-2 text-base font-semibold text-[#016853]">
-              <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <div className="flex items-center gap-2 text-base font-semibold text-[var(--header-green)] font-inter">
+              <svg className="w-[18px] h-[18px] text-[var(--header-green)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M13.2929 4.29291C15.0641 2.52167 17.9359 2.52167 19.7071 4.2929C21.4784 6.06414 21.4784 8.93588 19.7071 10.7071L18.7073 11.7069L11.6135 18.8007C10.8766 19.5376 9.92793 20.0258 8.89999 20.1971L4.16441 20.9864C3.84585 21.0395 3.52127 20.9355 3.29291 20.7071C3.06454 20.4788 2.96053 20.1542 3.01362 19.8356L3.80288 15.1C3.9742 14.0721 4.46243 13.1234 5.19932 12.3865L13.2929 4.29291ZM13 7.41422L6.61353 13.8007C6.1714 14.2428 5.87846 14.8121 5.77567 15.4288L5.21656 18.7835L8.57119 18.2244C9.18795 18.1216 9.75719 17.8286 10.1993 17.3865L16.5858 11L13 7.41422ZM18 9.5858L14.4142 6.00001L14.7071 5.70712C15.6973 4.71693 17.3027 4.71693 18.2929 5.70712C19.2831 6.69731 19.2831 8.30272 18.2929 9.29291L18 9.5858Z" clipRule="evenodd" fillRule="evenodd" />
               </svg>
               Recent Changes
             </div>
             <div className="flex items-center gap-3 h-6">
-              <label className="flex items-center gap-2 text-[#5F5F5F] text-xs font-medium">
+              <label className="flex items-center gap-2 text-[var(--subtle-text)] text-xs font-medium font-inter">
                 Hide Read
-                <div className="relative">
+                <label className="relative w-7 h-4 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={hideRead}
@@ -192,36 +231,37 @@ export const Monitor: React.FC<MonitorProps> = ({
                     className="sr-only"
                   />
                   <div className={cn(
-                    "w-7 h-4 rounded-2xl transition-colors duration-200",
-                    hideRead ? "bg-[#0B6333]" : "bg-[#D1D5DB]"
+                    "absolute top-0 left-0 right-0 bottom-0 rounded-2xl transition-colors duration-200",
+                    hideRead ? "bg-[var(--active-green)]" : "bg-[var(--gray-300)]"
                   )}>
                     <div className={cn(
-                      "w-3 h-3 bg-white rounded-full transition-transform duration-200 mt-0.5",
-                      hideRead ? "translate-x-3" : "translate-x-0.5"
+                      "absolute h-3 w-3 bg-white rounded-full transition-transform duration-200",
+                      "top-[2px]",
+                      hideRead ? "left-[14px]" : "left-[2px]"
                     )} />
                   </div>
-                </div>
+                </label>
               </label>
               
               <button
                 onClick={markAllAsRead}
-                className="w-6 h-6 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[#5F5F5F] hover:bg-[#f9fafb] hover:text-[#4A4A4A]"
+                className="p-1 rounded bg-transparent border-none cursor-pointer transition-all text-[var(--subtle-text)] hover:bg-[var(--hover-bg)] hover:text-[var(--text-default)] flex items-center justify-center"
                 title="Mark All Read"
               >
-                <svg className="w-4 h-4" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.5 5.5l1.5 1.5l2.5 -2.5" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.5 11.5l1.5 1.5l2.5 -2.5" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.5 17.5l1.5 1.5l2.5 -2.5" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 6l9 0" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 12l9 0" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 18l9 0" />
+                <svg className="w-4 h-4" stroke="currentColor" fill="none" viewBox="0 0 24 24" strokeLinejoin="round" strokeLinecap="round" strokeWidth={2}>
+                  <path d="M3.5 5.5l1.5 1.5l2.5 -2.5" />
+                  <path d="M3.5 11.5l1.5 1.5l2.5 -2.5" />
+                  <path d="M3.5 17.5l1.5 1.5l2.5 -2.5" />
+                  <path d="M11 6l9 0" />
+                  <path d="M11 12l9 0" />
+                  <path d="M11 18l9 0" />
                 </svg>
               </button>
               
-              <button className="w-6 h-6 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[#5F5F5F] hover:bg-[#f9fafb] hover:text-[#4A4A4A]" title="Settings">
-                <svg className="w-4 h-4" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+              <button className="p-1 rounded bg-transparent border-none cursor-pointer transition-all text-[var(--subtle-text)] hover:bg-[var(--hover-bg)] hover:text-[var(--text-default)] flex items-center justify-center" title="Settings">
+                <svg className="w-4 h-4" stroke="currentColor" fill="none" viewBox="0 0 24 24" strokeLinejoin="round" strokeLinecap="round" strokeWidth={2}>
+                  <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+                  <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
                 </svg>
               </button>
             </div>
@@ -229,20 +269,26 @@ export const Monitor: React.FC<MonitorProps> = ({
         </div>
         
         {/* Changes List */}
-        <div className="max-h-[320px] overflow-y-auto">
+        <div 
+          className="max-h-[320px] overflow-y-auto monitor-scrollbar"
+          style={{
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'var(--gray-200) var(--gray-100)',
+          }}
+        >
           {filteredChanges.length === 0 ? (
-            <div className="p-10 text-center text-[#5F5F5F]">
-              <svg className="w-12 h-12 mx-auto mb-3 text-[#5F5F5F]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="p-10 text-center text-[var(--subtle-text)]">
+              <svg className="w-12 h-12 mx-auto mb-3 text-[var(--subtle-text)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <div className="text-sm text-[#5F5F5F]">No recent changes</div>
+              <div className="text-sm text-[var(--subtle-text)] font-inter">No recent changes</div>
             </div>
           ) : (
             filteredChanges.map((change) => (
               <div 
                 key={change.id} 
                 className={cn(
-                  "flex items-start gap-3 p-4 border-b border-[#eaeaea] transition-colors hover:bg-[#f9fafb] relative group",
+                  "flex items-start gap-3 py-4 px-5 border-b border-[var(--border-color)] transition-colors hover:bg-[var(--hover-bg)] relative group last:border-b-0",
                   change.isRead && "opacity-70",
                   change.isNew && "animate-[slideIn_0.3s_ease-out]"
                 )}
@@ -250,27 +296,27 @@ export const Monitor: React.FC<MonitorProps> = ({
                 <img 
                   src={change.itemImage} 
                   alt={change.itemTitle} 
-                  className="w-10 h-10 rounded-md object-cover flex-shrink-0 border border-[#eaeaea]"
+                  className="w-10 h-10 rounded-md object-cover flex-shrink-0 border border-[var(--border-color)]"
                 />
                 <div className="flex-1 min-w-0 pr-[60px]">
-                  <div className="text-sm font-semibold text-[#464646] mb-2 overflow-hidden text-ellipsis whitespace-nowrap" title={change.itemTitle}>
+                  <div className="text-sm font-semibold text-[var(--bold-text)] mb-2 max-w-[265px] overflow-hidden text-ellipsis whitespace-nowrap font-inter leading-[1.4]" title={change.itemTitle}>
                     {change.itemTitle}
                   </div>
-                  <div className="flex items-center gap-2 text-xs mb-1">
-                    <span className="text-[#5F5F5F] line-through">{change.oldValue}</span>
-                    <span className="text-[#5F5F5F]">→</span>
-                    <span className="text-[#464646] font-semibold">{change.newValue}</span>
+                  <div className="flex items-center gap-2 text-[13px] mb-1 font-inter">
+                    <span className="text-[var(--subtle-text)] line-through font-medium">{change.oldValue}</span>
+                    <span className="text-[var(--subtle-text)] font-medium">→</span>
+                    <span className="text-[var(--bold-text)] font-semibold">{change.newValue}</span>
                   </div>
                 </div>
                 
                 {/* Monitor Indicators */}
                 <div className="absolute right-5 top-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-1.5">
                   {!change.isRead && (
-                    <div className="w-2 h-2 rounded-full bg-[#1D77BD]" />
+                    <div className="w-2 h-2 rounded-full bg-[var(--verification-blue)]" />
                   )}
                   <button
                     onClick={() => markAsRead(change.id)}
-                    className="w-6 h-6 bg-transparent border-none rounded-full flex items-center justify-center cursor-pointer transition-all text-[#9CA3AF] hover:bg-[#f9fafb] hover:text-[#4A4A4A]"
+                    className="p-1 rounded-full bg-transparent border-none cursor-pointer transition-all text-[var(--gray-400)] hover:bg-[var(--hover-bg)] hover:text-[var(--text-default)] flex items-center justify-center"
                     title="Mark as read"
                   >
                     <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 256 256">
@@ -279,7 +325,7 @@ export const Monitor: React.FC<MonitorProps> = ({
                   </button>
                   <button
                     onClick={() => dismissChange(change.id)}
-                    className="w-6 h-6 bg-transparent border-none rounded-full flex items-center justify-center cursor-pointer transition-all text-[#9CA3AF] hover:bg-[#f9fafb] hover:text-[#4A4A4A]"
+                    className="p-1 rounded-full bg-transparent border-none cursor-pointer transition-all text-[var(--gray-400)] hover:bg-[var(--hover-bg)] hover:text-[var(--text-default)] flex items-center justify-center"
                     title="Dismiss notification"
                   >
                     <svg className="w-3.5 h-3.5" viewBox="0 0 15 15" fill="none">
@@ -289,7 +335,7 @@ export const Monitor: React.FC<MonitorProps> = ({
                 </div>
                 
                 {/* Change Time */}
-                <div className="absolute top-10 right-5 text-xs text-[#5F5F5F] font-medium">
+                <div className="absolute top-10 right-5 text-[11px] text-[var(--subtle-text)] font-medium font-inter">
                   {change.time}
                 </div>
               </div>
@@ -298,10 +344,10 @@ export const Monitor: React.FC<MonitorProps> = ({
         </div>
         
         {/* Modal Footer */}
-        <div className="p-4 bg-[#f8f9fa] border-t border-[#eaeaea] rounded-b-xl">
+        <div className="p-5 bg-[var(--surface-secondary)] border-t border-[var(--border-color)] rounded-b-xl">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-[#5F5F5F]">Total Unread Changes:</span>
-            <span className="text-base font-semibold text-[#464646]">{unreadCount}</span>
+            <span className="text-sm text-[var(--subtle-text)] font-inter">Total Unread Changes:</span>
+            <span className="text-base font-semibold text-[var(--bold-text)] font-inter">{unreadCount}</span>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { CartMobile } from './CartMobile';
@@ -17,14 +17,17 @@ interface CartProps {
   isOpen: boolean;
   onClose: () => void;
   className?: string;
+  buttonRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
 export const Cart: React.FC<CartProps> = ({
   isOpen,
   onClose,
   className,
+  buttonRef,
 }) => {
   const router = useRouter();
+  const [arrowPosition, setArrowPosition] = useState<number>(24); // default right-6 = 24px
   const [cartItems, setCartItems] = useState<CartItem[]>([
     { id: 1, image: 'https://i.ibb.co/8DRBhzTm/product5.jpg', title: 'Master Microservices with Spring Boot and Spring Cloud', price: 149.99 },
     { id: 2, image: 'https://i.ibb.co/23PtGQWJ/product55.jpg', title: 'Java Tutorial for Complete Beginners', price: 19.99 },
@@ -34,15 +37,46 @@ export const Cart: React.FC<CartProps> = ({
   const modalRef = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = useCallback((event: MouseEvent) => {
-    const target = event.target as Node;
-    if (modalRef.current && !modalRef.current.contains(target)) {
-      // Додаткова перевірка: переконаємося, що клік не на backdrop
+    const target = event.target as HTMLElement;
+    // Перевіряємо, чи клік не на модалці
+    if (modalRef.current && !modalRef.current.contains(target as Node)) {
+      // Перевіряємо, чи клік на backdrop або поза модалкою
       const backdrop = document.querySelector('[data-backdrop="cart"]');
       if (backdrop && backdrop.contains(target)) {
+        onClose();
+      } else if (!target.closest('header')) {
+        // Якщо клік не на header, закриваємо модалку
         onClose();
       }
     }
   }, [onClose]);
+
+  // Calculate arrow position based on button position
+  useLayoutEffect(() => {
+    if (isOpen && buttonRef?.current) {
+      const updateArrowPosition = () => {
+        const button = buttonRef.current;
+        const modal = modalRef.current;
+        if (button && modal) {
+          const buttonRect = button.getBoundingClientRect();
+          const modalRect = modal.getBoundingClientRect();
+          // Calculate distance from right edge of modal to center of button
+          const buttonCenterX = buttonRect.left + buttonRect.width / 2;
+          const modalRight = modalRect.right;
+          const distanceFromRight = modalRight - buttonCenterX;
+          // Arrow is 16px wide (w-4), so center it
+          setArrowPosition(distanceFromRight - 8); // 8px = half of 16px
+        }
+      };
+      updateArrowPosition();
+      window.addEventListener('resize', updateArrowPosition);
+      window.addEventListener('scroll', updateArrowPosition, true);
+      return () => {
+        window.removeEventListener('resize', updateArrowPosition);
+        window.removeEventListener('scroll', updateArrowPosition, true);
+      };
+    }
+  }, [isOpen, buttonRef]);
 
   useEffect(() => {
     if (isOpen) {
@@ -98,7 +132,8 @@ export const Cart: React.FC<CartProps> = ({
       <div className="fixed inset-0 z-[1001] hidden md:block">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black bg-opacity-25 cursor-pointer" 
+        className="absolute top-[75px] left-0 right-0 bottom-0 cursor-pointer" 
+        style={{ backgroundColor: 'rgba(0, 0, 0, 0.25)' }}
         onClick={onClose}
         data-backdrop="cart"
       />
@@ -107,25 +142,28 @@ export const Cart: React.FC<CartProps> = ({
       <div 
         ref={modalRef}
         className={cn(
-          "absolute top-[72px] right-0 w-[380px] bg-white rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] border border-[#eaeaea]",
+          "absolute top-[72px] right-0 w-[380px] bg-[var(--surface-color)] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] border border-[var(--border-color)]",
           "opacity-0 visibility-hidden transform -translate-y-2.5 transition-all duration-300 ease-out",
           "z-[1000]",
           isOpen && "opacity-100 visibility-visible transform translate-y-0",
           className
         )}
         style={{
-          backgroundColor: 'white !important',
+          backgroundColor: 'var(--surface-color) !important',
           position: 'fixed',
           top: '72px',
           right: '24px',
         }}
       >
         {/* Arrow pointer */}
-        <div className="absolute -top-2 right-6 w-4 h-4 bg-white border border-[#eaeaea] border-b-0 border-r-0 transform rotate-45" />
+        <div 
+          className="absolute -top-2 w-4 h-4 bg-[var(--surface-color)] border border-[var(--border-color)] border-b-0 border-r-0 transform rotate-45" 
+          style={{ right: `${arrowPosition}px` }}
+        />
         
         {/* Modal Header */}
-        <div className="p-5 pb-4 border-b border-[#eaeaea]">
-          <div className="flex items-center gap-2 text-base font-semibold text-[#016853]">
+        <div className="p-5 pb-4 border-b border-[var(--border-color)]">
+          <div className="flex items-center gap-2 text-base font-semibold text-[var(--header-green)] font-inter">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
               <path fill="currentColor" d="M22.5 16.14L23.92 6l-18.8-.81L4.92 4A4.43 4.43 0 002.51.8L.58 0 0 1.39l1.88.78a2.88 2.88 0 011.56 2.11l2.5 14.86a2.54 2.54 0 103.57 3h5.93a2.54 2.54 0 100-1.5H9.52a2.53 2.53 0 00-2.1-1.79l-.31-1.83 15.39-.88zm-4.65 4.21a1 1 0 11-.1 1.997 1 1 0 01.1-1.997zm4.36-12.92l-1 7.29-14.33.84-1.51-8.85 16.84.72zM8.14 21.4a1 1 0 11-2 0 1 1 0 012 0z" />
             </svg>
@@ -136,31 +174,31 @@ export const Cart: React.FC<CartProps> = ({
         {/* Cart Items List */}
         <div className="max-h-[320px] overflow-y-auto">
           {cartItems.length === 0 ? (
-            <div className="p-10 text-center text-[#5F5F5F]">
-              <svg className="w-12 h-12 mx-auto mb-3 text-[#5F5F5F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="p-10 text-center text-[var(--subtle-text)]">
+              <svg className="w-12 h-12 mx-auto mb-3 text-[var(--subtle-text)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5-6m0 0L3 3m4 10v6a1 1 0 001 1h9a1 1 0 001-1v-6M9 13v-2a1 1 0 011-1h4a1 1 0 011 1v2" />
               </svg>
-              <div className="text-sm text-[#5F5F5F]">Your cart is empty</div>
+              <div className="text-sm text-[var(--subtle-text)] font-inter">Your cart is empty</div>
             </div>
           ) : (
             cartItems.map((item) => (
-              <div key={item.id} className="flex items-center gap-3 p-4 border-b border-[#eaeaea] transition-colors hover:bg-[#f9fafb] relative group">
+              <div key={item.id} className="flex items-center gap-3 p-4 border-b border-[var(--border-color)] transition-colors hover:bg-[var(--hover-bg)] relative group">
                 <img 
                   src={item.image} 
                   alt={item.title} 
-                  className="w-12 h-12 rounded-lg object-cover flex-shrink-0 border border-[#eaeaea]"
+                  className="w-12 h-12 rounded-lg object-cover flex-shrink-0 border border-[var(--border-color)]"
                 />
                 <div className="flex-1 min-w-0 pr-10">
-                  <div className="text-sm font-semibold text-[#464646] mb-2 overflow-hidden text-ellipsis whitespace-nowrap text-left">
+                  <div className="text-sm font-semibold text-[var(--bold-text)] mb-2 overflow-hidden text-ellipsis whitespace-nowrap text-left font-inter">
                     {item.title}
                   </div>
-                  <div className="text-base font-bold text-[#089E68] text-left">
+                  <div className="text-base font-bold text-[var(--success-green)] text-left font-inter">
                     ${item.price.toFixed(2)}
                   </div>
                 </div>
                 <button
                   onClick={() => removeItem(item.id)}
-                  className="absolute top-4 right-4 cursor-pointer p-1 rounded-full transition-all text-[#9CA3AF] opacity-0 group-hover:opacity-100 hover:bg-[#f3f4f6] flex items-center justify-center"
+                  className="absolute top-4 right-4 cursor-pointer p-1 rounded-full transition-all text-[var(--subtle-text)] opacity-0 group-hover:opacity-100 hover:bg-[var(--hover-bg)] flex items-center justify-center"
                   title="Remove item"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 15 15" fill="none">
@@ -174,15 +212,15 @@ export const Cart: React.FC<CartProps> = ({
         
         {/* Modal Footer */}
         {cartItems.length > 0 && (
-          <div className="p-5 bg-[#f8f9fa] border-t border-[#eaeaea] rounded-b-xl">
+          <div className="p-5 bg-[var(--surface-secondary)] border-t border-[var(--border-color)] rounded-b-xl">
             <div className="flex justify-between items-center mb-4">
-              <span className="text-base font-semibold text-[#464646]">Total:</span>
-              <span className="text-xl font-bold text-[#464646]">${totalAmount.toFixed(2)}</span>
+              <span className="text-base font-semibold text-[var(--bold-text)] font-inter">Total:</span>
+              <span className="text-xl font-bold text-[var(--bold-text)] font-inter">${totalAmount.toFixed(2)}</span>
             </div>
             <Link href="/checkout">
             <button 
               onClick={goToCart}
-              className="w-full py-3 px-6 bg-[#1D77BD] text-white border-none rounded-lg text-[15px] font-semibold cursor-pointer transition-colors hover:bg-[#1a6ba8]"
+              className="w-full py-3 px-6 bg-[var(--verification-blue)] text-white border-none rounded-lg text-[15px] font-semibold cursor-pointer transition-colors hover:opacity-90 font-inter"
             >
               Go to cart
             </button>

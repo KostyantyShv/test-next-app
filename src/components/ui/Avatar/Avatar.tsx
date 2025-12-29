@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase_utils/client';
 import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 interface AvatarProps {
   src?: string;
@@ -17,6 +18,10 @@ interface AvatarProps {
     plan?: string;
     avatar?: string;
   };
+  isDropdownOpen?: boolean;
+  onDropdownToggle?: (isOpen: boolean) => void;
+  dropdownPosition?: 'right' | 'left';
+  sidebarCollapsed?: boolean;
 }
 
 const sizeClasses = {
@@ -32,8 +37,13 @@ export const Avatar: React.FC<AvatarProps> = ({
   size = 'md',
   className = '',
   user: userProp,
+  isDropdownOpen: externalIsDropdownOpen,
+  onDropdownToggle,
+  dropdownPosition = 'right',
+  sidebarCollapsed = false,
 }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [internalIsDropdownOpen, setInternalIsDropdownOpen] = useState(false);
+  const isDropdownOpen = externalIsDropdownOpen !== undefined ? externalIsDropdownOpen : internalIsDropdownOpen;
   const [user, setUser] = useState<{
     name: string;
     email: string;
@@ -142,13 +152,19 @@ export const Avatar: React.FC<AvatarProps> = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
+        if (onDropdownToggle) {
+          onDropdownToggle(false);
+        } else {
+          setInternalIsDropdownOpen(false);
+        }
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [isDropdownOpen, onDropdownToggle]);
 
   const handleAvatarClick = () => {
     // На мобільному пристрої перенаправляємо на сторінку /me
@@ -156,7 +172,12 @@ export const Avatar: React.FC<AvatarProps> = ({
       router.push('/me');
       return;
     }
-    setIsDropdownOpen(!isDropdownOpen);
+    const newState = !isDropdownOpen;
+    if (onDropdownToggle) {
+      onDropdownToggle(newState);
+    } else {
+      setInternalIsDropdownOpen(newState);
+    }
   };
 
   const handleLogout = async () => {
@@ -212,9 +233,27 @@ export const Avatar: React.FC<AvatarProps> = ({
 
       {/* Dropdown Menu - приховати на мобільному */}
       {isDropdownOpen && (
-        <div className="hidden md:block absolute top-12 right-0 w-70 bg-white rounded-xl shadow-lg border border-gray-100 z-[1001] animate-in fade-in-0 zoom-in-95 duration-200" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+        <div 
+          data-avatar-dropdown
+          className={cn(
+            "hidden md:block w-70 bg-white rounded-xl shadow-lg border border-gray-100 z-[2000] transition-all duration-300",
+            dropdownPosition === 'left' 
+              ? (sidebarCollapsed ? 'fixed left-[100px] bottom-[17px] opacity-100 translate-x-0' : 'fixed left-[272px] bottom-[17px] opacity-100 translate-x-0')
+              : 'absolute top-12 right-0 animate-in fade-in-0 zoom-in-95 duration-200'
+          )}
+          style={{ 
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', 
+            width: '280px',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
           {/* Arrow */}
-          <div className="absolute -top-2 right-4 w-4 h-4 bg-white border-l border-t border-gray-100 transform rotate-45"></div>
+          {dropdownPosition === 'left' ? (
+            <div className="absolute -left-2 bottom-[27px] w-3 h-3 bg-[#E1E7EE] transform rotate-45 shadow-[-2px_2px_5px_rgba(0,0,0,0.12)]"></div>
+          ) : (
+            <div className="absolute -top-2 right-4 w-4 h-4 bg-white border-l border-t border-gray-100 transform rotate-45"></div>
+          )}
           
           {/* Top Section */}
           <div className="p-4 border-b border-[#D7F7E9]">

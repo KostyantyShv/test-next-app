@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
 import { Avatar } from '@/components/ui/Avatar';
 import { NotificationsPanel } from '@/components/ui/NotificationsPanel';
@@ -18,6 +18,11 @@ export const Actions: FC = () => {
   const [isMonitorOpen, setIsMonitorOpen] = useState(false);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  
+  // Refs for button positions
+  const compareButtonRef = useRef<HTMLButtonElement>(null);
+  const monitorButtonRef = useRef<HTMLButtonElement>(null);
+  const cartButtonRef = useRef<HTMLButtonElement>(null);
 
   // Prevent hydration mismatch
   useEffect(() => {
@@ -47,6 +52,7 @@ export const Actions: FC = () => {
 
       {/* Comparison Icon */}
       <button 
+        ref={compareButtonRef}
         onClick={() => setIsCompareOpen(!isCompareOpen)}
         className={cn(
           "relative w-11 h-11 border border-[#e9ecef] bg-white rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:opacity-90",
@@ -67,6 +73,7 @@ export const Actions: FC = () => {
 
       {/* Monitor Icon */}
       <button 
+        ref={monitorButtonRef}
         onClick={() => setIsMonitorOpen(!isMonitorOpen)}
         className={cn(
           "relative w-11 h-11 border border-[#e9ecef] bg-white rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:opacity-90",
@@ -101,6 +108,7 @@ export const Actions: FC = () => {
 
       {/* Cart */}
       <button 
+        ref={cartButtonRef}
         onClick={() => setIsCartOpen(!isCartOpen)}
         className={cn(
           "relative w-11 h-11 border border-[#e9ecef] bg-white rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:opacity-90",
@@ -185,12 +193,14 @@ export const Actions: FC = () => {
       <Cart
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
+        buttonRef={cartButtonRef}
       />
 
       {/* Monitor */}
       <Monitor
         isOpen={isMonitorOpen}
         onClose={() => setIsMonitorOpen(false)}
+        buttonRef={monitorButtonRef}
       />
 
       {/* Compare Items */}

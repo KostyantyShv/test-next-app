@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { cn } from '@/lib/utils';
+import { Portal } from '@/components/ui/Portal';
 import CompareItemsMobile from './CompareItemsMobile';
 
 interface School {
@@ -32,6 +33,7 @@ interface CompareItemsProps {
 const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
   const [currentScrollPosition, setCurrentScrollPosition] = useState(0);
   const [maxScrollPosition, setMaxScrollPosition] = useState(0);
+  const [layout, setLayout] = useState<'grid' | 'list'>('list');
   const modalRef = useRef<HTMLDivElement>(null);
 
   const [schools, setSchools] = useState<School[]>([
@@ -184,33 +186,21 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
     help: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.961 7.19025C10.9071 7.1925 10.0724 7.55861 9.4967 7.98876C9.20858 8.20404 8.98273 8.43724 8.82543 8.65266C8.67602 8.85727 8.56436 9.07874 8.55632 9.26768L8.5561 9.27805C8.5561 9.60617 8.67937 9.83406 8.8129 9.96759C9.00138 10.1561 9.26165 10.2537 9.55122 10.2537C9.9432 10.2537 10.2167 9.97149 10.4099 9.76915C10.5689 9.60527 10.7399 9.43619 10.9807 9.30407C11.2186 9.17359 11.5364 9.07317 11.9902 9.07317C12.3037 9.07317 12.6935 9.15178 12.9967 9.30821C13.3039 9.46671 13.4634 9.66976 13.4634 9.90244C13.4634 9.94201 13.4476 9.99942 13.3899 10.0791C13.3318 10.1592 13.2413 10.2478 13.1175 10.3439C12.8694 10.5365 12.5258 10.7303 12.151 10.925C11.4834 11.2718 11.0976 11.687 10.8808 12.0765C10.665 12.4642 10.6244 12.8119 10.6244 13.0146C10.6244 13.2981 10.737 13.5642 10.9098 13.7601C11.0818 13.9552 11.3298 14.0976 11.6098 14.0976C12.08 14.0976 12.5999 13.7214 12.6048 13.1208C12.605 13.1205 12.6052 13.1198 12.6055 13.1188C12.6075 13.1125 12.6141 13.0923 12.6339 13.0568C12.6631 13.0044 12.7119 12.9357 12.7845 12.8578C12.9292 12.7025 13.1593 12.5207 13.4883 12.3674L13.5089 12.3578C14.0049 12.1247 15.4439 11.4484 15.4439 9.85366C15.4439 9.37659 15.2548 8.70854 14.7171 8.15873C14.1753 7.60477 13.301 7.19226 11.9707 7.19025L11.961 7.19025Z"></path><path d="M11.6585 14.6829C10.8692 14.6829 10.3902 15.3007 10.3902 15.9024C10.3902 16.4825 10.8299 17.1805 11.6585 17.1805C12.0616 17.1805 12.3767 17.0174 12.587 16.7664C12.7924 16.521 12.8878 16.2046 12.8878 15.9024C12.8878 15.3143 12.4605 14.6829 11.6585 14.6829Z"></path><path d="M12 2C6.48969 2 2 6.48969 2 12C2 17.5103 6.48969 22 12 22C17.5103 22 22 17.5103 22 12C22 6.48969 17.5103 2 12 2ZM3.8439 12C3.8439 7.50056 7.50056 3.8439 12 3.8439C16.4994 3.8439 20.1561 7.50056 20.1561 12C20.1561 16.4994 16.4994 20.1561 12 20.1561C7.50056 20.1561 3.8439 16.4994 3.8439 12Z"></path></svg>`
   };
 
-  const handleClickOutside = useCallback((event: MouseEvent) => {
-    const target = event.target as Node;
-    if (modalRef.current && !modalRef.current.contains(target)) {
-      // Додаткова перевірка: переконаємося, що клік не на backdrop
-      const backdrop = document.querySelector('[data-backdrop="compare"]');
-      if (backdrop && backdrop.contains(target)) {
-        onClose();
-      }
-    }
-  }, [onClose]);
+  // Fullscreen overlay doesn't need click outside handler - only ESC key
+
 
   useEffect(() => {
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
       updateScrollConstraints();
+      // Prevent body scroll when overlay is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
     }
-
     return () => {
-      try {
-        if (document) {
-          document.removeEventListener('mousedown', handleClickOutside);
-        }
-      } catch (error) {
-        console.warn('Error removing event listener:', error);
-      }
+      document.body.style.overflow = '';
     };
-  }, [isOpen, handleClickOutside, schools]);
+  }, [isOpen, schools]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -230,7 +220,7 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
 
   const updateScrollConstraints = () => {
     const totalCards = schools.length;
-    const visibleCards = Math.floor(1275 / 260);
+    const visibleCards = Math.floor(1075 / 260); // 1075px visible width, 260px per card
     const newMaxScrollPosition = Math.max(0, totalCards - visibleCards);
     setMaxScrollPosition(newMaxScrollPosition);
     
@@ -284,77 +274,90 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
       {/* Mobile Version */}
       <CompareItemsMobile isOpen={isOpen} onClose={onClose} />
       
-      {/* Desktop Version */}
-      <div className="fixed inset-0 z-[1001] hidden md:block">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black bg-opacity-25 cursor-pointer" 
-        onClick={onClose}
-        data-backdrop="compare"
-      />
-      
-      {/* Compare Items Modal */}
-      <div 
-        ref={modalRef}
-        className={cn(
-          "absolute top-[72px] right-0 w-[1400px] bg-white rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] border border-[#eaeaea]",
-          "opacity-0 visibility-hidden transform -translate-y-2.5 transition-all duration-300 ease-out",
-          "z-[1000]",
-          isOpen && "opacity-100 visibility-visible transform translate-y-0"
-        )}
-        style={{
-          backgroundColor: 'white !important',
-          position: 'fixed',
-          top: '72px',
-          right: '24px',
-        }}
-      >
-        {/* Arrow pointer */}
-        <div className="absolute -top-2 right-6 w-4 h-4 bg-white border border-[#eaeaea] border-b-0 border-r-0 transform rotate-45" />
+      {/* Desktop Version - Fullscreen Overlay */}
+      <Portal containerId="compare-items-portal">
+        <div className={cn(
+          "fixed inset-0 z-[1001] hidden md:block bg-[var(--surface-color)] overflow-y-auto",
+          "opacity-0 visibility-hidden transition-all duration-300",
+          isOpen && "opacity-100 visibility-visible"
+        )}>
+        {/* Header Space */}
+        <div className="fixed top-0 left-0 right-0 h-[25px] bg-[rgba(38,43,61,0.05)] z-[1002]" />
         
-        {/* Modal Header */}
-        <div className="p-5 pb-4 border-b border-[#eaeaea]">
-          <div className="flex justify-between items-center">
-            <h2 className="text-[28px] font-semibold text-[#016853] mb-0 text-left">Compare with similar schools</h2>
-            <button 
-              onClick={onClose}
-              className="w-8 h-8 bg-white border-none rounded-full flex items-center justify-center cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
-            >
-              <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-[#262B3D]">
-                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-          </div>
-        </div>
+        {/* Close Button */}
+        <button 
+          onClick={onClose}
+          className="fixed top-2 right-6 w-8 h-8 bg-[var(--surface-color)] border-none rounded-full flex items-center justify-center cursor-pointer z-[1003] shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
+        >
+          <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-[var(--dark-text)]">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
 
-        {/* Content */}
-        <div className="p-5 bg-white max-h-[600px] overflow-y-auto">
-          <div className="max-w-[1400px] mx-auto">
+        {/* Overlay Content */}
+        <div className="pt-[45px] px-5 pb-5 bg-[var(--surface-color)] min-h-screen">
+          <div className="max-w-[1200px] mx-auto">
+            {/* Table Header with Title, Layout Toggle and Pagination */}
             <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-5">
+                <h2 className="text-[28px] font-semibold text-[var(--header-green)] mb-0 text-left font-inter">Compare with similar schools</h2>
+                
+                {/* Layout Toggle */}
+                <div className="inline-flex bg-[var(--background-color)] rounded-lg p-1 gap-1">
+                  <button
+                    onClick={() => setLayout('grid')}
+                    className={cn(
+                      "flex items-center gap-1.5 px-4 py-2 border-none rounded-md text-sm font-medium font-inter cursor-pointer transition-all duration-200 whitespace-nowrap",
+                      layout === 'grid'
+                        ? "bg-[var(--dark-text)] text-white shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
+                        : "bg-transparent text-[var(--subtle-text)] hover:bg-[rgba(38,43,61,0.05)] hover:text-[var(--bold-text)]"
+                    )}
+                  >
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 flex-shrink-0">
+                      <path d="M5.5 4h4c.83 0 1.5.67 1.5 1.5v4c0 .83-.67 1.5-1.5 1.5h-4A1.5 1.5 0 0 1 4 9.5v-4C4 4.67 4.67 4 5.5 4zm9 0h4c.83 0 1.5.67 1.5 1.5v4c0 .83-.67 1.5-1.5 1.5h-4A1.5 1.5 0 0 1 13 9.5v-4c0-.83.67-1.5 1.5-1.5zm0 9h4c.83 0 1.5.67 1.5 1.5v4c0 .83-.67 1.5-1.5 1.5h-4a1.5 1.5 0 0 1-1.5-1.5v-4c0-.83.67-1.5 1.5-1.5zm-9 0h4c.83 0 1.5.67 1.5 1.5v4c0 .83-.67 1.5-1.5 1.5h-4A1.5 1.5 0 0 1 4 18.5v-4c0-.83.67-1.5 1.5-1.5zm0-7.5v4h4v-4h-4zm9 0v4h4v-4h-4zm0 9v4h4v-4h-4zm-9 0v4h4v-4h-4z" fill="currentColor" />
+                    </svg>
+                    Grid
+                  </button>
+                  <button
+                    onClick={() => setLayout('list')}
+                    className={cn(
+                      "flex items-center gap-1.5 px-4 py-2 border-none rounded-md text-sm font-medium font-inter cursor-pointer transition-all duration-200 whitespace-nowrap",
+                      layout === 'list'
+                        ? "bg-[var(--dark-text)] text-white shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
+                        : "bg-transparent text-[var(--subtle-text)] hover:bg-[rgba(38,43,61,0.05)] hover:text-[var(--bold-text)]"
+                    )}
+                  >
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 flex-shrink-0">
+                      <path d="M11.75 5.25h7.5a.75.75 0 1 1 0 1.5h-7.5a.75.75 0 1 1 0-1.5zm0 6h7.5a.75.75 0 1 1 0 1.5h-7.5a.75.75 0 1 1 0-1.5zm0 6h7.5a.75.75 0 1 1 0 1.5h-7.5a.75.75 0 1 1 0-1.5zM6 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" fillRule="evenodd" fill="currentColor" />
+                    </svg>
+                    List
+                  </button>
+                </div>
+              </div>
               <div className="flex items-center gap-3">
                 <button 
                   onClick={scrollPrev}
                   disabled={currentScrollPosition <= 0}
-                  className="w-9 h-9 rounded-[18px] border border-[rgba(0,0,0,0.1)] bg-white text-[#5F5F5F] cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[#f5f5f5] hover:text-[#346DC2] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-9 h-9 rounded-[18px] border border-[var(--border-color)] bg-[var(--surface-color)] text-[var(--subtle-text)] cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--link-text)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                     <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
                 <div 
-                  className="w-[120px] h-1 bg-[#f0f0f0] rounded-[2px] relative overflow-hidden cursor-pointer"
+                  className="w-[120px] h-1 bg-[var(--gray-200)] rounded-[2px] relative overflow-hidden cursor-pointer"
                   onClick={handlePaginationClick}
                 >
                   <div 
-                    className="absolute left-0 top-0 h-full bg-[#016853] rounded-[2px] transition-[width] duration-300"
+                    className="absolute left-0 top-0 h-full bg-[var(--header-green)] rounded-[2px] transition-[width] duration-300"
                     style={{ width: `${progressWidth}%` }}
                   ></div>
                 </div>
-                <div className="text-sm text-[#5F5F5F] min-w-[60px] text-center">{currentPage}/{totalPages}</div>
+                <div className="text-sm text-[var(--subtle-text)] min-w-[60px] text-center font-inter">{currentPage}/{totalPages}</div>
                 <button 
                   onClick={scrollNext}
                   disabled={currentScrollPosition >= maxScrollPosition}
-                  className="w-9 h-9 rounded-[18px] border border-[rgba(0,0,0,0.1)] bg-white text-[#5F5F5F] cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[#f5f5f5] hover:text-[#346DC2] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-9 h-9 rounded-[18px] border border-[var(--border-color)] bg-[var(--surface-color)] text-[var(--subtle-text)] cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--link-text)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                     <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -363,65 +366,66 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
             
-            <div className="relative border border-[rgba(0,0,0,0.08)] rounded-xl bg-white overflow-hidden">
+            {/* Comparison Wrapper */}
+            <div className="relative border border-[var(--border-color)] rounded-xl bg-[var(--surface-color)] overflow-hidden">
               <div className="table w-full border-collapse border-spacing-0">
-                <div className="table-row bg-[#f8f9fa]">
-                  <div className="table-cell w-[200px] min-w-[200px] p-0 bg-[#f8f9fa] border-r border-[rgba(0,0,0,0.08)] sticky left-0 z-10"></div>
-                  <div className="table-cell overflow-x-auto w-[1275px] relative">
+                <div className="table-row bg-[var(--surface-secondary)]">
+                  <div className="table-cell w-[200px] min-w-[200px] p-0 bg-[var(--surface-secondary)] border-r border-[var(--border-color)] sticky left-0 z-10"></div>
+                  <div className="table-cell overflow-x-auto w-[1075px] relative">
                     <div 
-                      className="flex w-max min-w-[1275px]"
+                      className="flex w-max min-w-[1075px]"
                       style={{ transform: `translateX(-${scrollDistance}px)` }}
                     >
                       {schools.map((school, index) => (
-                        <div key={school.id} className="min-w-[260px] flex-[0_0_260px] p-5 border-r border-[rgba(0,0,0,0.08)] border-b border-[rgba(0,0,0,0.08)] bg-white relative last:border-r-0">
+                        <div key={school.id} className="min-w-[260px] flex-[0_0_260px] p-5 border-r border-[var(--border-color)] border-b border-[var(--border-color)] bg-[var(--surface-color)] relative last:border-r-0">
                           <button 
                             onClick={() => removeSchool(school.id)}
-                            className="absolute top-3 right-3 w-6 h-6 rounded-full bg-[rgba(0,0,0,0.05)] border-none flex items-center justify-center cursor-pointer transition-all duration-200 hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444]"
+                            className="absolute top-3 right-3 w-6 h-6 rounded-full bg-[var(--gray-100)] border-none flex items-center justify-center cursor-pointer transition-all duration-200 hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444]"
                           >
-                            <svg viewBox="0 0 24 24" fill="none" className="w-3 h-3 text-[#5F5F5F]">
+                            <svg viewBox="0 0 24 24" fill="none" className="w-3 h-3 text-[var(--subtle-text)]">
                               <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
                           </button>
                           
                           <img src={school.image} alt={school.name} className="w-12 h-12 rounded-lg object-cover mb-3" />
-                          <h3 className="text-base font-semibold text-[#464646] mb-2 leading-[1.3]">{school.name}</h3>
+                          <h3 className="text-base font-semibold text-[var(--bold-text)] mb-2 leading-[1.3] font-inter">{school.name}</h3>
                           
                           <div className="flex items-center gap-1.5 mb-2">
-                            <svg className="text-[#00DF8B] w-3.5 h-3.5" viewBox="0 0 24 24">
+                            <svg className="text-[var(--grade-badge)] w-3.5 h-3.5" viewBox="0 0 24 24">
                               <path fill="currentColor" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
                             </svg>
-                            <span className="font-semibold text-[#464646] text-sm">{school.rating}</span>
-                            <span className="text-[#5F5F5F] text-xs">({school.reviewCount.toLocaleString()})</span>
+                            <span className="font-semibold text-[var(--bold-text)] text-sm font-inter">{school.rating}</span>
+                            <span className="text-[var(--subtle-text)] text-xs font-inter">({school.reviewCount.toLocaleString()})</span>
                           </div>
                           
-                          <div className="text-[#5F5F5F] text-xs mb-2">{school.location}</div>
+                          <div className="text-[var(--subtle-text)] text-xs mb-2 font-inter">{school.location}</div>
                           
                           <div className="flex flex-wrap gap-1 mb-3 items-center min-h-6 overflow-hidden">
                             {school.tags.slice(0, 2).map((tag, tagIndex) => (
-                              <span key={tagIndex} className="bg-[rgba(0,0,0,0.05)] px-2 py-1 rounded-xl text-xs text-[#5F5F5F] whitespace-nowrap overflow-hidden text-ellipsis max-w-[80px] flex-shrink-0">
+                              <span key={tagIndex} className="bg-[var(--gray-100)] px-2 py-1 rounded-xl text-xs text-[var(--subtle-text)] whitespace-nowrap overflow-hidden text-ellipsis max-w-[80px] flex-shrink-0 font-inter">
                                 {tag}
                               </span>
                             ))}
                             {school.tags.length > 2 && (
-                              <span className="bg-[rgba(0,0,0,0.08)] px-2 py-1 rounded-xl text-xs text-[#5F5F5F] font-medium whitespace-nowrap flex-shrink-0 ml-auto">
+                              <span className="bg-[var(--gray-200)] px-2 py-1 rounded-xl text-xs text-[var(--subtle-text)] font-medium whitespace-nowrap flex-shrink-0 ml-auto font-inter">
                                 +{school.tags.length - 2}
                               </span>
                             )}
                           </div>
                           
-                          <div className={`text-sm leading-[1.4] text-[#4A4A4A] mb-2 overflow-hidden ${school.expanded ? '' : 'line-clamp-2'}`}>
+                          <div className={`text-sm leading-[1.4] text-[var(--text-default)] mb-2 overflow-hidden font-inter ${school.expanded ? '' : 'line-clamp-2'}`}>
                             {school.description}
                           </div>
                           <span 
-                            className="text-[#346DC2] text-xs font-medium cursor-pointer mb-3 inline-block"
+                            className="text-[var(--link-text)] text-xs font-medium cursor-pointer mb-3 inline-block font-inter"
                             onClick={() => toggleDescription(school.id)}
                           >
                             {school.expanded ? 'Less' : 'More'}
                           </span>
                           
-                          <div className="flex justify-between items-center pt-3 border-t border-[rgba(0,0,0,0.08)]">
-                            <button className="text-[#016853] font-semibold text-xs bg-none border-none cursor-pointer p-0">Apply Now</button>
-                            <div className="flex items-center gap-1 text-[#346DC2] font-medium text-xs cursor-pointer">
+                          <div className="flex justify-between items-center pt-3 border-t border-[var(--border-color)]">
+                            <button className="text-[var(--header-green)] font-semibold text-xs bg-none border-none cursor-pointer p-0 font-inter">Apply Now</button>
+                            <div className="flex items-center gap-1 text-[var(--link-text)] font-medium text-xs cursor-pointer font-inter">
                               Learn More
                               <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
                                 <path d="M8 3.33334L7.06 4.27334L10.78 8.00001L7.06 11.7267L8 12.6667L12.6667 8.00001L8 3.33334Z" fill="currentColor"/>
@@ -436,20 +440,20 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
 
                 <div className="table-row-group">
                   {features.map((feature, featureIndex) => (
-                    <div key={feature.key} className={`table-row ${featureIndex % 2 === 1 ? 'bg-[rgba(0,0,0,0.02)]' : ''}`}>
-                      <div className="table-cell w-[200px] min-w-[200px] p-4 bg-inherit border-r border-[rgba(0,0,0,0.08)] sticky left-0 z-[5]">
-                        <div className="flex items-center gap-2 text-[#464646] text-sm font-semibold">
+                    <div key={feature.key} className={`table-row ${featureIndex % 2 === 1 ? 'bg-[var(--gray-100)]' : ''}`}>
+                      <div className="table-cell w-[200px] min-w-[200px] p-4 bg-inherit border-r border-[var(--border-color)] sticky left-0 z-[5]">
+                        <div className="flex items-center gap-2 text-[var(--bold-text)] text-sm font-semibold font-inter">
                           <div 
-                            className="w-4 h-4 text-[#089E68] flex-shrink-0"
+                            className="w-4 h-4 text-[var(--success-green)] flex-shrink-0"
                             dangerouslySetInnerHTML={{ __html: icons[feature.icon as keyof typeof icons] }}
                           />
                           {feature.label}
                           <div className="relative inline-block">
                             <div 
-                              className="w-3.5 h-3.5 text-[#5F5F5F] cursor-help flex-shrink-0"
+                              className="w-3.5 h-3.5 text-[var(--subtle-text)] cursor-help flex-shrink-0"
                               dangerouslySetInnerHTML={{ __html: icons.help }}
                             />
-                            <span className="invisible absolute z-10 bottom-[125%] left-1/2 transform -translate-x-1/2 w-[200px] bg-[#333] text-white text-center py-2 px-3 rounded-md text-xs opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100">
+                            <span className="invisible absolute z-10 bottom-[125%] left-1/2 transform -translate-x-1/2 w-[200px] bg-[var(--tooltip-bg)] text-[var(--tooltip-text)] text-center py-2 px-3 rounded-md text-xs opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100 font-inter">
                               {feature.tooltip}
                             </span>
                           </div>
@@ -457,13 +461,13 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
                       </div>
                       <div className="table-cell overflow-x-auto relative">
                         <div 
-                          className="flex w-max min-w-[1275px]"
+                          className="flex w-max min-w-[1075px]"
                           style={{ transform: `translateX(-${scrollDistance}px)` }}
                         >
                           {feature.values.map((value, valueIndex) => (
-                            <div key={valueIndex} className="min-w-[260px] flex-[0_0_260px] p-4 border-r border-[rgba(0,0,0,0.08)] flex items-center justify-center text-center font-medium text-[#464646] text-sm last:border-r-0">
+                            <div key={valueIndex} className="min-w-[260px] flex-[0_0_260px] p-4 border-r border-[var(--border-color)] flex items-center justify-center text-center font-medium text-[var(--bold-text)] text-sm last:border-r-0 font-inter">
                               {feature.key.includes('Rank') ? (
-                                <span className="bg-[#00DF8B] text-white px-2 py-1 rounded font-semibold text-[13px]">
+                                <span className="bg-[var(--grade-badge)] text-white px-2 py-1 rounded font-semibold text-[13px] font-inter">
                                   {value}
                                 </span>
                               ) : (
@@ -477,17 +481,17 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
                   ))}
                 </div>
 
-                <div className="table-row border-t border-[rgba(0,0,0,0.08)]">
-                  <div className="table-cell w-[200px] min-w-[200px] bg-[#f8f9fa] border-r border-[rgba(0,0,0,0.08)]"></div>
+                <div className="table-row border-t border-[var(--border-color)]">
+                  <div className="table-cell w-[200px] min-w-[200px] bg-[var(--surface-secondary)] border-r border-[var(--border-color)]"></div>
                   <div className="table-cell overflow-x-auto relative">
                     <div 
-                      className="flex w-max min-w-[1275px]"
+                      className="flex w-max min-w-[1075px]"
                       style={{ transform: `translateX(-${scrollDistance}px)` }}
                     >
                       {schools.map((school, index) => (
-                        <div key={school.id} className="min-w-[260px] flex-[0_0_260px] p-5 border-r border-[rgba(0,0,0,0.08)] flex justify-between items-center bg-[#f8f9fa] last:border-r-0">
-                          <button className="text-[#016853] font-semibold text-xs bg-none border-none cursor-pointer p-0">Apply Now</button>
-                          <div className="flex items-center gap-1 text-[#346DC2] font-medium text-xs cursor-pointer">
+                        <div key={school.id} className="min-w-[260px] flex-[0_0_260px] p-5 border-r border-[var(--border-color)] flex justify-between items-center bg-[var(--surface-secondary)] last:border-r-0">
+                          <button className="text-[var(--header-green)] font-semibold text-xs bg-none border-none cursor-pointer p-0 font-inter">Apply Now</button>
+                          <div className="flex items-center gap-1 text-[var(--link-text)] font-medium text-xs cursor-pointer font-inter">
                             Learn More
                             <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
                               <path d="M8 3.33334L7.06 4.27334L10.78 8.00001L7.06 11.7267L8 12.6667L12.6667 8.00001L8 3.33334Z" fill="currentColor"/>
@@ -501,31 +505,32 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
 
-            <div className="w-full max-w-[1495px] mx-auto mt-8 relative">
+            {/* Pagination Wrapper */}
+            <div className="w-full max-w-[1200px] mx-auto mt-8 relative">
               <div className="flex justify-center items-center gap-4 w-full">
                 <button 
                   onClick={scrollPrev}
                   disabled={currentScrollPosition <= 0}
-                  className="w-9 h-9 rounded-[18px] border border-[rgba(0,0,0,0.1)] bg-white text-[#5F5F5F] cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[#f5f5f5] hover:text-[#346DC2] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-9 h-9 rounded-[18px] border border-[var(--border-color)] bg-[var(--surface-color)] text-[var(--subtle-text)] cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--link-text)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
                 <div 
-                  className="w-full h-1 bg-[#f0f0f0] rounded-[2px] relative overflow-hidden cursor-pointer"
+                  className="w-full h-1 bg-[var(--gray-200)] rounded-[2px] relative overflow-hidden cursor-pointer"
                   onClick={handlePaginationClick}
                 >
                   <div 
-                    className="absolute left-0 top-0 h-full bg-[#016853] rounded-[2px] transition-[width] duration-300"
+                    className="absolute left-0 top-0 h-full bg-[var(--header-green)] rounded-[2px] transition-[width] duration-300"
                     style={{ width: `${progressWidth}%` }}
                   ></div>
                 </div>
-                <div className="text-sm text-[#5F5F5F] min-w-[60px] text-center">{currentPage}/{totalPages}</div>
+                <div className="text-sm text-[var(--subtle-text)] min-w-[60px] text-center font-inter">{currentPage}/{totalPages}</div>
                 <button 
                   onClick={scrollNext}
                   disabled={currentScrollPosition >= maxScrollPosition}
-                  className="w-9 h-9 rounded-[18px] border border-[rgba(0,0,0,0.1)] bg-white text-[#5F5F5F] cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[#f5f5f5] hover:text-[#346DC2] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-9 h-9 rounded-[18px] border border-[var(--border-color)] bg-[var(--surface-color)] text-[var(--subtle-text)] cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--link-text)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -535,8 +540,8 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+        </div>
+      </Portal>
     </>
   );
 };

@@ -35,7 +35,7 @@ export const Header: FC<HeaderProps> = ({ className, onOpenSidebar }) => {
             {/* Search Container */}
             <div className="flex-1 max-w-[800px] relative">
               <Search />
-            </div
+            </div>
             {/* Header Actions */}
             <div className="flex items-center gap-4">
               <Actions />

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import styles from './AIAssistantPlatform.module.css';
+import { Portal } from '@/components/ui/Portal/Portal';
 
 interface Message {
   type: 'user' | 'ai';
@@ -42,26 +43,65 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [showChatHistory, setShowChatHistory] = useState(false);
   const [activeModel, setActiveModel] = useState('SchoolScout');
+  const [showPromptsInline, setShowPromptsInline] = useState(false);
+  const [showCollectionsInline, setShowCollectionsInline] = useState(false);
+  const [showAllPromptsInline, setShowAllPromptsInline] = useState(false);
+  const [historySearch, setHistorySearch] = useState('');
+  const [activePanelAction, setActivePanelAction] = useState('chatBtn');
+  const [showContextModal, setShowContextModal] = useState(false);
+  const [showCollectionsModal, setShowCollectionsModal] = useState(false);
+  const [contextTab, setContextTab] = useState<'tabs' | 'collections'>('tabs');
+  const [selectedContexts, setSelectedContexts] = useState<string[]>([]);
+  const [draggedPrompt, setDraggedPrompt] = useState<number | null>(null);
   
   const panelRef = useRef<HTMLDivElement>(null);
   const chatInputRef = useRef<HTMLTextAreaElement>(null);
   const chatMessagesRef = useRef<HTMLDivElement>(null);
 
-  const promptPills: PromptPill[] = [
-    { id: 'write', title: 'Write', desc: 'Help me write content', icon: '✍️' },
-    { id: 'research', title: 'Research', desc: 'Help me research a topic', icon: '🔍' },
-    { id: 'analyze', title: 'Analyze', desc: 'Help me analyze data', icon: '📊' },
-    { id: 'all', title: 'All Prompts', desc: 'View all available prompts', icon: '📋' }
+  const historyData = [
+    { id: 1, title: 'AI Applications in Science...', preview: "Hello! How can I assist you today? I'm here to help...", meta: '2 minutes ago • www.google.com', current: true },
+    { id: 2, title: 'Welcome back', preview: "I've generated the mind map for the LLM Training Process...", meta: '20 hours ago • www.google.com' }
   ];
 
+  const panelActionsData = [
+    { id: 'chatBtn', title: 'Chat', icon: 'chat', active: true },
+    { id: 'newChatBtn', title: 'New Chat', icon: 'newChat' },
+    { id: 'historyBtn', title: 'Chat History', icon: 'history' },
+    { id: 'newPromptBtn', title: 'New Prompt', icon: 'prompt' },
+    { id: 'collectionsBtn', title: 'Collections', icon: 'collections' }
+  ];
+
+  const promptPills: PromptPill[] = [
+    { id: 'write', title: 'Write', desc: 'Help me write content', icon: 'write' },
+    { id: 'translate', title: 'Translate', desc: 'Help me translate', icon: 'translate' },
+    { id: 'calendar', title: 'Calendar', desc: 'Help with calendar', icon: 'calendar' },
+    { id: 'all', title: 'All', desc: 'View all available prompts', icon: 'all' }
+  ];
+
+  const [allPromptsData, setAllPromptsData] = useState<PromptPill[]>([
+    { id: 'write', title: 'Write', desc: 'Help with writing and editing', icon: 'write' },
+    { id: 'translate', title: 'Translate', desc: 'Translate between languages', icon: 'translate' },
+    { id: 'summarize', title: 'Summarize', desc: 'Create concise summaries', icon: 'summarize' },
+    { id: 'analyze', title: 'Analyze', desc: 'Analyze data and content', icon: 'analyze' }
+  ]);
+
   const handleClickOutside = useCallback((event: MouseEvent) => {
-    if (panelRef.current && !panelRef.current.contains(event.target as Node)) {
+    const target = event.target as HTMLElement;
+    // Перевіряємо, чи клік не на панелі, не на header, і не на модалках
+    if (
+      panelRef.current && 
+      !panelRef.current.contains(target as Node) && 
+      !target.closest('header') &&
+      !target.closest('#ai-context-modal-portal') &&
+      !target.closest('#ai-collections-modal-portal')
+    ) {
+      // Закриваємо панель при кліку поза нею
       onClose();
     }
   }, [onClose]);
 
   useEffect(() => {
-    if (isOpen && panelRef.current) {
+    if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
@@ -126,10 +166,27 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
 
   const handlePromptPillClick = (pillId: string) => {
     if (pillId === 'all') {
-      // Handle all prompts view
+      setShowAllPromptsInline(!showAllPromptsInline);
       return;
     }
     setActivePrompt(pillId);
+    setShowAllPromptsInline(false);
+  };
+
+  const handleChatInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    setChatInput(value);
+    
+    if (value.startsWith('/')) {
+      setShowPromptsInline(true);
+      setShowCollectionsInline(false);
+    } else if (value.includes('@')) {
+      setShowCollectionsInline(true);
+      setShowPromptsInline(false);
+    } else {
+      setShowPromptsInline(false);
+      setShowCollectionsInline(false);
+    }
   };
 
   const addContextPill = (name: string, type: string, id: string) => {
@@ -149,10 +206,10 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[1001]">
-      {/* Backdrop */}
+    <div className="fixed inset-0 z-[1001] pointer-events-none">
+      {/* Backdrop - invisible, only for click outside */}
       <div 
-        className="absolute inset-0 bg-black bg-opacity-40 cursor-pointer" 
+        className="absolute top-[64px] left-0 right-0 bottom-0 cursor-pointer pointer-events-auto" 
         onClick={handleBackdropClick}
       />
       
@@ -160,7 +217,7 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
       <div 
         ref={panelRef}
         className={cn(
-          "absolute top-0 right-0 w-[450px] h-screen bg-white shadow-2xl flex",
+          "absolute top-[64px] bottom-0 right-0 w-[450px] bg-white shadow-2xl flex pointer-events-auto",
           "transform transition-all duration-300 ease-in-out",
           "border-l border-gray-200",
           styles.aiPanel,
@@ -171,27 +228,27 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
         style={{
           backgroundColor: 'white !important',
           boxShadow: '-4px 0 20px rgba(0, 0, 0, 0.1)',
-          height: '100vh',
-          minHeight: '100vh',
+          overflow: 'hidden',
         }}
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Left Column */}
-        <div className="flex-1 flex flex-col bg-white">
+        <div className="flex-1 flex flex-col bg-white overflow-hidden" style={{ height: '100%', maxHeight: '100%', minHeight: 0 }}>
           {/* Header */}
           <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-[#464646]">Assistant</h2>
+            <h2 className="text-lg font-semibold text-[var(--bold-text)] font-inter">Assistant</h2>
             <button
               onClick={onClose}
-              className="w-8 h-8 bg-gray-100 hover:bg-gray-200 border-none rounded-full flex items-center justify-center cursor-pointer transition-all text-[#5F5F5F] hover:text-[#4A4A4A]"
+              className="w-8 h-8 bg-[var(--surface-secondary)] hover:bg-[var(--gray-200)] border-none rounded-full flex items-center justify-center cursor-pointer transition-all text-[var(--subtle-text)] hover:text-[var(--text-default)]"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 18 18">
+                <path fillRule="evenodd" clipRule="evenodd" d="M4.51025 3.51594C4.2386 3.23845 3.79343 3.23372 3.51594 3.50537C3.23845 3.77702 3.23372 4.22219 3.50537 4.49968L8.00075 9.09168L3.5155 13.4902C3.23825 13.7621 3.2339 14.2072 3.50579 14.4845C3.77769 14.7617 4.22286 14.7661 4.50012 14.4942L9 10.0814L13.4999 14.4942C13.7771 14.7661 14.2223 14.7617 14.4942 14.4845C14.7661 14.2072 14.7617 13.7621 14.4845 13.4902L9.99924 9.09168L14.4946 4.49968C14.7663 4.22219 14.7615 3.77702 14.4841 3.50537C14.2066 3.23372 13.7614 3.23845 13.4897 3.51594L9 8.10217L4.51025 3.51594Z" fill="currentColor"/>
               </svg>
             </button>
           </div>
           
           {/* Chat Area */}
-          <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex-1 flex flex-col overflow-hidden" style={{ minHeight: 0 }}>
             <div 
               ref={chatMessagesRef}
               className="flex-1 p-4 overflow-y-auto space-y-4"
@@ -206,10 +263,10 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                 >
                   <div
                     className={cn(
-                      "max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed",
+                      "max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed font-inter",
                       message.type === 'user'
-                        ? "bg-[#1D77BD] text-white rounded-br-md"
-                        : "bg-gray-100 text-[#4A4A4A] rounded-bl-md"
+                        ? "bg-[var(--verification-blue)] text-white rounded-br-[4px]"
+                        : "bg-[var(--gray-100)] text-[var(--text-default)] rounded-bl-[4px]"
                     )}
                   >
                     {message.text}
@@ -224,14 +281,21 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                 {contextPills.map((pill) => (
                   <div
                     key={pill.id}
-                    className="bg-gray-100 border border-gray-200 rounded-2xl px-3 py-1.5 text-xs text-[#4A4A4A] flex items-center gap-2 relative cursor-pointer group"
+                    className="bg-[var(--gray-100)] border border-[var(--border-color)] rounded-2xl px-3 py-1.5 pr-4 text-xs text-[var(--text-default)] flex items-center gap-2 relative cursor-pointer group"
                   >
                     <span>{pill.name}</span>
+                    <span className="ml-auto opacity-100 transition-opacity group-hover:opacity-0">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m6 9 6 6 6-6" />
+                      </svg>
+                    </span>
                     <button
                       onClick={() => removeContext(pill.type, pill.id)}
-                      className="w-4 h-4 bg-transparent border-none text-[#5F5F5F] cursor-pointer p-0.5 rounded-full hidden group-hover:flex items-center justify-center transition-all hover:bg-black hover:bg-opacity-10"
+                      className="w-4 h-4 bg-transparent border-none text-[var(--subtle-text)] cursor-pointer p-0.5 rounded-full hidden group-hover:flex items-center justify-center transition-all hover:bg-black hover:bg-opacity-10 ml-auto"
                     >
-                      ×
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 18 18">
+                        <path fillRule="evenodd" clipRule="evenodd" d="M4.51025 3.51594C4.2386 3.23845 3.79343 3.23372 3.51594 3.50537C3.23845 3.77702 3.23372 4.22219 3.50537 4.49968L8.00075 9.09168L3.5155 13.4902C3.23825 13.7621 3.2339 14.2072 3.50579 14.4845C3.77769 14.7617 4.22286 14.7661 4.50012 14.4942L9 10.0814L13.4999 14.4942C13.7771 14.7661 14.2223 14.7617 14.4942 14.4845C14.7661 14.2072 14.7617 13.7621 14.4845 13.4902L9.99924 9.09168L14.4946 4.49968C14.7663 4.22219 14.7615 3.77702 14.4841 3.50537C14.2066 3.23372 13.7614 3.23845 13.4897 3.51594L9 8.10217L4.51025 3.51594Z" fill="currentColor"/>
+                      </svg>
                     </button>
                   </div>
                 ))}
@@ -239,73 +303,176 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
             )}
 
             {/* Prompt Pills */}
-            <div className="px-4 py-3 border-b border-gray-200">
+            <div className="px-4 py-3 border-b border-gray-200 relative">
               <div className="flex gap-2 flex-wrap">
                 {promptPills.map((pill) => (
                   <button
                     key={pill.id}
                     onClick={() => handlePromptPillClick(pill.id)}
                     className={cn(
-                      "bg-[#EBFCF4] border border-transparent rounded-2xl px-3 py-1.5 text-sm cursor-pointer transition-all text-[#4A4A4A] flex items-center gap-1 hover:bg-[#D7F7E9] hover:border-[#0B6333]",
-                      activePrompt === pill.id && "bg-[#0B6333] text-white"
+                      "bg-[var(--apply-button-bg)] border border-transparent rounded-2xl px-3 py-1.5 text-sm cursor-pointer transition-all text-[var(--text-default)] flex items-center gap-1 hover:bg-[var(--apply-button-hover)] hover:border-[var(--active-green)]",
+                      activePrompt === pill.id && "bg-[var(--active-green)] text-white"
                     )}
                   >
-                    <span>{pill.icon}</span>
+                    <span className="text-xs">
+                      {pill.icon === 'write' ? '✍️' : pill.icon === 'translate' ? '🌐' : pill.icon === 'calendar' ? '📅' : '📋'}
+                    </span>
                     {pill.title}
                   </button>
                 ))}
               </div>
+              
+              {/* All Prompts Inline Modal */}
+              {showAllPromptsInline && (
+                <div className="absolute bottom-full left-4 right-4 mb-2 bg-[var(--surface-color)] border border-[var(--border-color)] rounded-lg shadow-lg max-h-[400px] min-h-[300px] overflow-y-auto z-50">
+                  {allPromptsData.map((prompt, index) => (
+                    <div
+                      key={prompt.id}
+                      draggable
+                      onDragStart={(e) => {
+                        setDraggedPrompt(index);
+                        e.dataTransfer.effectAllowed = 'move';
+                      }}
+                      onDragEnd={() => setDraggedPrompt(null)}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        if (draggedPrompt !== null && draggedPrompt !== index) {
+                          const newPrompts = [...allPromptsData];
+                          const [removed] = newPrompts.splice(draggedPrompt, 1);
+                          newPrompts.splice(index, 0, removed);
+                          setAllPromptsData(newPrompts);
+                          setDraggedPrompt(null);
+                        }
+                      }}
+                      className={cn(
+                        "px-4 py-3 flex items-center gap-3 cursor-grab hover:bg-[var(--surface-secondary)] border-b border-[var(--gray-100)] last:border-b-0 transition-all",
+                        draggedPrompt === index && "opacity-50 cursor-grabbing"
+                      )}
+                    >
+                      <div className="text-[var(--subtle-text)] cursor-grab">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <circle cx="7.4" cy="3.5" r="1.8" />
+                          <circle cx="14.6" cy="3.5" r="1.8" />
+                          <circle cx="7.4" cy="11" r="1.8" />
+                          <circle cx="14.6" cy="11" r="1.8" />
+                          <circle cx="7.4" cy="18.3" r="1.8" />
+                          <circle cx="14.6" cy="18.3" r="1.8" />
+                        </svg>
+                      </div>
+                      <div className="w-8 h-8 bg-[var(--apply-button-bg)] rounded flex items-center justify-center text-[var(--active-green)] text-xs">
+                        {prompt.icon === 'write' ? '✍️' : prompt.icon === 'translate' ? '🌐' : prompt.icon === 'summarize' ? '📝' : '📊'}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-[var(--text-default)]">{prompt.title}</div>
+                        <div className="text-xs text-[var(--subtle-text)]">{prompt.desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Chat Input */}
-            <div className="p-4">
-              <div className="relative bg-white border-[1.5px] border-gray-200 rounded-xl transition-all focus-within:border-[#1D77BD] focus-within:shadow-[0_0_0_3px_rgba(29,119,189,0.1)]">
-                <div className="flex items-end gap-2 px-3 py-[18px] bg-white">
+            <div className="p-4 relative">
+              {/* Inline Modals */}
+              {showPromptsInline && (
+                <div className="absolute bottom-full left-4 right-4 mb-2 bg-[var(--surface-color)] border border-[var(--border-color)] rounded-lg shadow-lg max-h-[200px] overflow-y-auto z-50">
+                  {allPromptsData.map((prompt) => (
+                    <div
+                      key={prompt.id}
+                      className="px-4 py-3 flex items-center gap-3 cursor-pointer hover:bg-[var(--surface-secondary)] border-b border-[var(--gray-100)] last:border-b-0"
+                      onClick={() => {
+                        setChatInput(`/${prompt.title.toLowerCase()} `);
+                        setShowPromptsInline(false);
+                        chatInputRef.current?.focus();
+                      }}
+                    >
+                      <div className="w-6 h-6 bg-[var(--apply-button-bg)] rounded flex items-center justify-center text-[var(--active-green)] text-xs">
+                        {prompt.icon === 'write' ? '✍️' : prompt.icon === 'translate' ? '🌐' : prompt.icon === 'summarize' ? '📝' : '📊'}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-[var(--text-default)]">{prompt.title}</div>
+                        <div className="text-xs text-[var(--subtle-text)]">{prompt.desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {showCollectionsInline && (
+                <div className="absolute bottom-full left-4 right-4 mb-2 bg-[var(--surface-color)] border border-[var(--border-color)] rounded-lg shadow-lg max-h-[200px] overflow-y-auto z-50">
+                  <div className="px-4 py-3 flex items-center gap-3 cursor-pointer hover:bg-gray-50">
+                    <div className="w-6 h-6 bg-[#EBFCF4] rounded flex items-center justify-center text-[#0B6333]">📚</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium text-[#4A4A4A]">Research Papers</div>
+                      <div className="text-xs text-[#5F5F5F]">25 items • Updated 1 week ago</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="relative bg-[var(--surface-color)] border-[1.5px] border-[var(--border-color)] rounded-xl transition-all focus-within:border-[var(--verification-blue)] focus-within:shadow-[0_0_0_3px_rgba(29,119,189,0.1)]">
+                <div className="flex items-end gap-2 px-3 py-[18px] bg-[var(--surface-color)]">
                   <textarea
                     ref={chatInputRef}
                     value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
+                    onChange={handleChatInputChange}
                     onKeyPress={handleKeyPress}
                     placeholder="Ask anything, type '/' for prompts, or '@' for collections"
-                    className="flex-1 border-none outline-none resize-none text-sm leading-relaxed max-h-[120px] min-h-[20px] font-sans text-[#4A4A4A] placeholder-[#5F5F5F] bg-transparent"
+                    className="flex-1 border-none outline-none resize-none text-sm leading-relaxed max-h-[120px] min-h-[20px] font-sans text-[var(--text-default)] placeholder-[var(--subtle-text)] bg-transparent"
                     rows={2}
                   />
                   <button
                     onClick={submitMessage}
                     className={cn(
-                      "w-8 h-8 bg-[#1D77BD] border-none rounded-full flex items-center justify-center cursor-pointer transition-all text-white",
+                      "w-8 h-8 bg-[var(--verification-blue)] border-none rounded-full flex items-center justify-center cursor-pointer transition-all text-white",
                       chatInput.trim() ? "opacity-100 scale-100" : "opacity-0 scale-80"
                     )}
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M14.006 3.162 4.157 6.703c-1.504.541-2.256.812-2.282 1.332-.025.52.697.864 2.14 1.55l3.991 1.897c.242.115.363.172.457.264.094.092.153.213.272.453l1.924 3.878c.698 1.408 1.047 2.112 1.564 2.082.516-.03.78-.771 1.307-2.252l3.477-9.753c.721-2.023 1.082-3.034.556-3.558-.525-.524-1.536-.16-3.557.566Z" />
                     </svg>
                   </button>
                 </div>
                 
-                <div className="bg-white border-t border-gray-200 px-3 py-2 rounded-b-xl flex items-center justify-between">
+                <div className="bg-[var(--surface-secondary)] border-t border-[var(--border-color)] px-3 py-2 rounded-b-xl flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <button className="bg-transparent border-none rounded-md px-2 py-1 text-xs cursor-pointer transition-all text-[#5F5F5F] hover:bg-[rgba(29,119,189,0.1)] hover:text-[#1D77BD] flex items-center gap-1.5">
+                    <button className="bg-transparent border-none rounded-md px-2 py-1 pr-3 text-xs cursor-pointer transition-all text-[var(--subtle-text)] hover:bg-[rgba(29,119,189,0.1)] hover:text-[var(--verification-blue)] flex items-center gap-1.5">
                       <span>{activeModel}</span>
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m6 9 6 6 6-6" />
                       </svg>
                     </button>
                   </div>
                   <div className="flex items-center gap-2">
-                    <button className="w-6 h-6 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[#5F5F5F] hover:bg-[rgba(29,119,189,0.1)] hover:text-[#1D77BD]">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    <button 
+                      onClick={() => setShowContextModal(true)}
+                      className="w-6 h-6 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[var(--subtle-text)] hover:bg-[rgba(29,119,189,0.1)] hover:text-[var(--verification-blue)]"
+                      title="Context"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 16 16">
+                        <path d="M8 4L8 13.3333" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                        <path d="M3.9872 2.19029C6.21466 2.6144 7.54224 3.50154 8.00016 4.01086C8.45809 3.50154 9.78566 2.6144 12.0131 2.19029C13.1416 1.97544 13.7058 1.86801 14.1863 2.27976C14.6668 2.69152 14.6668 3.36015 14.6668 4.69741V9.50331C14.6668 10.726 14.6668 11.3374 14.3584 11.7191C14.05 12.1008 13.3711 12.2301 12.0131 12.4886C10.8026 12.7191 9.85787 13.0864 9.17404 13.4554C8.50124 13.8185 8.16483 14 8.00016 14C7.8355 14 7.49908 13.8185 6.82628 13.4554C6.14246 13.0864 5.19772 12.7191 3.9872 12.4886C2.62926 12.2301 1.95029 12.1008 1.64189 11.7191C1.3335 11.3374 1.3335 10.726 1.3335 9.50331V4.69741C1.3335 3.36015 1.3335 2.69152 1.81402 2.27976C2.29454 1.86801 2.85876 1.97544 3.9872 2.19029Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </button>
-                    <button className="w-6 h-6 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[#5F5F5F] hover:bg-[rgba(29,119,189,0.1)] hover:text-[#1D77BD]">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    <button 
+                      className="w-6 h-6 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[var(--subtle-text)] hover:bg-[rgba(29,119,189,0.1)] hover:text-[var(--verification-blue)]"
+                      title="Upload File"
+                    >
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5" />
                       </svg>
                     </button>
-                    <button className="w-6 h-6 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[#5F5F5F] hover:bg-[rgba(29,119,189,0.1)] hover:text-[#1D77BD]">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    <button 
+                      className="w-6 h-6 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[var(--subtle-text)] hover:bg-[rgba(29,119,189,0.1)] hover:text-[var(--verification-blue)]"
+                      title="Screenshot"
+                    >
+                      <svg className="w-4 h-4" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M13.0702 1.55594C13.3154 1.77884 13.3335 2.15831 13.1106 2.40351L9.77734 6.07017C9.55444 6.31537 9.17497 6.33344 8.92977 6.11054C8.68458 5.88764 8.6665 5.50817 8.8894 5.26297L12.2227 1.59631C12.4456 1.35111 12.825 1.33304 13.0702 1.55594ZM2.92786 1.55761C3.17213 1.3337 3.55167 1.3502 3.77559 1.59447L11.083 9.56621C11.3682 9.45872 11.6772 9.39991 12 9.39991C13.4359 9.39991 14.6 10.564 14.6 11.9999C14.6 13.4358 13.4359 14.5999 12 14.5999C10.564 14.5999 9.39996 13.4358 9.39996 11.9999C9.39996 11.3246 9.65738 10.7095 10.0794 10.2473L8.09707 8.08468L5.92721 10.2547C6.34528 10.7161 6.59996 11.3282 6.59996 11.9999C6.59996 13.4358 5.4359 14.5999 3.99996 14.5999C2.56402 14.5999 1.39996 13.4358 1.39996 11.9999C1.39996 10.564 2.56402 9.39991 3.99996 9.39991C4.3232 9.39991 4.63266 9.45889 4.91816 9.56668L7.28543 7.19926L2.891 2.40534C2.66709 2.16107 2.68359 1.78153 2.92786 1.55761ZM3.99996 10.5999C3.22676 10.5999 2.59996 11.2267 2.59996 11.9999C2.59996 12.7731 3.22676 13.3999 3.99996 13.3999C4.77316 13.3999 5.39996 12.7731 5.39996 11.9999C5.39996 11.2267 4.77316 10.5999 3.99996 10.5999ZM12 10.5999C11.2268 10.5999 10.6 11.2267 10.6 11.9999C10.6 12.7731 11.2268 13.3999 12 13.3999C12.7732 13.3999 13.4 12.7731 13.4 11.9999C13.4 11.2267 12.7732 10.5999 12 10.5999Z" clipRule="evenodd" fillRule="evenodd" />
                       </svg>
                     </button>
                   </div>
@@ -316,52 +483,440 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
         </div>
 
         {/* Right Column */}
-        <div className="w-[50px] bg-gray-50 border-l border-gray-200 flex flex-col p-3 gap-2">
+        <div className="w-[50px] bg-[var(--surface-secondary)] border-l border-[var(--border-color)] flex flex-col p-3 gap-2">
           {/* Panel Controls */}
           <div className="flex flex-col gap-1 mb-4">
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="w-[34px] h-[34px] bg-transparent border-none rounded-md flex items-center justify-center cursor-pointer transition-all text-[#5F5F5F] hover:bg-gray-200 hover:text-[#4A4A4A]"
+              className="w-[34px] h-[34px] bg-transparent border-none rounded-md flex items-center justify-center cursor-pointer transition-all text-[var(--subtle-text)] hover:bg-[var(--gray-200)] hover:text-[var(--text-default)]"
+              title="Expand"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 10 10">
+                <path fillRule="evenodd" clipRule="evenodd" d="M8.32646 1.62943C8.2758 1.62529 8.2062 1.625 8.08333 1.625H5.41667C5.20956 1.625 5.04167 1.45711 5.04167 1.25C5.04167 1.04289 5.20956 0.875002 5.41667 0.875002L8.09573 0.875001C8.2017 0.87499 8.30255 0.87498 8.38754 0.881924C8.48021 0.889495 8.5865 0.907156 8.69274 0.961288C8.84171 1.03719 8.96282 1.1583 9.03872 1.30726C9.09285 1.4135 9.11051 1.5198 9.11808 1.61247C9.12502 1.69745 9.12501 1.7983 9.125 1.90427L9.125 4.58333C9.125 4.79044 8.95711 4.95833 8.75 4.95833C8.54289 4.95833 8.375 4.79044 8.375 4.58333V1.91667C8.375 1.7938 8.37471 1.72421 8.37057 1.67354C8.36926 1.65755 8.36781 1.64748 8.36682 1.64187C8.36437 1.63856 8.36144 1.63564 8.35814 1.63319C8.35252 1.6322 8.34246 1.63074 8.32646 1.62943ZM1.25 5.04167C1.45711 5.04167 1.625 5.20956 1.625 5.41667L1.625 8.08333C1.625 8.2062 1.62529 8.2758 1.62943 8.32646C1.63074 8.34246 1.6322 8.35252 1.63319 8.35813C1.63564 8.36144 1.63856 8.36437 1.64187 8.36682C1.64748 8.36781 1.65755 8.36926 1.67354 8.37057C1.72421 8.37471 1.7938 8.375 1.91667 8.375H4.58333C4.79044 8.375 4.95833 8.54289 4.95833 8.75C4.95833 8.95711 4.79044 9.125 4.58333 9.125L1.90427 9.125C1.7983 9.12501 1.69745 9.12502 1.61247 9.11808C1.5198 9.11051 1.4135 9.09285 1.30726 9.03872C1.1583 8.96281 1.03719 8.8417 0.961288 8.69274C0.907156 8.5865 0.889495 8.48021 0.881924 8.38754C0.87498 8.30255 0.87499 8.2017 0.875001 8.09573L0.875002 5.41667C0.875002 5.20956 1.0429 5.04167 1.25 5.04167Z" fill="currentColor"/>
               </svg>
             </button>
             <button
-              onClick={() => setShowChatHistory(!showChatHistory)}
-              className="w-[34px] h-[34px] bg-transparent border-none rounded-md flex items-center justify-center cursor-pointer transition-all text-[#5F5F5F] hover:bg-gray-200 hover:text-[#4A4A4A]"
+              onClick={onClose}
+              className="w-[34px] h-[34px] bg-transparent border-none rounded-md flex items-center justify-center cursor-pointer transition-all text-[var(--subtle-text)] hover:bg-[var(--gray-200)] hover:text-[var(--text-default)]"
+              title="Close"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 18 18">
+                <path fillRule="evenodd" clipRule="evenodd" d="M4.51025 3.51594C4.2386 3.23845 3.79343 3.23372 3.51594 3.50537C3.23845 3.77702 3.23372 4.22219 3.50537 4.49968L8.00075 9.09168L3.5155 13.4902C3.23825 13.7621 3.2339 14.2072 3.50579 14.4845C3.77769 14.7617 4.22286 14.7661 4.50012 14.4942L9 10.0814L13.4999 14.4942C13.7771 14.7661 14.2223 14.7617 14.4942 14.4845C14.7661 14.2072 14.7617 13.7621 14.4845 13.4902L9.99924 9.09168L14.4946 4.49968C14.7663 4.22219 14.7615 3.77702 14.4841 3.50537C14.2066 3.23372 13.7614 3.23845 13.4897 3.51594L9 8.10217L4.51025 3.51594Z" fill="currentColor"/>
               </svg>
             </button>
           </div>
 
           {/* Panel Actions */}
           <div className="flex flex-col gap-3 flex-1">
-            <button className="w-[34px] h-[34px] bg-transparent border-none rounded-lg flex items-center justify-center cursor-pointer transition-all text-[#5F5F5F] hover:bg-[#EBFCF4] hover:text-[#0B6333]">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </button>
-            <button className="w-[34px] h-[34px] bg-transparent border-none rounded-lg flex items-center justify-center cursor-pointer transition-all text-[#5F5F5F] hover:bg-[#EBFCF4] hover:text-[#0B6333]">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
-            </button>
-            <button className="w-[34px] h-[34px] bg-transparent border-none rounded-lg flex items-center justify-center cursor-pointer transition-all text-[#5F5F5F] hover:bg-[#EBFCF4] hover:text-[#0B6333]">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-            </button>
-            <button className="w-[34px] h-[34px] bg-transparent border-none rounded-lg flex items-center justify-center cursor-pointer transition-all text-[#5F5F5F] hover:bg-[#EBFCF4] hover:text-[#0B6333]">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-            </button>
+            {panelActionsData.map((action) => (
+              <button
+                key={action.id}
+                onClick={() => {
+                  setActivePanelAction(action.id);
+                  if (action.id === 'historyBtn') {
+                    setShowChatHistory(!showChatHistory);
+                  } else if (action.id === 'newChatBtn') {
+                    setMessages([{ type: 'ai', text: "Hello! How can I assist you today? I'm here to help with writing, research, analysis, and more." }]);
+                    setShowChatHistory(false);
+                  } else if (action.id === 'collectionsBtn') {
+                    setShowCollectionsModal(true);
+                    setShowChatHistory(false);
+                  } else {
+                    setShowChatHistory(false);
+                  }
+                }}
+                className={cn(
+                  "w-[34px] h-[34px] bg-transparent border-none rounded-lg flex items-center justify-center cursor-pointer transition-all text-[var(--subtle-text)] hover:bg-[var(--apply-button-bg)] hover:text-[var(--active-green)]",
+                  activePanelAction === action.id && "bg-[var(--apply-button-bg)] text-[var(--active-green)]"
+                )}
+                title={action.title}
+              >
+                {action.icon === 'chat' && (
+                  <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M17.063 2.931A9.99 9.99 0 0 0 .123 8.444a9.883 9.883 0 0 0 1.195 6.49L.085 19.009a.729.729 0 0 0 .9.913l4.166-1.194a9.856 9.856 0 0 0 6.448 1.142 9.989 9.989 0 0 0 8.12-12.214 9.991 9.991 0 0 0-2.656-4.725Zm1.57 8.499a8.784 8.784 0 0 1-7.227 7.2 8.664 8.664 0 0 1-5.856-1.112l-.231-.139-3.762 1.078 1.118-3.691-.145-.238a8.655 8.655 0 0 1-1.172-5.893 8.751 8.751 0 1 1 17.275 2.8v-.005Z" />
+                  </svg>
+                )}
+                {action.icon === 'newChat' && (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 20 20">
+                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M7.5 10H12.5" />
+                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 7.5V12.5" />
+                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M2.5 4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H15.8333C16.2754 2.5 16.6993 2.67559 17.0118 2.98816C17.3244 3.30072 17.5 3.72464 17.5 4.16667V15.8333C17.5 16.2754 17.3244 16.6993 17.0118 17.0118C16.6993 17.3244 16.2754 17.5 15.8333 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667Z" />
+                  </svg>
+                )}
+                {action.icon === 'history' && (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 16 16">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M8 2.625C5.03147 2.625 2.625 5.03147 2.625 8C2.625 10.9685 5.03147 13.375 8 13.375C10.9685 13.375 13.375 10.9685 13.375 8C13.375 5.03147 10.9685 2.625 8 2.625ZM1.375 8C1.375 4.34111 4.34111 1.375 8 1.375C11.6589 1.375 14.625 4.34111 14.625 8C14.625 11.6589 11.6589 14.625 8 14.625C4.34111 14.625 1.375 11.6589 1.375 8ZM8 3.775C8.34518 3.775 8.625 4.05482 8.625 4.4V7.61373L10.6795 8.64098C10.9882 8.79535 11.1134 9.17077 10.959 9.47951C10.8046 9.78825 10.4292 9.91339 10.1205 9.75902L7.72049 8.55902C7.50875 8.45315 7.375 8.23673 7.375 8V4.4C7.375 4.05482 7.65482 3.775 8 3.775Z" fill="currentColor" />
+                  </svg>
+                )}
+                {action.icon === 'prompt' && (
+                  <svg className="w-4 h-4" strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    <path d="M8 12a2 2 0 0 0 2-2V8H8" />
+                    <path d="M14 12a2 2 0 0 0 2-2V8h-2" />
+                  </svg>
+                )}
+                {action.icon === 'collections' && (
+                  <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+                    <path fill="currentColor" d="M3.938 3.25c0-.345.28-.625.624-.625h6.875c.346 0 .626.28.626.625v9.985a.125.125 0 0 1-.18.113l-3.278-1.605a1.375 1.375 0 0 0-1.21 0l-3.278 1.605a.125.125 0 0 1-.18-.113V3.25Zm.624-1.875c-1.035 0-1.875.84-1.875 1.875v9.985a1.375 1.375 0 0 0 1.98 1.235l3.278-1.604a.125.125 0 0 1 .11 0l3.278 1.604a1.375 1.375 0 0 0 1.98-1.235V3.25c0-1.036-.84-1.875-1.876-1.875H4.564Zm3.123 4.933.345-.84.353.845c.063.15.178.274.323.347l.903.46-.898.447a.687.687 0 0 0-.329.352l-.352.85-.344-.845a.688.688 0 0 0-.333-.358L6.45 7.12l.91-.458a.688.688 0 0 0 .326-.354Zm.974-2.247a.688.688 0 0 0-1.27.004L6.706 5.73l-1.548.78a.687.687 0 0 0 .006 1.23l1.542.761.682 1.679a.688.688 0 0 0 1.272.004l.699-1.683 1.53-.762a.687.687 0 0 0 .005-1.228l-1.535-.78-.7-1.67Z" />
+                  </svg>
+                )}
+              </button>
+            ))}
           </div>
         </div>
       </div>
+
+      {/* Chat History Panel */}
+      {showChatHistory && (
+        <div className={cn(
+          "fixed top-[64px] bottom-0 right-[450px] w-[400px] bg-[var(--surface-color)] shadow-[-4px_0_20px_rgba(0,0,0,0.1)] transition-transform duration-300 ease-in-out z-[998] flex flex-col",
+          isExpanded && "right-[580px]",
+          showChatHistory ? "translate-x-0" : "translate-x-full"
+        )}>
+          {/* Chat History Header */}
+          <div className="p-5 border-b border-[var(--border-color)] flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-[var(--bold-text)] font-inter">Chat History</h2>
+            <button
+              onClick={() => setShowChatHistory(false)}
+              className="bg-transparent border-none text-[var(--subtle-text)] cursor-pointer p-1 rounded transition-all hover:bg-[var(--gray-100)] hover:text-[var(--text-default)]"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 18 18">
+                <path fillRule="evenodd" clipRule="evenodd" d="M4.51025 3.51594C4.2386 3.23845 3.79343 3.23372 3.51594 3.50537C3.23845 3.77702 3.23372 4.22219 3.50537 4.49968L8.00075 9.09168L3.5155 13.4902C3.23825 13.7621 3.2339 14.2072 3.50579 14.4845C3.77769 14.7617 4.22286 14.7661 4.50012 14.4942L9 10.0814L13.4999 14.4942C13.7771 14.7661 14.2223 14.7617 14.4942 14.4845C14.7661 14.2072 14.7617 13.7621 14.4845 13.4902L9.99924 9.09168L14.4946 4.49968C14.7663 4.22219 14.7615 3.77702 14.4841 3.50537C14.2066 3.23372 13.7614 3.23845 13.4897 3.51594L9 8.10217L4.51025 3.51594Z" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
+
+          {/* History Search */}
+          <div className="p-5 border-b border-[var(--border-color)]">
+            <input
+              type="text"
+              placeholder="Search conversations..."
+              value={historySearch}
+              onChange={(e) => setHistorySearch(e.target.value)}
+              className="w-full px-3 py-2.5 border border-[var(--border-color)] rounded-md text-sm text-[var(--text-default)] bg-[var(--surface-color)] focus:outline-none focus:border-[var(--verification-blue)] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)] font-inter"
+            />
+          </div>
+
+          {/* History List */}
+          <div className="flex-1 overflow-y-auto p-0">
+            {historyData
+              .filter(item => 
+                historySearch === '' || 
+                item.title.toLowerCase().includes(historySearch.toLowerCase()) ||
+                item.preview.toLowerCase().includes(historySearch.toLowerCase())
+              )
+              .map((item) => (
+                <div
+                  key={item.id}
+                    className={cn(
+                    "px-5 py-3 cursor-pointer transition-all relative border-b border-[var(--gray-100)] hover:bg-[var(--surface-secondary)] group",
+                    item.current && "bg-[var(--apply-button-bg)] border-l-[3px] border-l-[var(--active-green)]"
+                  )}
+                >
+                  <div className="flex items-center gap-2.5 mb-1">
+                    <div className="text-sm font-medium text-[var(--text-default)] font-inter whitespace-nowrap overflow-hidden text-ellipsis flex-1 min-w-0">
+                      {item.title}
+                    </div>
+                    <button
+                      className="w-5 h-5 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[var(--subtle-text)] opacity-0 group-hover:opacity-100 hover:bg-[var(--gray-200)] hover:text-[var(--text-default)]"
+                      title="Edit"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M13.2929 4.29291C15.0641 2.52167 17.9359 2.52167 19.7071 4.2929C21.4784 6.06414 21.4784 8.93588 19.7071 10.7071L18.7073 11.7069L11.6135 18.8007C10.8766 19.5376 9.92793 20.0258 8.89999 20.1971L4.16441 20.9864C3.84585 21.0395 3.52127 20.9355 3.29291 20.7071C3.06454 20.4788 2.96053 20.1542 3.01362 19.8356L3.80288 15.1C3.9742 14.0721 4.46243 13.1234 5.19932 12.3865L13.2929 4.29291ZM13 7.41422L6.61353 13.8007C6.1714 14.2428 5.87846 14.8121 5.77567 15.4288L5.21656 18.7835L8.57119 18.2244C9.18795 18.1216 9.75719 17.8286 10.1993 17.3865L16.5858 11L13 7.41422ZM18 9.5858L14.4142 6.00001L14.7071 5.70712C15.6973 4.71693 17.3027 4.71693 18.2929 5.70712C19.2831 6.69731 19.2831 8.30272 18.2929 9.29291L18 9.5858Z" clipRule="evenodd" fillRule="evenodd" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="text-xs text-[var(--subtle-text)] font-inter leading-[1.3] whitespace-nowrap overflow-hidden text-ellipsis mb-1">
+                    {item.preview}
+                  </div>
+                  <div className="flex items-center justify-between gap-2.5">
+                    <div className="text-xs text-[var(--subtle-text)] font-inter whitespace-nowrap overflow-hidden text-ellipsis flex-1 min-w-0">
+                      {item.meta}
+                    </div>
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        className="w-5 h-5 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[var(--subtle-text)] hover:bg-[var(--gray-200)] hover:text-[var(--text-default)]"
+                        title="View Files"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
+                          <g>
+                            <path fillRule="evenodd" clipRule="evenodd" d="M3.09998 5.0001C3.09998 2.84619 4.84607 1.1001 6.99998 1.1001H17C19.1539 1.1001 20.9 2.84619 20.9 5.0001V8.0001C20.9 8.49715 20.497 8.9001 20 8.9001C19.5029 8.9001 19.1 8.49715 19.1 8.0001V5.0001C19.1 3.8403 18.1598 2.9001 17 2.9001H6.99998C5.84018 2.9001 4.89998 3.8403 4.89998 5.0001V19.0001C4.89998 20.1599 5.84018 21.1001 6.99998 21.1001H11C11.497 21.1001 11.9 21.503 11.9 22.0001C11.9 22.4972 11.497 22.9001 11 22.9001H6.99998C4.84606 22.9001 3.09998 21.154 3.09998 19.0001V5.0001ZM6.90002 7.53367C6.90002 7.03661 7.30297 6.63367 7.80002 6.63367H16.2684C16.7654 6.63367 17.1684 7.03661 17.1684 7.53367C17.1684 8.03072 16.7654 8.43367 16.2684 8.43367H7.80002C7.30297 8.43367 6.90002 8.03072 6.90002 7.53367ZM19.5 12.9001C19.1686 12.9001 18.9 13.1687 18.9 13.5001V19.0001C18.9 19.4972 18.497 19.9001 18 19.9001C17.5029 19.9001 17.1 19.4972 17.1 19.0001V13.5001C17.1 12.1746 18.1745 11.1001 19.5 11.1001C20.8255 11.1001 21.9 12.1746 21.9 13.5001V19.0001C21.9 21.154 20.1539 22.9001 18 22.9001C15.8461 22.9001 14.1 21.154 14.1 19.0001V15.0001C14.1 14.503 14.5029 14.1001 15 14.1001C15.497 14.1001 15.9 14.503 15.9 15.0001V19.0001C15.9 20.1599 16.8402 21.1001 18 21.1001C19.1598 21.1001 20.1 20.1599 20.1 19.0001V13.5001C20.1 13.1687 19.8313 12.9001 19.5 12.9001ZM6.90002 12.0325C6.90002 11.5354 7.30297 11.1325 7.80002 11.1325H12.2684C12.7654 11.1325 13.1684 11.5354 13.1684 12.0325C13.1684 12.5295 12.7654 12.9325 12.2684 12.9325H7.80002C7.30297 12.9325 6.90002 12.5295 6.90002 12.0325Z" fill="currentColor" />
+                          </g>
+                        </svg>
+                      </button>
+                      <button
+                        className="w-5 h-5 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[#5F5F5F] hover:bg-[#DFDDDB] hover:text-[#4A4A4A]"
+                        title="Delete"
+                      >
+                        <svg className="w-3.5 h-3.5" viewBox="0 0 16 16">
+                          <g>
+                            <path fillRule="evenodd" clipRule="evenodd" d="M7.44306 0.733399H8.55693C8.91018 0.733389 9.21096 0.733381 9.45792 0.753558C9.71736 0.774755 9.96975 0.821177 10.211 0.94412C10.5748 1.12948 10.8706 1.42524 11.0559 1.78902C11.1789 2.03031 11.2253 2.2827 11.2465 2.54214C11.2659 2.779 11.2666 3.06538 11.2667 3.40007H14C14.3314 3.40007 14.6 3.6687 14.6 4.00007C14.6 4.33144 14.3314 4.60007 14 4.60007H13.2667V11.4919C13.2667 12.0306 13.2667 12.4711 13.2374 12.8292C13.2071 13.1998 13.1426 13.5345 12.9833 13.8471C12.734 14.3363 12.3363 14.7341 11.847 14.9833C11.5344 15.1426 11.1997 15.2072 10.8291 15.2375C10.4711 15.2667 10.0305 15.2667 9.4918 15.2667H6.50819C5.96949 15.2667 5.52892 15.2667 5.17087 15.2375C4.80026 15.2072 4.46554 15.1426 4.15295 14.9833C3.66373 14.7341 3.26598 14.3363 3.01671 13.8471C2.85744 13.5345 2.79285 13.1998 2.76257 12.8292C2.73331 12.4711 2.73332 12.0306 2.73333 11.4919L2.73333 4.60007H1.99999C1.66862 4.60007 1.39999 4.33144 1.39999 4.00007C1.39999 3.6687 1.66862 3.40007 1.99999 3.40007H4.73333C4.73335 3.06538 4.73413 2.779 4.75349 2.54214C4.77468 2.2827 4.82111 2.03031 4.94405 1.78902C5.1294 1.42524 5.42517 1.12948 5.78895 0.94412C6.03023 0.821177 6.28263 0.774755 6.54207 0.753558C6.78903 0.733381 7.08981 0.733389 7.44306 0.733399ZM3.93333 4.60007V11.4667C3.93333 12.0367 3.93379 12.4281 3.95858 12.7315C3.9828 13.0279 4.0272 13.1871 4.08592 13.3023C4.22014 13.5657 4.43431 13.7799 4.69774 13.9141C4.81297 13.9729 4.97219 14.0173 5.26859 14.0415C5.57199 14.0663 5.96337 14.0667 6.53333 14.0667H9.46666C10.0366 14.0667 10.428 14.0663 10.7314 14.0415C11.0278 14.0173 11.187 13.9729 11.3022 13.9141C11.5657 13.7799 11.7798 13.5657 11.9141 13.3023C11.9728 13.1871 12.0172 13.0279 12.0414 12.7315C12.0662 12.4281 12.0667 12.0367 12.0667 11.4667V4.60007H3.93333ZM10.0667 3.40007H5.93334C5.93344 3.05392 5.93472 2.82072 5.9495 2.63986C5.96463 2.45463 5.99087 2.37773 6.01326 2.33381C6.08356 2.19582 6.19575 2.08363 6.33373 2.01333C6.37766 1.99095 6.45456 1.96471 6.63979 1.94957C6.83203 1.93387 7.08339 1.9334 7.46666 1.9334H8.53333C8.9166 1.9334 9.16796 1.93387 9.3602 1.94957C9.54543 1.96471 9.62233 1.99095 9.66625 2.01333C9.80424 2.08363 9.91642 2.19582 9.98673 2.33381C10.0091 2.37773 10.0354 2.45463 10.0505 2.63986C10.0653 2.82072 10.0666 3.05392 10.0667 3.40007Z" fill="currentColor" />
+                          </g>
+                        </svg>
+                      </button>
+                      <button
+                        className="w-5 h-5 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[#5F5F5F] hover:bg-[#DFDDDB] hover:text-[#4A4A4A]"
+                        title="Favorite"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
+                          <g>
+                            <path fillRule="evenodd" clipRule="evenodd" d="M11.3975 1.86603C11.7786 1.68431 12.2214 1.68431 12.6025 1.86603C12.9281 2.02124 13.11 2.29196 13.2061 2.44885C13.3051 2.61057 13.4074 2.81788 13.5098 3.02548L15.6878 7.43793L20.5597 8.15003C20.7887 8.18346 21.0174 8.21685 21.2017 8.26117C21.3806 8.30418 21.6941 8.39381 21.9421 8.65556C22.2325 8.96203 22.369 9.38316 22.3137 9.8017C22.2665 10.1592 22.0652 10.4157 21.9457 10.5555C21.8224 10.6995 21.6568 10.8608 21.491 11.0222L17.9671 14.4545L18.7986 19.3026C18.8378 19.5308 18.8769 19.7587 18.8918 19.9478C18.9064 20.1312 18.9183 20.4572 18.7461 20.7742C18.5446 21.1452 18.1863 21.4055 17.7711 21.4825C17.4164 21.5482 17.11 21.4361 16.9401 21.3656C16.7649 21.2929 16.5603 21.1852 16.3554 21.0774L12 18.787L7.64464 21.0774C7.4397 21.1852 7.23506 21.2929 7.05988 21.3656C6.88995 21.4361 6.58358 21.5482 6.22891 21.4825C5.8137 21.4055 5.45541 21.1452 5.25385 20.7742C5.08169 20.4572 5.09363 20.1312 5.10815 19.9478C5.12312 19.7587 5.16225 19.5308 5.20143 19.3026L6.03293 14.4545L2.53258 11.0452C2.5247 11.0375 2.51682 11.0299 2.50894 11.0222C2.34315 10.8608 2.17757 10.6995 2.05434 10.5555C1.93475 10.4157 1.73346 10.1592 1.68626 9.8017C1.63098 9.38316 1.76753 8.96203 2.05788 8.65556C2.30586 8.39381 2.6194 8.30418 2.79825 8.26117C2.98256 8.21685 3.21125 8.18346 3.44023 8.15003C3.4511 8.14844 3.46198 8.14686 3.47286 8.14527L8.31216 7.43793L10.4756 3.05505C10.4805 3.0452 10.4853 3.03534 10.4902 3.02548C10.5926 2.81788 10.6949 2.61057 10.7939 2.44885C10.89 2.29196 11.0719 2.02124 11.3975 1.86603ZM12 4.03344L9.90299 8.28174C9.8989 8.29003 9.89436 8.29941 9.88935 8.30975C9.84084 8.40991 9.74883 8.59986 9.60351 8.75627C9.48024 8.88894 9.33241 8.99643 9.1682 9.0728C8.97461 9.16282 8.76554 9.19179 8.65531 9.20706C8.64393 9.20864 8.63361 9.21007 8.62446 9.21141L3.93357 9.89705L7.32653 13.2018C7.33316 13.2083 7.34069 13.2155 7.34899 13.2234C7.42941 13.3006 7.58192 13.447 7.68592 13.6337C7.77413 13.7922 7.83073 13.9662 7.85256 14.1463C7.87829 14.3585 7.84101 14.5666 7.82135 14.6763C7.81932 14.6876 7.81748 14.6979 7.81592 14.707L7.01536 19.3746L11.2087 17.1694C11.2169 17.1651 11.2261 17.1601 11.2363 17.1547C11.3345 17.1021 11.5208 17.0023 11.7306 16.9612C11.9085 16.9263 12.0915 16.9263 12.2694 16.9612C12.4792 17.0023 12.6655 17.1021 12.7637 17.1547C12.7739 17.1601 12.7831 17.1651 12.7913 17.1694L16.9846 19.3746L16.1841 14.707C16.1825 14.6979 16.1807 14.6876 16.1786 14.6763C16.159 14.5666 16.1217 14.3585 16.1474 14.1463C16.1693 13.9662 16.2259 13.7922 16.3141 13.6337C16.4181 13.4469 16.5706 13.3006 16.651 13.2234C16.6593 13.2155 16.6668 13.2083 16.6735 13.2018L20.0664 9.89705L15.3755 9.21141C15.3664 9.21007 15.3561 9.20864 15.3447 9.20707C15.2345 9.19179 15.0254 9.16282 14.8318 9.0728C14.6676 8.99643 14.5198 8.88894 14.3965 8.75627C14.2512 8.59986 14.1592 8.4099 14.1106 8.30975C14.1056 8.29941 14.1011 8.29003 14.097 8.28174L12 4.03344Z" fill="currentColor" />
+                          </g>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
+
+      {/* Context Modal */}
+      {showContextModal && (
+        <Portal containerId="ai-context-modal-portal">
+          <div 
+            className="fixed inset-0 flex items-center justify-center z-[1500] pointer-events-none"
+            onClick={() => setShowContextModal(false)}
+          >
+            <div 
+              className="bg-[var(--surface-color)] rounded-xl w-full max-w-[400px] max-h-[80vh] overflow-hidden flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.15)] pointer-events-auto"
+              style={{
+                animation: 'modalSlideIn 0.3s ease-out'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+            <div className="p-5 pb-4 border-b border-[var(--border-color)] relative flex-shrink-0">
+              <h2 className="text-base font-semibold text-[var(--bold-text)] font-inter">Context</h2>
+              <button
+                onClick={() => setShowContextModal(false)}
+                className="absolute top-4 right-4 bg-transparent border-none text-[var(--subtle-text)] cursor-pointer p-1 rounded transition-all hover:bg-[var(--gray-100)] hover:text-[var(--text-default)] w-7 h-7 flex items-center justify-center"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 18 18">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M4.51025 3.51594C4.2386 3.23845 3.79343 3.23372 3.51594 3.50537C3.23845 3.77702 3.23372 4.22219 3.50537 4.49968L8.00075 9.09168L3.5155 13.4902C3.23825 13.7621 3.2339 14.2072 3.50579 14.4845C3.77769 14.7617 4.22286 14.7661 4.50012 14.4942L9 10.0814L13.4999 14.4942C13.7771 14.7661 14.2223 14.7617 14.4942 14.4845C14.7661 14.2072 14.7617 13.7621 14.4845 13.4902L9.99924 9.09168L14.4946 4.49968C14.7663 4.22219 14.7615 3.77702 14.4841 3.50537C14.2066 3.23372 13.7614 3.23845 13.4897 3.51594L9 8.10217L4.51025 3.51594Z" fill="currentColor"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-5">
+              <div className="flex border-b border-[var(--border-color)] mb-4">
+                <button
+                  onClick={() => setContextTab('tabs')}
+                  className={cn(
+                    "flex-1 px-4 py-3 bg-transparent border-none text-sm font-medium cursor-pointer transition-all text-[var(--subtle-text)] border-b-2 border-transparent font-inter",
+                    contextTab === 'tabs' && "text-[var(--verification-blue)] border-b-[var(--verification-blue)]"
+                  )}
+                >
+                  Tabs
+                </button>
+                <button
+                  onClick={() => setContextTab('collections')}
+                  className={cn(
+                    "flex-1 px-4 py-3 bg-transparent border-none text-sm font-medium cursor-pointer transition-all text-[var(--subtle-text)] border-b-2 border-transparent font-inter",
+                    contextTab === 'collections' && "text-[var(--verification-blue)] border-b-[var(--verification-blue)]"
+                  )}
+                >
+                  Collections
+                </button>
+              </div>
+              
+              {contextTab === 'tabs' && (
+                <div className="flex flex-col gap-2">
+                  {[
+                    { id: 'monica', title: 'Chat - Monica', url: 'monica.im', icon: '🤖', current: true },
+                    { id: 'google', title: 'Google', url: 'https://www.google.com/', icon: 'G', current: false },
+                    { id: 'llm-training', title: 'LLM Training: A Step-by-Step Guide', url: 'https://example.com/llm-training', icon: '📚', current: false }
+                  ].map((tab) => (
+                    <div
+                      key={tab.id}
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-3 border border-[var(--border-color)] rounded-lg cursor-pointer transition-all",
+                        tab.current && "border-l-[3px] border-l-[var(--verification-blue)] bg-[#f8f9ff]",
+                        selectedContexts.includes(tab.id) && "bg-[var(--apply-button-bg)] border-[var(--active-green)]"
+                      )}
+                      onClick={() => {
+                        if (selectedContexts.includes(tab.id)) {
+                          setSelectedContexts(prev => prev.filter(id => id !== tab.id));
+                        } else {
+                          setSelectedContexts(prev => [...prev, tab.id]);
+                        }
+                      }}
+                    >
+                      <div className={cn(
+                        "w-4 h-4 border-2 border-[var(--border-color)] rounded flex items-center justify-center transition-all flex-shrink-0",
+                        selectedContexts.includes(tab.id) && "bg-[var(--verification-blue)] border-[var(--verification-blue)]"
+                      )}>
+                        {selectedContexts.includes(tab.id) && (
+                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </div>
+                      <div className="w-6 h-6 bg-[var(--gray-100)] rounded flex items-center justify-center text-xs flex-shrink-0">
+                        {tab.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-[var(--text-default)] font-inter whitespace-nowrap overflow-hidden text-ellipsis">{tab.title}</div>
+                        <div className="text-xs text-[var(--subtle-text)] font-inter whitespace-nowrap overflow-hidden text-ellipsis">{tab.url}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {contextTab === 'collections' && (
+                <div className="flex flex-col gap-2">
+                  {[
+                    { id: 'research', name: 'Research Papers', count: 25, updated: '1 week ago', icon: '📚' },
+                    { id: 'design', name: 'Design Resources', count: 87, updated: '3 days ago', icon: '🎨' },
+                    { id: 'learning', name: 'Learning Materials', count: 142, updated: '6 hours ago', icon: '📖' }
+                  ].map((collection) => (
+                    <div
+                      key={collection.id}
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-3 border border-[var(--border-color)] rounded-lg cursor-pointer transition-all",
+                        selectedContexts.includes(collection.id) && "bg-[var(--apply-button-bg)] border-[var(--active-green)]"
+                      )}
+                      onClick={() => {
+                        if (selectedContexts.includes(collection.id)) {
+                          setSelectedContexts(prev => prev.filter(id => id !== collection.id));
+                        } else {
+                          setSelectedContexts(prev => [...prev, collection.id]);
+                        }
+                      }}
+                    >
+                      <div className={cn(
+                        "w-4 h-4 border-2 border-[var(--border-color)] rounded flex items-center justify-center transition-all flex-shrink-0",
+                        selectedContexts.includes(collection.id) && "bg-[var(--verification-blue)] border-[var(--verification-blue)]"
+                      )}>
+                        {selectedContexts.includes(collection.id) && (
+                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </div>
+                      <div className="w-8 h-8 bg-[var(--apply-button-bg)] rounded-lg flex items-center justify-center text-base flex-shrink-0">
+                        {collection.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-[var(--text-default)] font-inter whitespace-nowrap overflow-hidden text-ellipsis">{collection.name}</div>
+                        <div className="text-xs text-[var(--subtle-text)] font-inter flex items-center gap-1.5">
+                          <span>{collection.count} items</span>
+                          <span className="w-0.5 h-0.5 bg-[var(--subtle-text)] rounded-full" />
+                          <span>Updated {collection.updated}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            <div className="p-5 pt-4 border-t border-[var(--border-color)] flex gap-3 justify-end flex-shrink-0">
+              <button
+                onClick={() => setShowContextModal(false)}
+                className="px-5 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-all bg-transparent text-[var(--text-default)] border border-[var(--border-color)] hover:bg-[var(--apply-button-bg)] hover:border-[var(--active-green)] font-inter"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  // Apply selected contexts
+                  selectedContexts.forEach(id => {
+                    const tab = [
+                      { id: 'monica', title: 'Chat - Monica', url: 'monica.im', icon: '🤖' },
+                      { id: 'google', title: 'Google', url: 'https://www.google.com/', icon: 'G' },
+                      { id: 'llm-training', title: 'LLM Training: A Step-by-Step Guide', url: 'https://example.com/llm-training', icon: '📚' }
+                    ].find(t => t.id === id);
+                    const collection = [
+                      { id: 'research', name: 'Research Papers', count: 25, updated: '1 week ago', icon: '📚' },
+                      { id: 'design', name: 'Design Resources', count: 87, updated: '3 days ago', icon: '🎨' },
+                      { id: 'learning', name: 'Learning Materials', count: 142, updated: '6 hours ago', icon: '📖' }
+                    ].find(c => c.id === id);
+                    
+                    if (tab) {
+                      addContextPill(tab.title, 'tab', tab.id);
+                    } else if (collection) {
+                      addContextPill(collection.name, 'collection', collection.id);
+                    }
+                  });
+                  setShowContextModal(false);
+                  setSelectedContexts([]);
+                }}
+                className="px-5 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-all bg-[var(--verification-blue)] text-white hover:bg-[#1565c0] font-inter"
+              >
+                Apply
+              </button>
+            </div>
+            </div>
+          </div>
+        </Portal>
+      )}
+
+      {/* Collections Modal */}
+      {showCollectionsModal && (
+        <Portal containerId="ai-collections-modal-portal">
+          <div 
+            className="fixed inset-0 flex items-center justify-center z-[1500] pointer-events-none"
+            onClick={() => setShowCollectionsModal(false)}
+          >
+            <div 
+              className="bg-[var(--surface-color)] rounded-xl w-full max-w-[400px] max-h-[80vh] overflow-hidden flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.15)] pointer-events-auto"
+              style={{
+                animation: 'modalSlideIn 0.3s ease-out'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+            <div className="p-5 pb-4 border-b border-[var(--border-color)] relative flex-shrink-0">
+              <h2 className="text-base font-semibold text-[var(--bold-text)] font-inter">Collections</h2>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowCollectionsModal(false);
+                }}
+                className="absolute top-4 right-4 bg-transparent border-none text-[var(--subtle-text)] cursor-pointer p-1 rounded transition-all hover:bg-[var(--gray-100)] hover:text-[var(--text-default)] w-7 h-7 flex items-center justify-center"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 18 18">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M4.51025 3.51594C4.2386 3.23845 3.79343 3.23372 3.51594 3.50537C3.23845 3.77702 3.23372 4.22219 3.50537 4.49968L8.00075 9.09168L3.5155 13.4902C3.23825 13.7621 3.2339 14.2072 3.50579 14.4845C3.77769 14.7617 4.22286 14.7661 4.50012 14.4942L9 10.0814L13.4999 14.4942C13.7771 14.7661 14.2223 14.7617 14.4942 14.4845C14.7661 14.2072 14.7617 13.7621 14.4845 13.4902L9.99924 9.09168L14.4946 4.49968C14.7663 4.22219 14.7615 3.77702 14.4841 3.50537C14.2066 3.23372 13.7614 3.23845 13.4897 3.51594L9 8.10217L4.51025 3.51594Z" fill="currentColor"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-5">
+              <div className="flex flex-col gap-2">
+                {[
+                  { id: 'research', name: 'Research Papers', count: 25, updated: '1 week ago', icon: '📚' },
+                  { id: 'design', name: 'Design Resources', count: 87, updated: '3 days ago', icon: '🎨' },
+                  { id: 'learning', name: 'Learning Materials', count: 142, updated: '6 hours ago', icon: '📖' },
+                  { id: 'projects', name: 'Project Ideas', count: 33, updated: '2 weeks ago', icon: '💡' }
+                ].map((collection) => (
+                  <div
+                    key={collection.id}
+                    className="flex items-center gap-3 px-3 py-3 border border-[var(--border-color)] rounded-lg cursor-pointer transition-all hover:bg-[var(--surface-secondary)] hover:border-[var(--verification-blue)]"
+                    onClick={() => {
+                      addContextPill(collection.name, 'collection', collection.id);
+                      setShowCollectionsModal(false);
+                    }}
+                  >
+                    <div className="w-8 h-8 bg-[var(--apply-button-bg)] rounded-lg flex items-center justify-center text-base flex-shrink-0">
+                      {collection.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium text-[var(--text-default)] font-inter whitespace-nowrap overflow-hidden text-ellipsis">{collection.name}</div>
+                      <div className="text-xs text-[var(--subtle-text)] font-inter flex items-center gap-1.5">
+                        <span>{collection.count} items</span>
+                        <span className="w-0.5 h-0.5 bg-[var(--subtle-text)] rounded-full" />
+                        <span>Updated {collection.updated}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            </div>
+          </div>
+        </Portal>
+      )}
     </div>
   );
 };

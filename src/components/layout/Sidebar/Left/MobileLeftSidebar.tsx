@@ -1,11 +1,13 @@
 'use client';
 
-import { FC, useState, ReactNode } from 'react';
+import { FC, useState, ReactNode, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/ui/Logo';
 import { Avatar } from '@/components/ui/Avatar';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { createClient } from '@/lib/supabase_utils/client';
+import { useAudioPlayer } from '@/store/use-audio-player';
 
 interface MobileLeftSidebarProps {
   isOpen: boolean;
@@ -23,6 +25,47 @@ interface NavItem {
     href: string;
   }>;
 }
+
+// Компонент для відображення імені користувача
+const UserProfileName: FC = () => {
+  const [userName, setUserName] = useState("User");
+  const supabase = createClient();
+
+  useEffect(() => {
+    const loadUserName = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name, first_name, last_name, email")
+          .eq("id", user.id)
+          .single();
+
+        if (profile) {
+          const name = profile.full_name || 
+            `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 
+            profile.email?.split('@')[0] || 
+            'User';
+          setUserName(name);
+        } else {
+          setUserName(user.email?.split('@')[0] || 'User');
+        }
+      } catch (error) {
+        console.error('Error loading user name:', error);
+      }
+    };
+
+    loadUserName();
+  }, []);
+
+  return (
+    <div className="flex-1">
+      <div className="font-inter text-sm font-semibold text-gray-700">{userName}</div>
+    </div>
+  );
+};
 
 export const MobileLeftSidebar: FC<MobileLeftSidebarProps> = ({ isOpen, onClose }) => {
   const pathname = usePathname();
@@ -114,7 +157,7 @@ export const MobileLeftSidebar: FC<MobileLeftSidebarProps> = ({ isOpen, onClose 
         </svg>
       ),
       label: 'My Listings',
-      href: '/listings'
+      href: '/listing'
     },
     {
       icon: (
@@ -124,6 +167,47 @@ export const MobileLeftSidebar: FC<MobileLeftSidebarProps> = ({ isOpen, onClose 
       ),
       label: 'Calendar',
       href: '/calendar'
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 shrink-0">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      ),
+      label: 'Monitors',
+      href: '/monitors',
+      hasSubmenu: true,
+      submenuItems: [
+        { emoji: '📊', label: 'Performance Monitor', href: '/monitors/performance' },
+        { emoji: '🔍', label: 'SEO Monitor', href: '/monitors/seo' },
+        { emoji: '💰', label: 'Price Monitor', href: '/monitors/price' },
+        { emoji: '🚨', label: 'Alert Monitor', href: '/monitors/alerts' },
+      ]
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 shrink-0">
+          <path d="M3.25 20.75v-1.64l1.5-1.5v3.14zm4 0v-5.64l1.5-1.5v7.14zm4 0v-7.14l1.5 1.52v5.62zm4 0v-5.62l1.5-1.5v7.12zm4 0v-9.64l1.5-1.5v11.14zm-16-5.53V13.1L10 6.36l4 4 6.75-6.75v2.1L14 12.48l-4-4-6.75 6.75Z" fill="currentColor"/>
+        </svg>
+      ),
+      label: 'Analytics',
+      href: '/analytics',
+      hasSubmenu: true,
+      submenuItems: [
+        { emoji: '📈', label: 'Traffic Analytics', href: '/analytics/traffic' },
+        { emoji: '👥', label: 'User Analytics', href: '/analytics/users' },
+        { emoji: '💸', label: 'Revenue Analytics', href: '/analytics/revenue' },
+        { emoji: '🎯', label: 'Goal Analytics', href: '/analytics/goals' },
+      ]
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 512 512" className="w-5 h-5 shrink-0">
+          <path d="M512 281.6H460.8V256C460.8 143 369 51.2 256 51.2S51.2 143 51.2 256v25.6H0V256C0 114.9 114.9 0 256 0S512 114.9 512 256v25.6zm-102.4 0H358.4V256c0-56.3-46.1-102.4-102.4-102.4s-102.4 46.1-102.4 102.4v25.6H102.4V256c0-84.8 68.8-153.6 153.6-153.6s153.6 68.8 153.6 153.6v25.6zm-51.2 51.2c-41.9 0-79 20.5-102.4 51.8c-23.4-31.4-60.5-51.8-102.4-51.8H0V384H153.6c42.2 0 76.8 34.6 76.8 76.8v25.6h51.2V460.8c0-42.2 34.6-76.8 76.8-76.8H512V332.8H358.4zM256 307.2a51.2 51.2 0 1 0 0-102.4 51.2 51.2 0 1 0 0 102.4z" fill="currentColor"/>
+        </svg>
+      ),
+      label: 'My Library',
+      href: '/library'
     }
   ];
 
@@ -140,6 +224,16 @@ export const MobileLeftSidebar: FC<MobileLeftSidebarProps> = ({ isOpen, onClose 
       ),
       label: 'Playlist',
       href: '#'
+    },
+    {
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" className="w-5 h-5 shrink-0">
+          <path fill="currentColor" d="M7.52166 4.85499C8.70939 3.66726 10.3203 3 12 3C13.6797 3 15.2906 3.66726 16.4783 4.85499C17.6661 6.04272 18.3333 7.65363 18.3333 9.33333C18.3333 11.013 17.6661 12.6239 16.4783 13.8117C15.2906 14.9994 13.6797 15.6667 12 15.6667C10.3203 15.6667 8.70939 14.9994 7.52166 13.8117C6.33393 12.6239 5.66667 11.013 5.66667 9.33333C5.66667 7.65363 6.33393 6.04272 7.52166 4.85499ZM12 5C10.8507 5 9.74853 5.45655 8.93587 6.2692C8.12321 7.08186 7.66667 8.18406 7.66667 9.33333C7.66667 10.4826 8.12321 11.5848 8.93587 12.3975C9.74853 13.2101 10.8507 13.6667 12 13.6667C13.1493 13.6667 14.2515 13.2101 15.0641 12.3975C15.8768 11.5848 16.3333 10.4826 16.3333 9.33333C16.3333 8.18406 15.8768 7.08186 15.0641 6.2692C14.2515 5.45655 13.1493 5 12 5ZM20.3646 3.92514C20.5016 3.39011 21.0463 3.06744 21.5814 3.20443C22.9437 3.55324 24.1512 4.34554 25.0135 5.45642C25.8758 6.5673 26.3438 7.93357 26.3438 9.33984C26.3438 10.7461 25.8758 12.1124 25.0135 13.2233C24.1512 14.3341 22.9437 15.1265 21.5814 15.4753C21.0463 15.6122 20.5016 15.2896 20.3646 14.7545C20.2276 14.2195 20.5503 13.6747 21.0853 13.5378C22.0174 13.2991 22.8436 12.757 23.4336 11.9969C24.0236 11.2368 24.3438 10.302 24.3438 9.33984C24.3438 8.37766 24.0236 7.44284 23.4336 6.68276C22.8436 5.92269 22.0174 5.38059 21.0853 5.14193C20.5503 5.00494 20.2276 4.46016 20.3646 3.92514ZM9.33333 21C8.18406 21 7.08186 21.4565 6.2692 22.2692C5.45655 23.0819 5 24.1841 5 25.3333V28C5 28.5523 4.55228 29 4 29C3.44772 29 3 28.5523 3 28V25.3333C3 23.6536 3.66726 22.0427 4.85499 20.855C6.04272 19.6673 7.65363 19 9.33333 19H14.6667C16.1859 19 17.5807 19.5359 18.6722 20.4265C19.1001 20.7757 19.164 21.4056 18.8148 21.8335C18.4657 22.2614 17.8357 22.3253 17.4078 21.9761C16.6593 21.3654 15.7074 21 14.6667 21H9.33333Z" clipRule="evenodd" fillRule="evenodd"/>
+          <path fill="currentColor" d="M23.5859 18.5858C23.961 18.2107 24.4697 18 25.0001 18C25.5305 18 26.0392 18.2107 26.4143 18.5858C26.6314 18.8029 26.7934 19.0647 26.8914 19.3496C27.4303 19.6869 27.8933 20.1357 28.2482 20.6679C28.7012 21.3474 28.9607 22.1374 28.999 22.9531C28.9997 22.9687 29.0001 22.9844 29.0001 23V24.4293C29.0238 24.5668 29.076 24.698 29.1535 24.8144C29.2404 24.9446 29.3566 25.0527 29.4928 25.1298C29.888 25.3536 30.0828 25.8156 29.9671 26.2548C29.8514 26.694 29.4542 27 29.0001 27H27.4496C27.3523 27.4767 27.1171 27.9186 26.7679 28.2678C26.299 28.7366 25.6631 29 25.0001 29C24.3371 29 23.7012 28.7366 23.2323 28.2678C22.8831 27.9186 22.6479 27.4767 22.5506 27H21.0001C20.5459 27 20.1488 26.694 20.0331 26.2548C19.9174 25.8156 20.1121 25.3536 20.5073 25.1298C20.6436 25.0527 20.7598 24.9446 20.8466 24.8144C20.9242 24.698 20.9764 24.5668 21.0001 24.4293V23C21.0001 22.9844 21.0005 22.9687 21.0012 22.9531C21.0395 22.1374 21.299 21.3474 21.752 20.6679C22.1069 20.1357 22.5699 19.6869 23.1088 19.3496C23.2068 19.0647 23.3688 18.8029 23.5859 18.5858ZM22.9218 25C22.9535 24.8754 22.9773 24.7485 22.9928 24.6202C22.9977 24.5803 23.0001 24.5402 23.0001 24.5V23.0254C23.0248 22.5799 23.1684 22.1489 23.4161 21.7773C23.6678 21.3999 24.0174 21.098 24.4276 20.904C24.7771 20.7387 25.0001 20.3867 25.0001 20C25.0001 20.3867 25.223 20.7387 25.5726 20.904C25.9828 21.098 26.3324 21.3999 26.5841 21.7773C26.8318 22.1489 26.9753 22.5799 27.0001 23.0254V24.5C27.0001 24.5402 27.0025 24.5803 27.0073 24.6202C27.0229 24.7485 27.0466 24.8754 27.0784 25H22.9218Z" clipRule="evenodd" fillRule="evenodd"/>
+        </svg>
+      ),
+      label: 'Notifications',
+      href: '/notifications'
     },
     {
       icon: (
@@ -241,9 +335,28 @@ export const MobileLeftSidebar: FC<MobileLeftSidebarProps> = ({ isOpen, onClose 
                           "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800",
                           isActive && "bg-gradient-to-r from-[#EBFCF4] to-[#D7F7E9] border-[#D7F7E9] text-[#0B6333] font-semibold"
                         )}
-                        onClick={() => {
+                        onClick={(e) => {
                           if (item.hasSubmenu) {
-                            toggleSubmenu(submenuId);
+                            e.preventDefault();
+                            // For Analytics, navigate to /analytics page
+                            if (item.href === "/analytics") {
+                              window.location.href = "/analytics";
+                              onClose();
+                            }
+                            // For Collections, navigate to /collections page
+                            else if (item.href === "/collections") {
+                              window.location.href = "/collections";
+                              onClose();
+                            }
+                            // For Monitors, navigate to /monitors first, then toggle submenu
+                            else if (item.href === "/monitors") {
+                              window.location.href = "/monitors";
+                              onClose();
+                            }
+                            // For other items with submenu, toggle submenu
+                            else {
+                              toggleSubmenu(submenuId);
+                            }
                           } else {
                             onClose();
                           }
@@ -339,10 +452,17 @@ export const MobileLeftSidebar: FC<MobileLeftSidebarProps> = ({ isOpen, onClose 
           
           <div className="sidebar-footer space-y-1">
             {bottomItems.map((item) => (
-              <Link
+              <div
                 key={item.href}
-                href={item.href}
-                onClick={onClose}
+                onClick={(e) => {
+                  if (item.href === '#') {
+                    e.preventDefault();
+                    useAudioPlayer.getState().setPlaylistVisible(true);
+                    onClose();
+                  } else {
+                    onClose();
+                  }
+                }}
                 className={cn(
                   "flex items-center gap-3 px-5 py-2 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
                   "text-sm font-medium border border-transparent mx-2 my-0.5",
@@ -352,24 +472,21 @@ export const MobileLeftSidebar: FC<MobileLeftSidebarProps> = ({ isOpen, onClose 
               >
                 <span className={cn("shrink-0", pathname === item.href && "text-[#0B6333]")}>{item.icon}</span>
                 <span>{item.label}</span>
-              </Link>
+              </div>
             ))}
 
             {/* User Profile */}
-            <div className="relative flex items-center px-2 py-2 gap-3 mx-2 my-2 rounded-3xl transition-all duration-200 cursor-pointer hover:bg-[#EBFCF4]">
+            <Link
+              href="/me"
+              onClick={onClose}
+              className="relative flex items-center px-5 py-2 gap-3 mx-2 my-2 rounded-3xl transition-all duration-200 cursor-pointer hover:bg-[#EBFCF4]"
+            >
               <Avatar 
                 size="sm"
-                user={{
-                  name: 'Ira Taylor',
-                  email: 'ira.taylor@example.com',
-                  plan: 'Professional until Apr 30, 2024'
-                }}
                 className="shrink-0"
               />
-              <div className="flex-1">
-                <div className="text-sm font-semibold text-gray-700">Ira Taylor</div>
-              </div>
-            </div>
+              <UserProfileName />
+            </Link>
           </div>
         </div>
       </div>

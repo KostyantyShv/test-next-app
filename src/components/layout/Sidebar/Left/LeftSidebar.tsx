@@ -51,7 +51,7 @@ const UserProfileName: FC = () => {
 
   return (
     <div className="flex-1">
-      <div className="text-sm font-semibold text-gray-700">{userName}</div>
+      <div className="font-inter text-sm font-semibold text-gray-700">{userName}</div>
     </div>
   );
 };
@@ -91,7 +91,7 @@ const UserProfileTooltip: FC = () => {
   }, []);
 
   return (
-    <div className="absolute left-16 top-1/2 -translate-x-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
+    <div className="absolute left-16 top-1/2 -translate-x-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg font-inter text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
       {userName}
     </div>
   );
@@ -176,6 +176,7 @@ const bottomItems: NavItem[] = [
 export const LeftSidebar: FC = () => {
   const [mounted, setMounted] = useState(false);
   const [isContactUsOpen, setIsContactUsOpen] = useState(false);
+  const [isAvatarDropdownOpen, setIsAvatarDropdownOpen] = useState(false);
   const {
     isCollapsed: storeIsCollapsed,
     isCollectionsOpen,
@@ -191,6 +192,22 @@ export const LeftSidebar: FC = () => {
   useLayoutEffect(() => {
     setMounted(true);
   }, []);
+
+  // Close avatar dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      // Check if click is outside the user profile block and dropdown
+      if (isAvatarDropdownOpen && !target.closest('.user-profile-block') && !target.closest('[data-avatar-dropdown]')) {
+        setIsAvatarDropdownOpen(false);
+      }
+    };
+
+    if (isAvatarDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isAvatarDropdownOpen]);
 
   const toggleSubmenu = (menuId: string) => {
     const newOpenSubmenus = new Set(openSubmenus);
@@ -270,7 +287,7 @@ export const LeftSidebar: FC = () => {
             {/* Explore Section */}
             <div className="mb-4">
               <div className={cn(
-                "font-semibold text-gray-600 uppercase tracking-wider",
+                "font-inter font-semibold text-gray-600 uppercase tracking-wider",
                 isCollapsed ? "px-2 py-2 text-xs" : "px-5 mb-2 text-xs"
               )}>
                 {isCollapsed ? "EXPLORE" : "Explore"}
@@ -281,11 +298,11 @@ export const LeftSidebar: FC = () => {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-2 text-gray-600 rounded-3xl transition-all duration-200 relative group",
-                      "text-sm font-medium border border-transparent",
+                      "flex items-center gap-3 px-3 py-2 text-gray-600 transition-all duration-200 relative group",
+                      "font-inter text-sm font-medium border border-transparent",
                       "hover:bg-green-50 hover:border-green-200",
                       pathname === item.href && "bg-gradient-to-r from-green-50 to-green-100 border-green-200 text-green-700",
-                      isCollapsed && "justify-center w-11 h-11 mx-auto"
+                      isCollapsed ? "justify-center w-11 h-11 mx-auto rounded-[12px]" : "rounded-3xl"
                     )}
                   >
                     {/* SVG from prototype */}
@@ -304,7 +321,7 @@ export const LeftSidebar: FC = () => {
                     )}
                     {!isCollapsed && <span>{item.label}</span>}
                     {isCollapsed && (
-                      <div className="absolute left-16 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
+                      <div className="absolute left-16 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg font-inter text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
                         {item.label}
                       </div>
                     )}
@@ -316,7 +333,7 @@ export const LeftSidebar: FC = () => {
             {/* Library Section */}
             <div className="mb-4">
               <div className={cn(
-                "font-semibold text-gray-600 uppercase tracking-wider",
+                "font-inter font-semibold text-gray-600 uppercase tracking-wider",
                 isCollapsed ? "px-2 py-2 text-xs" : "px-5 mb-2 text-xs"
               )}>
                 {isCollapsed ? "LIBRARY" : "Library"}
@@ -332,11 +349,11 @@ export const LeftSidebar: FC = () => {
                     <div key={item.href}>
                       <div
                         className={cn(
-                          "flex items-center gap-3 px-3 py-2 text-gray-600 rounded-3xl transition-all duration-200 cursor-pointer relative group",
-                          "text-sm font-medium border border-transparent",
+                          "flex items-center gap-3 px-3 py-2 text-gray-600 transition-all duration-200 cursor-pointer relative group",
+                          "font-inter text-sm font-medium border border-transparent",
                           "hover:bg-green-50 hover:border-green-200",
                           isActive && "bg-gradient-to-r from-green-50 to-green-100 border-green-200 text-green-700",
-                          isCollapsed && "justify-center w-11 h-11 mx-auto"
+                          isCollapsed ? "justify-center w-11 h-11 mx-auto rounded-[12px]" : "rounded-3xl"
                         )}
                         onMouseEnter={(e) => {
                           if (!isCollapsed && hasSubmenu) {
@@ -440,7 +457,7 @@ export const LeftSidebar: FC = () => {
                                     e.stopPropagation();
                                     setIsCreateModalOpen(true);
                                   }}
-                                  className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors"
+                                  className="w-6 h-6 !bg-gray-200 rounded-full flex items-center justify-center hover:!bg-gray-300 transition-colors active:!bg-gray-200 focus:!bg-gray-200 text-gray-600"
                                 >
                                   <svg viewBox="0 0 22 22" fill="currentColor" className="w-4 h-4">
                                     <path d="M22 11C22 17.0751 17.0751 22 11 22C4.92487 22 0 17.0751 0 11C0 4.92487 4.92487 0 11 0C17.0751 0 22 4.92487 22 11Z" fill="#E8E9ED"/>
@@ -452,7 +469,7 @@ export const LeftSidebar: FC = () => {
                                     e.stopPropagation();
                                     toggleSubmenu(submenuId);
                                   }}
-                                  className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors"
+                                  className="w-6 h-6 !bg-gray-200 rounded-full flex items-center justify-center hover:!bg-gray-300 transition-colors active:!bg-gray-200 focus:!bg-gray-200 text-gray-600"
                                 >
                                   <svg className={cn("w-4 h-4 transition-transform duration-200", isSubmenuOpen ? "rotate-180" : "")} height="16" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" fill="none">
                                     <path d="M19 9l-7 7-7-7" strokeLinejoin="round" strokeLinecap="round"/>
@@ -463,7 +480,7 @@ export const LeftSidebar: FC = () => {
                           </>
                         )}
                         {isCollapsed && (
-                          <div className="absolute left-16 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
+                          <div className="absolute left-16 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg font-inter text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
                             {item.label}
                           </div>
                         )}
@@ -481,7 +498,7 @@ export const LeftSidebar: FC = () => {
                               key={subItem.href}
                               href={subItem.href}
                               className={cn(
-                                "flex items-center px-5 py-2 text-gray-600 text-sm font-medium transition-colors duration-200",
+                                "flex items-center py-2 pr-5 pl-[52px] text-gray-600 font-inter text-sm font-medium transition-colors duration-200",
                                 "hover:text-green-700 relative",
                                 pathname === subItem.href && "text-green-700"
                               )}
@@ -493,7 +510,7 @@ export const LeftSidebar: FC = () => {
                               )}
                             </Link>
                           ))}
-                          <div className="px-5 py-1.5 text-gray-500 text-xs font-medium opacity-80 hover:opacity-100 cursor-pointer">
+                          <div className="pк-5 pl-[52px] py-1.5 text-gray-500 font-inter text-xs font-medium opacity-80 hover:opacity-100 cursor-pointer">
                             3 more items
                           </div>
                         </div>
@@ -523,26 +540,7 @@ export const LeftSidebar: FC = () => {
           </div>
         )}
 
-        {/* Contact Us Button */}
-        <div className="px-2 py-2 border-t border-gray-200 flex-shrink-0">
-          <button
-            onClick={() => setIsContactUsOpen(true)}
-            className={cn(
-              "w-full flex items-center gap-3 px-3 py-2 text-[#016853] bg-[#EBFCF4] border-2 border-[#0B6333] rounded-lg font-semibold transition-all duration-300 hover:bg-[#D7F7E9] hover:-translate-y-0.5",
-              isCollapsed && "justify-center w-11 h-11 mx-auto"
-            )}
-          >
-            <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-            {!isCollapsed && <span>Contact Us</span>}
-            {isCollapsed && (
-              <div className="absolute left-16 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
-                Contact Us
-              </div>
-            )}
-          </button>
-        </div>
+        
 
         {/* Bottom Items */}
         <div className="px-2 py-2 border-t border-gray-200 flex-shrink-0">
@@ -553,11 +551,11 @@ export const LeftSidebar: FC = () => {
                 href={item.href}
                 onClick={item.onClick}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2 text-gray-600 rounded-3xl transition-all duration-200 relative group",
-                  "text-sm font-medium border border-transparent",
+                  "flex items-center gap-3 px-3 py-2 text-gray-600 transition-all duration-200 relative group",
+                  "font-inter text-sm font-medium border border-transparent",
                   "hover:bg-green-50 hover:border-green-200",
                   pathname === item.href && "bg-gradient-to-r from-green-50 to-green-100 border-green-200 text-green-700",
-                  isCollapsed && "justify-center w-11 h-11 mx-auto"
+                  isCollapsed ? "justify-center w-11 h-11 mx-auto rounded-[18px]" : "rounded-3xl"
                 )}
               >
                 {/* SVG from prototype */}
@@ -587,7 +585,7 @@ export const LeftSidebar: FC = () => {
                 )}
                 {!isCollapsed && <span>{item.label}</span>}
                 {isCollapsed && (
-                  <div className="absolute left-16 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
+                  <div className="absolute left-16 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg font-inter text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
                     {item.label}
                   </div>
                 )}
@@ -596,14 +594,29 @@ export const LeftSidebar: FC = () => {
           </div>
 
           {/* User Profile */}
-          <div className={cn(
-            "flex items-center gap-3 px-3 py-2 rounded-3xl transition-all duration-200 mt-2 relative group",
-            "hover:bg-green-50",
-            isCollapsed && "justify-center w-11 h-11 mx-auto"
-          )}>
+          <div 
+            className={cn(
+              "user-profile-block flex items-center gap-3 px-3 py-2 transition-all duration-200 mt-2 relative group cursor-pointer",
+              "hover:bg-green-50",
+              isCollapsed ? "justify-center w-11 h-11 mx-auto rounded-[18px]" : "rounded-3xl",
+              isAvatarDropdownOpen && "bg-green-50"
+            )}
+            onClick={(e) => {
+              // На мобільному пристрої перенаправляємо на сторінку /me
+              if (typeof window !== 'undefined' && window.innerWidth < 768) {
+                return;
+              }
+              e.stopPropagation();
+              setIsAvatarDropdownOpen(!isAvatarDropdownOpen);
+            }}
+          >
             <Avatar 
               size="sm"
               className="shrink-0"
+              isDropdownOpen={isAvatarDropdownOpen}
+              onDropdownToggle={setIsAvatarDropdownOpen}
+              dropdownPosition="left"
+              sidebarCollapsed={isCollapsed}
             />
             {!isCollapsed && (
               <UserProfileName />
