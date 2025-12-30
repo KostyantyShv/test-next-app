@@ -27,7 +27,7 @@ export const ProfileSection = () => {
 
   return (
     <div className="max-w-[350px] w-full max-md:hidden block bg-white rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
-      <h1 className="text-[#262B3D] text-2xl font-semibold mb-3">Profile</h1>
+      <h1 className="text-[#262B3D] text-2xl font-semibold mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>Profile</h1>
       <p className="text-[#5F5F5F] text-base leading-6 mb-6">
         Customize your profile appearance and manage your bio links.
       </p>

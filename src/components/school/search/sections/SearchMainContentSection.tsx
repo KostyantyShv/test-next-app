@@ -1,10 +1,10 @@
 import React from "react";
-import MainContent from "../../explore/main-content/MainContent";
+import SearchMainContent from "../main-content/SearchMainContent";
 
 const SearchMainContentSection = () => {
   return (
     <>
-      <MainContent />
+      <SearchMainContent />
     </>
   );
 };

@@ -74,7 +74,7 @@ export default function CaseStudiesSection() {
     <>
       <div className="w-full mx-auto flex max-md:flex-col gap-[25px]">
         <div className="max-w-[350px] w-full max-md:p-6">
-          <h1 className="text-[#1a1a19] text-2xl font-semibold mb-3">
+          <h1 className="text-[#1a1a19] text-2xl font-semibold mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
             Case Studies
           </h1>
           <p className="text-[#5F5F5F] text-base leading-[1.6]">

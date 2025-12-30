@@ -30,7 +30,7 @@ export const LinksSectionMobile: FC<LinksSectionMobileProps> = ({
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <div className="px-6 pb-6">
-        <h1 className="mb-2 text-2xl font-semibold text-[#1B1B1B]">
+        <h1 className="mb-2 text-2xl font-semibold text-[#1B1B1B]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
           Links in Bio
         </h1>
         <p className="text-sm leading-5 text-[#5F5F5F]">

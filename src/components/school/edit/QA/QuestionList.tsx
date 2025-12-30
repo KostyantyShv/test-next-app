@@ -17,16 +17,23 @@ export default function QuestionList({
   onAddQuestion,
 }: QuestionListProps) {
   return (
-    <div>
+    <div style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
       <div className="mt-6">
-        {questions.map((question) => (
-          <QuestionItem
-            key={question.id}
-            question={question}
-            onTogglePin={onTogglePin}
-            onEdit={onEdit}
-          />
-        ))}
+        {questions
+          .sort((a, b) => {
+            // Sort: pinned items first, then by id
+            if (a.pinned && !b.pinned) return -1;
+            if (!a.pinned && b.pinned) return 1;
+            return a.id - b.id;
+          })
+          .map((question) => (
+            <QuestionItem
+              key={question.id}
+              question={question}
+              onTogglePin={onTogglePin}
+              onEdit={onEdit}
+            />
+          ))}
       </div>
 
       <button

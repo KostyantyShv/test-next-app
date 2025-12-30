@@ -30,9 +30,9 @@ export default function AnnouncementItem({
   onEdit,
 }: AnnouncementItemProps) {
   const statusStyles = {
-    live: "bg-[rgba(0,208,132,0.1)] text-[var(--status-live)]",
-    scheduled: "bg-[rgba(255,153,0,0.1)] text-[var(--status-scheduled)]",
-    paused: "bg-[rgba(255,77,77,0.1)] text-[var(--status-paused)]",
+    live: "bg-[rgba(0,208,132,0.1)] text-[#00D084]",
+    scheduled: "bg-[rgba(255,153,0,0.1)] text-[#db7303]",
+    paused: "bg-[rgba(255,77,77,0.1)] text-[#991b1b]",
   };
 
   const statusText = {
@@ -43,13 +43,13 @@ export default function AnnouncementItem({
 
   return (
     <div
-      className={`p-5 ${
+      className={`p-5 rounded-lg mb-4 ${
         announcement.pinned
           ? "bg-[#EBFCF4] border border-[#D7F7E9]"
           : "bg-[#F8F9FA]"
       }`}
     >
-      <div className="flex gap-5 rounded-lg mb-4">
+      <div className="flex gap-5">
         <div className="w-12 h-12 rounded-full overflow-hidden">
           <img
             src={announcement.author.avatar}

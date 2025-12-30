@@ -101,7 +101,7 @@ export default function PhotoGallery() {
   return (
     <div className="w-full mx-auto flex gap-6 my-6 max-md:flex-col">
       <div className="max-w-[350px] px-6">
-        <h1 className="text-2xl text-[#1a1a19] font-semibold mb-3">
+        <h1 className="text-2xl text-[#1a1a19] font-semibold mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
           Photo Gallery
         </h1>
         <p className="text-[#5F5F5F] text-base">

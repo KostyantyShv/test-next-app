@@ -20,6 +20,7 @@ export default function QuestionItem({
           ? "bg-[#EBFCF4] border border-[#D7F7E9]"
           : "bg-[#F8F9FA]"
       }`}
+      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}
     >
       <div className="flex-1 text-base font-semibold text-[#262B3D]">
         {question.title}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Announcement } from "./types/announcement";
+import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 
 interface AnnouncementModalProps {
   onClose: () => void;
@@ -27,7 +28,10 @@ export default function AnnouncementModalContent({
   const [avatar, setAvatar] = useState(
     "https://i.ibb.co/0yKzNSpq/AVATAR-Kostis-Kapelonis.png"
   );
+  const [emoji, setEmoji] = useState("👋");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (editId) {
@@ -40,6 +44,7 @@ export default function AnnouncementModalContent({
         setStartDate(announcement.startDate);
         setEndDate(announcement.endDate);
         setAvatar(announcement.author.avatar);
+        setEmoji(announcement.emoji || "👋");
       }
     } else {
       const now = new Date();
@@ -50,8 +55,28 @@ export default function AnnouncementModalContent({
       const formatDateTime = (date: Date) => date.toISOString().slice(0, 16);
       setStartDate(formatDateTime(now));
       setEndDate(formatDateTime(end));
+      setEmoji("👋");
     }
   }, [editId, announcements]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target as Node)
+      ) {
+        setShowEmojiPicker(false);
+      }
+    };
+
+    if (showEmojiPicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showEmojiPicker]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -72,13 +97,28 @@ export default function AnnouncementModalContent({
     }
     onSubmit({
       title,
-      emoji: "👋", // Default emoji as in original
+      emoji: emoji,
       author: { name: authorName, role: authorRole, avatar },
       content,
       startDate,
       endDate,
       status: new Date(startDate) > new Date() ? "scheduled" : "live",
     });
+  };
+
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newStartDate = e.target.value;
+    const start = new Date(newStartDate);
+    const end = new Date(endDate);
+    
+    // If end date is before or equal to new start date, adjust it
+    if (end <= start) {
+      // Set end date to 1 hour after start date
+      const adjustedEnd = new Date(start);
+      adjustedEnd.setHours(adjustedEnd.getHours() + 1);
+      setEndDate(adjustedEnd.toISOString().slice(0, 16));
+    }
+    setStartDate(newStartDate);
   };
 
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,17 +135,17 @@ export default function AnnouncementModalContent({
 
   return (
     <>
-      <div className="flex justify-between items-center p-6 border-b border-[#E5E5E5]">
-        <h2 className="text-2xl font-bold text-[#262B3D]">
+      <div className="flex justify-between items-center p-6 border-b border-theme">
+        <h2 className="text-2xl font-bold text-dark">
           {editId ? "Edit Announcement" : "Create Announcement"}
         </h2>
         <button
-          className="p-2 hover:bg-[#E1E7EE] rounded-full"
+          className="p-2 hover:bg-background rounded-full"
           onClick={onClose}
         >
           <svg fill="none" viewBox="0 0 12 12" width="12" height="12">
             <path
-              fill="#646464"
+              fill="var(--subtle-text)"
               d="M7.46875 6L10.8438 2.65625C11.0312 2.46875 11.0312 2.125 10.8438 1.9375L10.0625 1.15625C9.875 0.96875 9.53125 0.96875 9.34375 1.15625L6 4.53125L2.625 1.15625C2.4375 0.96875 2.09375 0.96875 1.90625 1.15625L1.125 1.9375C0.9375 2.125 0.9375 2.46875 1.125 2.65625L4.5 6L1.125 9.375C0.9375 9.5625 0.9375 9.90625 1.125 10.0938L1.90625 10.875C2.09375 11.0625 2.4375 11.0625 2.625 10.875L6 7.5L9.34375 10.875C9.53125 11.0625 9.875 11.0625 10.0625 10.875L10.8438 10.0938C11.0312 9.90625 11.0312 9.5625 10.8438 9.375L7.46875 6Z"
             />
           </svg>
@@ -113,30 +153,57 @@ export default function AnnouncementModalContent({
       </div>
       <form id="announcementForm" onSubmit={handleSubmit} className="p-6">
         <div className="mb-6">
-          <label className="block font-semibold text-[#4A4A4A] text-sm mb-2">
+          <label className="block font-semibold text-default text-sm mb-2">
             Title
           </label>
-          <div className="flex items-start gap-3">
+          <div className="flex items-start gap-3 relative">
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Announcement Title"
               required
-              className="flex-1 p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+              className="flex-1 p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+              style={{ 
+                '--tw-ring-color': 'var(--brand-teal)',
+              } as React.CSSProperties}
+              onFocus={(e) => {
+                (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+              }}
+              onBlur={(e) => {
+                (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+              }}
             />
-            <button type="button" className="text-xl">
-              😀
-            </button>
+            <div className="relative" ref={emojiPickerRef}>
+              <button
+                type="button"
+                className="text-xl p-2 hover:bg-background rounded transition-colors"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+              >
+                {emoji}
+              </button>
+              {showEmojiPicker && (
+                <div className="absolute top-full right-0 z-50 mt-2">
+                  <EmojiPicker
+                    onEmojiClick={(emojiData: EmojiClickData) => {
+                      setEmoji(emojiData.emoji);
+                      setShowEmojiPicker(false);
+                    }}
+                    width={350}
+                    height={400}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <div className="mb-6">
-          <label className="block font-semibold text-[#4A4A4A] text-sm mb-2">
+          <label className="block font-semibold text-default text-sm mb-2">
             Avatar
           </label>
-          <div className="border border-[#E5E5E5] rounded-lg overflow-hidden">
+          <div className="border border-theme rounded-lg overflow-hidden">
             <div className="flex items-center gap-6 p-4">
-              <div className="w-[120px] h-[120px] bg-[#F7FAFC] rounded-full overflow-hidden flex items-center justify-center">
+              <div className="w-[120px] h-[120px] bg-surface-secondary rounded-full overflow-hidden flex items-center justify-center">
                 <img
                   src={avatar}
                   alt="Author avatar"
@@ -144,12 +211,12 @@ export default function AnnouncementModalContent({
                 />
               </div>
               <div className="flex-1">
-                <div className="text-sm text-[#4A4A4A] mb-2">
+                <div className="text-sm text-default mb-2">
                   Recommended dimensions of <strong>400×400</strong>
                 </div>
                 <button
                   type="button"
-                  className="flex items-center gap-2 py-1.5 px-4 border border-[#E5E5E5] rounded-full text-sm text-[#4A4A4A] hover:bg-[#E1E7EE]"
+                  className="flex items-center gap-2 py-1.5 px-4 border border-theme rounded-full text-sm text-default hover:bg-background"
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <svg fill="none" viewBox="0 0 48 48" width="24" height="24">
@@ -178,7 +245,7 @@ export default function AnnouncementModalContent({
           </div>
         </div>
         <div className="mb-6">
-          <label className="block font-semibold text-[#4A4A4A] text-sm mb-2">
+          <label className="block font-semibold text-default text-sm mb-2">
             Author Name
           </label>
           <input
@@ -187,11 +254,17 @@ export default function AnnouncementModalContent({
             onChange={(e) => setAuthorName(e.target.value)}
             placeholder="Enter author name"
             required
-            className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+            className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+            onFocus={(e) => {
+              e.target.style.borderColor = 'var(--brand-teal)';
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = 'var(--border-color)';
+            }}
           />
         </div>
         <div className="mb-6">
-          <label className="block font-semibold text-[#4A4A4A] text-sm mb-2">
+          <label className="block font-semibold text-default text-sm mb-2">
             Author Role
           </label>
           <input
@@ -200,11 +273,17 @@ export default function AnnouncementModalContent({
             onChange={(e) => setAuthorRole(e.target.value)}
             placeholder="Enter author role"
             required
-            className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+            className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+            onFocus={(e) => {
+              e.target.style.borderColor = 'var(--brand-teal)';
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = 'var(--border-color)';
+            }}
           />
         </div>
         <div className="mb-6">
-          <label className="block font-semibold text-[#4A4A4A] text-sm mb-2">
+          <label className="block font-semibold text-default text-sm mb-2">
             Announcement
           </label>
           <textarea
@@ -213,31 +292,68 @@ export default function AnnouncementModalContent({
             rows={4}
             placeholder="Write your announcement here..."
             required
-            className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+            className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+            onFocus={(e) => {
+              e.target.style.borderColor = 'var(--brand-teal)';
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = 'var(--border-color)';
+            }}
           />
         </div>
         <div className="mb-6">
-          <label className="block font-semibold text-[#4A4A4A] text-sm mb-2">
+          <label className="block font-semibold text-default text-sm mb-2">
             Schedule
           </label>
           <div className="flex gap-4 max-md:flex-col">
             <div className="flex-1">
-              <label className="block font-semibold text-[#4A4A4A] text-sm mb-2">
+              <label className="block font-semibold text-default text-sm mb-2">
                 Start Date & Time
               </label>
               <div className="relative">
                 <input
                   type="datetime-local"
                   value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
+                  onChange={handleStartDateChange}
                   required
                   step="900"
-                  className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] bg-white cursor-pointer hover:border-[#02C5AF] hover:bg-[#F8F9FA] focus:outline-none focus:border-[#02C5AF] focus:shadow-[0_0_0_3px_rgba(2,197,175,0.1)]"
+                  className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface cursor-pointer focus:outline-none"
+                  style={{
+                    color: 'var(--text-default)',
+                    backgroundColor: 'var(--surface-color)',
+                    borderColor: 'var(--border-color)',
+                  }}
+                  onFocus={(e) => {
+                    const target = e.target as HTMLInputElement;
+                    target.style.borderColor = 'var(--brand-teal)';
+                    target.style.backgroundColor = 'var(--surface-secondary)';
+                    target.style.boxShadow = '0 0 0 3px rgba(2, 197, 175, 0.1)';
+                  }}
+                  onBlur={(e) => {
+                    const target = e.target as HTMLInputElement;
+                    target.style.borderColor = 'var(--border-color)';
+                    target.style.backgroundColor = 'var(--surface-color)';
+                    target.style.boxShadow = 'none';
+                  }}
+                  onMouseEnter={(e) => {
+                    const target = e.target as HTMLInputElement;
+                    if (document.activeElement !== target) {
+                      target.style.borderColor = 'var(--brand-teal)';
+                      target.style.backgroundColor = 'var(--surface-secondary)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    const target = e.target as HTMLInputElement;
+                    if (document.activeElement !== target) {
+                      target.style.borderColor = 'var(--border-color)';
+                      target.style.backgroundColor = 'var(--surface-color)';
+                    }
+                  }}
                 />
               </div>
             </div>
             <div className="flex-1">
-              <label className="block font-semibold text-[#4A4A4A] text-sm mb-2">
+              <label className="block font-semibold text-default text-sm mb-2">
                 End Date & Time
               </label>
               <div className="relative">
@@ -247,16 +363,48 @@ export default function AnnouncementModalContent({
                   onChange={handleEndDateChange}
                   required
                   step="900"
-                  className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] bg-white cursor-pointer hover:border-[#02C5AF] hover:bg-[#F8F9FA] focus:outline-none focus:border-[#02C5AF] focus:shadow-[0_0_0_3px_rgba(2,197,175,0.1)]"
+                  className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface cursor-pointer focus:outline-none"
+                  style={{
+                    color: 'var(--text-default)',
+                    backgroundColor: 'var(--surface-color)',
+                    borderColor: 'var(--border-color)',
+                  }}
+                  onFocus={(e) => {
+                    const target = e.target as HTMLInputElement;
+                    target.style.borderColor = 'var(--brand-teal)';
+                    target.style.backgroundColor = 'var(--surface-secondary)';
+                    target.style.boxShadow = '0 0 0 3px rgba(2, 197, 175, 0.1)';
+                  }}
+                  onBlur={(e) => {
+                    const target = e.target as HTMLInputElement;
+                    target.style.borderColor = 'var(--border-color)';
+                    target.style.backgroundColor = 'var(--surface-color)';
+                    target.style.boxShadow = 'none';
+                  }}
+                  onMouseEnter={(e) => {
+                    const target = e.target as HTMLInputElement;
+                    if (document.activeElement !== target) {
+                      target.style.borderColor = 'var(--brand-teal)';
+                      target.style.backgroundColor = 'var(--surface-secondary)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    const target = e.target as HTMLInputElement;
+                    if (document.activeElement !== target) {
+                      target.style.borderColor = 'var(--border-color)';
+                      target.style.backgroundColor = 'var(--surface-color)';
+                    }
+                  }}
                 />
               </div>
             </div>
           </div>
         </div>
       </form>
-      <div className="flex md:justify-between max-md:flex-col-reverse items-center p-6 border-t border-[#E5E5E5]">
+      <div className="flex md:justify-between max-md:flex-col-reverse items-center p-6 border-t border-theme">
         <button
-          className="flex max-md:w-full max-md:justify-center max-md:pt-4 items-center gap-2 text-[#f93a37] bg-none border-none cursor-pointer text-sm"
+          className="flex max-md:w-full max-md:justify-center max-md:pt-4 items-center gap-2 bg-none border-none cursor-pointer text-sm"
+          style={{ color: '#f93a37' }}
           onClick={onDelete}
         >
           <svg
@@ -278,7 +426,7 @@ export default function AnnouncementModalContent({
         <div className="flex gap-3 max-md:w-full">
           <button
             type="button"
-            className="bg-[#F8F9FA] max-md:w-full border border-[#E5E5E5] text-[#4A4A4A] px-6 py-3 rounded-lg font-semibold text-sm hover:opacity-90"
+            className="bg-surface-secondary max-md:w-full border border-theme text-default px-6 py-3 rounded-lg font-semibold text-sm hover:opacity-90"
             onClick={onClose}
           >
             Cancel
@@ -286,7 +434,8 @@ export default function AnnouncementModalContent({
           <button
             type="submit"
             form="announcementForm"
-            className="bg-[#02C5AF] text-white max-md:w-full px-6 py-3 rounded-lg font-semibold text-sm hover:opacity-90"
+            className="max-md:w-full px-6 py-3 rounded-lg font-semibold text-sm hover:opacity-90 text-white"
+            style={{ backgroundColor: 'var(--brand-teal)' }}
           >
             Save
           </button>

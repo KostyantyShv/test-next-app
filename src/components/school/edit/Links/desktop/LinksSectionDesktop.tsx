@@ -109,7 +109,7 @@ export const LinksSectionDesktop: FC<LinksSectionDesktopProps> = ({
   return (
     <div className="w-full flex-1 bg-white rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-[#262B3D] text-2xl font-semibold">Links</h2>
+        <h2 className="text-[#262B3D] text-2xl font-semibold" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>Links</h2>
         <button
           className="bg-[#02C5AF] text-white px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 transition"
           onClick={onAddLink}

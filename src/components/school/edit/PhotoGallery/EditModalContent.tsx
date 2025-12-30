@@ -68,7 +68,7 @@ export default function EditModalContent({
   return (
     <div className="w-full p-6">
       <div className="mb-6">
-        <h2 className="text-xl font-semibold text-[#1B1B1B]">
+        <h2 className="text-xl font-semibold text-dark">
           {item ? "Edit Photo Details" : "Add New Photo"}
         </h2>
       </div>
@@ -77,14 +77,21 @@ export default function EditModalContent({
         <div className="mb-5">
           <label
             htmlFor="photoTitle"
-            className="block text-[#464646] font-medium mb-2"
+            className="block text-bold font-medium mb-2"
           >
             Title
           </label>
           <input
             type="text"
             id="photoTitle"
-            className="w-full p-3 border border-[#DFDDDB] rounded-md text-[#4A4A4A]"
+            className="w-full p-3 border border-theme rounded-md text-default bg-surface focus:outline-none"
+            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+            onFocus={(e) => {
+              (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+            }}
+            onBlur={(e) => {
+              (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+            }}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
@@ -94,14 +101,21 @@ export default function EditModalContent({
         <div className="mb-5">
           <label
             htmlFor="photoAlt"
-            className="block text-[#464646] font-medium mb-2"
+            className="block text-bold font-medium mb-2"
           >
             Alt Text
           </label>
           <input
             type="text"
             id="photoAlt"
-            className="w-full p-3 border border-[#DFDDDB] rounded-md text-[#4A4A4A]"
+            className="w-full p-3 border border-theme rounded-md text-default bg-surface focus:outline-none"
+            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+            onFocus={(e) => {
+              (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+            }}
+            onBlur={(e) => {
+              (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+            }}
             value={altText}
             onChange={(e) => setAltText(e.target.value)}
             required
@@ -109,12 +123,12 @@ export default function EditModalContent({
         </div>
 
         <div className="mb-5">
-          <label className="block text-[#464646] font-medium mb-2">
+          <label className="block text-bold font-medium mb-2">
             Thumbnail or Video
           </label>
-          <div className="border border-[#DFDDDB] rounded-md overflow-hidden">
+          <div className="border border-theme rounded-md overflow-hidden">
             <div className="flex items-center gap-6 p-4">
-              <div className="w-[120px] h-[80px] bg-[#F7FAFC] rounded overflow-hidden flex items-center justify-center">
+              <div className="w-[120px] h-[80px] bg-surface-secondary rounded overflow-hidden flex items-center justify-center">
                 <Image
                   src={imagePreview}
                   alt="Image preview"
@@ -124,12 +138,12 @@ export default function EditModalContent({
                 />
               </div>
               <div className="flex-1">
-                <div className="text-sm text-[#4F4F4F] mb-2">
+                <div className="text-sm text-subtle mb-2">
                   Recommended dimensions of <strong>1280×720</strong>
                 </div>
                 <button
                   type="button"
-                  className="inline-flex items-center gap-2 px-4 py-1.5 border border-[#E5E5E5] rounded-full text-sm text-[#4F4F4F] hover:bg-[#F2F2F2] transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-1.5 border border-theme rounded-full text-sm text-subtle hover:bg-hover transition-colors"
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <svg fill="none" viewBox="0 0 48 48" width="24" height="24">
@@ -166,24 +180,25 @@ export default function EditModalContent({
             />
             <span
               className={`absolute cursor-pointer inset-0 rounded-full transition-all ${
-                pinned ? "bg-[#0B6333]" : "bg-[#DFDDDB]"
+                pinned ? "bg-active-green" : "bg-[#DFDDDB]"
               }`}
             >
               <span
-                className={`absolute h-5 w-5 bg-white rounded-full left-0.5 bottom-0.5 transition-all ${
+                className={`absolute h-5 w-5 bg-surface rounded-full left-0.5 bottom-0.5 transition-all ${
                   pinned ? "transform translate-x-[26px]" : ""
                 }`}
               ></span>
             </span>
           </label>
-          <span>Pin this image</span>
+          <span className="text-default">Pin this image</span>
         </div>
 
-        <div className="flex justify-between items-center mt-6 pt-4 border-t border-[#DFDDDB]">
+        <div className="flex justify-between items-center mt-6 pt-4 border-t border-theme">
           {item && (
             <button
               type="button"
-              className="flex items-center gap-2 text-[#f93a37] bg-transparent border-none cursor-pointer text-sm"
+              className="flex items-center gap-2 bg-transparent border-none cursor-pointer text-sm"
+              style={{ color: '#f93a37' }}
               onClick={onDelete}
             >
               <svg
@@ -206,14 +221,18 @@ export default function EditModalContent({
           <div className="flex gap-3">
             <button
               type="button"
-              className="px-4 py-2 bg-[#f8f9fa] border border-[#DFDDDB] text-[#5F5F5F] rounded-md hover:opacity-90 text-sm font-medium"
+              className="px-4 py-2 bg-surface-secondary border border-theme text-subtle rounded-md hover:opacity-90 text-sm font-medium"
               onClick={onClose}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-[#016853] border border-[#016853] text-white rounded-md hover:opacity-90 text-sm font-medium"
+              className="px-4 py-2 border text-white rounded-md hover:opacity-90 text-sm font-medium"
+              style={{ 
+                backgroundColor: 'var(--header-green)',
+                borderColor: 'var(--header-green)'
+              }}
             >
               Save
             </button>

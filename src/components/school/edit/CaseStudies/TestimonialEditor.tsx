@@ -12,9 +12,9 @@ export default function TestimonialSection({
   setFormData,
 }: TestimonialSectionProps) {
   return (
-    <div className="bg-[#f8f9fa] p-5 rounded-lg">
+    <div className="bg-surface-secondary p-5 rounded-lg">
       <div className="mb-4">
-        <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+        <label className="block text-sm font-semibold text-default mb-2">
           Section Label
         </label>
         <input
@@ -26,12 +26,19 @@ export default function TestimonialSection({
               testimonial: { ...formData.testimonial, label: e.target.value },
             })
           }
-          className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+          className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+          style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+          onFocus={(e) => {
+            (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+          }}
+          onBlur={(e) => {
+            (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+          }}
           placeholder="e.g., TESTIMONIALS"
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+        <label className="block text-sm font-semibold text-default mb-2">
           Section Title
         </label>
         <input
@@ -43,12 +50,19 @@ export default function TestimonialSection({
               testimonial: { ...formData.testimonial, title: e.target.value },
             })
           }
-          className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+          className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+          style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+          onFocus={(e) => {
+            (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+          }}
+          onBlur={(e) => {
+            (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+          }}
           placeholder="e.g., Client Feedback"
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+        <label className="block text-sm font-semibold text-default mb-2">
           Testimonial Text
         </label>
         <textarea
@@ -59,13 +73,20 @@ export default function TestimonialSection({
               testimonial: { ...formData.testimonial, text: e.target.value },
             })
           }
-          className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+          className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+          style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+          onFocus={(e) => {
+            (e.target as HTMLTextAreaElement).style.borderColor = 'var(--brand-teal)';
+          }}
+          onBlur={(e) => {
+            (e.target as HTMLTextAreaElement).style.borderColor = 'var(--border-color)';
+          }}
           rows={4}
           placeholder="Enter the testimonial text"
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+        <label className="block text-sm font-semibold text-default mb-2">
           Author Name
         </label>
         <input
@@ -83,12 +104,19 @@ export default function TestimonialSection({
               },
             })
           }
-          className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+          className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+          style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+          onFocus={(e) => {
+            (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+          }}
+          onBlur={(e) => {
+            (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+          }}
           placeholder="e.g., John Doe"
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+        <label className="block text-sm font-semibold text-default mb-2">
           Author Title
         </label>
         <input
@@ -106,16 +134,23 @@ export default function TestimonialSection({
               },
             })
           }
-          className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+          className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+          style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+          onFocus={(e) => {
+            (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+          }}
+          onBlur={(e) => {
+            (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+          }}
           placeholder="e.g., CEO, Company Name"
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+        <label className="block text-sm font-semibold text-default mb-2">
           Author Image
         </label>
         <div className="flex items-start gap-4 mt-2">
-          <div className="w-[80px] h-[80px] rounded-full overflow-hidden border border-[#E5E5E5]">
+          <div className="w-[80px] h-[80px] rounded-full overflow-hidden border border-theme">
             <img
               src={formData.testimonial.author.image}
               alt="Author"
@@ -128,7 +163,7 @@ export default function TestimonialSection({
               onClick={() =>
                 document.getElementById("authorImageInput")?.click()
               }
-              className="px-4 py-2 bg-[#f5f5f5] border border-[#ddd] rounded text-sm hover:bg-[#eee] transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-surface-secondary border border-theme rounded text-sm hover:bg-hover transition-colors flex items-center gap-2"
             >
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
                 <path
@@ -170,14 +205,14 @@ export default function TestimonialSection({
                 }
               }}
             />
-            <div className="mt-2 text-[#5F5F5F] text-xs">
+            <div className="mt-2 text-subtle text-xs">
               Recommended size: 80x80 pixels
             </div>
           </div>
         </div>
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+        <label className="block text-sm font-semibold text-default mb-2">
           Video Button Text
         </label>
         <input
@@ -195,15 +230,22 @@ export default function TestimonialSection({
               },
             })
           }
-          className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+          className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+          style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+          onFocus={(e) => {
+            (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+          }}
+          onBlur={(e) => {
+            (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+          }}
           placeholder="e.g., Watch Video"
         />
       </div>
       <div>
-        <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+        <label className="block text-sm font-semibold text-default mb-2">
           Video Thumbnail
         </label>
-        <div className="relative w-full h-[200px] rounded-lg overflow-hidden border border-dashed border-[#E5E5E5] bg-white">
+        <div className="relative w-full h-[200px] rounded-lg overflow-hidden border border-dashed border-theme bg-surface">
           <img
             src={formData.testimonial.video.image}
             alt="Video Thumbnail"

@@ -21,16 +21,22 @@ export default function FAQ() {
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
 
   const handleTogglePin = (id: number) => {
-    setQuestions(
-      questions.map((q) => {
+    setQuestions((prev) => {
+      const updated = prev.map((q) => {
         // Unpin all other questions
         if (q.id !== id) {
           return { ...q, pinned: false };
         }
         // Toggle the pin status of the selected question
         return { ...q, pinned: !q.pinned };
-      })
-    );
+      });
+      // Sort: pinned items first, then by id
+      return updated.sort((a, b) => {
+        if (a.pinned && !b.pinned) return -1;
+        if (!a.pinned && b.pinned) return 1;
+        return a.id - b.id;
+      });
+    });
   };
 
   const handleEditQuestion = (id: number) => {
@@ -75,9 +81,9 @@ export default function FAQ() {
 
   return (
     <>
-      <div className="mx-auto flex gap-6 max-md:flex-col">
+      <div className="mx-auto flex gap-6 max-md:flex-col" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
         <div className="max-w-[350px] px-6">
-          <h1 className="text-2xl font-semibold text-[#1A1A1A] mb-3">FAQ</h1>
+          <h1 className="text-2xl font-semibold text-[#1A1A1A] mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>FAQ</h1>
           <p className="text-base text-[#5F5F5F] leading-relaxed">
             Add frequently asked questions and their answers to help students
             better understand your school.

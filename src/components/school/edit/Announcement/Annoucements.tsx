@@ -62,12 +62,18 @@ export default function Announcements() {
   };
 
   const togglePin = (id: number) => {
-    setAnnouncements((prev) =>
-      prev.map((a) => ({
+    setAnnouncements((prev) => {
+      const updated = prev.map((a) => ({
         ...a,
         pinned: a.id === id ? !a.pinned : false,
-      }))
-    );
+      }));
+      // Sort: pinned items first, then by id
+      return updated.sort((a, b) => {
+        if (a.pinned && !b.pinned) return -1;
+        if (!a.pinned && b.pinned) return 1;
+        return a.id - b.id;
+      });
+    });
   };
 
   const editAnnouncement = (id: number) => {
@@ -82,12 +88,23 @@ export default function Announcements() {
   };
 
   const handleSubmit = (formData: Omit<Announcement, "id" | "pinned">) => {
+    // Ensure status is calculated based on current date and start date
+    const now = new Date();
+    const start = new Date(formData.startDate);
+    const calculatedStatus: "live" | "scheduled" | "paused" = 
+      start > now ? "scheduled" : "live";
+    
+    const formDataWithStatus = {
+      ...formData,
+      status: calculatedStatus,
+    };
+
     if (currentEditId) {
       // Update existing announcement
       setAnnouncements((prev) =>
         prev.map((a) =>
           a.id === currentEditId
-            ? { ...formData, id: currentEditId, pinned: a.pinned }
+            ? { ...formDataWithStatus, id: currentEditId, pinned: a.pinned }
             : a
         )
       );
@@ -101,7 +118,7 @@ export default function Announcements() {
       }
       const newAnnouncement: Announcement = {
         id: Date.now(),
-        ...formData,
+        ...formDataWithStatus,
         pinned: false,
       };
       setAnnouncements((prev) => [...prev, newAnnouncement]);
@@ -141,7 +158,7 @@ export default function Announcements() {
     <>
       <div className="flex max-md:flex-col gap-6">
         <div className="max-w-[350px] max-md:p-6">
-          <h1 className="text-[#1a1a19] text-2xl font-semibold mb-3">
+          <h1 className="text-[#1a1a19] text-2xl font-semibold mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
             Announcements
           </h1>
           <p className="text-[#5F5F5F] text-base leading-6">
@@ -153,15 +170,22 @@ export default function Announcements() {
           <div className="absolute top-6 right-6 text-sm font-semibold text-[var(--text-color)] py-1 px-3 bg-[#F8F9FA] rounded-2xl">
             {announcements.length}/{MAX_ANNOUNCEMENTS}
           </div>
-          <div className="my-6 pt-2.5">
-            {announcements.map((announcement) => (
-              <AnnouncementItem
-                key={announcement.id}
-                announcement={announcement}
-                onTogglePin={togglePin}
-                onEdit={editAnnouncement}
-              />
-            ))}
+          <div className="mt-6 pt-2.5">
+            {announcements
+              .sort((a, b) => {
+                // Sort: pinned items first, then by id
+                if (a.pinned && !b.pinned) return -1;
+                if (!a.pinned && b.pinned) return 1;
+                return a.id - b.id;
+              })
+              .map((announcement) => (
+                <AnnouncementItem
+                  key={announcement.id}
+                  announcement={announcement}
+                  onTogglePin={togglePin}
+                  onEdit={editAnnouncement}
+                />
+              ))}
           </div>
           <button
             className="bg-[#02C5AF] max-md:w-full text-white px-6 py-3 rounded-lg font-semibold text-sm hover:opacity-90"

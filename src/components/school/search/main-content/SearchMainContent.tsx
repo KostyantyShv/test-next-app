@@ -5,7 +5,6 @@ import SearchContentArea from "./SearchContentArea";
 import { schools } from "../../explore/mock";
 import { establishmentTypes, layouts } from "../../explore/main-content/mock";
 import { useSchoolsExplore } from "@/store/use-schools-explore";
-import SearchTypeButton from "./SearchTypeButton";
 
 const SearchMainContent: React.FC = () => {
   const { establishment, setEstablishment } = useSchoolsExplore(
@@ -13,7 +12,7 @@ const SearchMainContent: React.FC = () => {
   );
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [isMapActive, setIsMapActive] = useState(false);
-  const [layout, setLayout] = useState("classic");
+  const [layout, setLayout] = useState("grid");
 
   const renderDropdownItems = () => (
     <>
@@ -47,8 +46,6 @@ const SearchMainContent: React.FC = () => {
     </>
   );
 
-  const renderSearchTypeButton = () => <SearchTypeButton />;
-
   return (
     <div className="w-full bg-white rounded-xl border border-[rgba(0,0,0,0.1)] shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-hidden">
       <SearchHeader
@@ -62,7 +59,6 @@ const SearchMainContent: React.FC = () => {
         layout={layout}
         setLayout={setLayout}
         layoutToggleWidth={134}
-        renderSearchTypeButton={renderSearchTypeButton}
       />
       <SearchContentArea
         isMapActive={isMapActive}

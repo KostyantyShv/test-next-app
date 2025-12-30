@@ -180,7 +180,7 @@ const PromoVideo: React.FC = () => {
     <div className="flex gap-6 max-w-[1150px] max-md:flex-col mx-auto">
       {/* Left section */}
       <div className="max-w-[350px] px-6">
-        <h1 className="text-2xl font-semibold mb-3 text-[#1B1B1B]">
+        <h1 className="text-2xl font-semibold mb-3 text-[#1B1B1B]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
           Promotional Video
         </h1>
         <p className="text-[#5F5F5F] text-base leading-relaxed">

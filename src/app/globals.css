@@ -160,7 +160,7 @@ body {
 
 /* THEME: LIGHT MODE */
 [data-theme='light'] {
-  --background-color: #E1E7EE;
+  --background-color: #e1e7ee;
   --surface-color: #FFFFFF;
   --surface-secondary: #F8F9FA;
   --text-default: #4A4A4A;

@@ -68,12 +68,12 @@ export const LinkModalContent = ({ link, onSave, onClose }: LinkModalProps) => {
 
   return (
     <>
-      <div className="p-5 border-b border-[#E5E5E5] flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-[#262B3D]">
+      <div className="p-5 border-b border-theme flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-dark">
           {link ? "Edit Link" : "Add New Link"}
         </h3>
         <button
-          className="w-8 h-8 flex items-center justify-center rounded-md border border-[#E5E5E5] bg-white text-[#646464]"
+          className="w-8 h-8 flex items-center justify-center rounded-md border border-theme bg-surface text-subtle"
           onClick={onClose}
         >
           <CloseIcon />
@@ -82,7 +82,7 @@ export const LinkModalContent = ({ link, onSave, onClose }: LinkModalProps) => {
       <form className="p-6" onSubmit={handleSave}>
         <div className="mb-5">
           <label
-            className="block text-sm font-medium text-[#262B3D] mb-2"
+            className="block text-sm font-medium text-dark mb-2"
             htmlFor="linkTitle"
           >
             Link Title
@@ -90,7 +90,14 @@ export const LinkModalContent = ({ link, onSave, onClose }: LinkModalProps) => {
           <input
             type="text"
             id="linkTitle"
-            className="w-full p-2 border border-[#E5E5E5] rounded-md text-sm focus:outline-none focus:border-[#02C5AF] transition"
+            className="w-full p-2 border border-theme rounded-md text-sm text-default bg-surface focus:outline-none transition"
+            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+            onFocus={(e) => {
+              (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+            }}
+            onBlur={(e) => {
+              (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+            }}
             required
             placeholder="Enter link title"
             value={title}
@@ -99,7 +106,7 @@ export const LinkModalContent = ({ link, onSave, onClose }: LinkModalProps) => {
         </div>
         <div className="mb-5">
           <label
-            className="block text-sm font-medium text-[#262B3D] mb-2"
+            className="block text-sm font-medium text-dark mb-2"
             htmlFor="linkUrl"
           >
             URL
@@ -107,7 +114,14 @@ export const LinkModalContent = ({ link, onSave, onClose }: LinkModalProps) => {
           <input
             type="url"
             id="linkUrl"
-            className="w-full p-2 border border-[#E5E5E5] rounded-md text-sm focus:outline-none focus:border-[#02C5AF] transition"
+            className="w-full p-2 border border-theme rounded-md text-sm text-default bg-surface focus:outline-none transition"
+            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+            onFocus={(e) => {
+              (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+            }}
+            onBlur={(e) => {
+              (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+            }}
             required
             placeholder="https://example.com"
             value={url}
@@ -115,11 +129,23 @@ export const LinkModalContent = ({ link, onSave, onClose }: LinkModalProps) => {
           />
         </div>
         <div className="mb-5">
-          <label className="block text-sm font-medium text-[#262B3D] mb-2">
+          <label className="block text-sm font-medium text-dark mb-2">
             Link Icon
           </label>
           <div
-            className="w-full h-[200px] rounded-lg border-2 border-dashed border-[#E5E5E5] flex items-center justify-center cursor-pointer hover:border-[#02C5AF] hover:bg-[#F9FAFB] transition"
+            className="w-full h-[200px] rounded-lg border-2 border-dashed border-theme flex items-center justify-center cursor-pointer transition"
+            style={{
+              '--hover-border': 'var(--brand-teal)',
+              '--hover-bg': 'var(--surface-secondary)',
+            } as React.CSSProperties}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'var(--brand-teal)';
+              e.currentTarget.style.backgroundColor = 'var(--surface-secondary)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border-color)';
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }}
             onClick={() => iconInputRef.current?.click()}
           >
             <img
@@ -137,50 +163,54 @@ export const LinkModalContent = ({ link, onSave, onClose }: LinkModalProps) => {
           />
         </div>
         <div className="mb-5">
-          <label className="block text-sm font-medium text-[#262B3D] mb-2">
+          <label className="block text-sm font-medium text-dark mb-2">
             Background Color
           </label>
           <div className="flex flex-col gap-4">
-            <div className="border-b border-[#E5E5E5] pb-4">
+            <div className="border-b border-theme pb-4">
               <div className="grid grid-cols-[repeat(auto-fill,minmax(36px,1fr))] gap-2">
                 {colorOptions.map((color) => (
                   <div
                     key={color}
                     className={`w-9 h-9 rounded-md cursor-pointer border-2 transition-transform ${
                       selectedColor === color
-                        ? "border-[#02C5AF] scale-110"
+                        ? "scale-110"
                         : "border-transparent"
                     } hover:scale-110`}
-                    style={{ backgroundColor: color }}
+                    style={{ 
+                      backgroundColor: color,
+                      borderColor: selectedColor === color ? 'var(--brand-teal)' : 'transparent'
+                    }}
                     onClick={() => setSelectedColor(color)}
                   />
                 ))}
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#262B3D] mb-2">
+              <label className="block text-sm font-medium text-dark mb-2">
                 Custom Color
               </label>
               <input
                 type="color"
-                className="w-full h-10 p-1 border border-[#E5E5E5] rounded-md cursor-pointer"
+                className="w-full h-10 p-1 border border-theme rounded-md cursor-pointer"
                 value={selectedColor}
                 onChange={(e) => setSelectedColor(e.target.value)}
               />
             </div>
           </div>
         </div>
-        <div className="p-4 border-t border-[#E5E5E5] flex justify-end gap-3">
+        <div className="p-4 border-t border-theme flex justify-end gap-3">
           <button
             type="button"
-            className="px-4 py-2 rounded-md border border-[#E5E5E5] bg-white text-[#4A4A4A] text-sm font-medium hover:opacity-90 transition"
+            className="px-4 py-2 rounded-md border border-theme bg-surface text-default text-sm font-medium hover:opacity-90 transition"
             onClick={onClose}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-4 py-2 rounded-md bg-[#02C5AF] text-white text-sm font-medium hover:opacity-90 transition"
+            className="px-4 py-2 rounded-md text-white text-sm font-medium hover:opacity-90 transition"
+            style={{ backgroundColor: 'var(--brand-teal)' }}
           >
             Save Link
           </button>

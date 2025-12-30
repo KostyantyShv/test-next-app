@@ -209,22 +209,22 @@ export default function EventModalContent({
 
   return (
     <>
-      <div className="p-6 border-b border-[#E5E5E5] flex justify-between items-center">
-        <h2 className="text-[#1B1B1B] text-2xl font-bold">
+      <div className="p-6 border-b border-theme flex justify-between items-center">
+        <h2 className="text-dark text-2xl font-bold">
           {currentEditId ? "Edit Event" : "Create Event"}
         </h2>
         <button
           onClick={closeModal}
-          className="p-2 hover:bg-[#E1E7EE] rounded-full transition-colors"
+          className="p-2 hover:bg-background rounded-full transition-colors"
         >
-          <svg className="w-3 h-3" fill="#646464" viewBox="0 0 12 12">
+          <svg className="w-3 h-3" fill="var(--subtle-text)" viewBox="0 0 12 12">
             <path d="M7.46875 6L10.8438 2.65625C11.0312 2.46875 11.0312 2.125 10.8438 1.9375L10.0625 1.15625C9.875 0.96875 9.53125 0.96875 9.34375 1.15625L6 4.53125L2.625 1.15625C2.4375 0.96875 2.09375 0.96875 1.90625 1.15625L1.125 1.9375C0.9375 2.125 0.9375 2.46875 1.125 2.65625L4.5 6L1.125 9.375C0.9375 9.5625 0.9375 9.90625 1.125 10.0938L1.90625 10.875C2.09375 11.0625 2.4375 11.0625 2.625 10.875L6 7.5L9.34375 10.875C9.53125 11.0625 9.875 11.0625 10.0625 10.875L10.8438 10.0938C11.0312 9.90625 11.0312 9.5625 10.8438 9.375L7.46875 6Z" />
           </svg>
         </button>
       </div>
       <form id="eventForm" onSubmit={handleSubmit} className="p-6">
         <div className="mb-6">
-          <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
+          <label className="block font-semibold text-default mb-2 text-sm">
             Event Title
           </label>
           <input
@@ -233,11 +233,18 @@ export default function EventModalContent({
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter event title"
             required
-            className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+            className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+            onFocus={(e) => {
+              (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+            }}
+            onBlur={(e) => {
+              (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+            }}
           />
         </div>
         <div className="mb-6">
-          <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
+          <label className="block font-semibold text-default mb-2 text-sm">
             Event Type
           </label>
           <div className="relative">
@@ -245,8 +252,19 @@ export default function EventModalContent({
               ref={buttonRef}
               type="button"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="w-full p-3 bg-[#F8F9FA] border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] text-left flex items-center gap-2 hover:bg-white hover:border-[#02C5AF] transition-all"
-              style={{ color: typeDisplay.color }}
+              className="w-full p-3 bg-surface-secondary border border-theme rounded-lg text-sm text-default text-left flex items-center gap-2 transition-all"
+              style={{ 
+                color: typeDisplay.color,
+                fontFamily: 'var(--font-inter), Inter, sans-serif'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--surface-color)';
+                e.currentTarget.style.borderColor = 'var(--brand-teal)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--surface-secondary)';
+                e.currentTarget.style.borderColor = 'var(--border-color)';
+              }}
             >
               <span className="flex items-center gap-2">
                 {typeDisplay.icon}
@@ -270,7 +288,7 @@ export default function EventModalContent({
             </button>
             <div
               ref={dropdownRef}
-              className={`absolute top-[calc(100%+4px)] left-0 right-0 bg-white border border-[#E5E5E5] rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.1)] z-[100] transition-all ${
+              className={`absolute top-[calc(100%+4px)] left-0 right-0 bg-surface border border-theme rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.1)] z-[100] transition-all ${
                 isDropdownOpen
                   ? "opacity-100 visible translate-y-0"
                   : "opacity-0 invisible -translate-y-2"
@@ -278,7 +296,7 @@ export default function EventModalContent({
             >
               <div
                 onClick={() => handleTypeSelect("zoom")}
-                className="p-2 flex items-center gap-2 cursor-pointer hover:bg-[#F8F9FA] rounded-t-lg"
+                className="p-2 flex items-center gap-2 cursor-pointer hover:bg-surface-secondary rounded-t-lg"
                 style={{ color: "#15B7C3" }}
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 38 38">
@@ -294,7 +312,7 @@ export default function EventModalContent({
               </div>
               <div
                 onClick={() => handleTypeSelect("teams")}
-                className="p-2 flex items-center gap-2 cursor-pointer hover:bg-[#F8F9FA]"
+                className="p-2 flex items-center gap-2 cursor-pointer hover:bg-surface-secondary"
                 style={{ color: "#608CFD" }}
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 55 55">
@@ -307,7 +325,7 @@ export default function EventModalContent({
               </div>
               <div
                 onClick={() => handleTypeSelect("session")}
-                className="p-2 flex items-center gap-2 cursor-pointer hover:bg-[#F8F9FA] rounded-b-lg"
+                className="p-2 flex items-center gap-2 cursor-pointer hover:bg-surface-secondary rounded-b-lg"
                 style={{ color: "#E47EF4" }}
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 38 38">
@@ -324,10 +342,10 @@ export default function EventModalContent({
           </div>
         </div>
         <div className="mb-6">
-          <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
+          <label className="block font-semibold text-default mb-2 text-sm">
             Event Image
           </label>
-          <div className="border border-[#E5E5E5] rounded-lg overflow-hidden">
+          <div className="border border-theme rounded-lg overflow-hidden">
             <div className="p-4 flex md:items-center max-md:flex-col gap-6">
               <div className="w-[180px] max-md:w-full h-[120px] max-md:h-[200px] rounded-lg overflow-hidden">
                 <img
@@ -337,13 +355,13 @@ export default function EventModalContent({
                 />
               </div>
               <div className="flex-1">
-                <div className="text-sm text-[#4A4A4A] mb-2">
+                <div className="text-sm text-default mb-2">
                   Recommended dimensions of <strong>800×600</strong>
                 </div>
                 <button
                   type="button"
                   onClick={handleImageChange}
-                  className="flex items-center gap-2 px-4 py-1.5 border border-[#E5E5E5] rounded-full text-sm text-[#4A4A4A] bg-transparent hover:bg-[#E1E7EE] transition-colors"
+                  className="flex items-center gap-2 px-4 py-1.5 border border-theme rounded-full text-sm text-default bg-transparent hover:bg-background transition-colors"
                 >
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 48 48">
                     <rect fill="#F0F9FF" rx="24" height="48" width="48" />
@@ -359,7 +377,7 @@ export default function EventModalContent({
           </div>
         </div>
         <div className="mb-6">
-          <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
+          <label className="block font-semibold text-default mb-2 text-sm">
             Event Description
           </label>
           <textarea
@@ -368,16 +386,23 @@ export default function EventModalContent({
             rows={4}
             placeholder="Write event description here..."
             required
-            className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+            className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+            onFocus={(e) => {
+              (e.target as HTMLTextAreaElement).style.borderColor = 'var(--brand-teal)';
+            }}
+            onBlur={(e) => {
+              (e.target as HTMLTextAreaElement).style.borderColor = 'var(--border-color)';
+            }}
           />
         </div>
         <div className="mb-6">
-          <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
+          <label className="block font-semibold text-default mb-2 text-sm">
             Schedule
           </label>
           <div className="flex gap-5 max-md:flex-col">
             <div className="flex-1">
-              <label className="block text-[#1B1B1B] text-[13px] font-medium mb-1.5">
+              <label className="block text-dark text-[13px] font-medium mb-1.5">
                 Start Date & Time
               </label>
               <input
@@ -386,11 +411,36 @@ export default function EventModalContent({
                 onChange={(e) => setStartDateTime(e.target.value)}
                 required
                 step="900"
-                className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] bg-[#F8F9FA] focus:outline-none focus:border-[#02C5AF] focus:bg-white focus:shadow-[0_0_0_3px_rgba(1,104,83,0.1)]"
+                className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface-secondary focus:outline-none cursor-pointer"
+                style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+                onFocus={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  target.style.borderColor = 'var(--header-green)';
+                  target.style.backgroundColor = 'var(--surface-color)';
+                  target.style.boxShadow = '0 0 0 3px rgba(1, 104, 83, 0.1)';
+                }}
+                onBlur={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  target.style.borderColor = 'var(--border-color)';
+                  target.style.backgroundColor = 'var(--surface-secondary)';
+                  target.style.boxShadow = 'none';
+                }}
+                onMouseEnter={(e) => {
+                  if (document.activeElement !== e.target) {
+                    e.currentTarget.style.borderColor = 'var(--header-green)';
+                    e.currentTarget.style.backgroundColor = 'var(--surface-color)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (document.activeElement !== e.target) {
+                    e.currentTarget.style.borderColor = 'var(--border-color)';
+                    e.currentTarget.style.backgroundColor = 'var(--surface-secondary)';
+                  }
+                }}
               />
             </div>
             <div className="flex-1">
-              <label className="block text-[#1B1B1B] text-[13px] font-medium mb-1.5">
+              <label className="block text-dark text-[13px] font-medium mb-1.5">
                 End Date & Time
               </label>
               <input
@@ -399,16 +449,42 @@ export default function EventModalContent({
                 onChange={(e) => setEndDateTime(e.target.value)}
                 required
                 step="900"
-                className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] bg-[#F8F9FA] focus:outline-none focus:border-[#02C5AF] focus:bg-white focus:shadow-[0_0_0_3px_rgba(1,104,83,0.1)]"
+                className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface-secondary focus:outline-none cursor-pointer"
+                style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+                onFocus={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  target.style.borderColor = 'var(--header-green)';
+                  target.style.backgroundColor = 'var(--surface-color)';
+                  target.style.boxShadow = '0 0 0 3px rgba(1, 104, 83, 0.1)';
+                }}
+                onBlur={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  target.style.borderColor = 'var(--border-color)';
+                  target.style.backgroundColor = 'var(--surface-secondary)';
+                  target.style.boxShadow = 'none';
+                }}
+                onMouseEnter={(e) => {
+                  if (document.activeElement !== e.target) {
+                    e.currentTarget.style.borderColor = 'var(--header-green)';
+                    e.currentTarget.style.backgroundColor = 'var(--surface-color)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (document.activeElement !== e.target) {
+                    e.currentTarget.style.borderColor = 'var(--border-color)';
+                    e.currentTarget.style.backgroundColor = 'var(--surface-secondary)';
+                  }
+                }}
               />
             </div>
           </div>
         </div>
       </form>
-      <div className="p-6 border-t border-[#E5E5E5] flex justify-between items-center">
+      <div className="p-6 border-t border-theme flex justify-between items-center">
         <button
           onClick={handleDelete}
-          className="flex items-center gap-2 text-[#f93a37] bg-transparent border-none cursor-pointer text-sm"
+          className="flex items-center gap-2 bg-transparent border-none cursor-pointer text-sm"
+          style={{ color: '#f93a37' }}
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
             <path
@@ -423,14 +499,15 @@ export default function EventModalContent({
         <div className="flex gap-3">
           <button
             onClick={closeModal}
-            className="px-6 py-3 bg-[#F8F9FA] border border-[#E5E5E5] rounded-lg text-sm font-semibold text-[#4A4A4A] hover:opacity-90 transition-opacity"
+            className="px-6 py-3 bg-surface-secondary border border-theme rounded-lg text-sm font-semibold text-default hover:opacity-90 transition-opacity"
           >
             Cancel
           </button>
           <button
             type="submit"
             form="eventForm"
-            className="px-6 py-3 bg-[#02C5AF] text-white rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+            className="px-6 py-3 text-white rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+            style={{ backgroundColor: 'var(--brand-teal)' }}
           >
             Save
           </button>

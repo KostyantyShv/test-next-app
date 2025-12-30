@@ -195,11 +195,12 @@ export default function ResponsiveHeader({
                 <Link
                   key={href}
                   href={href}
-                  className={`relative pb-2 text-sm font-medium transition-colors duration-200 ${
+                  className={`relative pb-2 font-medium transition-colors duration-200 ${
                     isActive
                       ? "text-[#0B6333] active"
                       : "text-[#5F5F5F] hover:text-[#464646]"
                   }`}
+                  style={{ fontSize: '15px' }}
                   onClick={(e) => handleNavClick(e, href)}
                 >
                   {label}
@@ -214,7 +215,7 @@ export default function ResponsiveHeader({
       </div>
 
       {/* Desktop Header (hidden on mobile) */}
-      <div className="hidden md:block pt-6 mb-6">
+      <div className="hidden md:block pt-6 mb-7">
         <div className="relative mx-auto flex justify-between rounded-lg pb-3">
           <div className="flex items-start gap-6">
             <Image
@@ -225,7 +226,7 @@ export default function ResponsiveHeader({
               className="rounded-lg object-cover"
             />
             <div className="flex h-20 flex-col justify-between">
-              <h1 className="-mt-0.5 flex items-center gap-2 text-2xl font-semibold tracking-tight text-[#464646]">
+              <h1 className="-mt-0.5 flex items-center gap-2 text-2xl font-semibold text-[#464646]" style={{ letterSpacing: '-0.01em', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
                 Stanford University
                 <svg
                   className="h-5 w-5 cursor-pointer opacity-60 transition-opacity duration-200 hover:opacity-100"
@@ -240,17 +241,18 @@ export default function ResponsiveHeader({
               </h1>
               <nav className="-mb-2 flex gap-8">
                 {navLinks.map(({ href, label, isActive }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    className={`relative pb-2 text-sm font-medium transition-all duration-200 ${
-                      isActive
-                        ? "text-[#0B6333]"
-                        : "text-[#5F5F5F] hover:text-[#464646]"
-                    }`}
-                    onClick={(e) => handleNavClick(e, href)}
-                  >
-                    {label}
+                <Link
+                  key={href}
+                  href={href}
+                  className={`relative pb-2 font-medium transition-all duration-200 ${
+                    isActive
+                      ? "text-[#0B6333]"
+                      : "text-[#5F5F5F] hover:text-[#464646]"
+                  }`}
+                  style={{ fontSize: '15px' }}
+                  onClick={(e) => handleNavClick(e, href)}
+                >
+                  {label}
                     {isActive && (
                       <span className="absolute -bottom-0.5 left-0 h-0.5 w-full bg-[#0B6333] [clip-path:polygon(4px_0,calc(100%_-_4px)_0,100%_100%,0_100%)]"></span>
                     )}
@@ -289,8 +291,8 @@ export default function ResponsiveHeader({
                     strokeLinecap="round"
                   ></path>
                 </svg>
-                <div className="absolute right-0 top-[calc(100%+8px)] min-w-[225px] translate-y-[-4px] rounded-lg bg-white p-2 opacity-0 shadow-md transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100">
-                  <div className="flex cursor-pointer items-center gap-3 px-4 py-2 transition-all duration-200 hover:bg-[#f5f5f5]">
+                <div className="absolute right-0 top-[calc(100%+8px)] min-w-[225px] translate-y-[-4px] rounded-lg bg-white p-2 opacity-0 shadow-md transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 z-50">
+                  <div className="flex cursor-pointer items-center gap-3 px-4 py-2 transition-all duration-200 hover:bg-[#f5f5f5]" style={{ fontSize: '14px' }}>
                     <svg viewBox="0 0 20 20" width={16} height={16}>
                       <path
                         fill="#5F5F5F"
@@ -307,7 +309,7 @@ export default function ResponsiveHeader({
                     </svg>
                     Preview Listing Page
                   </div>
-                  <div className="flex cursor-pointer items-center gap-3 px-4 py-2 transition-all duration-200 hover:bg-[#f5f5f5]">
+                  <div className="flex cursor-pointer items-center gap-3 px-4 py-2 transition-all duration-200 hover:bg-[#f5f5f5]" style={{ fontSize: '14px' }}>
                     <svg fill="none" viewBox="0 0 20 20" width={16} height={16}>
                       <path
                         fill="#5F5F5F"
