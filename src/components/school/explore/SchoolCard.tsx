@@ -642,9 +642,9 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                   <path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1C18.6,5.5,19.8,8.4,19.2,11.2z" />
               </svg>
               </div>
-              <div className="stat-content flex flex-col">
+              <div className="stat-content flex flex-col gap-1">
                 <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">Location</div>
-                <div className="stat-value text-xs text-[#464646] font-medium leading-[1.3]">{school.location}</div>
+                <div className="stat-value text-[10px] text-[#464646] font-medium leading-[1.3]">{school.location}</div>
               </div>
             </div>
 
@@ -655,7 +655,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               </div>
               <div className="stat-content flex flex-col">
                   <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">{secondStat.label}</div>
-                  <div className="stat-value text-xs text-[#464646] font-medium leading-[1.3]">{secondStat.value}</div>
+                  <div className="stat-value text-[10px] text-[#464646] font-medium leading-[1.3]">{secondStat.value}</div>
               </div>
             </div>
 
@@ -667,7 +667,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               </div>
               <div className="stat-content flex flex-col">
                     <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">Tuition</div>
-                    <div className="stat-value text-xs text-[#464646] font-medium leading-[1.3]">{school.price}</div>
+                    <div className="stat-value text-[10px] text-[#464646] font-medium leading-[1.3]">{school.price}</div>
               </div>
             </div>
               )}
@@ -678,9 +678,9 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
                     {acceptanceIcon}
               </div>
-              <div className="stat-content flex flex-col">
+              <div className="flex flex-col gap-2">
                     <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">{fourthStat.label}</div>
-                    <div className="stat-value text-xs text-[#464646] font-medium leading-[1.3]">{fourthStat.value}</div>
+                    <div className="stat-value text-[10px] text-[#464646] font-medium leading-[1.3]">{fourthStat.value}</div>
               </div>
                 </div>
               ) : (
@@ -688,9 +688,9 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                   <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
                     {studentsIcon}
                   </div>
-                  <div className="stat-content flex flex-col">
+                  <div className="flex flex-col gap-1">
                     <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">{fourthStat.label}</div>
-                    <div className="stat-value text-xs text-[#464646] font-medium leading-[1.3]">{fourthStat.value}</div>
+                    <div className="stat-value text-[10px] text-[#464646] font-medium leading-[1.3]">{fourthStat.value}</div>
             </div>
           </div>
         )}

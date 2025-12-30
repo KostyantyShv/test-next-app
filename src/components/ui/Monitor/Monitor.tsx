@@ -28,6 +28,7 @@ export const Monitor: React.FC<MonitorProps> = ({
   buttonRef,
 }) => {
   const [arrowPosition, setArrowPosition] = useState<number>(24); // default right-6 = 24px
+  const [panelRight, setPanelRight] = useState<number>(88); // default right position
   const [changesData, setChangesData] = useState<ChangeItem[]>([
     {
       id: 1,
@@ -95,18 +96,37 @@ export const Monitor: React.FC<MonitorProps> = ({
     }
   }, [onClose]);
 
-  // Calculate arrow position based on button position
+  // Calculate arrow position and panel position based on button position
   useLayoutEffect(() => {
     if (isOpen && buttonRef?.current) {
       const updateArrowPosition = () => {
         const button = buttonRef.current;
-        const modal = modalRef.current;
-        if (button && modal) {
+        if (button) {
           const buttonRect = button.getBoundingClientRect();
-          const modalRect = modal.getBoundingClientRect();
-          // Calculate distance from right edge of modal to center of button
           const buttonCenterX = buttonRect.left + buttonRect.width / 2;
-          const modalRight = modalRect.right;
+          const windowWidth = window.innerWidth;
+          const panelWidth = 440; // w-[440px]
+          
+          // Calculate panel position: align arrow (at arrowPosition from right) with button center
+          // We want: windowWidth - panelRight - arrowPosition = buttonCenterX
+          // So: panelRight = windowWidth - buttonCenterX - arrowPosition
+          // But we need to determine arrowPosition first
+          // Let's use a target arrow position (e.g., 24px from right) and calculate panel position
+          const targetArrowPosition = 24; // Default arrow position from right
+          const calculatedRight = windowWidth - buttonCenterX - targetArrowPosition;
+          
+          // Ensure panel doesn't go off screen (min 24px from right, max to keep panel on screen)
+          const minRight = 24;
+          const maxRight = windowWidth - panelWidth - 24;
+          const finalRight = Math.max(minRight, Math.min(maxRight, calculatedRight));
+          setPanelRight(finalRight);
+          
+          // Calculate arrow position based on final panel position
+          // Panel right edge is at: windowWidth - finalRight
+          // Arrow is at: windowWidth - finalRight - arrowPosition
+          // We want arrow center to align with button center: windowWidth - finalRight - arrowPosition = buttonCenterX
+          // So: arrowPosition = windowWidth - finalRight - buttonCenterX
+          const modalRight = windowWidth - finalRight;
           const distanceFromRight = modalRight - buttonCenterX;
           // Arrow is 16px wide (w-4), so center it
           setArrowPosition(distanceFromRight - 8); // 8px = half of 16px
@@ -202,7 +222,7 @@ export const Monitor: React.FC<MonitorProps> = ({
           backgroundColor: 'var(--surface-color) !important',
           position: 'fixed',
           top: '72px',
-          right: '88px',
+          right: `${panelRight}px`,
         }}
       >
         {/* Arrow pointer */}
