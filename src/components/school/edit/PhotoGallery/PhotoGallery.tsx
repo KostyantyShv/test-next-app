@@ -13,6 +13,7 @@ export default function PhotoGallery() {
       altText: "Royal residence",
       image: "https://i.ibb.co/rG61q84s/photo1.webp",
       pinned: true,
+      order: 0,
     },
     {
       id: 2,
@@ -20,15 +21,19 @@ export default function PhotoGallery() {
       altText: "Art museum",
       image: "https://i.ibb.co/3nbtmZ0/photo2.webp",
       pinned: false,
+      order: 1,
     },
   ]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentEditId, setCurrentEditId] = useState<number | null>(null);
+  const [draggedItemId, setDraggedItemId] = useState<number | null>(null);
 
-  // Sort items to show pinned first
+  // Sort items to show pinned first, then by order
   const sortedItems = [...galleryItems].sort((a, b) => {
-    if (a.pinned === b.pinned) return 0;
-    return a.pinned ? -1 : 1;
+    if (a.pinned !== b.pinned) {
+      return a.pinned ? -1 : 1;
+    }
+    return a.order - b.order;
   });
 
   const togglePin = (id: number) => {
@@ -58,19 +63,24 @@ export default function PhotoGallery() {
   };
 
   const handleFormSubmit = (
-    formData: Omit<GalleryItemType, "id" | "image"> & { imageFile?: File }
+    formData: Omit<GalleryItemType, "id" | "image" | "order"> & { imageFile?: File }
   ) => {
     if (currentEditId) {
       // Update existing item
       setGalleryItems(
         galleryItems.map((item) => {
           if (item.id === currentEditId) {
+            let imageUrl = item.image;
+            // If new image file is provided, create preview URL
+            if (formData.imageFile) {
+              imageUrl = URL.createObjectURL(formData.imageFile);
+            }
             return {
               ...item,
               title: formData.title,
               altText: formData.altText,
               pinned: formData.pinned,
-              // If we had image upload functionality, we'd handle the new image here
+              image: imageUrl,
             };
           }
           return item;
@@ -78,18 +88,69 @@ export default function PhotoGallery() {
       );
     } else {
       // Add new item
+      let imageUrl = "https://i.ibb.co/qMzqMMcg/upload-image-placeholder.png";
+      // If image file is provided, create preview URL
+      if (formData.imageFile) {
+        imageUrl = URL.createObjectURL(formData.imageFile);
+      }
       const newItem: GalleryItemType = {
         id: Date.now(),
         title: formData.title,
         altText: formData.altText,
         pinned: formData.pinned,
-        image: "https://i.ibb.co/qMzqMMcg/upload-image-placeholder.png",
+        image: imageUrl,
+        order: galleryItems.length,
       };
       setGalleryItems([...galleryItems, newItem]);
     }
 
     setIsModalOpen(false);
     setCurrentEditId(null);
+  };
+
+  const handleDragStart = (id: number) => {
+    setDraggedItemId(id);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent, targetId: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!draggedItemId || draggedItemId === targetId) {
+      setDraggedItemId(null);
+      return;
+    }
+
+    // Find indices in the sorted items array (what user sees)
+    const draggedIndex = sortedItems.findIndex((item) => item.id === draggedItemId);
+    const targetIndex = sortedItems.findIndex((item) => item.id === targetId);
+
+    if (draggedIndex === -1 || targetIndex === -1) {
+      setDraggedItemId(null);
+      return;
+    }
+
+    // Reorder the sorted items
+    const newSortedItems = [...sortedItems];
+    const [removed] = newSortedItems.splice(draggedIndex, 1);
+    newSortedItems.splice(targetIndex, 0, removed);
+
+    // Update order values based on new positions
+    const updatedItems = galleryItems.map((item) => {
+      const newIndex = newSortedItems.findIndex((sortedItem) => sortedItem.id === item.id);
+      if (newIndex !== -1) {
+        return { ...item, order: newIndex };
+      }
+      return item;
+    });
+
+    setGalleryItems(updatedItems);
+    setDraggedItemId(null);
   };
 
   const getCurrentItem = () => {
@@ -100,11 +161,11 @@ export default function PhotoGallery() {
 
   return (
     <div className="w-full mx-auto flex gap-6 my-6 max-md:flex-col">
-      <div className="max-w-[350px] px-6">
+      <div className="max-w-[350px] pr-6">
         <h1 className="text-2xl text-[#1a1a19] font-semibold mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
           Photo Gallery
         </h1>
-        <p className="text-[#5F5F5F] text-base">
+        <p className="text-[#5F5F5F] text-base w-[350px]">
           Create and organize your image gallery. Drag to reorder, pin important
           images, and customize details for each photo.
         </p>
@@ -119,6 +180,9 @@ export default function PhotoGallery() {
               onPin={togglePin}
               onEdit={editPhoto}
               index={index}
+              onDragStart={handleDragStart}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
             />
           ))}
         </ul>

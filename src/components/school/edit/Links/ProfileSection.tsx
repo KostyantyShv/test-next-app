@@ -26,13 +26,13 @@ export const ProfileSection = () => {
   };
 
   return (
-    <div className="max-w-[350px] w-full max-md:hidden block bg-white rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
+    <div className="w-[350px] max-md:hidden block bg-white rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
       <h1 className="text-[#262B3D] text-2xl font-semibold mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>Profile</h1>
-      <p className="text-[#5F5F5F] text-base leading-6 mb-6">
+      <p className="text-[#5F5F5F] text-base leading-6 w-[350px] mb-6">
         Customize your profile appearance and manage your bio links.
       </p>
       <div className="mb-6">
-        <div className="w-full h-[120px] rounded-xl overflow postpone bg-[#F7FAFC] relative">
+        <div className="w-full h-[120px] rounded-xl overflow-hidden bg-[#F7FAFC] relative mb-4">
           <img
             src={bannerSrc}
             alt="Banner preview"
@@ -52,7 +52,7 @@ export const ProfileSection = () => {
           accept="image/*"
           onChange={(e) => handleFileUpload(e, setBannerSrc)}
         />
-        <div className="w-[100px] h-[100px] rounded-full overflow-hidden mt-[-50px] mx-auto bg-white border-4 border-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] relative">
+        <div className="w-[100px] h-[100px] rounded-full overflow-hidden -mt-[50px] mx-auto mb-4 bg-white border-4 border-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] relative">
           <img
             src={avatarSrc}
             alt="Avatar preview"

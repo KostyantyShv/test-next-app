@@ -120,17 +120,17 @@ export const LinksSectionDesktop: FC<LinksSectionDesktopProps> = ({
       <table className="w-full border-separate border-spacing-0 mt-6">
         <thead>
           <tr>
-            <th className="text-left p-4 text-xs font-semibold uppercase tracking-wider text-[#6B7280] bg-[#F9FAFB] border-b border-[#E5E5E5] w-10"></th>
-            <th className="text-left p-4 text-xs font-semibold uppercase tracking-wider text-[#6B7280] bg-[#F9FAFB] border-b border-[#E5E5E5] w-15">
+            <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#6B7280] bg-[#F9FAFB] border-b border-[#E5E5E5]" style={{ width: '40px' }}></th>
+            <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#6B7280] bg-[#F9FAFB] border-b border-[#E5E5E5]" style={{ width: '60px' }}>
               Icon
             </th>
-            <th className="text-left p-4 text-xs font-semibold uppercase tracking-wider text-[#6B7280] bg-[#F9FAFB] border-b border-[#E5E5E5]">
+            <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#6B7280] bg-[#F9FAFB] border-b border-[#E5E5E5]">
               Title
             </th>
-            <th className="text-left p-4 text-xs font-semibold uppercase tracking-wider text-[#6B7280] bg-[#F9FAFB] border-b border-[#E5E5E5] w-[100px]">
+            <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#6B7280] bg-[#F9FAFB] border-b border-[#E5E5E5]" style={{ width: '100px' }}>
               Color
             </th>
-            <th className="text-left p-4 text-xs font-semibold uppercase tracking-wider text-[#6B7280] bg-[#F9FAFB] border-b border-[#E5E5E5] w-[120px]">
+            <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#6B7280] bg-[#F9FAFB] border-b border-[#E5E5E5]" style={{ width: '120px' }}>
               Actions
             </th>
           </tr>
@@ -144,7 +144,7 @@ export const LinksSectionDesktop: FC<LinksSectionDesktopProps> = ({
               }`}
               data-id={link.id}
             >
-              <td className="p-4 border-b border-[#E5E5E5]">
+              <td className="px-4 py-4 border-b border-[#E5E5E5]">
                 <div
                   className="cursor-grab text-[#D1D5DB] active:cursor-grabbing"
                   onMouseDown={(e) =>
@@ -154,7 +154,7 @@ export const LinksSectionDesktop: FC<LinksSectionDesktopProps> = ({
                   <DragHandleIcon />
                 </div>
               </td>
-              <td className="p-4 border-b border-[#E5E5E5]">
+              <td className="px-4 py-4 border-b border-[#E5E5E5]">
                 <div className="w-12 h-12 rounded-lg overflow-hidden">
                   <img
                     src={link.icon}
@@ -163,7 +163,7 @@ export const LinksSectionDesktop: FC<LinksSectionDesktopProps> = ({
                   />
                 </div>
               </td>
-              <td className="p-4 border-b border-[#E5E5E5]">
+              <td className="px-4 py-4 border-b border-[#E5E5E5]">
                 <div className="font-medium text-[#262B3D] text-sm">
                   {link.title}
                 </div>
@@ -175,23 +175,23 @@ export const LinksSectionDesktop: FC<LinksSectionDesktopProps> = ({
                   </div>
                 )}
               </td>
-              <td className="p-4 border-b border-[#E5E5E5]">
-                <div className="relative">
+              <td className="px-4 py-4 border-b border-[#E5E5E5]">
+                <div className="relative color-cell group">
                   <div
                     className="w-6 h-6 rounded-md"
                     style={{ backgroundColor: link.color }}
                   ></div>
-                  <div className="absolute top-full left-0 bg-white p-2 rounded-lg shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] hidden group-hover:block z-10">
+                  <div className="absolute top-full left-0 bg-white p-2 rounded-lg shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 mt-1">
                     <input
                       type="color"
-                      className="w-[100px] h-8 p-0.5 border border-[#E5E5E5] rounded"
+                      className="w-[100px] h-8 p-0.5 border border-[#E5E5E5] rounded cursor-pointer"
                       value={link.color}
                       onChange={(e) => onUpdateColor(link.id, e.target.value)}
                     />
                   </div>
                 </div>
               </td>
-              <td className="p-4 border-b border-[#E5E5E5]">
+              <td className="px-4 py-4 border-b border-[#E5E5E5]">
                 <div className="flex gap-2">
                   <button
                     className="w-8 h-8 flex items-center justify-center rounded-md border border-[#E5E5E5] bg-white text-[#6B7280] hover:bg-[#F9FAFB] hover:text-[#262B3D] transition"

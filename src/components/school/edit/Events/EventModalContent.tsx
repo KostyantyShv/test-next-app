@@ -411,30 +411,37 @@ export default function EventModalContent({
                 onChange={(e) => setStartDateTime(e.target.value)}
                 required
                 step="900"
-                className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface-secondary focus:outline-none cursor-pointer"
-                style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+                className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none cursor-pointer"
+                style={{ 
+                  fontFamily: 'var(--font-inter), Inter, sans-serif',
+                  color: 'var(--text-default)',
+                  backgroundColor: 'var(--surface-color)',
+                  borderColor: 'var(--border-color)',
+                }}
                 onFocus={(e) => {
                   const target = e.target as HTMLInputElement;
-                  target.style.borderColor = 'var(--header-green)';
-                  target.style.backgroundColor = 'var(--surface-color)';
-                  target.style.boxShadow = '0 0 0 3px rgba(1, 104, 83, 0.1)';
+                  target.style.borderColor = 'var(--brand-teal)';
+                  target.style.backgroundColor = 'var(--surface-secondary)';
+                  target.style.boxShadow = '0 0 0 3px rgba(2, 197, 175, 0.1)';
                 }}
                 onBlur={(e) => {
                   const target = e.target as HTMLInputElement;
                   target.style.borderColor = 'var(--border-color)';
-                  target.style.backgroundColor = 'var(--surface-secondary)';
+                  target.style.backgroundColor = 'var(--surface-color)';
                   target.style.boxShadow = 'none';
                 }}
                 onMouseEnter={(e) => {
-                  if (document.activeElement !== e.target) {
-                    e.currentTarget.style.borderColor = 'var(--header-green)';
-                    e.currentTarget.style.backgroundColor = 'var(--surface-color)';
+                  const target = e.target as HTMLInputElement;
+                  if (document.activeElement !== target) {
+                    target.style.borderColor = 'var(--brand-teal)';
+                    target.style.backgroundColor = 'var(--surface-secondary)';
                   }
                 }}
                 onMouseLeave={(e) => {
-                  if (document.activeElement !== e.target) {
-                    e.currentTarget.style.borderColor = 'var(--border-color)';
-                    e.currentTarget.style.backgroundColor = 'var(--surface-secondary)';
+                  const target = e.target as HTMLInputElement;
+                  if (document.activeElement !== target) {
+                    target.style.borderColor = 'var(--border-color)';
+                    target.style.backgroundColor = 'var(--surface-color)';
                   }
                 }}
               />
@@ -449,30 +456,37 @@ export default function EventModalContent({
                 onChange={(e) => setEndDateTime(e.target.value)}
                 required
                 step="900"
-                className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface-secondary focus:outline-none cursor-pointer"
-                style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+                className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none cursor-pointer"
+                style={{ 
+                  fontFamily: 'var(--font-inter), Inter, sans-serif',
+                  color: 'var(--text-default)',
+                  backgroundColor: 'var(--surface-color)',
+                  borderColor: 'var(--border-color)',
+                }}
                 onFocus={(e) => {
                   const target = e.target as HTMLInputElement;
-                  target.style.borderColor = 'var(--header-green)';
-                  target.style.backgroundColor = 'var(--surface-color)';
-                  target.style.boxShadow = '0 0 0 3px rgba(1, 104, 83, 0.1)';
+                  target.style.borderColor = 'var(--brand-teal)';
+                  target.style.backgroundColor = 'var(--surface-secondary)';
+                  target.style.boxShadow = '0 0 0 3px rgba(2, 197, 175, 0.1)';
                 }}
                 onBlur={(e) => {
                   const target = e.target as HTMLInputElement;
                   target.style.borderColor = 'var(--border-color)';
-                  target.style.backgroundColor = 'var(--surface-secondary)';
+                  target.style.backgroundColor = 'var(--surface-color)';
                   target.style.boxShadow = 'none';
                 }}
                 onMouseEnter={(e) => {
-                  if (document.activeElement !== e.target) {
-                    e.currentTarget.style.borderColor = 'var(--header-green)';
-                    e.currentTarget.style.backgroundColor = 'var(--surface-color)';
+                  const target = e.target as HTMLInputElement;
+                  if (document.activeElement !== target) {
+                    target.style.borderColor = 'var(--brand-teal)';
+                    target.style.backgroundColor = 'var(--surface-secondary)';
                   }
                 }}
                 onMouseLeave={(e) => {
-                  if (document.activeElement !== e.target) {
-                    e.currentTarget.style.borderColor = 'var(--border-color)';
-                    e.currentTarget.style.backgroundColor = 'var(--surface-secondary)';
+                  const target = e.target as HTMLInputElement;
+                  if (document.activeElement !== target) {
+                    target.style.borderColor = 'var(--border-color)';
+                    target.style.backgroundColor = 'var(--surface-color)';
                   }
                 }}
               />

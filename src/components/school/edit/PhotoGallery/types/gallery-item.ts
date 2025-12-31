@@ -4,4 +4,5 @@ export interface GalleryItem {
   altText: string;
   image: string;
   pinned: boolean;
+  order: number;
 }

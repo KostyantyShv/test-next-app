@@ -9,10 +9,36 @@ interface Props {
   onPin: (id: number) => void;
   onEdit: (id: number) => void;
   index: number;
+  onDragStart: (id: number) => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDrop: (e: React.DragEvent, id: number) => void;
 }
 
-export default function GalleryItem({ item, onPin, onEdit, index }: Props) {
+export default function GalleryItem({ 
+  item, 
+  onPin, 
+  onEdit, 
+  index,
+  onDragStart,
+  onDragOver,
+  onDrop
+}: Props) {
   const [isDragging, setIsDragging] = useState(false);
+
+  const handleDragStart = (e: React.DragEvent) => {
+    setIsDragging(true);
+    onDragStart(item.id);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    onDrop(e, item.id);
+    setIsDragging(false);
+  };
 
   return (
     <li
@@ -21,8 +47,10 @@ export default function GalleryItem({ item, onPin, onEdit, index }: Props) {
       } rounded-lg transition-all ${isDragging ? "opacity-40" : "opacity-100"}`}
       draggable
       data-id={item.id}
-      onDragStart={() => setIsDragging(true)}
-      onDragEnd={() => setIsDragging(false)}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDragOver={onDragOver}
+      onDrop={handleDrop}
     >
       <div className="cursor-move text-[#DFDDDB] mr-4">
         <svg width="24" height="24" viewBox="0 0 24 24">

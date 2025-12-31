@@ -157,11 +157,11 @@ export default function Announcements() {
   return (
     <>
       <div className="flex max-md:flex-col gap-6">
-        <div className="max-w-[350px] max-md:p-6">
+        <div className="max-w-[350px] max-md:pt-6 max-md:pb-6 max-md:pr-6">
           <h1 className="text-[#1a1a19] text-2xl font-semibold mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
             Announcements
           </h1>
-          <p className="text-[#5F5F5F] text-base leading-6">
+          <p className="text-[#5F5F5F] text-base leading-6 w-[350px]">
             Share important updates and news with your community. Schedule
             announcements and manage their visibility.
           </p>

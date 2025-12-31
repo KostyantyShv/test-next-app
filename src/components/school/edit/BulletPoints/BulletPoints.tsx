@@ -65,7 +65,7 @@ export default function BulletPoints() {
   return (
     <div className="text-default my-5">
       <div className="mx-auto w-full flex max-md:flex-col gap-6">
-        <div className="max-w-[350px] px-6">
+        <div className="max-w-[350px] pr-6">
           <h1 className="text-dark text-2xl font-semibold mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
             Bullet Points
           </h1>

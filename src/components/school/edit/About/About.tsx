@@ -204,7 +204,7 @@ const About: React.FC = () => {
   return (
     <div className="py-6 w-full flex justify-center" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif' }}>
       <div className="w-full flex max-md:flex-col gap-6">
-        <div className="max-w-[350px] max-md:px-6">
+        <div className="max-w-[350px] max-md:pt-6 max-md:pb-6 max-md:pr-6">
           <h1 className="text-2xl font-semibold text-bold mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif' }}>About</h1>
           <p className="text-subtle text-base leading-relaxed">
             Share information about your institution, qualifications, and areas

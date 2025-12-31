@@ -97,11 +97,11 @@ export default function Events() {
   return (
     <div className="text-[#4A4A4A] font-inter">
       <div className="w-full mx-auto flex gap-[25px] max-md:flex-col">
-        <div className="max-w-[350px] px-6">
+        <div className="max-w-[350px] pr-6">
           <h1 className="text-[#1B1B1B] text-[28px] font-semibold mb-3 tracking-tight" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
             Events
           </h1>
-          <p className="text-[#5F5F5F] text-base leading-6">
+          <p className="text-[#5F5F5F] text-base leading-6 w-[350px]">
             Schedule and manage your upcoming events. Keep your community
             informed about virtual sessions, meetings, and live sessions.
           </p>

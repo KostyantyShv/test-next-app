@@ -130,40 +130,6 @@ export const LinkModalContent = ({ link, onSave, onClose }: LinkModalProps) => {
         </div>
         <div className="mb-5">
           <label className="block text-sm font-medium text-dark mb-2">
-            Link Icon
-          </label>
-          <div
-            className="w-full h-[200px] rounded-lg border-2 border-dashed border-theme flex items-center justify-center cursor-pointer transition"
-            style={{
-              '--hover-border': 'var(--brand-teal)',
-              '--hover-bg': 'var(--surface-secondary)',
-            } as React.CSSProperties}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'var(--brand-teal)';
-              e.currentTarget.style.backgroundColor = 'var(--surface-secondary)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'var(--border-color)';
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }}
-            onClick={() => iconInputRef.current?.click()}
-          >
-            <img
-              src={iconSrc}
-              alt="Icon preview"
-              className="max-w-full max-h-full object-contain"
-            />
-          </div>
-          <input
-            type="file"
-            ref={iconInputRef}
-            className="hidden"
-            accept="image/*"
-            onChange={handleFileUpload}
-          />
-        </div>
-        <div className="mb-5">
-          <label className="block text-sm font-medium text-dark mb-2">
             Background Color
           </label>
           <div className="flex flex-col gap-4">
@@ -174,12 +140,11 @@ export const LinkModalContent = ({ link, onSave, onClose }: LinkModalProps) => {
                     key={color}
                     className={`w-9 h-9 rounded-md cursor-pointer border-2 transition-transform ${
                       selectedColor === color
-                        ? "scale-110"
+                        ? "scale-110 border-[#02C5AF]"
                         : "border-transparent"
                     } hover:scale-110`}
                     style={{ 
                       backgroundColor: color,
-                      borderColor: selectedColor === color ? 'var(--brand-teal)' : 'transparent'
                     }}
                     onClick={() => setSelectedColor(color)}
                   />
@@ -198,6 +163,28 @@ export const LinkModalContent = ({ link, onSave, onClose }: LinkModalProps) => {
               />
             </div>
           </div>
+        </div>
+        <div className="mb-5">
+          <label className="block text-sm font-medium text-dark mb-2">
+            Link Icon
+          </label>
+          <div
+            className="w-full h-[200px] rounded-lg border-2 border-dashed border-theme flex items-center justify-center cursor-pointer transition hover:border-[#02C5AF] hover:bg-[#F9FAFB]"
+            onClick={() => iconInputRef.current?.click()}
+          >
+            <img
+              src={iconSrc}
+              alt="Icon preview"
+              className="max-w-full max-h-full object-contain"
+            />
+          </div>
+          <input
+            type="file"
+            ref={iconInputRef}
+            className="hidden"
+            accept="image/*"
+            onChange={handleFileUpload}
+          />
         </div>
         <div className="p-4 border-t border-theme flex justify-end gap-3">
           <button

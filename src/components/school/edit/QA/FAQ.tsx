@@ -82,9 +82,9 @@ export default function FAQ() {
   return (
     <>
       <div className="mx-auto flex gap-6 max-md:flex-col" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
-        <div className="max-w-[350px] px-6">
+        <div className="max-w-[350px] pr-6">
           <h1 className="text-2xl font-semibold text-[#1A1A1A] mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>FAQ</h1>
-          <p className="text-base text-[#5F5F5F] leading-relaxed">
+          <p className="text-base text-[#5F5F5F] leading-relaxed w-[350px]">
             Add frequently asked questions and their answers to help students
             better understand your school.
           </p>
