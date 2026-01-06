@@ -160,8 +160,9 @@ export default function PhotoGallery() {
   };
 
   return (
-    <div className="w-full mx-auto flex gap-6 my-6 max-md:flex-col">
-      <div className="max-w-[350px] pr-6">
+    <div className="w-full mx-auto flex gap-6 my-6 max-md:my-0 max-md:flex-col max-md:px-4">
+      {/* Desktop Header */}
+      <div className="max-w-[350px] max-md:hidden pr-6">
         <h1 className="text-2xl text-[#1a1a19] font-semibold mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
           Photo Gallery
         </h1>
@@ -170,8 +171,19 @@ export default function PhotoGallery() {
           images, and customize details for each photo.
         </p>
       </div>
+      
+      {/* Mobile Header */}
+      <div className="hidden max-md:block pt-[18px] pb-4">
+        <h1 className="text-2xl font-semibold mb-2" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', color: 'var(--bold-text)' }}>
+          Photo Gallery
+        </h1>
+        <p className="text-sm leading-6" style={{ color: 'var(--subtle-text)' }}>
+          Create and organize your image gallery. Drag to reorder, pin important
+          images, and customize details for each photo.
+        </p>
+      </div>
 
-      <div className="w-full max-w-3xl bg-white rounded-lg p-6 shadow-sm">
+      <div className="w-full max-w-3xl bg-white max-md:bg-white rounded-lg p-6 max-md:p-4 shadow-sm max-md:shadow-none">
         <ul className="space-y-3">
           {sortedItems.map((item, index) => (
             <GalleryItem
@@ -188,7 +200,7 @@ export default function PhotoGallery() {
         </ul>
 
         <button
-          className="mt-4 inline-flex items-center gap-2 px-5 py-3 bg-[#016853] text-white rounded-md font-medium hover:bg-[#015744] transition-colors"
+          className="mt-4 max-md:mt-4 inline-flex max-md:w-full max-md:justify-center items-center gap-2 px-5 py-3 max-md:py-3 max-md:px-5 bg-[#016853] text-white rounded-md font-medium hover:bg-[#015744] max-md:active:bg-[#015744] transition-colors"
           onClick={() => {
             setCurrentEditId(null);
             setIsModalOpen(true);

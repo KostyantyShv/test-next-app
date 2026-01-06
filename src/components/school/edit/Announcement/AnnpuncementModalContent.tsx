@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Announcement } from "./types/announcement";
-import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 
 interface AnnouncementModalProps {
   onClose: () => void;
@@ -31,7 +30,6 @@ export default function AnnouncementModalContent({
   const [emoji, setEmoji] = useState("👋");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const emojiPickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (editId) {
@@ -58,25 +56,6 @@ export default function AnnouncementModalContent({
       setEmoji("👋");
     }
   }, [editId, announcements]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        emojiPickerRef.current &&
-        !emojiPickerRef.current.contains(event.target as Node)
-      ) {
-        setShowEmojiPicker(false);
-      }
-    };
-
-    if (showEmojiPicker) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showEmojiPicker]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -134,39 +113,42 @@ export default function AnnouncementModalContent({
   };
 
   return (
-    <>
-      <div className="flex justify-between items-center p-6 border-b border-theme">
-        <h2 className="text-2xl font-bold text-dark">
+    <div className="flex flex-col h-full max-h-[90vh] max-md:max-h-[90vh]">
+      {/* Drawer Header */}
+      <div className="sticky top-0 bg-white z-10 px-5 py-4 max-md:px-5 max-md:py-4 border-b border-gray-200 max-md:border-gray-200 flex justify-between items-center flex-shrink-0">
+        <h2 className="text-lg max-md:text-lg font-semibold" style={{ color: 'var(--bold-text)' }}>
           {editId ? "Edit Announcement" : "Create Announcement"}
         </h2>
         <button
-          className="p-2 hover:bg-background rounded-full"
+          className="w-8 h-8 max-md:w-8 max-md:h-8 flex items-center justify-center border-none bg-transparent cursor-pointer rounded-full active:bg-gray-100 max-md:active:bg-gray-100 transition-colors"
           onClick={onClose}
         >
-          <svg fill="none" viewBox="0 0 12 12" width="12" height="12">
-            <path
-              fill="var(--subtle-text)"
-              d="M7.46875 6L10.8438 2.65625C11.0312 2.46875 11.0312 2.125 10.8438 1.9375L10.0625 1.15625C9.875 0.96875 9.53125 0.96875 9.34375 1.15625L6 4.53125L2.625 1.15625C2.4375 0.96875 2.09375 0.96875 1.90625 1.15625L1.125 1.9375C0.9375 2.125 0.9375 2.46875 1.125 2.65625L4.5 6L1.125 9.375C0.9375 9.5625 0.9375 9.90625 1.125 10.0938L1.90625 10.875C2.09375 11.0625 2.4375 11.0625 2.625 10.875L6 7.5L9.34375 10.875C9.53125 11.0625 9.875 11.0625 10.0625 10.875L10.8438 10.0938C11.0312 9.90625 11.0312 9.5625 10.8438 9.375L7.46875 6Z"
-            />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18" style={{ color: 'var(--subtle-text)' }}>
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         </button>
       </div>
-      <form id="announcementForm" onSubmit={handleSubmit} className="p-6">
-        <div className="mb-6">
-          <label className="block font-semibold text-default text-sm mb-2">
+      
+      {/* Drawer Body */}
+      <form id="announcementForm" onSubmit={handleSubmit} className="px-5 py-4 max-md:px-5 max-md:py-4 overflow-y-auto flex-grow">
+        <div className="mb-[18px] max-md:mb-[18px]">
+          <label className="block font-semibold text-sm max-md:text-sm mb-1.5 max-md:mb-1.5" style={{ color: 'var(--text-default)' }}>
             Title
           </label>
-          <div className="flex items-start gap-3 relative">
+          <div className="flex items-center gap-2 max-md:gap-2">
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Announcement Title"
               required
-              className="flex-1 p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+              className="flex-1 px-3 py-3 max-md:px-3 max-md:py-3 border rounded-lg text-sm max-md:text-sm focus:outline-none"
               style={{ 
-                '--tw-ring-color': 'var(--brand-teal)',
-              } as React.CSSProperties}
+                borderColor: 'var(--border-color)',
+                color: 'var(--text-default)',
+                backgroundColor: 'white'
+              }}
               onFocus={(e) => {
                 (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
               }}
@@ -174,36 +156,57 @@ export default function AnnouncementModalContent({
                 (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
               }}
             />
-            <div className="relative" ref={emojiPickerRef}>
-              <button
-                type="button"
-                className="text-xl p-2 hover:bg-background rounded transition-colors"
-                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              >
-                {emoji}
-              </button>
-              {showEmojiPicker && (
-                <div className="absolute top-full right-0 z-50 mt-2">
-                  <EmojiPicker
-                    onEmojiClick={(emojiData: EmojiClickData) => {
-                      setEmoji(emojiData.emoji);
-                      setShowEmojiPicker(false);
-                    }}
-                    width={350}
-                    height={400}
-                  />
+            <button
+              type="button"
+              className="w-9 h-9 max-md:w-9 max-md:h-9 flex items-center justify-center border rounded-full bg-white active:bg-gray-100 max-md:active:bg-gray-100 transition-colors flex-shrink-0"
+              style={{ borderColor: 'var(--border-color)' }}
+              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            >
+              <span className="text-lg max-md:text-lg">{emoji}</span>
+            </button>
+            {showEmojiPicker && (
+              <div className="fixed inset-0 z-[4000] max-md:z-[4000]" onClick={() => setShowEmojiPicker(false)}>
+                <div className="absolute bottom-0 left-0 w-full max-h-[70%] bg-white rounded-t-[20px] shadow-[0_-2px_10px_rgba(0,0,0,0.15)]" onClick={(e) => e.stopPropagation()}>
+                  <div className="sticky top-0 bg-white px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+                    <button
+                      className="w-8 h-8 flex items-center justify-center border-none bg-transparent cursor-pointer rounded-full active:bg-gray-100"
+                      onClick={() => setShowEmojiPicker(false)}
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18" style={{ color: 'var(--subtle-text)' }}>
+                        <path d="M15 18l-6-6 6-6"></path>
+                      </svg>
+                    </button>
+                    <h3 className="text-lg font-semibold" style={{ color: 'var(--bold-text)' }}>Choose Emoji</h3>
+                    <div style={{ width: '32px' }}></div>
+                  </div>
+                  <div className="p-5">
+                    <div className="grid grid-cols-6 gap-3">
+                      {['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '👋', '👍', '👏', '🙌', '🤝', '🔥', '⭐', '🎉', '🎊', '🎯', '🚀', '💡', '📣', '📢', '🔔', '🔊', '📝', '📌', '🔧', '🔨'].map((emojiOption) => (
+                        <div
+                          key={emojiOption}
+                          className="text-2xl w-11 h-11 max-md:w-11 max-md:h-11 flex items-center justify-center rounded-lg cursor-pointer active:bg-gray-100 max-md:active:bg-gray-100 transition-colors"
+                          onClick={() => {
+                            setEmoji(emojiOption);
+                            setShowEmojiPicker(false);
+                          }}
+                        >
+                          {emojiOption}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
-        <div className="mb-6">
-          <label className="block font-semibold text-default text-sm mb-2">
+        <div className="mb-[18px] max-md:mb-[18px]">
+          <label className="block font-semibold text-sm max-md:text-sm mb-1.5 max-md:mb-1.5" style={{ color: 'var(--text-default)' }}>
             Avatar
           </label>
-          <div className="border border-theme rounded-lg overflow-hidden">
-            <div className="flex items-center gap-6 p-4">
-              <div className="w-[120px] h-[120px] bg-surface-secondary rounded-full overflow-hidden flex items-center justify-center">
+          <div className="border rounded-lg overflow-hidden" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="flex items-center gap-4 max-md:gap-4 p-4 max-md:p-4">
+              <div className="w-20 h-20 max-md:w-20 max-md:h-20 rounded-full overflow-hidden flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#F7FAFC' }}>
                 <img
                   src={avatar}
                   alt="Author avatar"
@@ -211,12 +214,13 @@ export default function AnnouncementModalContent({
                 />
               </div>
               <div className="flex-1">
-                <div className="text-sm text-default mb-2">
+                <div className="text-[13px] max-md:text-[13px] mb-2 max-md:mb-2" style={{ color: 'var(--text-default)' }}>
                   Recommended dimensions of <strong>400×400</strong>
                 </div>
                 <button
                   type="button"
-                  className="flex items-center gap-2 py-1.5 px-4 border border-theme rounded-full text-sm text-default hover:bg-background"
+                  className="inline-flex items-center gap-2 max-md:gap-2 px-4 py-1.5 max-md:px-4 max-md:py-1.5 border rounded-full text-sm max-md:text-sm active:bg-gray-100 max-md:active:bg-gray-100 transition-colors"
+                  style={{ borderColor: 'var(--border-color)', color: 'var(--text-default)' }}
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <svg fill="none" viewBox="0 0 48 48" width="24" height="24">
@@ -228,10 +232,7 @@ export default function AnnouncementModalContent({
                       fillRule="evenodd"
                     />
                   </svg>
-                  {avatar ===
-                  "https://i.ibb.co/0yKzNSpq/AVATAR-Kostis-Kapelonis.png"
-                    ? "Choose Avatar"
-                    : "Replace Avatar"}
+                  Choose Avatar
                 </button>
               </div>
             </div>
@@ -244,8 +245,8 @@ export default function AnnouncementModalContent({
             />
           </div>
         </div>
-        <div className="mb-6">
-          <label className="block font-semibold text-default text-sm mb-2">
+        <div className="mb-[18px] max-md:mb-[18px]">
+          <label className="block font-semibold text-sm max-md:text-sm mb-1.5 max-md:mb-1.5" style={{ color: 'var(--text-default)' }}>
             Author Name
           </label>
           <input
@@ -254,7 +255,12 @@ export default function AnnouncementModalContent({
             onChange={(e) => setAuthorName(e.target.value)}
             placeholder="Enter author name"
             required
-            className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+            className="w-full px-3 py-3 max-md:px-3 max-md:py-3 border rounded-lg text-sm max-md:text-sm focus:outline-none"
+            style={{ 
+              borderColor: 'var(--border-color)',
+              color: 'var(--text-default)',
+              backgroundColor: 'white'
+            }}
             onFocus={(e) => {
               e.target.style.borderColor = 'var(--brand-teal)';
             }}
@@ -263,8 +269,8 @@ export default function AnnouncementModalContent({
             }}
           />
         </div>
-        <div className="mb-6">
-          <label className="block font-semibold text-default text-sm mb-2">
+        <div className="mb-[18px] max-md:mb-[18px]">
+          <label className="block font-semibold text-sm max-md:text-sm mb-1.5 max-md:mb-1.5" style={{ color: 'var(--text-default)' }}>
             Author Role
           </label>
           <input
@@ -273,7 +279,12 @@ export default function AnnouncementModalContent({
             onChange={(e) => setAuthorRole(e.target.value)}
             placeholder="Enter author role"
             required
-            className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+            className="w-full px-3 py-3 max-md:px-3 max-md:py-3 border rounded-lg text-sm max-md:text-sm focus:outline-none"
+            style={{ 
+              borderColor: 'var(--border-color)',
+              color: 'var(--text-default)',
+              backgroundColor: 'white'
+            }}
             onFocus={(e) => {
               e.target.style.borderColor = 'var(--brand-teal)';
             }}
@@ -282,8 +293,8 @@ export default function AnnouncementModalContent({
             }}
           />
         </div>
-        <div className="mb-6">
-          <label className="block font-semibold text-default text-sm mb-2">
+        <div className="mb-[18px] max-md:mb-[18px]">
+          <label className="block font-semibold text-sm max-md:text-sm mb-1.5 max-md:mb-1.5" style={{ color: 'var(--text-default)' }}>
             Announcement
           </label>
           <textarea
@@ -292,7 +303,12 @@ export default function AnnouncementModalContent({
             rows={4}
             placeholder="Write your announcement here..."
             required
-            className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+            className="w-full px-3 py-3 max-md:px-3 max-md:py-3 border rounded-lg text-sm max-md:text-sm focus:outline-none"
+            style={{ 
+              borderColor: 'var(--border-color)',
+              color: 'var(--text-default)',
+              backgroundColor: 'white'
+            }}
             onFocus={(e) => {
               e.target.style.borderColor = 'var(--brand-teal)';
             }}
@@ -301,132 +317,90 @@ export default function AnnouncementModalContent({
             }}
           />
         </div>
-        <div className="mb-6">
-          <label className="block font-semibold text-default text-sm mb-2">
+        <div className="mb-[18px] max-md:mb-[18px]">
+          <label className="block font-semibold text-sm max-md:text-sm mb-1.5 max-md:mb-1.5" style={{ color: 'var(--text-default)' }}>
             Schedule
           </label>
-          <div className="flex gap-4 max-md:flex-col">
+          <div className="flex flex-col gap-4 max-md:flex-col max-md:gap-4">
             <div className="flex-1">
-              <label className="block font-semibold text-default text-sm mb-2">
+              <label className="block font-semibold text-sm max-md:text-sm mb-1.5 max-md:mb-1.5" style={{ color: 'var(--text-default)' }}>
                 Start Date & Time
               </label>
-              <div className="relative">
-                <input
-                  type="datetime-local"
-                  value={startDate}
-                  onChange={handleStartDateChange}
-                  required
-                  step="900"
-                  className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface cursor-pointer focus:outline-none"
-                  style={{
-                    color: 'var(--text-default)',
-                    backgroundColor: 'var(--surface-color)',
-                    borderColor: 'var(--border-color)',
-                  }}
-                  onFocus={(e) => {
-                    const target = e.target as HTMLInputElement;
-                    target.style.borderColor = 'var(--brand-teal)';
-                    target.style.backgroundColor = 'var(--surface-secondary)';
-                    target.style.boxShadow = '0 0 0 3px rgba(2, 197, 175, 0.1)';
-                  }}
-                  onBlur={(e) => {
-                    const target = e.target as HTMLInputElement;
-                    target.style.borderColor = 'var(--border-color)';
-                    target.style.backgroundColor = 'var(--surface-color)';
-                    target.style.boxShadow = 'none';
-                  }}
-                  onMouseEnter={(e) => {
-                    const target = e.target as HTMLInputElement;
-                    if (document.activeElement !== target) {
-                      target.style.borderColor = 'var(--brand-teal)';
-                      target.style.backgroundColor = 'var(--surface-secondary)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    const target = e.target as HTMLInputElement;
-                    if (document.activeElement !== target) {
-                      target.style.borderColor = 'var(--border-color)';
-                      target.style.backgroundColor = 'var(--surface-color)';
-                    }
-                  }}
-                />
-              </div>
+              <input
+                type="datetime-local"
+                value={startDate}
+                onChange={handleStartDateChange}
+                required
+                step="900"
+                className="w-full px-3 py-3 max-md:px-3 max-md:py-3 border rounded-lg text-sm max-md:text-sm cursor-pointer focus:outline-none"
+                style={{
+                  color: 'var(--text-default)',
+                  backgroundColor: 'white',
+                  borderColor: 'var(--border-color)',
+                }}
+                onFocus={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  target.style.borderColor = 'var(--brand-teal)';
+                }}
+                onBlur={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  target.style.borderColor = 'var(--border-color)';
+                }}
+              />
             </div>
             <div className="flex-1">
-              <label className="block font-semibold text-default text-sm mb-2">
+              <label className="block font-semibold text-sm max-md:text-sm mb-1.5 max-md:mb-1.5" style={{ color: 'var(--text-default)' }}>
                 End Date & Time
               </label>
-              <div className="relative">
-                <input
-                  type="datetime-local"
-                  value={endDate}
-                  onChange={handleEndDateChange}
-                  required
-                  step="900"
-                  className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface cursor-pointer focus:outline-none"
-                  style={{
-                    color: 'var(--text-default)',
-                    backgroundColor: 'var(--surface-color)',
-                    borderColor: 'var(--border-color)',
-                  }}
-                  onFocus={(e) => {
-                    const target = e.target as HTMLInputElement;
-                    target.style.borderColor = 'var(--brand-teal)';
-                    target.style.backgroundColor = 'var(--surface-secondary)';
-                    target.style.boxShadow = '0 0 0 3px rgba(2, 197, 175, 0.1)';
-                  }}
-                  onBlur={(e) => {
-                    const target = e.target as HTMLInputElement;
-                    target.style.borderColor = 'var(--border-color)';
-                    target.style.backgroundColor = 'var(--surface-color)';
-                    target.style.boxShadow = 'none';
-                  }}
-                  onMouseEnter={(e) => {
-                    const target = e.target as HTMLInputElement;
-                    if (document.activeElement !== target) {
-                      target.style.borderColor = 'var(--brand-teal)';
-                      target.style.backgroundColor = 'var(--surface-secondary)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    const target = e.target as HTMLInputElement;
-                    if (document.activeElement !== target) {
-                      target.style.borderColor = 'var(--border-color)';
-                      target.style.backgroundColor = 'var(--surface-color)';
-                    }
-                  }}
-                />
-              </div>
+              <input
+                type="datetime-local"
+                value={endDate}
+                onChange={handleEndDateChange}
+                required
+                step="900"
+                className="w-full px-3 py-3 max-md:px-3 max-md:py-3 border rounded-lg text-sm max-md:text-sm cursor-pointer focus:outline-none"
+                style={{
+                  color: 'var(--text-default)',
+                  backgroundColor: 'white',
+                  borderColor: 'var(--border-color)',
+                }}
+                onFocus={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  target.style.borderColor = 'var(--brand-teal)';
+                }}
+                onBlur={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  target.style.borderColor = 'var(--border-color)';
+                }}
+              />
             </div>
           </div>
         </div>
       </form>
-      <div className="flex md:justify-between max-md:flex-col-reverse items-center p-6 border-t border-theme">
-        <button
-          className="flex max-md:w-full max-md:justify-center max-md:pt-4 items-center gap-2 bg-none border-none cursor-pointer text-sm"
-          style={{ color: '#f93a37' }}
-          onClick={onDelete}
-        >
-          <svg
-            width="20"
-            height="20"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
+      
+      {/* Drawer Footer */}
+      <div className="sticky bottom-0 bg-white border-t border-gray-200 max-md:border-gray-200 px-5 py-4 max-md:px-5 max-md:py-4 flex flex-col gap-4 max-md:gap-4 flex-shrink-0">
+        {editId && (
+          <button
+            className="flex items-center justify-center gap-2 max-md:gap-2 text-sm max-md:text-sm font-medium max-md:font-medium py-3 max-md:py-3 cursor-pointer border-none bg-transparent w-full"
+            style={{ color: '#f93a37' }}
+            onClick={onDelete}
           >
-            <path
-              fill="#f93a37"
-              d="M10.5555 4C10.099 4 9.70052 4.30906 9.58693 4.75114L9.29382 5.8919H14.715L14.4219 4.75114C14.3083 4.30906 13.9098 4 13.4533 4H10.5555ZM16.7799 5.8919L16.3589 4.25342C16.0182 2.92719 14.8226 2 13.4533 2H10.5555C9.18616 2 7.99062 2.92719 7.64985 4.25342L7.22886 5.8919H4C3.44772 5.8919 3 6.33961 3 6.8919C3 7.44418 3.44772 7.8919 4 7.8919H4.10069L5.31544 19.3172C5.47763 20.8427 6.76455 22 8.29863 22H15.7014C17.2354 22 18.5224 20.8427 18.6846 19.3172L19.8993 7.8919H20C20.5523 7.8919 21 7.44418 21 6.8919C21 6.33961 20.5523 5.8919 20 5.8919H16.7799ZM17.888 7.8919H6.11196L7.30423 19.1057C7.3583 19.6142 7.78727 20 8.29863 20H15.7014C16.2127 20 16.6417 19.6142 16.6958 19.1057L17.888 7.8919ZM10 10C10.5523 10 11 10.4477 11 11V16C11 16.5523 10.5523 17 10 17C9.44772 17 9 16.5523 9 16V11C9 10.4477 9.44772 10 10 10ZM14 10C14.5523 10 15 10.4477 15 11V16C15 16.5523 14.5523 17 14 17C13.4477 17 13 16.5523 13 16V11C13 10.4477 13.4477 10 14 10Z"
-              clipRule="evenodd"
-              fillRule="evenodd"
-            />
-          </svg>
-          Delete
-        </button>
-        <div className="flex gap-3 max-md:w-full">
+            <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path fill="#f93a37" d="M10.5555 4C10.099 4 9.70052 4.30906 9.58693 4.75114L9.29382 5.8919H14.715L14.4219 4.75114C14.3083 4.30906 13.9098 4 13.4533 4H10.5555ZM16.7799 5.8919L16.3589 4.25342C16.0182 2.92719 14.8226 2 13.4533 2H10.5555C9.18616 2 7.99062 2.92719 7.64985 4.25342L7.22886 5.8919H4C3.44772 5.8919 3 6.33961 3 6.8919C3 7.44418 3.44772 7.8919 4 7.8919H4.10069L5.31544 19.3172C5.47763 20.8427 6.76455 22 8.29863 22H15.7014C17.2354 22 18.5224 20.8427 18.6846 19.3172L19.8993 7.8919H20C20.5523 7.8919 21 7.44418 21 6.8919C21 6.33961 20.5523 5.8919 20 5.8919H16.7799ZM17.888 7.8919H6.11196L7.30423 19.1057C7.3583 19.6142 7.78727 20 8.29863 20H15.7014C16.2127 20 16.6417 19.6142 16.6958 19.1057L17.888 7.8919ZM10 10C10.5523 10 11 10.4477 11 11V16C11 16.5523 10.5523 17 10 17C9.44772 17 9 16.5523 9 16V11C9 10.4477 9.44772 10 10 10ZM14 10C14.5523 10 15 10.4477 15 11V16C15 16.5523 14.5523 17 14 17C13.4477 17 13 16.5523 13 16V11C13 10.4477 13.4477 10 14 10Z" clipRule="evenodd" fillRule="evenodd"></path>
+            </svg>
+            Delete
+          </button>
+        )}
+        <div className="flex gap-2.5 max-md:gap-2.5 w-full">
           <button
             type="button"
-            className="bg-surface-secondary max-md:w-full border border-theme text-default px-6 py-3 rounded-lg font-semibold text-sm hover:opacity-90"
+            className="flex-1 max-md:flex-1 px-0 py-3 max-md:py-3 rounded-lg font-semibold text-base max-md:text-base active:opacity-90 border"
+            style={{ 
+              backgroundColor: '#F8F9FA',
+              borderColor: 'var(--border-color)',
+              color: 'var(--text-default)'
+            }}
             onClick={onClose}
           >
             Cancel
@@ -434,13 +408,13 @@ export default function AnnouncementModalContent({
           <button
             type="submit"
             form="announcementForm"
-            className="max-md:w-full px-6 py-3 rounded-lg font-semibold text-sm hover:opacity-90 text-white"
-            style={{ backgroundColor: 'var(--brand-teal)' }}
+            className="flex-1 max-md:flex-1 px-0 py-3 max-md:py-3 rounded-lg font-semibold text-base max-md:text-base active:opacity-90 text-white"
+            style={{ backgroundColor: 'var(--brand-teal)', boxShadow: '0 2px 4px rgba(2, 197, 175, 0.2)' }}
           >
             Save
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

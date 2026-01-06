@@ -52,7 +52,7 @@ export const LinksSectionDesktop: FC<LinksSectionDesktopProps> = ({
   const handleDrop = (e: React.DragEvent, linkId: number) => {
     onDrop(e, linkId);
     setIsDragging(false);
-  };
+    };
 
   return (
     <div className="w-full flex-1 bg-white rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative">

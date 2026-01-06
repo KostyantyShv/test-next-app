@@ -37,36 +37,59 @@ export const ChecklistItem: React.FC<
   };
 
   return (
-    <div className="border rounded-lg mb-4 overflow-hidden last:mb-0" style={{ borderColor: 'var(--border-color)' }}>
+    <div className={`border max-md:border-[#E5E7EB] rounded-lg max-md:rounded-lg mb-3 max-md:mb-3 overflow-hidden max-md:overflow-hidden last:mb-0 max-md:last:mb-0 ${isExpanded ? 'expanded max-md:expanded' : ''}`} style={{ borderColor: 'var(--border-color)' }}>
       <div
-        className="p-4 max-md:grid max-md:grid-cols-[48px_1fr_24px] max-md:gap-4"
+        className="p-3 max-md:p-3 grid max-md:grid grid-cols-[28px_1fr_24px] max-md:grid-cols-[28px_1fr_24px] gap-2 max-md:gap-2 items-center max-md:items-center cursor-pointer max-md:cursor-pointer"
         style={{ 
-          display: 'grid', 
-          gridTemplateColumns: '48px 1fr auto 24px', 
-          gap: '16px', 
-          alignItems: 'center',
-          backgroundColor: 'var(--surface-color)',
+          backgroundColor: 'white',
+        }}
+        onClick={(e) => {
+          if (!(e.target as HTMLElement).closest('button')) {
+            toggleItem();
+          }
         }}
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            const expandButton = e.currentTarget.querySelector('.item-expand');
-            if (expandButton) (expandButton as HTMLElement).click();
+            if (!(e.target as HTMLElement).closest('button')) {
+              toggleItem();
+            }
           }
         }}
       >
-        <div className="flex items-center justify-center">
-          <Icon name={icon} className="w-6 h-6" style={{ color: 'var(--header-green)' }} />
+        <div className="flex items-center justify-center max-md:flex max-md:items-center max-md:justify-center">
+          <Icon name={icon} className="w-5 h-5 max-md:w-5 max-md:h-5" style={{ color: 'var(--header-green)' }} />
         </div>
-        <div className="text-sm font-medium" style={{ color: 'var(--bold-text)' }}>{title}</div>
+        <div className="text-sm max-md:text-sm font-medium max-md:font-medium overflow-hidden max-md:overflow-hidden text-ellipsis max-md:text-ellipsis whitespace-nowrap max-md:whitespace-nowrap" style={{ color: 'var(--bold-text)' }}>{title}</div>
+        <div className="item-expand-icon max-md:item-expand-icon flex items-center max-md:flex max-md:items-center justify-center max-md:justify-center">
+          <svg
+            className={`w-[18px] max-md:w-[18px] h-[18px] max-md:h-[18px] transition-transform max-md:transition-transform ${
+              isExpanded ? "rotate-180 max-md:rotate-180" : ""
+            }`}
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="2"
+            stroke="currentColor"
+            style={{ color: 'var(--dark-text)' }}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </div>
+      </div>
+      <div className="item-action-row max-md:item-action-row px-3 max-md:px-3 pb-3 max-md:pb-3">
         {status === "completed" ? (
-          <div className="flex items-center gap-2 text-sm font-medium max-md:col-span-2 max-md:mt-2" style={{ color: 'var(--success-green)' }}>
+          <div className="item-status max-md:item-status status-completed max-md:status-completed flex items-center max-md:flex max-md:items-center justify-center max-md:justify-center gap-1.5 max-md:gap-1.5" style={{ background: '#d1fae5', color: '#089E68', border: '1px solid #089E68' }}>
             <svg
-              width="20"
-              height="20"
+              width="14"
+              height="14"
               viewBox="0 0 20 20"
               fill="currentColor"
+              className="max-md:w-[14px] max-md:h-[14px]"
             >
               <path d="M10 0a10 10 0 110 20 10 10 0 010-20zm3.77 7.23l-4.95 4.95-2.59-2.59L4.77 11l3.18 3.18 5.59-5.59-1.77-1.36z" />
             </svg>
@@ -74,25 +97,25 @@ export const ChecklistItem: React.FC<
           </div>
         ) : (
           <button
-            className={`px-4 py-1.5 rounded text-[13px] font-medium border transition-all max-md:col-span-2 max-md:mt-2 ${
-              button?.type === "add"
-                ? "hover:opacity-90"
-                : ""
-            }`}
+            className={`item-button max-md:item-button ${button?.type === "add" ? "add-button max-md:add-button" : "fix-button max-md:fix-button"} flex items-center max-md:flex max-md:items-center justify-center max-md:justify-center gap-1.5 max-md:gap-1.5`}
+            style={{
+              background: button?.type === "add" ? '#EBFCF4' : '#F3F4F6',
+              color: button?.type === "add" ? 'var(--header-green)' : 'var(--dark-text)',
+              border: '1px solid var(--border-color)',
+            }}
             onMouseEnter={(e) => {
-              if (button?.type !== "add") {
-                (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--gray-200)';
+              if (button?.type === "add") {
+                (e.currentTarget as HTMLButtonElement).style.background = '#D7F7E9';
+              } else {
+                (e.currentTarget as HTMLButtonElement).style.background = '#E5E7EB';
               }
             }}
             onMouseLeave={(e) => {
-              if (button?.type !== "add") {
-                (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--hover-bg)';
+              if (button?.type === "add") {
+                (e.currentTarget as HTMLButtonElement).style.background = '#EBFCF4';
+              } else {
+                (e.currentTarget as HTMLButtonElement).style.background = '#F3F4F6';
               }
-            }}
-            style={{
-              background: button?.type === "add" ? 'var(--apply-button-bg)' : 'var(--hover-bg)',
-              color: button?.type === "add" ? 'var(--header-green)' : 'var(--dark-text)',
-              borderColor: 'var(--border-color)',
             }}
             onClick={(e) => {
               e.stopPropagation();
@@ -103,53 +126,30 @@ export const ChecklistItem: React.FC<
             {isProcessing ? "Processing..." : button?.label}
           </button>
         )}
-        <div
-          className="item-expand flex items-center justify-center cursor-pointer"
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleItem();
-          }}
-        >
-          <svg
-            className={`w-5 h-5 transition-transform ${
-              isExpanded ? "rotate-180" : ""
-            }`}
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </div>
       </div>
       <div
-        className={`p-4 border-t ${isExpanded ? "block" : "hidden"}`}
-        style={{ background: 'var(--surface-secondary)', borderColor: 'var(--border-color)' }}
+        className={`item-details max-md:item-details p-3 max-md:p-3 border-t max-md:border-t ${isExpanded ? "block max-md:block" : "hidden max-md:hidden"}`}
+        style={{ background: '#F9FAFB', borderColor: 'var(--border-color)' }}
       >
         {issues ? (
-          <div className="p-3 border rounded text-sm leading-6" style={{ backgroundColor: 'var(--surface-color)', borderColor: 'var(--border-color)', color: 'var(--text-default)' }}>
+          <div className="issue-description max-md:issue-description p-2.5 max-md:p-2.5 border max-md:border-[#E5E7EB] rounded-md max-md:rounded-md text-[13px] max-md:text-[13px] leading-[1.5] max-md:leading-[1.5]" style={{ backgroundColor: 'white', borderColor: 'var(--border-color)', color: 'var(--text-default)' }}>
             Some of your {title.toLowerCase()} are incomplete or missing important details. Please review and complete the following:
-            <div className="mt-3 flex flex-col gap-2">
+            <div className="affected-items max-md:affected-items mt-3 max-md:mt-3 flex flex-col max-md:flex-col gap-2 max-md:gap-2">
               {issues.map((issue, index) => (
                 <div
                   key={index}
-                  className="mt-2 pt-2 border-t border-dashed"
+                  className="affected-group max-md:affected-group mt-2 max-md:mt-2 pt-2 max-md:pt-2 border-t max-md:border-t border-dashed max-md:border-dashed"
                   style={{ borderColor: 'var(--border-color)' }}
                 >
-                  <div className="font-medium mb-1" style={{ color: 'var(--bold-text)' }}>
+                  <div className="affected-title max-md:affected-title font-medium max-md:font-medium mb-1 max-md:mb-1 text-[13px] max-md:text-[13px]" style={{ color: 'var(--bold-text)' }}>
                     {issue.title}
                   </div>
-                  <div className="flex flex-wrap gap-1 ml-5">
+                  <div className="missing-fields max-md:missing-fields flex flex-wrap max-md:flex-wrap gap-1 max-md:gap-1 mt-1 max-md:mt-1">
                     {issue.missing.map((field, idx) => (
                       <span
                         key={idx}
-                        className="px-1 py-0.5 rounded text-xs font-medium"
-                        style={{ background: 'var(--state-error-bg)', color: 'var(--state-error-text)' }}
+                        className="keyword-highlight max-md:keyword-highlight px-1 max-md:px-1 py-0.5 max-md:py-0.5 rounded max-md:rounded text-[11px] max-md:text-[11px] font-medium max-md:font-medium"
+                        style={{ background: '#fee2e2', color: '#ef4444' }}
                       >
                         {field}
                       </span>
@@ -160,7 +160,7 @@ export const ChecklistItem: React.FC<
             </div>
           </div>
         ) : (
-          <div className="p-3 border rounded text-sm leading-6" style={{ backgroundColor: 'var(--surface-color)', borderColor: 'var(--border-color)', color: 'var(--text-default)' }}>
+          <div className="option-description max-md:option-description p-2.5 max-md:p-2.5 border max-md:border-[#E5E7EB] rounded-md max-md:rounded-md text-[13px] max-md:text-[13px] leading-[1.5] max-md:leading-[1.5]" style={{ backgroundColor: 'white', borderColor: 'var(--border-color)', color: 'var(--text-default)' }}>
             {description}
           </div>
         )}

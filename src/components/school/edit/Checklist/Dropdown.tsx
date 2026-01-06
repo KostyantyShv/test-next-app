@@ -56,15 +56,15 @@ export const Dropdown: React.FC<DropdownProps> = ({
   };
 
   return (
-    <div className="relative flex items-center" ref={dropdownRef}>
+    <div className="relative flex items-center max-md:relative max-md:flex-shrink-0" ref={dropdownRef}>
       <button
-        className="px-4 py-2 bg-white border rounded text-sm font-medium flex items-center gap-2 transition-all"
+        className="px-4 max-md:px-[10px] py-2 max-md:py-1.5 bg-white max-md:bg-white border max-md:border-[#E5E7EB] rounded max-md:rounded-md text-sm max-md:text-xs font-medium max-md:font-medium flex items-center gap-2 max-md:gap-1 transition-all max-md:transition-all whitespace-nowrap max-md:whitespace-nowrap"
         style={{
           borderColor: 'var(--border-color)',
           color: 'var(--dark-text)',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'var(--apply-button-bg)';
+          e.currentTarget.style.background = 'var(--apply-button-hover)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.background = 'white';
@@ -77,7 +77,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         {getButtonText()}
       </button>
       <div
-        className={`absolute top-full right-0 mt-1 bg-white border rounded min-w-[200px] z-10 ${
+        className={`absolute top-full max-md:top-[calc(100%+4px)] right-0 max-md:right-0 mt-1 max-md:mt-0 bg-white max-md:bg-white border max-md:border-[#E5E7EB] rounded max-md:rounded-md min-w-[200px] max-md:min-w-[160px] z-10 max-md:z-10 ${
           isOpen ? "block" : "hidden"
         }`}
         style={{
@@ -88,12 +88,12 @@ export const Dropdown: React.FC<DropdownProps> = ({
         {options.map((option) => (
           <button
             key={option.mode}
-            className="w-full text-left px-4 py-2 text-sm transition-all"
+            className="w-full text-left px-4 max-md:px-3 py-2 max-md:py-2 text-sm max-md:text-xs transition-all max-md:transition-all"
             style={{
               color: 'var(--dark-text)',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'var(--apply-button-bg)';
+              e.currentTarget.style.background = 'var(--apply-button-hover)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = 'white';

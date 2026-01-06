@@ -53,8 +53,8 @@ export const LinksSectionMobile: FC<LinksSectionMobileProps> = ({
   };
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
-      <div className="px-6 pb-6">
+    <div className="flex flex-1 flex-col overflow-hidden max-md:px-4">
+      <div className="py-6">
         <h1 className="mb-2 text-2xl font-semibold text-[#1B1B1B]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
           Links in Bio
         </h1>
@@ -98,7 +98,7 @@ export const LinksSectionMobile: FC<LinksSectionMobileProps> = ({
                   {link.title}
                 </div>
                 <div className="mb-1 truncate text-xs text-[#5F5F5F]">
-                  {link.url}
+                  {link.url.length > 10 ? link.url.substring(0, 10) + '...' : link.url}
                 </div>
                 {link.pinned && (
                   <div className="mt-1 inline-flex items-center gap-1 rounded bg-[#F3F4F6] px-1.5 py-0.5 text-xs font-medium text-[#5F5F5F]">

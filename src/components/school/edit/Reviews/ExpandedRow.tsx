@@ -84,7 +84,7 @@ function ExpandedRow({ review, onCancel, onSave, onDelete }: ExpandedRowProps) {
         <div className="p-6 bg-apply-button-bg">
           {/* Original Review */}
           <div className="mb-5 p-4 bg-[#F8F9FA] rounded-[10px] border border-[#E5E7EB]">
-            <div className="flex items-center gap-3 mb-3">
+                <div className="flex items-center gap-3 mb-3">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#089E68] to-[#016853] flex items-center justify-center text-white font-semibold text-sm">
                 {getInitials(review.author.fullName)}
               </div>
@@ -145,17 +145,17 @@ function ExpandedRow({ review, onCancel, onSave, onDelete }: ExpandedRowProps) {
                 {/* School Reply Header (shown when reply exists) */}
                 {hasReply && review.reply && (
                   <div className="flex items-center gap-3 px-4 py-3 bg-[#F8F9FA]">
-                    <img
-                      src="https://i.ibb.co/KpsVRD83/AVATAR-midtone-ux-instrgram.jpg"
-                      alt="Lincoln Academy"
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
+                  <img
+                    src="https://i.ibb.co/KpsVRD83/AVATAR-midtone-ux-instrgram.jpg"
+                    alt="Lincoln Academy"
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
                     <div className="flex-1">
                       <div className="text-[#016853] font-semibold text-sm mb-1">
-                        Lincoln Academy
-                      </div>
+                      Lincoln Academy
+                    </div>
                       <div className="text-[#5F5F5F] text-xs">
-                        Replied on {review.reply.date}
+                      Replied on {review.reply.date}
                       </div>
                     </div>
                   </div>
@@ -178,40 +178,40 @@ function ExpandedRow({ review, onCancel, onSave, onDelete }: ExpandedRowProps) {
                       >
                         Delete
                       </button>
-                    </div>
-                  )}
-                  <textarea
-                    ref={textareaRef}
+              </div>
+            )}
+            <textarea
+              ref={textareaRef}
                     disabled={hasReply}
                     className={`w-full px-4 py-3 border-none rounded-lg text-sm text-[#4A4A4A] resize-y min-h-[120px] bg-white focus:outline-none font-['Inter'] ${
                       hasReply ? "cursor-default" : ""
                     } ${hasReply ? "pr-24" : ""}`}
                     style={{ fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif' }}
                     placeholder="Enter your reply..."
-                    value={replyText}
-                    onChange={(e) => setReplyText(e.target.value)}
-                  />
+              value={replyText}
+              onChange={(e) => setReplyText(e.target.value)}
+            />
                 </div>
               </div>
 
               {/* Reply Panel Buttons */}
               {!hasReply && (
                 <div className="flex justify-end gap-4">
-                  <button
+              <button
                     className="px-5 py-2.5 bg-white border border-[#E5E7EB] text-[#5F5F5F] rounded-md text-sm font-medium hover:bg-[#F9FAFB] hover:border-[#D1D5DB] transition-colors"
                     onClick={handleCancel}
-                  >
-                    Cancel
-                  </button>
-                  <button
+              >
+                Cancel
+              </button>
+              <button
                     className="px-5 py-2.5 bg-[#089E68] border-none text-white rounded-md text-sm font-medium hover:bg-[#0B6333] transition-colors"
                     onClick={handleSave}
-                  >
-                    Save Reply
-                  </button>
-                </div>
-              )}
+              >
+                Save Reply
+              </button>
             </div>
+              )}
+          </div>
           )}
         </div>
       </td>

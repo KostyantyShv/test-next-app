@@ -406,8 +406,8 @@ export const CheckListSection: React.FC = () => {
   }, [expandMode, showIncomplete, showIssues]);
 
   return (
-    <div className="max-w-[1150px] mx-auto py-10">
-      <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.1)] pb-4">
+    <div className="max-w-[1150px] mx-auto py-10 max-md:py-0">
+      <div className="bg-white max-md:bg-transparent rounded-lg max-md:rounded-none shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:shadow-none pb-4 max-md:pb-0">
         <Header
           showIncomplete={showIncomplete}
           setShowIncomplete={setShowIncomplete}
@@ -417,33 +417,35 @@ export const CheckListSection: React.FC = () => {
           handleExpand={handleExpand}
           items={items}
         />
-        {items.map((section) => {
-          const visibleItems = section.items.filter((item) => {
-            const isOption = item.button?.type === "add";
-            const isIssue = item.button?.type === "fix";
-            const isCompleted = item.status === "completed";
-            if (isCompleted) return true;
-            if (showIncomplete && showIssues) return isOption || isIssue;
-            if (showIncomplete) return isOption;
-            if (showIssues) return isIssue;
-            return true;
-          });
-          if (visibleItems.length === 0) return null;
-          return (
-            <Section
-              key={section.title}
-              title={section.title}
-              items={section.items}
-              isExpanded={expandedSections.includes(section.title)}
-              toggleSection={toggleSection}
-              expandedItems={expandedItems}
-              toggleItem={toggleItem}
-              completeItem={completeItem}
-              showIncomplete={showIncomplete}
-              showIssues={showIssues}
-            />
-          );
-        })}
+        <div className="max-md:px-0">
+          {items.map((section) => {
+            const visibleItems = section.items.filter((item) => {
+              const isOption = item.button?.type === "add";
+              const isIssue = item.button?.type === "fix";
+              const isCompleted = item.status === "completed";
+              if (isCompleted) return true;
+              if (showIncomplete && showIssues) return isOption || isIssue;
+              if (showIncomplete) return isOption;
+              if (showIssues) return isIssue;
+              return true;
+            });
+            if (visibleItems.length === 0) return null;
+            return (
+              <Section
+                key={section.title}
+                title={section.title}
+                items={section.items}
+                isExpanded={expandedSections.includes(section.title)}
+                toggleSection={toggleSection}
+                expandedItems={expandedItems}
+                toggleItem={toggleItem}
+                completeItem={completeItem}
+                showIncomplete={showIncomplete}
+                showIssues={showIssues}
+              />
+            );
+          })}
+        </div>
       </div>
     </div>
   );

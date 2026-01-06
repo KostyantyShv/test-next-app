@@ -28,48 +28,45 @@ export default function CtaRowsSection({
   };
 
   return (
-    <div className="border-b border-[#eee] pb-6 mb-6">
-      <h3 className="text-lg font-semibold text-[#262B3D] mb-4">
+    <div className="border-b border-[#eee] max-md:border-[#eee] pb-6 max-md:pb-5 mb-6 max-md:mb-5">
+      <h3 className="text-lg max-md:text-base font-semibold text-[#262B3D] max-md:text-[#262B3D] mb-4 max-md:mb-4">
         Call to Action Rows
       </h3>
-      <div className="flex flex-col gap-4 mb-4">
+      <div className="flex flex-col gap-3 max-md:gap-3 mb-4 max-md:mb-4">
         {ctaRows.map((cta, index) => (
           <div
             key={index}
-            className="flex max-md:flex-col max-md:w-full items-center gap-4 p-4 border border-[#E5E5E5] rounded-lg relative"
+            className="flex max-md:flex-col max-md:w-full max-md:items-start gap-2 max-md:gap-2 p-3 max-md:p-3 border border-[#E5E5E5] max-md:border-[#E5E5E5] rounded-lg max-md:rounded-lg relative"
           >
             <button
               type="button"
               onClick={() => removeCtaRow(index)}
-              className="absolute top-2 right-2 w-5 h-5 rounded-full bg-[#f8f9fa] border border-[#E5E5E5] flex items-center justify-center text-[#666] hover:bg-[#e9ecef] hover:text-[#333]"
+              className="absolute top-2 max-md:top-2 right-2 max-md:right-2 w-6 h-6 max-md:w-6 max-md:h-6 rounded-full max-md:rounded-full bg-[#f8f9fa] max-md:bg-[#f8f9fa] border border-[#E5E5E5] max-md:border-[#E5E5E5] flex items-center justify-center text-[#666] max-md:text-[#666] hover:bg-[#e9ecef] max-md:hover:bg-[#e9ecef] hover:text-[#333] max-md:hover:text-[#333] text-sm max-md:text-sm font-semibold max-md:font-semibold"
             >
               ×
             </button>
-            <div className="flex-1 max-md:w-full">
-              <label className="block font-semibold text-default mb-2 text-sm">
+            <div className="flex-1 max-md:w-full max-md:mb-2">
+              <label className="block font-semibold max-md:font-medium text-[#4A4A4A] max-md:text-[#4A4A4A] mb-2 max-md:mb-1.5 text-sm max-md:text-sm">
                 CTA Text
               </label>
               <input
                 type="text"
                 value={cta.text}
                 onChange={(e) => updateCtaRow(index, "text", e.target.value)}
-                className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
-                style={{ 
-                  borderColor: 'var(--border-color)',
-                  color: 'var(--text-default)',
-                  backgroundColor: 'var(--surface-color)'
-                }}
+                className="w-full px-3 max-md:px-3 py-3 max-md:py-3 border border-[#E5E5E5] max-md:border-[#E5E5E5] rounded-lg max-md:rounded-lg text-sm max-md:text-sm text-[#4A4A4A] max-md:text-[#4A4A4A] bg-white max-md:bg-white focus:outline-none"
                 onFocus={(e) => {
-                  (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+                  const target = e.target as HTMLInputElement;
+                  target.style.borderColor = '#02C5AF';
                 }}
                 onBlur={(e) => {
-                  (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+                  const target = e.target as HTMLInputElement;
+                  target.style.borderColor = '#E5E5E5';
                 }}
                 placeholder="e.g., Schedule a Demo Session"
               />
             </div>
             <div className="w-[150px] max-md:w-full">
-              <label className="block font-semibold text-default mb-2 text-sm">
+              <label className="block font-semibold max-md:font-medium text-[#4A4A4A] max-md:text-[#4A4A4A] mb-2 max-md:mb-1.5 text-sm max-md:text-sm">
                 Button Text
               </label>
               <input
@@ -78,17 +75,14 @@ export default function CtaRowsSection({
                 onChange={(e) =>
                   updateCtaRow(index, "buttonText", e.target.value)
                 }
-                className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
-                style={{ 
-                  borderColor: 'var(--border-color)',
-                  color: 'var(--text-default)',
-                  backgroundColor: 'var(--surface-color)'
-                }}
+                className="w-full px-3 max-md:px-3 py-3 max-md:py-3 border border-[#E5E5E5] max-md:border-[#E5E5E5] rounded-lg max-md:rounded-lg text-sm max-md:text-sm text-[#4A4A4A] max-md:text-[#4A4A4A] bg-white max-md:bg-white focus:outline-none"
                 onFocus={(e) => {
-                  (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+                  const target = e.target as HTMLInputElement;
+                  target.style.borderColor = '#02C5AF';
                 }}
                 onBlur={(e) => {
-                  (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+                  const target = e.target as HTMLInputElement;
+                  target.style.borderColor = '#E5E5E5';
                 }}
                 placeholder="e.g., Book Now"
               />
@@ -99,7 +93,7 @@ export default function CtaRowsSection({
       <button
         type="button"
         onClick={addCtaRow}
-        className="w-full p-3 bg-[#f8f9fa] border border-dashed border-[#E5E5E5] rounded-lg flex items-center justify-center gap-2 text-sm text-[#262B3D] hover:bg-[#e9ecef]"
+        className="w-full p-3 max-md:p-3 bg-[#f8f9fa] max-md:bg-[#f8f9fa] border border-dashed border-[#E5E5E5] max-md:border-[#E5E5E5] rounded-lg max-md:rounded-lg flex items-center justify-center gap-2 max-md:gap-2 text-sm max-md:text-sm text-[#262B3D] max-md:text-[#262B3D] hover:bg-[#e9ecef] max-md:hover:bg-[#e9ecef]"
       >
         <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
           <path

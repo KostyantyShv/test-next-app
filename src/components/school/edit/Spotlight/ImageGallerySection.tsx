@@ -36,11 +36,11 @@ export default function ImageGallerySection({
   };
 
   return (
-    <div className="border-b border-[#eee] pb-6 mb-6">
-      <h3 className="text-lg font-semibold text-[#262B47] mb-4">
+    <div className="border-b border-[#eee] max-md:border-[#eee] pb-6 max-md:pb-5 mb-6 max-md:mb-5">
+      <h3 className="text-lg max-md:text-base font-semibold text-[#262B3D] max-md:text-[#262B3D] mb-4 max-md:mb-4">
         Image Gallery
       </h3>
-      <div className="grid grid-cols-4 max-md:grid-cols-2 gap-3 mb-3">
+      <div className="grid grid-cols-4 max-md:grid-cols-2 gap-2 max-md:gap-2 mb-3 max-md:mb-3">
         {images.map((src, index) => (
           <div
             key={index}
@@ -54,7 +54,7 @@ export default function ImageGallerySection({
             <button
               type="button"
               onClick={() => removeImage(index)}
-              className="absolute top-2 right-2 w-5 h-5 rounded-full bg-[#f8f9fa] border border-[#E5E5E5] flex items-center justify-center text-[#666] hover:bg-[#e9ecef] hover:text-[#333]"
+              className="absolute top-2 max-md:top-2 right-2 max-md:right-2 w-6 h-6 max-md:w-6 max-md:h-6 rounded-full max-md:rounded-full bg-[#f8f9fa] max-md:bg-[#f8f9fa] border border-[#E5E5E5] max-md:border-[#E5E5E5] flex items-center justify-center text-[#666] max-md:text-[#666] hover:bg-[#e9ecef] max-md:hover:bg-[#e9ecef] hover:text-[#333] max-md:hover:text-[#333] text-sm max-md:text-sm font-semibold max-md:font-semibold"
             >
               ×
             </button>

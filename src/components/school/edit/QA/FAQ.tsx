@@ -81,16 +81,28 @@ export default function FAQ() {
 
   return (
     <>
-      <div className="mx-auto flex gap-6 max-md:flex-col" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
-        <div className="max-w-[350px] pr-6">
+      <div className="mx-auto flex gap-6 max-md:flex-col max-md:px-4" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
+        {/* Desktop Header */}
+        <div className="max-w-[350px] max-md:hidden pr-6">
           <h1 className="text-2xl font-semibold text-[#1A1A1A] mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>FAQ</h1>
           <p className="text-base text-[#5F5F5F] leading-relaxed w-[350px]">
             Add frequently asked questions and their answers to help students
             better understand your school.
           </p>
         </div>
+        
+        {/* Mobile Header */}
+        <div className="hidden max-md:block pt-[18px] pb-4">
+          <h1 className="text-2xl font-semibold mb-2" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', color: 'var(--bold-text)' }}>
+            FAQ
+          </h1>
+          <p className="text-sm leading-6" style={{ color: 'var(--subtle-text)' }}>
+            Add frequently asked questions and their answers to help students
+            better understand your school.
+          </p>
+        </div>
 
-        <div className="w-full bg-white rounded-lg p-6 shadow-[0_1px_3px_rgba(0,_0,_0,_0.1)]">
+        <div className="w-full bg-white max-md:bg-white rounded-lg max-md:rounded-lg shadow-[0_1px_3px_rgba(0,_0,_0,_0.1)] max-md:shadow-none p-6 max-md:p-4">
           <QuestionList
             questions={questions}
             onTogglePin={handleTogglePin}

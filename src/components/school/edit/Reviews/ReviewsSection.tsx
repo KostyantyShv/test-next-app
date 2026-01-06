@@ -36,7 +36,8 @@ export default function ReviewsSection() {
     <div className={`text-gray-700 ${inter.className}`}>
       <div className="container mx-auto">
         <div className="md:flex md:gap-6">
-          <div className="md:max-w-[350px] max-md:pt-6 max-md:pb-6 max-md:pr-6">
+          {/* Desktop Header */}
+          <div className="md:max-w-[350px] max-md:hidden">
             <h1 className="text-gray-900 text-2xl font-semibold mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
               Reviews
             </h1>
@@ -45,8 +46,20 @@ export default function ReviewsSection() {
               important comments and highlight exceptional experiences.
             </p>
           </div>
-          <div className="w-full bg-white rounded-xl shadow-sm p-6">
-            <h1 className="text-gray-900 text-2xl font-semibold tracking-tight mb-6" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
+          
+          {/* Mobile Header */}
+          <div className="hidden max-md:block px-4 pt-4 pb-4">
+            <h1 className="text-2xl font-semibold mb-2" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', color: 'var(--bold-text)' }}>
+              Reviews
+            </h1>
+            <p className="text-sm leading-6" style={{ color: 'var(--subtle-text)' }}>
+              Manage student feedback and respond to reviews. Keep track of
+              important comments and highlight exceptional experiences.
+            </p>
+          </div>
+          
+          <div className="w-full bg-white max-md:bg-transparent rounded-xl max-md:rounded-none shadow-sm max-md:shadow-none p-6 max-md:p-4">
+            <h1 className="text-gray-900 text-2xl font-semibold tracking-tight mb-6 max-md:hidden" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
               Review Manager
             </h1>
             <ReviewTable reviews={reviews} setReviews={setReviews} />

@@ -184,16 +184,16 @@ export default function SpotlightModalContent({
 
   return (
     <>
-      <div className="sticky top-0 bg-white z-10 flex justify-between items-center px-6 py-6 border-b border-theme">
-        <h2 className="text-2xl font-bold text-[#262B3D]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
+      <div className="sticky top-0 bg-white z-10 flex justify-between items-center px-6 max-md:px-4 py-6 max-md:py-4 border-b border-theme max-md:border-[#E5E7EB]">
+        <h2 className="text-2xl max-md:text-lg font-bold max-md:font-semibold text-[#262B3D] max-md:text-[#262B3D]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
           {spotlight ? "Edit Spotlight" : "Create Spotlight"}
         </h2>
         <button
           onClick={onClose}
-          className="p-2 hover:bg-[#E1E7EE] rounded-full transition-colors"
+          className="p-2 max-md:w-9 max-md:h-9 max-md:p-0 hover:bg-[#E1E7EE] max-md:hover:bg-[#F3F4F6] rounded-full max-md:rounded-full transition-colors"
           type="button"
         >
-          <svg fill="none" viewBox="0 0 24 24" width="24" height="24">
+          <svg fill="none" viewBox="0 0 24 24" width="24" height="24" className="max-md:w-6 max-md:h-6">
             <path
               fill="currentColor"
               d="M5.63603 5.63604C6.02656 5.24552 6.65972 5.24552 7.05025 5.63604L12 10.5858L16.9497 5.63604C17.3403 5.24552 17.9734 5.24552 18.364 5.63604C18.7545 6.02657 18.7545 6.65973 18.364 7.05025L13.4142 12L18.364 16.9497C18.7545 17.3403 18.7545 17.9734 18.364 18.364C17.9734 18.7545 17.3403 18.7545 16.9497 18.364L12 13.4142L7.05025 18.364C6.65972 18.7545 6.02656 18.7545 5.63603 18.364C5.24551 17.9734 5.24551 17.3403 5.63603 16.9497L10.5858 12L5.63603 7.05025C5.24551 6.65973 5.24551 6.02657 5.63603 5.63604Z"
@@ -203,34 +203,34 @@ export default function SpotlightModalContent({
           </svg>
         </button>
       </div>
-      <form onSubmit={handleSubmit} className="px-6 py-6" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
+      <form onSubmit={handleSubmit} className="px-6 max-md:px-4 py-6 max-md:py-4 overflow-y-auto max-md:flex-grow" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
         {/* Author Information */}
-        <div className="border-b border-[#eee] pb-6 mb-6">
-          <h3 className="text-lg font-semibold text-[#262B3D] mb-4">
+        <div className="border-b border-[#eee] max-md:border-[#eee] pb-6 max-md:pb-5 mb-6 max-md:mb-5">
+          <h3 className="text-lg max-md:text-base font-semibold text-[#262B3D] max-md:text-[#262B3D] mb-4 max-md:mb-4">
             Author Information
           </h3>
-          <div className="flex max-md:flex-col gap-4">
-            <div className="flex-1">
-              <div className="flex items-start gap-4">
-                <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-4 border-white shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+          <div className="flex max-md:flex-col max-md:items-start gap-4 max-md:gap-4">
+            <div className="flex-1 max-md:w-full">
+              <div className="flex items-start gap-4 max-md:gap-4">
+                <div className="w-[100px] h-[100px] max-md:w-20 max-md:h-20 rounded-full overflow-hidden border-4 max-md:border-4 border-white shadow-[0_2px_8px_rgba(0,0,0,0.1)] max-md:shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
                   <img
                     src={authorAvatar}
                     alt="Author"
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div>
+                <div className="max-md:flex-1">
                   <button
                     type="button"
                     onClick={() => authorInputRef.current?.click()}
-                    className="px-4 py-2 bg-[#f5f5f5] border border-[#ddd] rounded text-sm hover:bg-[#eee] transition-colors"
+                    className="px-4 max-md:px-4 py-2 max-md:py-2 bg-[#f5f5f5] max-md:bg-[#f5f5f5] border border-[#ddd] max-md:border-[#ddd] rounded max-md:rounded text-sm max-md:text-sm hover:bg-[#eee] max-md:hover:bg-[#eee] transition-colors max-md:inline-flex max-md:items-center max-md:gap-2"
                   >
                     <svg
                       width="16"
                       height="16"
                       fill="none"
                       viewBox="0 0 24 24"
-                      className="inline mr-2"
+                      className="inline mr-2 max-md:mr-0"
                     >
                       <path
                         fill="currentColor"
@@ -254,56 +254,60 @@ export default function SpotlightModalContent({
                     accept="image/*"
                     onChange={handleAuthorImageUpload}
                   />
-                  <div className="mt-2 text-[#5F5F5F] text-xs">
+                  <div className="mt-2 max-md:mt-2 text-[#5F5F5F] text-xs max-md:text-xs">
                     Recommended size: 100x100 pixels
                   </div>
                 </div>
               </div>
             </div>
-            <div className="flex-1">
-              <div className="mb-6">
-                <label className="block font-semibold text-default mb-2 text-sm">
+            <div className="flex-1 max-md:w-full">
+              <div className="mb-6 max-md:mb-4">
+                <label className="block font-semibold max-md:font-medium text-default max-md:text-[#4A4A4A] mb-2 max-md:mb-1.5 text-sm max-md:text-sm">
                   Author Name
                 </label>
                 <input
                   type="text"
                   value={authorName}
                   onChange={(e) => setAuthorName(e.target.value)}
-                  className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+                  className="w-full px-3 max-md:px-3 py-3 max-md:py-3 border border-theme max-md:border-[#E5E5E5] rounded-lg max-md:rounded-lg text-sm max-md:text-sm text-default max-md:text-[#4A4A4A] bg-surface max-md:bg-white focus:outline-none"
                   style={{ 
                     borderColor: 'var(--border-color)',
                     color: 'var(--text-default)',
                     backgroundColor: 'var(--surface-color)'
                   }}
                   onFocus={(e) => {
-                    (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+                    const target = e.target as HTMLInputElement;
+                    target.style.borderColor = '#02C5AF';
                   }}
                   onBlur={(e) => {
-                    (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+                    const target = e.target as HTMLInputElement;
+                    target.style.borderColor = 'var(--border-color)';
                   }}
                   placeholder="Enter author name"
                   required
                 />
               </div>
               <div>
-                <label className="block font-semibold text-default mb-2 text-sm">
+                <label className="block font-semibold max-md:font-medium text-default max-md:text-[#4A4A4A] mb-2 max-md:mb-1.5 text-sm max-md:text-sm">
                   Project Date
                 </label>
                 <input
                   type="month"
                   value={projectDate}
                   onChange={(e) => setProjectDate(e.target.value)}
-                  className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+                  className="w-full px-3 max-md:px-3 py-3 max-md:py-3 border border-theme max-md:border-[#E5E5E5] rounded-lg max-md:rounded-lg text-sm max-md:text-sm text-default max-md:text-[#4A4A4A] bg-surface max-md:bg-white focus:outline-none"
                   style={{ 
                     borderColor: 'var(--border-color)',
                     color: 'var(--text-default)',
                     backgroundColor: 'var(--surface-color)'
                   }}
                   onFocus={(e) => {
-                    (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+                    const target = e.target as HTMLInputElement;
+                    target.style.borderColor = '#02C5AF';
                   }}
                   onBlur={(e) => {
-                    (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+                    const target = e.target as HTMLInputElement;
+                    target.style.borderColor = 'var(--border-color)';
                   }}
                   required
                 />
@@ -313,36 +317,38 @@ export default function SpotlightModalContent({
         </div>
 
         {/* Project Details */}
-        <div className="border-b border-[#eee] pb-6 mb-6">
-          <h3 className="text-lg font-semibold text-[#262B3D] mb-4">
+        <div className="border-b border-[#eee] max-md:border-[#eee] pb-6 max-md:pb-5 mb-6 max-md:mb-5">
+          <h3 className="text-lg max-md:text-base font-semibold text-[#262B3D] max-md:text-[#262B3D] mb-4 max-md:mb-4">
             Project Details
           </h3>
-          <div className="mb-6">
-            <label className="block font-semibold text-default mb-2 text-sm">
+          <div className="mb-6 max-md:mb-4">
+            <label className="block font-semibold max-md:font-medium text-default max-md:text-[#4A4A4A] mb-2 max-md:mb-1.5 text-sm max-md:text-sm">
               Project Title
             </label>
             <input
               type="text"
               value={projectTitle}
               onChange={(e) => setProjectTitle(e.target.value)}
-              className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+              className="w-full px-3 max-md:px-3 py-3 max-md:py-3 border border-theme max-md:border-[#E5E5E5] rounded-lg max-md:rounded-lg text-sm max-md:text-sm text-default max-md:text-[#4A4A4A] bg-surface max-md:bg-white focus:outline-none"
               style={{ 
                 borderColor: 'var(--border-color)',
                 color: 'var(--text-default)',
                 backgroundColor: 'var(--surface-color)'
               }}
               onFocus={(e) => {
-                (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+                const target = e.target as HTMLInputElement;
+                target.style.borderColor = '#02C5AF';
               }}
               onBlur={(e) => {
-                (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+                const target = e.target as HTMLInputElement;
+                target.style.borderColor = 'var(--border-color)';
               }}
               placeholder="Enter project title"
               required
             />
           </div>
           <div>
-            <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
+            <label className="block font-semibold max-md:font-medium text-[#4A4A4A] max-md:text-[#4A4A4A] mb-2 max-md:mb-1.5 text-sm max-md:text-sm">
               Project Description
             </label>
             <RichTextEditor
@@ -398,36 +404,38 @@ export default function SpotlightModalContent({
           onBannerUpload={handleSidebarBannerUpload}
         />
 
-        <div className="flex justify-between max-md:flex-col max-md:gap-4 md:items-center px-6 py-6 border-t border-theme">
-          <button
-            type="button"
-            onClick={onDelete}
-            className="flex max-md:w-full items-center gap-2 text-[#f93a37] text-sm bg-none"
-          >
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
-              <path
-                fill="#f93a37"
-                d="M10.5555 4C10.099 4 9.70052 4.30906 9.58693 4.75114L9.29382 5.8919H14.715L14.4219 4.75114C14.3083 4.30906 13.9098 4 13.4533 4H10.5555ZM16.7799 5.8919L16.3589 4.25342C16.0182 2.92719 14.8226 2 13.4533 2H10.5555C9.18616 2 7.99062 2.92719 7.64985 4.25342L7.22886 5.8919H4C3.44772 5.8919 3 6.33961 3 6.8919C3 7.44418 3.44772 7.8919 4 7.8919H4.10069L5.31544 19.3172C5.47763 20.8427 6.76455 22 8.29863 22H15.7014C17.2354 22 18.5224 20.8427 18.6846 19.3172L19.8993 7.8919H20C20.5523 7.8919 21 7.44418 21 6.8919C21 6.33961 20.5523 5.8919 20 5.8919H16.7799ZM17.888 7.8919H6.11196L7.30423 19.1057C7.3583 19.6142 7.78727 20 8.29863 20H15.7014C16.2127 20 16.6417 19.6142 16.6958 19.1057L17.888 7.8919ZM10 10C10.5523 10 11 10.4477 11 11V16C11 16.5523 10.5523 17 10 17C9.44772 17 9 16.5523 9 16V11C9 10.4477 9.44772 10 10 10ZM14 10C14.5523 10 15 10.4477 15 11V16C15 16.5523 14 17 14 17C13.4477 17 13 16.5523 13 16V11C13 10.4477 13.4477 10 14 10Z"
-                clipRule="evenodd"
-                fillRule="evenodd"
-              />
-            </svg>
-            Delete
-          </button>
-          <div className="flex gap-3">
+        <div className="sticky max-md:sticky bottom-0 max-md:bottom-0 bg-white max-md:bg-white border-t max-md:border-t border-theme max-md:border-[#E5E7EB] px-6 max-md:px-4 py-6 max-md:py-4 max-md:z-10">
+          <div className="max-md:w-full">
             <button
               type="button"
-              onClick={onClose}
-              className="px-6 py-3 max-md:w-full bg-surface-secondary border border-theme text-[#4A4A4A] rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+              onClick={onDelete}
+              className="flex max-md:w-full max-md:justify-center items-center gap-2 max-md:gap-2 text-[#f93a37] max-md:text-[#f93a37] text-sm max-md:text-sm bg-none max-md:bg-none mb-4 max-md:mb-0 max-md:py-2"
             >
-              Cancel
+              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" className="max-md:w-5 max-md:h-5">
+                <path
+                  fill="#f93a37"
+                  d="M10.5555 4C10.099 4 9.70052 4.30906 9.58693 4.75114L9.29382 5.8919H14.715L14.4219 4.75114C14.3083 4.30906 13.9098 4 13.4533 4H10.5555ZM16.7799 5.8919L16.3589 4.25342C16.0182 2.92719 14.8226 2 13.4533 2H10.5555C9.18616 2 7.99062 2.92719 7.64985 4.25342L7.22886 5.8919H4C3.44772 5.8919 3 6.33961 3 6.8919C3 7.44418 3.44772 7.8919 4 7.8919H4.10069L5.31544 19.3172C5.47763 20.8427 6.76455 22 8.29863 22H15.7014C17.2354 22 18.5224 20.8427 18.6846 19.3172L19.8993 7.8919H20C20.5523 7.8919 21 7.44418 21 6.8919C21 6.33961 20.5523 5.8919 20 5.8919H16.7799ZM17.888 7.8919H6.11196L7.30423 19.1057C7.3583 19.6142 7.78727 20 8.29863 20H15.7014C16.2127 20 16.6417 19.6142 16.6958 19.1057L17.888 7.8919ZM10 10C10.5523 10 11 10.4477 11 11V16C11 16.5523 10.5523 17 10 17C9.44772 17 9 16.5523 9 16V11C9 10.4477 9.44772 10 10 10ZM14 10C14.5523 10 15 10.4477 15 11V16C15 16.5523 14 17 14 17C13.4477 17 13 16.5523 13 16V11C13 10.4477 13.4477 10 14 10Z"
+                  clipRule="evenodd"
+                  fillRule="evenodd"
+                />
+              </svg>
+              Delete
             </button>
-            <button
-              type="submit"
-              className="px-6 py-3 max-md:w-full bg-[var(--brand-teal)] text-white rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
-            >
-              Save Changes
-            </button>
+            <div className="flex gap-3 max-md:gap-3 max-md:w-full">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-6 max-md:px-0 py-3 max-md:py-3 max-md:w-full max-md:flex-1 bg-surface-secondary max-md:bg-[#F8F9FA] border border-theme max-md:border-[#E5E5E5] text-[#4A4A4A] max-md:text-[#4A4A4A] rounded-lg max-md:rounded-lg text-sm max-md:text-sm font-semibold max-md:font-medium hover:opacity-90 max-md:hover:opacity-90 transition-opacity"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-6 max-md:px-0 py-3 max-md:py-3 max-md:w-full max-md:flex-1 bg-[var(--brand-teal)] max-md:bg-[#02C5AF] text-white rounded-lg max-md:rounded-lg text-sm max-md:text-sm font-semibold max-md:font-semibold hover:opacity-90 max-md:hover:opacity-90 transition-opacity"
+              >
+                Save Changes
+              </button>
+            </div>
           </div>
         </div>
       </form>

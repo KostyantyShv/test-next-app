@@ -19,6 +19,7 @@ export default function SpotlightContainer({
 }: SpotlightContainerProps) {
   return (
     <div className="w-full mx-auto flex max-md:flex-col gap-6">
+      {/* Desktop Header */}
       <SpotlightLeft />
       <SpotlightRight
         spotlights={spotlights}

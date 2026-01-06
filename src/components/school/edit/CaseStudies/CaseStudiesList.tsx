@@ -13,11 +13,11 @@ export default function CaseStudyList({
   onTogglePin,
 }: CaseStudyListProps) {
   return (
-    <div className="mt-6 pt-[10px] relative">
-      <div className="absolute top-6 right-6 text-sm font-semibold text-[#4A4A4A] px-3 py-1 bg-[#F8F9FA] rounded-2xl">
+    <div className="mt-6 max-md:mt-0 pt-[10px] max-md:pt-[10px] relative">
+      <div className="absolute top-6 max-md:top-0 right-6 max-md:right-0 text-sm max-md:text-[13px] font-semibold max-md:font-semibold text-[#4A4A4A] max-md:text-[#4A4A4A] px-3 max-md:px-3 py-1 max-md:py-[4px] bg-[#F8F9FA] max-md:bg-[#F8F9FA] rounded-2xl max-md:rounded-2xl">
         {caseStudies.length}/10
       </div>
-      <div className="mt-6">
+      <div className="mt-6 max-md:mt-0">
         {caseStudies.map((study) => (
           <CaseStudyItem
             key={study.id}

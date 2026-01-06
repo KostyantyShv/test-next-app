@@ -146,7 +146,7 @@ function ReviewRow({
       <td className="px-4 py-4 bg-surface border-b border-theme align-middle">
         <div className="flex items-center gap-[6px] text-subtle font-medium">
           <span className="text-subtle">
-            {ICONS.thumbsUp}
+          {ICONS.thumbsUp}
           </span>
           {review.votes}
         </div>
@@ -192,13 +192,13 @@ function ReviewRow({
               onClick={() => onReplyClick(review)}
             >
               <span className="text-subtle">
-                {ICONS.reply}
+              {ICONS.reply}
               </span>
               Reply to Review
             </button>
             <button className="w-full text-left px-4 py-3 text-default text-sm hover:bg-surface-secondary flex items-center gap-3 transition-colors">
               <span className="text-subtle">
-                {ICONS.view}
+              {ICONS.view}
               </span>
               View Review
             </button>
@@ -210,7 +210,7 @@ function ReviewRow({
                   onClick={() => onDelete(review.id)}
                 >
                   <span className="text-[#FF4D4D]">
-                    {ICONS.delete}
+                  {ICONS.delete}
                   </span>
                   Delete Reply
                 </button>

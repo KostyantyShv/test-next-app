@@ -69,8 +69,18 @@ export default function GalleryItem({
       </div>
 
       <div className="flex-1">
-        <div className="text-[#464646] font-semibold mb-1">{item.title}</div>
-        <div className="text-[#5F5F5F] text-sm">{item.altText}</div>
+        <div className="text-[#464646] font-semibold mb-1">
+          <span className="max-md:hidden">{item.title}</span>
+          <span className="hidden max-md:inline">
+            {item.title.length > 4 ? item.title.substring(0, 4) + '...' : item.title}
+          </span>
+        </div>
+        <div className="text-[#5F5F5F] text-sm max-md:truncate max-md:max-w-[7ch]">
+          <span className="max-md:hidden">{item.altText}</span>
+          <span className="hidden max-md:inline">
+            {item.altText.length > 7 ? item.altText.substring(0, 7) + '...' : item.altText}
+          </span>
+        </div>
       </div>
 
       <div className="flex gap-3">

@@ -177,9 +177,9 @@ const PromoVideo: React.FC = () => {
   }, [isExpanded]);
 
   return (
-    <div className="flex gap-6 max-w-[1150px] max-md:flex-col mx-auto">
-      {/* Left section */}
-      <div className="max-w-[350px] pr-6">
+    <div className="flex gap-6 max-w-[1150px] max-md:flex-col mx-auto max-md:px-4">
+      {/* Desktop Header */}
+      <div className="max-w-[350px] max-md:hidden pr-6">
         <h1 className="text-2xl font-semibold mb-3 text-[#1B1B1B]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
           Promotional Video
         </h1>
@@ -190,9 +190,22 @@ const PromoVideo: React.FC = () => {
           you offer.
         </p>
       </div>
+      
+      {/* Mobile Header */}
+      <div className="hidden max-md:block pt-[18px] pb-4">
+        <h1 className="text-2xl font-semibold mb-2" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', color: 'var(--bold-text)' }}>
+          Promotional Video
+        </h1>
+        <p className="text-sm leading-6" style={{ color: 'var(--subtle-text)' }}>
+          Showcase your school`s unique atmosphere, facilities, and student life
+          through an engaging video tour. A compelling promotional video helps
+          parents and students visualize the exceptional educational experience
+          you offer.
+        </p>
+      </div>
 
       {/* Right section */}
-      <div className="w-full bg-white rounded-lg p-6 shadow-[0_1px_3px_rgba(0,_0,_0,_0.1)]">
+      <div className="w-full bg-white max-md:bg-white rounded-lg max-md:rounded-lg shadow-[0_1px_3px_rgba(0,_0,_0,_0.1)] max-md:shadow-none p-6 max-md:p-4">
         <div className="flex gap-5 items-start max-md:flex-col">
           <div className="relative w-40 max-md:h-[200px] md:h-[100px] max-md:w-full rounded-md overflow-hidden flex-shrink-0">
             <Image

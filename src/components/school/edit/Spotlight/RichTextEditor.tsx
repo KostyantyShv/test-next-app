@@ -38,12 +38,12 @@ export default function RichTextEditor({
   };
 
   return (
-    <div className="border border-theme rounded-lg overflow-hidden" style={{ borderColor: 'var(--border-color)' }}>
-      <div className="flex p-2 border-b border-theme bg-surface-secondary" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--surface-secondary)' }}>
+    <div className="border border-theme max-md:border-[#E5E5E5] rounded-lg max-md:rounded-lg overflow-hidden" style={{ borderColor: 'var(--border-color)' }}>
+      <div className="flex p-2 max-md:p-2 border-b border-theme max-md:border-b max-md:border-[#E5E5E5] bg-surface-secondary max-md:bg-[#f8f9fa] overflow-x-auto max-md:overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--surface-secondary)' }}>
         <button
           type="button"
           onClick={(e) => handleCommand(e, "bold")}
-          className="w-8 h-8 rounded flex items-center justify-center"
+          className="w-8 h-8 max-md:w-8 max-md:h-8 rounded max-md:rounded flex items-center justify-center flex-shrink-0"
           style={{ color: 'var(--text-default)' }}
           onMouseEnter={(e) => {
             (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--hover-bg)';
@@ -97,7 +97,7 @@ export default function RichTextEditor({
             />
           </svg>
         </button>
-        <div className="w-[1px] h-6 mx-2" style={{ backgroundColor: 'var(--border-color)' }} />
+        <div className="w-[1px] h-6 max-md:h-6 mx-2 max-md:mx-2 flex-shrink-0" style={{ backgroundColor: 'var(--border-color)' }} />
         <button
           type="button"
           onClick={(e) => handleCommand(e, "insertUnorderedList")}
@@ -136,7 +136,7 @@ export default function RichTextEditor({
             />
           </svg>
         </button>
-        <div className="w-[1px] h-6 mx-2" style={{ backgroundColor: 'var(--border-color)' }} />
+        <div className="w-[1px] h-6 max-md:h-6 mx-2 max-md:mx-2 flex-shrink-0" style={{ backgroundColor: 'var(--border-color)' }} />
         <button
           type="button"
           onClick={(e) => handleCommand(e, "justifyLeft")}
@@ -178,11 +178,12 @@ export default function RichTextEditor({
       </div>
       <div
         ref={editorRef}
-        className="p-3 min-h-[200px] max-h-[400px] overflow-y-auto focus:outline-none"
+        className="p-3 max-md:p-3 min-h-[200px] max-md:min-h-[120px] max-h-[400px] max-md:max-h-[200px] overflow-y-auto max-md:overflow-y-auto focus:outline-none"
         style={{ 
           color: 'var(--text-default)',
           backgroundColor: 'var(--surface-color)',
-          borderColor: 'var(--border-color)'
+          borderColor: 'var(--border-color)',
+          fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
         }}
         contentEditable
         onInput={() => {
@@ -194,7 +195,7 @@ export default function RichTextEditor({
         onFocus={(e) => {
           const container = e.currentTarget.parentElement;
           if (container) {
-            (container as HTMLDivElement).style.borderColor = 'var(--brand-teal)';
+            (container as HTMLDivElement).style.borderColor = '#02C5AF';
             (container as HTMLDivElement).style.boxShadow = '0 0 0 2px rgba(2, 197, 175, 0.1)';
           }
         }}

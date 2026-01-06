@@ -69,26 +69,26 @@ export default function SidebarSection({
   };
 
   return (
-    <div className="pb-6">
-      <h3 className="text-lg font-semibold text-dark mb-4">
+    <div className="pb-6 max-md:pb-5">
+      <h3 className="text-lg max-md:text-base font-semibold text-[#262B3D] max-md:text-[#262B3D] mb-4 max-md:mb-4">
         Sidebar Details
       </h3>
-      <div className="bg-surface-tertiary rounded-lg p-4 mb-6">
-        <div className="mb-4">
-          <label className="block font-semibold text-default mb-2 text-sm">
+      <div className="bg-white max-md:bg-white rounded-lg max-md:rounded-lg p-4 max-md:p-0 mb-6 max-md:mb-5">
+        <div className="mb-4 max-md:mb-4">
+          <label className="block font-semibold max-md:font-medium text-[#4A4A4A] max-md:text-[#4A4A4A] mb-2 max-md:mb-1.5 text-sm max-md:text-sm">
             Sidebar Banner
           </label>
-          <div className="relative w-full h-[150px] rounded-lg overflow-hidden">
+          <div className="relative w-full h-[120px] max-md:h-[120px] rounded-lg max-md:rounded-lg overflow-hidden">
             <img
               src={banner}
               alt="Sidebar Banner"
               className="w-full h-full object-cover"
             />
             <div
-              className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+              className="absolute inset-0 bg-black/50 max-md:bg-black/50 flex items-center justify-center opacity-0 max-md:opacity-0 hover:opacity-100 max-md:hover:opacity-100 transition-opacity cursor-pointer"
               onClick={() => inputRef.current?.click()}
             >
-              <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+              <svg width="24" height="24" fill="white" viewBox="0 0 24 24" className="max-md:w-6 max-md:h-6">
                 <path
                   fillRule="evenodd"
                   clipRule="evenodd"
@@ -105,49 +105,43 @@ export default function SidebarSection({
             />
           </div>
         </div>
-        <div className="mb-4">
-          <label className="block font-semibold text-default mb-2 text-sm">
+        <div className="mb-4 max-md:mb-4">
+          <label className="block font-semibold max-md:font-medium text-[#4A4A4A] max-md:text-[#4A4A4A] mb-2 max-md:mb-1.5 text-sm max-md:text-sm">
             Sidebar Title
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
-            style={{ 
-              borderColor: 'var(--border-color)',
-              color: 'var(--text-default)',
-              backgroundColor: 'var(--surface-color)'
-            }}
+            className="w-full px-3 max-md:px-3 py-3 max-md:py-3 border border-[#E5E5E5] max-md:border-[#E5E5E5] rounded-lg max-md:rounded-lg text-sm max-md:text-sm text-[#4A4A4A] max-md:text-[#4A4A4A] bg-white max-md:bg-white focus:outline-none"
             onFocus={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+              const target = e.target as HTMLInputElement;
+              target.style.borderColor = '#02C5AF';
             }}
             onBlur={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+              const target = e.target as HTMLInputElement;
+              target.style.borderColor = '#E5E5E5';
             }}
             placeholder="e.g., EduTech Solutions"
           />
         </div>
-        <div className="mb-4">
-          <label className="block font-semibold text-default mb-2 text-sm">
+        <div className="mb-4 max-md:mb-4">
+          <label className="block font-semibold max-md:font-medium text-[#4A4A4A] max-md:text-[#4A4A4A] mb-2 max-md:mb-1.5 text-sm max-md:text-sm">
             Sidebar Description
           </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none min-h-[100px]"
-            style={{ 
-              borderColor: 'var(--border-color)',
-              color: 'var(--text-default)',
-              backgroundColor: 'var(--surface-color)'
-            }}
+            className="w-full px-3 max-md:px-3 py-3 max-md:py-3 border border-[#E5E5E5] max-md:border-[#E5E5E5] rounded-lg max-md:rounded-lg text-sm max-md:text-sm text-[#4A4A4A] max-md:text-[#4A4A4A] bg-white max-md:bg-white focus:outline-none min-h-[100px] max-md:min-h-[100px]"
             onFocus={(e) => {
-              (e.target as HTMLTextAreaElement).style.borderColor = 'var(--brand-teal)';
+              const target = e.target as HTMLTextAreaElement;
+              target.style.borderColor = '#02C5AF';
             }}
             onBlur={(e) => {
-              (e.target as HTMLTextAreaElement).style.borderColor = 'var(--border-color)';
+              const target = e.target as HTMLTextAreaElement;
+              target.style.borderColor = '#E5E5E5';
             }}
-            placeholder="e.g., Leading provider of innovative educational technology solutions..."
+            placeholder="Brief description about the project or organization"
           />
         </div>
         <div className="mb-4">

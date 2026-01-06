@@ -157,7 +157,8 @@ export default function Announcements() {
   return (
     <>
       <div className="flex max-md:flex-col gap-6">
-        <div className="max-w-[350px] max-md:pt-6 max-md:pb-6 max-md:pr-6">
+        {/* Desktop Header */}
+        <div className="max-w-[350px] max-md:hidden">
           <h1 className="text-[#1a1a19] text-2xl font-semibold mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
             Announcements
           </h1>
@@ -166,33 +167,56 @@ export default function Announcements() {
             announcements and manage their visibility.
           </p>
         </div>
-        <div className="w-full bg-white rounded-lg p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative">
-          <div className="absolute top-6 right-6 text-sm font-semibold text-[var(--text-color)] py-1 px-3 bg-[#F8F9FA] rounded-2xl">
+        
+        {/* Mobile Header */}
+        <div className="hidden max-md:block px-4 pt-[18px] pb-4">
+          <h1 className="text-2xl font-semibold mb-2" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', color: 'var(--bold-text)' }}>
+            Announcements
+          </h1>
+          <p className="text-sm leading-6" style={{ color: 'var(--subtle-text)' }}>
+            Share important updates and news with your community. Schedule
+            announcements and manage their visibility.
+          </p>
+        </div>
+        
+        <div className="w-full bg-white rounded-lg p-6 max-md:p-0 max-md:bg-transparent max-md:rounded-none shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:shadow-none relative">
+          {/* Desktop Count Badge */}
+          <div className="absolute top-6 right-6 max-md:hidden text-sm font-semibold text-[var(--text-color)] py-1 px-3 bg-[#F8F9FA] rounded-2xl">
             {announcements.length}/{MAX_ANNOUNCEMENTS}
           </div>
-          <div className="mt-6 pt-2.5">
-            {announcements
-              .sort((a, b) => {
-                // Sort: pinned items first, then by id
-                if (a.pinned && !b.pinned) return -1;
-                if (!a.pinned && b.pinned) return 1;
-                return a.id - b.id;
-              })
-              .map((announcement) => (
-                <AnnouncementItem
-                  key={announcement.id}
-                  announcement={announcement}
-                  onTogglePin={togglePin}
-                  onEdit={editAnnouncement}
-                />
-              ))}
+          
+          {/* Mobile Content */}
+          <div className="max-md:px-4 max-md:pb-4">
+            {/* Mobile Count */}
+            <div className="hidden max-md:block text-right text-sm font-semibold mb-4" style={{ color: 'var(--text-default)' }}>
+              {announcements.length}/{MAX_ANNOUNCEMENTS}
+            </div>
+            
+            <div className="mt-6 max-md:mt-0 pt-2.5 max-md:pt-0 flex flex-col gap-3 max-md:gap-3 mb-4 max-md:mb-4">
+              {announcements
+                .sort((a, b) => {
+                  // Sort: pinned items first, then by id
+                  if (a.pinned && !b.pinned) return -1;
+                  if (!a.pinned && b.pinned) return 1;
+                  return a.id - b.id;
+                })
+                .map((announcement) => (
+                  <AnnouncementItem
+                    key={announcement.id}
+                    announcement={announcement}
+                    onTogglePin={togglePin}
+                    onEdit={editAnnouncement}
+                  />
+                ))}
+            </div>
+            
+            <button
+              className="bg-[#02C5AF] max-md:w-full text-white px-6 py-3 max-md:py-3 max-md:px-0 rounded-lg font-semibold text-sm max-md:text-base hover:opacity-90 max-md:shadow-[0_2px_4px_rgba(2,197,175,0.2)]"
+              onClick={() => openModal()}
+            >
+              Add Announcement
+            </button>
           </div>
-          <button
-            className="bg-[#02C5AF] max-md:w-full text-white px-6 py-3 rounded-lg font-semibold text-sm hover:opacity-90"
-            onClick={() => openModal()}
-          >
-            Add Announcement
-          </button>
         </div>
       </div>
 

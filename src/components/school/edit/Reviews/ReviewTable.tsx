@@ -3,6 +3,7 @@ import ReviewRow from "./ReviewRow";
 import ExpandedRow from "./ExpandedRow";
 import Pagination from "./Pagination";
 import ReplyDrawer from "./ReplyDrawer";
+import ActionsDrawer from "./ActionsDrawer";
 import { Review } from "./types/review";
 
 interface ReviewTableProps {
@@ -18,6 +19,8 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
   const [activeReview, setActiveReview] = useState<Review | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isActionsDrawerOpen, setIsActionsDrawerOpen] = useState(false);
+  const [actionsReview, setActionsReview] = useState<Review | null>(null);
 
   const totalPages = Math.ceil(reviews.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -61,7 +64,7 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
     const review = reviews.find((r) => r.id === reviewId);
     if (!review?.reply) {
       // No reply exists: collapse the panel
-      setExpandedRow(null);
+    setExpandedRow(null);
     }
     // If reply exists, ExpandedRow will handle it internally
   }, [reviews]);
@@ -187,14 +190,14 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
         {paginatedReviews.map((review) => (
           <div
             key={review.id}
-            className="bg-white rounded-xl p-4 shadow-sm"
+            className="bg-white rounded-xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
             data-review-id={review.id}
             data-has-reply={review.reply ? "true" : "false"}
           >
             <div className="flex items-center gap-3 mb-4 relative">
               <button
-                className="w-7 h-7 rounded-md bg-[#F1F3F6] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors"
-                onClick={() => toggleRow(review.id)}
+                className="w-7 h-7 rounded-md bg-[#F1F3F6] border-none cursor-pointer flex items-center justify-center flex-shrink-0"
+                onClick={() => handleReplyClick(review, true)}
               >
                 <svg
                   height="16"
@@ -214,7 +217,7 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
                   />
                 </svg>
               </button>
-              <div className="relative group flex-grow">
+              <div className="flex-grow">
                 <span className="font-semibold text-[#016853] text-sm">
                   {(() => {
                     const parts = review.author.fullName.trim().split(/\s+/);
@@ -224,95 +227,32 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
                     return review.author.fullName;
                   })()}
                 </span>
-                <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-[#464646] text-white text-xs rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap">
-                  {review.author.fullName}
-                  <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-t-[#464646] border-x-transparent border-b-transparent"></span>
-                </span>
               </div>
-              <div className="relative">
-                <button
-                  className="w-7 h-7 flex items-center justify-center text-[#4A4A4A] font-bold hover:bg-[#F8F9FA] rounded-md transition-colors"
-                  onClick={() => toggleDropdown(review.id)}
-                >
-                  ⋮
-                </button>
-                <div
-                  className={`absolute top-full right-0 bg-white border border-[#E5E7EB] rounded-lg shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] min-w-[200px] z-50 ${
-                    activeDropdown === review.id ? "block" : "hidden"
-                  }`}
-                >
-                  <button
-                    className="w-full text-left px-4 py-3 text-sm text-[#4A4A4A] hover:bg-[#F8F9FA] flex items-center gap-3 transition-colors"
-                    onClick={() => handleReplyClick(review, true)}
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      height="18"
-                      width="18"
-                      fill="currentColor"
-                    >
-                      <path fill="none" d="M0 0h24v24H0z"></path>
-                      <path
-                        fillRule="nonzero"
-                        d="M19 1a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-1.263v4l-5.39-4H5a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h14zm0 1.5H5a.5.5 0 0 0-.5.5v14a.5.5 0 0 0 .5.5h14a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM16.25 12a.75.75 0 1 1 0 1.5h-8.5a.75.75 0 1 1 0-1.5h8.5zm0-3a.75.75 0 1 1 0 1.5h-8.5a.75.75 0 1 1 0-1.5h8.5zm0-3a.75.75 0 1 1 0 1.5h-8.5a.75.75 0 1 1 0-1.5h8.5z"
-                      ></path>
-                    </svg>
-                    Reply to Review
-                  </button>
-                  <button className="w-full text-left px-4 py-3 text-sm text-[#4A4A4A] hover:bg-[#F8F9FA] flex items-center gap-3 transition-colors">
-                    <svg fill="none" viewBox="0 0 20 20" width="18" height="18" className="text-[#5F5F5F]">
-                      <path
-                        fill="currentColor"
-                        d="M3.38189 10C5.24313 12.9154 7.45153 14.25 10 14.25C12.5485 14.25 14.7569 12.9154 16.6181 10C14.7569 7.0846 12.5485 5.75 10 5.75C7.45153 5.75 5.24313 7.0846 3.38189 10ZM1.85688 9.61413C3.94664 6.13119 6.65833 4.25 10 4.25C13.3417 4.25 16.0534 6.13119 18.1431 9.61413C18.2856 9.85164 18.2856 10.1484 18.1431 10.3859C16.0534 13.8688 13.3417 15.75 10 15.75C6.65833 15.75 3.94664 13.8688 1.85688 10.3859C1.71437 10.1484 1.71437 9.85164 1.85688 9.61413ZM8.29116 8.29116C8.74437 7.83795 9.35906 7.58333 10 7.58333C10.6409 7.58333 11.2556 7.83795 11.7088 8.29116C12.1621 8.74437 12.4167 9.35906 12.4167 10C12.4167 10.6409 12.1621 11.2556 11.7088 11.7088C11.2556 12.1621 10.6409 12.4167 10 12.4167C9.35906 12.4167 8.74437 12.1621 8.29116 11.7088C7.83795 11.2556 7.58333 10.6409 7.58333 10C7.58333 9.35906 7.83795 8.74437 8.29116 8.29116ZM10 9.08333C9.75689 9.08333 9.52373 9.17991 9.35182 9.35182C9.17991 9.52373 9.08333 9.75689 9.08333 10C9.08333 10.2431 9.17991 10.4763 9.35182 10.6482C9.52373 10.8201 9.75689 10.9167 10 10.9167C10.2431 10.9167 10.4763 10.8201 10.6482 10.6482C10.8201 10.4763 10.9167 10.2431 10.9167 10C10.9167 9.75689 10.8201 9.52373 10.6482 9.35182C10.4763 9.17991 10.2431 9.08333 10 9.08333Z"
-                      ></path>
-                    </svg>
-                    View Review
-                  </button>
-                  {review.reply && (
-                    <>
-                      <div className="h-px bg-[#E0E0E0] my-2"></div>
-                      <button
-                        className="w-full text-left px-4 py-3 text-sm text-[#FF4D4D] hover:bg-[#FFF1F1] flex items-center gap-3 transition-colors"
-                        onClick={() => handleDelete(review.id)}
-                      >
-                        <svg viewBox="0 0 20 20" width="18" height="18">
-                          <g fillRule="nonzero" fill="#F44336">
-                            <path d="M11.429 2.357c1.014 0 1.845.783 1.922 1.778l.006.15v1.43a.5.5 0 0 1-.992.09l-.008-.09v-1.43a.93.93 0 0 0-.82-.922l-.108-.006H8.57a.93.93 0 0 0-.922.82l-.006.109v1.428a.5.5 0 0 1-.992.09l-.008-.09V4.286c0-1.015.783-1.846 1.778-1.923l.15-.006z"></path>
-                            <path d="M16.429 5.214a.5.5 0 0 1 .09.992l-.09.008H3.57a.5.5 0 0 1-.09-.992l.09-.008z"></path>
-                            <path d="M15 5.214H5a.5.5 0 0 0-.5.5v10c0 1.065.863 1.929 1.929 1.929h7.142a1.93 1.93 0 0 0 1.929-1.929v-10a.5.5 0 0 0-.5-.5m-9.5 1h większą9v9.5a.93.93 0 0 1-.929.929H6.43l-.109-.006a.93.93 0 0 1-.82-.923z"></path>
-                          </g>
-                        </svg>
-                        Delete Reply
-                      </button>
-                    </>
-                  )}
-                </div>
+              <div className="w-7 h-7 flex items-center justify-center text-[#5F5F5F] cursor-pointer"
+                onClick={() => {
+                  setActionsReview(review);
+                  setIsActionsDrawerOpen(true);
+                }}
+              >
+                ⋮
               </div>
             </div>
-            <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-3 text-sm text-gray-700">
-              <span className="text-xs uppercase text-[#5F5F5F]">Title</span>
-              <div className="relative group">
-                <span className="text-[#4A4A4A] line-clamp-3 block overflow-hidden">{review.title.short}</span>
-                <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-[#464646] text-white text-xs rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap">
-                  {review.title.full}
-                  <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-t-[#464646] border-x-transparent border-b-transparent"></span>
-                </span>
+            <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-3 text-sm">
+              <span className="text-xs uppercase text-[#5F5F5F] tracking-[0.05em]">Title</span>
+              <div className="text-[#4A4A4A] text-sm">
+                {review.title.short}
               </div>
-              <span className="text-xs uppercase text-[#5F5F5F]">Rating</span>
+              <span className="text-xs uppercase text-[#5F5F5F] tracking-[0.05em]">Rating</span>
               <div className="flex items-center gap-1 font-semibold text-[#089E68]">
                 <span className="text-[#00DF8B]">★</span>
                 <span>{review.rating}</span>
               </div>
-              <span className="text-xs uppercase text-[#5F5F5F]">Published</span>
-              <div className="relative group">
-                <span className="text-[#5F5F5F]">{review.published.short}</span>
-                <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-[#464646] text-white text-xs rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap">
-                  {review.published.full}
-                  <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-t-[#464646] border-x-transparent border-b-transparent"></span>
-                </span>
+              <span className="text-xs uppercase text-[#5F5F5F] tracking-[0.05em]">Published</span>
+              <div className="text-[#4A4A4A] text-sm">
+                {review.published.short}
               </div>
-              <span className="text-xs uppercase text-[#5F5F5F]">Votes</span>
-              <div className="flex items-center gap-[6px] text-[#5F5F5F] font-medium">
+              <span className="text-xs uppercase text-[#5F5F5F] tracking-[0.05em]">Votes</span>
+              <div className="flex items-center gap-1.5 text-[#5F5F5F] font-medium">
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -325,7 +265,7 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
                 </svg>
                 {review.votes}
               </div>
-              <span className="text-xs uppercase text-[#5F5F5F]">Featured</span>
+              <span className="text-xs uppercase text-[#5F5F5F] tracking-[0.05em]">Featured</span>
               <label className="relative inline-block w-9 h-5">
                 <input
                   type="checkbox"
@@ -345,28 +285,6 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
                 ></span>
               </label>
             </div>
-            {expandedRow === review.id && review.reply && (
-              <div className="mt-4 p-4 bg-[#EBFCF4] rounded-lg">
-                <div className="flex items-center gap-3 mb-3">
-                  <img
-                    src="https://i.ibb.co/KpsVRD83/AVATAR-midtone-ux-instrgram.jpg"
-                    alt="Lincoln Academy"
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
-                  <div>
-                    <div className="text-sm font-semibold text-[#016853]">
-                      Lincoln Academy
-                    </div>
-                    <div className="text-xs text-[#5F5F5F]">
-                      Replied on {review.reply.date}
-                    </div>
-                  </div>
-                </div>
-                <div className="text-sm text-[#4A4A4A]">
-                  {review.reply.content}
-                </div>
-              </div>
-            )}
           </div>
         ))}
       </div>
@@ -380,12 +298,35 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
         getPageNumbers={getPageNumbers}
       />
 
+      <ActionsDrawer
+        review={actionsReview}
+        isOpen={isActionsDrawerOpen}
+        onClose={() => {
+          setIsActionsDrawerOpen(false);
+          setActionsReview(null);
+        }}
+        onReply={() => {
+          if (actionsReview) {
+            handleReplyClick(actionsReview, true);
+          }
+        }}
+        onView={() => {
+          alert('View review functionality');
+        }}
+        onDelete={() => {
+          if (actionsReview) {
+            handleDelete(actionsReview.id);
+          }
+        }}
+      />
+      
       <ReplyDrawer
         review={activeReview}
         isOpen={isDrawerOpen}
         isEditMode={isEditMode}
         onClose={() => setIsDrawerOpen(false)}
         onSave={handleSave}
+        onDelete={handleDelete}
       />
     </div>
   );
