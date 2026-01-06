@@ -16,16 +16,17 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({ progress }) => {
         className="rotate-[-90deg]"
       >
         <circle
-          className="stroke-gray-200"
+          className="bg"
           cx="12"
           cy="12"
           r="10"
           fill="none"
           strokeWidth="2.5"
           strokeLinecap="round"
+          style={{ stroke: 'var(--gray-200)' }}
         />
         <circle
-          className="stroke-[#016853]"
+          className="progress"
           cx="12"
           cy="12"
           r="10"
@@ -34,10 +35,16 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({ progress }) => {
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
-          style={{ transition: "stroke-dashoffset 0.3s ease" }}
+          style={{ 
+            transition: "stroke-dashoffset 0.3s ease",
+            stroke: 'var(--header-green)',
+          }}
         />
       </svg>
-      <div className="absolute bg-[#1B1B1B] text-white text-xs py-1 px-2 rounded top-[-30px] left-1/2 -translate-x-1/2 opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 z-20 whitespace-nowrap">
+      <div 
+        className="tooltip absolute text-white text-xs py-1 px-2 rounded top-[-30px] left-1/2 -translate-x-1/2 opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 z-20 whitespace-nowrap"
+        style={{ background: 'var(--dark-text)' }}
+      >
         {Math.round(progress)}% Complete
       </div>
     </div>

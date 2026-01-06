@@ -12,26 +12,45 @@ export default function RichTextEditor({
   onChange,
 }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
+  const isInternalUpdate = useRef(false);
 
   useEffect(() => {
-    if (editorRef.current) {
-      editorRef.current.innerHTML = content;
+    if (editorRef.current && !isInternalUpdate.current) {
+      const currentContent = editorRef.current.innerHTML;
+      if (currentContent !== content) {
+        editorRef.current.innerHTML = content;
+      }
     }
+    isInternalUpdate.current = false;
   }, [content]);
 
-  const handleCommand = (command: string) => {
+  const handleCommand = (e: React.MouseEvent, command: string) => {
+    e.preventDefault();
+    if (!editorRef.current) return;
+    
+    // Simple implementation like in the reference HTML
     document.execCommand(command, false, undefined);
-    editorRef.current?.focus();
-    onChange(editorRef.current?.innerHTML || "");
+    editorRef.current.focus();
+    
+    // Update content after command execution
+    isInternalUpdate.current = true;
+    onChange(editorRef.current.innerHTML || "");
   };
 
   return (
-    <div className="border border-[#E5E5E5] rounded-lg overflow-hidden">
-      <div className="flex p-2 border-b border-[#E5E5E5] bg-[#f8f9fa]">
+    <div className="border border-theme rounded-lg overflow-hidden" style={{ borderColor: 'var(--border-color)' }}>
+      <div className="flex p-2 border-b border-theme bg-surface-secondary" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--surface-secondary)' }}>
         <button
           type="button"
-          onClick={() => handleCommand("bold")}
-          className="w-8 h-8 rounded hover:bg-[#e9ecef] flex items-center justify-center"
+          onClick={(e) => handleCommand(e, "bold")}
+          className="w-8 h-8 rounded flex items-center justify-center"
+          style={{ color: 'var(--text-default)' }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--hover-bg)';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
+          }}
         >
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
             <path
@@ -42,8 +61,15 @@ export default function RichTextEditor({
         </button>
         <button
           type="button"
-          onClick={() => handleCommand("italic")}
-          className="w-8 h-8 rounded hover:bg-[#e9ecef] flex items-center justify-center"
+          onClick={(e) => handleCommand(e, "italic")}
+          className="w-8 h-8 rounded flex items-center justify-center"
+          style={{ color: 'var(--text-default)' }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--hover-bg)';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
+          }}
         >
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
             <path
@@ -54,8 +80,15 @@ export default function RichTextEditor({
         </button>
         <button
           type="button"
-          onClick={() => handleCommand("underline")}
-          className="w-8 h-8 rounded hover:bg-[#e9ecef] flex items-center justify-center"
+          onClick={(e) => handleCommand(e, "underline")}
+          className="w-8 h-8 rounded flex items-center justify-center"
+          style={{ color: 'var(--text-default)' }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--hover-bg)';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
+          }}
         >
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
             <path
@@ -64,11 +97,18 @@ export default function RichTextEditor({
             />
           </svg>
         </button>
-        <div className="w-[1px] h-6 bg-[#E5E5E5] mx-2" />
+        <div className="w-[1px] h-6 mx-2" style={{ backgroundColor: 'var(--border-color)' }} />
         <button
           type="button"
-          onClick={() => handleCommand("insertUnorderedList")}
-          className="w-8 h-8 rounded hover:bg-[#e9ecef] flex items-center justify-center"
+          onClick={(e) => handleCommand(e, "insertUnorderedList")}
+          className="w-8 h-8 rounded flex items-center justify-center"
+          style={{ color: 'var(--text-default)' }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--hover-bg)';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
+          }}
         >
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
             <path
@@ -79,8 +119,15 @@ export default function RichTextEditor({
         </button>
         <button
           type="button"
-          onClick={() => handleCommand("insertOrderedList")}
-          className="w-8 h-8 rounded hover:bg-[#e9ecef] flex items-center justify-center"
+          onClick={(e) => handleCommand(e, "insertOrderedList")}
+          className="w-8 h-8 rounded flex items-center justify-center"
+          style={{ color: 'var(--text-default)' }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--hover-bg)';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
+          }}
         >
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
             <path
@@ -89,11 +136,18 @@ export default function RichTextEditor({
             />
           </svg>
         </button>
-        <div className="w-[1px] h-6 bg-[#E5E5E5] mx-2" />
+        <div className="w-[1px] h-6 mx-2" style={{ backgroundColor: 'var(--border-color)' }} />
         <button
           type="button"
-          onClick={() => handleCommand("justifyLeft")}
-          className="w-8 h-8 rounded hover:bg-[#e9ecef] flex items-center justify-center"
+          onClick={(e) => handleCommand(e, "justifyLeft")}
+          className="w-8 h-8 rounded flex items-center justify-center"
+          style={{ color: 'var(--text-default)' }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--hover-bg)';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
+          }}
         >
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
             <path
@@ -104,8 +158,15 @@ export default function RichTextEditor({
         </button>
         <button
           type="button"
-          onClick={() => handleCommand("justifyCenter")}
-          className="w-8 h-8 rounded hover:bg-[#e9ecef] flex items-center justify-center"
+          onClick={(e) => handleCommand(e, "justifyCenter")}
+          className="w-8 h-8 rounded flex items-center justify-center"
+          style={{ color: 'var(--text-default)' }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--hover-bg)';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
+          }}
         >
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
             <path
@@ -118,8 +179,32 @@ export default function RichTextEditor({
       <div
         ref={editorRef}
         className="p-3 min-h-[200px] max-h-[400px] overflow-y-auto focus:outline-none"
+        style={{ 
+          color: 'var(--text-default)',
+          backgroundColor: 'var(--surface-color)',
+          borderColor: 'var(--border-color)'
+        }}
         contentEditable
-        onInput={() => onChange(editorRef.current?.innerHTML || "")}
+        onInput={() => {
+          if (editorRef.current) {
+            isInternalUpdate.current = true;
+            onChange(editorRef.current.innerHTML || "");
+          }
+        }}
+        onFocus={(e) => {
+          const container = e.currentTarget.parentElement;
+          if (container) {
+            (container as HTMLDivElement).style.borderColor = 'var(--brand-teal)';
+            (container as HTMLDivElement).style.boxShadow = '0 0 0 2px rgba(2, 197, 175, 0.1)';
+          }
+        }}
+        onBlur={(e) => {
+          const container = e.currentTarget.parentElement;
+          if (container) {
+            (container as HTMLDivElement).style.borderColor = 'var(--border-color)';
+            (container as HTMLDivElement).style.boxShadow = 'none';
+          }
+        }}
       />
     </div>
   );

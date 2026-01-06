@@ -36,7 +36,7 @@ const EventModal: React.FC<EventModalProps> = ({
         </MobileDrawer>
       </div>
       <div className="max-md:hidden block">
-        <DesktopModal isOpen={isOpen} onClose={closeModal}>
+        <DesktopModal isOpen={isOpen} onClose={closeModal} className="max-w-3xl w-[90%] max-h-[90vh]">
           <EventModalContent
             isOpen={isOpen}
             closeModal={closeModal}

@@ -247,12 +247,14 @@ export const CheckListSection: React.FC = () => {
   const [items, setItems] = useState(sections);
 
   const toggleSection = (title: string) => {
+    // Manual toggle of section - doesn't affect expand mode
     setExpandedSections((prev) =>
       prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]
     );
   };
 
   const toggleItem = (title: string) => {
+    // Manual toggle of item - allows user to expand/collapse individual items
     setExpandedItems((prev) =>
       prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]
     );
@@ -262,42 +264,53 @@ export const CheckListSection: React.FC = () => {
     mode: "all" | "incomplete" | "issues" | "completed"
   ) => {
     if (expandMode === mode) {
+      // Collapse everything if clicking the same mode
       setExpandedSections([]);
       setExpandedItems([]);
       setExpandMode(null);
     } else {
       setExpandMode(mode);
       if (mode === "all") {
-        setExpandedSections(sections.map((s) => s.title));
-        setExpandedItems(sections.flatMap((s) => s.items.map((i) => i.title)));
+        // Expand all sections and all items
+        setExpandedSections(items.map((s) => s.title));
+        setExpandedItems(items.flatMap((s) => s.items.map((i) => i.title)));
       } else if (mode === "incomplete") {
-        const incompleteSections = sections.filter((s) =>
-          s.items.some((i) => i.button?.type === "add")
+        // Only expand sections that have incomplete items, and only expand incomplete items within those sections
+        const incompleteSections = items.filter((s) =>
+          s.items.some((i) => i.button?.type === "add" && i.status !== "completed")
         );
         setExpandedSections(incompleteSections.map((s) => s.title));
         setExpandedItems(
           incompleteSections.flatMap((s) =>
-            s.items.filter((i) => i.button?.type === "add").map((i) => i.title)
+            s.items
+              .filter((i) => i.button?.type === "add" && i.status !== "completed")
+              .map((i) => i.title)
           )
         );
       } else if (mode === "issues") {
-        const issueSections = sections.filter((s) =>
-          s.items.some((i) => i.button?.type === "fix")
+        // Only expand sections that have issues, and only expand items with issues within those sections
+        const issueSections = items.filter((s) =>
+          s.items.some((i) => i.button?.type === "fix" && i.status !== "completed")
         );
         setExpandedSections(issueSections.map((s) => s.title));
         setExpandedItems(
           issueSections.flatMap((s) =>
-            s.items.filter((i) => i.button?.type === "fix").map((i) => i.title)
+            s.items
+              .filter((i) => i.button?.type === "fix" && i.status !== "completed")
+              .map((i) => i.title)
           )
         );
       } else if (mode === "completed") {
-        const completedSections = sections.filter((s) =>
+        // Only expand sections that have completed items, and only expand completed items within those sections
+        const completedSections = items.filter((s) =>
           s.items.some((i) => i.status === "completed")
         );
         setExpandedSections(completedSections.map((s) => s.title));
         setExpandedItems(
           completedSections.flatMap((s) =>
-            s.items.filter((i) => i.status === "completed").map((i) => i.title)
+            s.items
+              .filter((i) => i.status === "completed")
+              .map((i) => i.title)
           )
         );
       }
@@ -393,7 +406,7 @@ export const CheckListSection: React.FC = () => {
   }, [expandMode, showIncomplete, showIssues]);
 
   return (
-    <div className="max-w-full">
+    <div className="max-w-[1150px] mx-auto py-10">
       <div className="bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.1)] pb-4">
         <Header
           showIncomplete={showIncomplete}

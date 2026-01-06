@@ -1,5 +1,5 @@
 "use client";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useState } from "react";
 import { DragHandleIcon, PinIcon, EditIcon, DeleteIcon } from "../Icons";
 import { Link } from "../types/link";
 
@@ -11,6 +11,10 @@ interface LinksSectionDesktopProps {
   onDeleteLink: (id: number) => void;
   onTogglePin: (id: number) => void;
   onUpdateColor: (id: number, color: string) => void;
+  draggedItemId: number | null;
+  onDragStart: (id: number) => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDrop: (e: React.DragEvent, id: number) => void;
 }
 
 export const LinksSectionDesktop: FC<LinksSectionDesktopProps> = ({
@@ -21,90 +25,34 @@ export const LinksSectionDesktop: FC<LinksSectionDesktopProps> = ({
   onDeleteLink,
   onTogglePin,
   onUpdateColor,
+  draggedItemId,
+  onDragStart,
+  onDragOver,
+  onDrop,
 }) => {
-  const [draggedItem, setDraggedItem] = useState<HTMLElement | null>(null);
-  const tbodyRef = useRef<HTMLTableSectionElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const sortedLinks = [...links].sort((a, b) => {
-    if (a.pinned && !b.pinned) return -1;
-    if (!a.pinned && b.pinned) return 1;
+    if (a.pinned !== b.pinned) {
+      return a.pinned ? -1 : 1;
+    }
     return a.order - b.order;
   });
 
-  const handleDragStart = (e: React.MouseEvent, row: HTMLElement) => {
-    e.preventDefault();
-    setDraggedItem(row);
-    row.classList.add("opacity-50");
-    document.addEventListener("mousemove", handleDrag);
-    document.addEventListener("mouseup", handleDragEnd);
-  };
-
-  const handleDrag = (e: MouseEvent) => {
-    if (!draggedItem || !tbodyRef.current) return;
-
-    const rows = Array.from(
-      tbodyRef.current.getElementsByClassName("link-row")
-    );
-    const tbodyRect = tbodyRef.current.getBoundingClientRect();
-    const mouseY = e.clientY - tbodyRect.top;
-
-    let targetRow: HTMLElement | null = null;
-    for (const row of rows) {
-      const rect = row.getBoundingClientRect();
-      const rowMiddle = rect.top + rect.height / 2 - tbodyRect.top;
-      if (mouseY < rowMiddle) {
-        targetRow = row as HTMLElement;
-        break;
-      }
-    }
-
-    if (targetRow && targetRow !== draggedItem) {
-      const currentIndex = rows.indexOf(draggedItem);
-      const targetIndex = rows.indexOf(targetRow);
-
-      if (currentIndex < targetIndex) {
-        targetRow.parentNode?.insertBefore(draggedItem, targetRow.nextSibling);
-      } else {
-        targetRow.parentNode?.insertBefore(draggedItem, targetRow);
-      }
-
-      updateLinkOrders();
-    }
+  const handleDragStart = (e: React.DragEvent, linkId: number) => {
+    setIsDragging(true);
+    onDragStart(linkId);
+    e.dataTransfer.effectAllowed = "move";
   };
 
   const handleDragEnd = () => {
-    if (!draggedItem || !tbodyRef.current) return;
-
-    draggedItem.classList.remove("opacity-50");
-    setDraggedItem(null);
-
-    document.removeEventListener("mousemove", handleDrag);
-    document.removeEventListener("mouseup", handleDragEnd);
-
-    updateLinkOrders();
+    setIsDragging(false);
   };
 
-  const updateLinkOrders = () => {
-    if (!tbodyRef.current) return;
-    const rows = Array.from(
-      tbodyRef.current.getElementsByClassName("link-row")
-    );
-    setLinks((prev) =>
-      prev.map((link) => {
-        const row = rows.find(
-          (r) => parseInt(r.getAttribute("data-id")!) === link.id
-        );
-        return { ...link, order: row ? rows.indexOf(row) : link.order };
-      })
-    );
+  const handleDrop = (e: React.DragEvent, linkId: number) => {
+    onDrop(e, linkId);
+    setIsDragging(false);
   };
-
-  useEffect(() => {
-    return () => {
-      document.removeEventListener("mousemove", handleDrag);
-      document.removeEventListener("mouseup", handleDragEnd);
-    };
-  }, []);
 
   return (
     <div className="w-full flex-1 bg-white rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative">
@@ -135,22 +83,22 @@ export const LinksSectionDesktop: FC<LinksSectionDesktopProps> = ({
             </th>
           </tr>
         </thead>
-        <tbody ref={tbodyRef}>
+        <tbody>
           {sortedLinks.map((link) => (
             <tr
               key={link.id}
-              className={`link-row hover:bg-[#F9FAFB] transition-colors duration-200 ${
+              className={`link-row hover:bg-[#F9FAFB] transition-all duration-200 ${
                 link.pinned ? "bg-[#F8F9FD] border border-[#E0E0E0]" : ""
-              }`}
+              } ${draggedItemId === link.id ? "opacity-40" : "opacity-100"}`}
+              draggable
               data-id={link.id}
+              onDragStart={(e) => handleDragStart(e, link.id)}
+              onDragEnd={handleDragEnd}
+              onDragOver={onDragOver}
+              onDrop={(e) => handleDrop(e, link.id)}
             >
               <td className="px-4 py-4 border-b border-[#E5E5E5]">
-                <div
-                  className="cursor-grab text-[#D1D5DB] active:cursor-grabbing"
-                  onMouseDown={(e) =>
-                    handleDragStart(e, e.currentTarget.closest("tr")!)
-                  }
-                >
+                <div className="cursor-move text-[#D1D5DB] hover:text-[#9CA3AF] transition-colors">
                   <DragHandleIcon />
                 </div>
               </td>

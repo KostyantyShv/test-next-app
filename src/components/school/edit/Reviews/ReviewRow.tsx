@@ -79,11 +79,22 @@ function ReviewRow({
   onDelete,
   onToggleFeatured,
 }: ReviewRowProps) {
+  // Format author name: second word shortened to one letter with dot
+  const formatAuthorName = (fullName: string): string => {
+    const parts = fullName.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return `${parts[0]} ${parts[1][0]}.`;
+    }
+    return fullName;
+  };
+
+  const formattedAuthorName = formatAuthorName(review.author.fullName);
+
   return (
     <tr className={`main-row relative ${isExpanded ? "expanded" : ""}`}>
-      <td className="p-4 bg-white border-b border-gray-200 align-middle">
+      <td className="px-4 py-4 bg-surface border-b border-theme align-middle">
         <button
-          className="w-8 h-8 rounded-md bg-gray-100 border-none cursor-pointer flex items-center justify-center hover:bg-gray-200 transition-colors"
+          className="w-8 h-8 rounded-md bg-[#F1F3F6] border-none cursor-pointer flex items-center justify-center hover:bg-[var(--gray-200)] transition-colors"
           onClick={() => onToggleRow(review.id)}
         >
           <span
@@ -93,52 +104,54 @@ function ReviewRow({
           </span>
         </button>
       </td>
-      <td className="p-4 bg-white border-b border-gray-200 align-middle">
-        <div className="relative group">
-          <span className="text-[0.95rem] font-semibold text-green-800 tracking-tight">
-            {review.author.name}
+      <td className="px-4 py-4 bg-surface border-b border-theme align-middle">
+        <div className="relative group inline-block">
+          <span className="text-[0.95rem] font-semibold text-header-green tracking-[-0.01em]">
+            {formattedAuthorName}
           </span>
-          <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-gray-800 text-white text-center rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap text-xs font-normal transition-opacity">
+          <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-[var(--bold-text)] text-white text-center rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap text-xs font-normal transition-opacity">
             {review.author.fullName}
-            <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-t-gray-800 border-x-transparent border-b-transparent"></span>
+            <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-t-[#464646] border-x-transparent border-b-transparent"></span>
           </span>
         </div>
       </td>
-      <td className="p-4 bg-white border-b border-gray-200 align-middle">
-        <div className="relative group">
-          <span className="text-[0.95rem] text-gray-700 tracking-tight">
+      <td className="py-4 px-1 bg-surface border-b border-theme max-w-[78px] align-middle">
+        <div className="relative group inline-block max-w-full">
+          <span className="text-xs text-default tracking-[-0.01em] line-clamp-3 block overflow-hidden">
             {review.title.short}
           </span>
-          <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-gray-800 text-white text-center rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap text-xs font-normal transition-opacity">
+          <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-[var(--bold-text)] text-white text-center rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap text-xs font-normal transition-opacity">
             {review.title.full}
-            <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-t-gray-800 border-x-transparent border-b-transparent"></span>
+            <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-t-[#464646] border-x-transparent border-b-transparent"></span>
           </span>
         </div>
       </td>
-      <td className="p-4 bg-white border-b border-gray-200 align-middle">
-        <div className="flex items-center gap-1 font-semibold text-green-600">
-          <span className="text-green-400 pb-[5px]">★</span>
+      <td className="px-4 py-4 bg-surface border-b border-theme align-middle">
+        <div className="flex items-center gap-1 font-semibold text-success-green">
+          <span className="text-[var(--grade-badge)] pb-[5px]">★</span>
           <span>{review.rating}</span>
         </div>
       </td>
-      <td className="p-4 bg-white border-b border-gray-200 align-middle">
-        <div className="relative group">
-          <span className="text-sm text-gray-600">
+      <td className="px-4 py-4 bg-surface border-b border-theme align-middle">
+        <div className="relative group inline-block">
+          <span className="text-sm text-subtle">
             {review.published.short}
           </span>
-          <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-gray-800 text-white text-center rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap text-xs font-normal transition-opacity">
+          <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-[var(--bold-text)] text-white text-center rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap text-xs font-normal transition-opacity">
             {review.published.full}
-            <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-t-gray-800 border-x-transparent border-b-transparent"></span>
+            <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-t-[#464646] border-x-transparent border-b-transparent"></span>
           </span>
         </div>
       </td>
-      <td className="p-4 bg-white border-b border-gray-200 align-middle">
-        <div className="flex items-center gap-[6px] text-gray-600 font-medium">
-          {ICONS.thumbsUp}
+      <td className="px-4 py-4 bg-surface border-b border-theme align-middle">
+        <div className="flex items-center gap-[6px] text-subtle font-medium">
+          <span className="text-subtle">
+            {ICONS.thumbsUp}
+          </span>
           {review.votes}
         </div>
       </td>
-      <td className="p-4 bg-white border-b border-gray-200 align-middle">
+      <td className="px-4 py-4 bg-surface border-b border-theme align-middle">
         <label className="relative inline-block w-9 h-5">
           <input
             type="checkbox"
@@ -147,21 +160,21 @@ function ReviewRow({
             className="opacity-0 w-0 h-0"
           />
           <span
-            className={`absolute cursor-pointer inset-0 bg-gray-300 rounded-full transition-colors ${
-              review.featured ? "bg-green-700" : ""
+            className={`absolute cursor-pointer inset-0 rounded-full transition-colors ${
+              review.featured ? "bg-[var(--active-green)]" : "bg-[var(--gray-200)]"
             }`}
           ></span>
           <span
-            className={`absolute h-4 w-4 left-0.5 bottom-0.5 bg-white rounded-full transition-transform ${
+            className={`absolute h-4 w-4 left-0.5 bottom-0.5 bg-surface rounded-full transition-transform ${
               review.featured ? "translate-x-4" : ""
             }`}
           ></span>
         </label>
       </td>
-      <td className="p-4 bg-white border-b border-gray-200 align-middle">
+      <td className="px-4 py-4 bg-surface border-b border-theme align-middle">
         <div className="relative">
           <div
-            className="cursor-pointer p-2 rounded-md font-bold hover:bg-gray-100"
+            className="cursor-pointer p-2 rounded-md font-bold text-default hover:bg-surface-secondary transition-colors"
             onClick={(e) => {
               e.stopPropagation();
               onToggleDropdown(review.id);
@@ -170,29 +183,35 @@ function ReviewRow({
             ⋮
           </div>
           <div
-            className={`absolute right-0 top-full bg-white border border-gray-200 rounded-lg shadow-lg min-w-[200px] z-[1000] ${
+            className={`absolute right-0 top-full bg-surface border border-theme rounded-lg shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] min-w-[200px] z-[1000] ${
               isDropdownActive ? "block" : "hidden"
             }`}
           >
             <button
-              className="w-full text-left px-4 py-2 text-gray-700 text-sm hover:bg-gray-100 flex items-center gap-3"
+              className="w-full text-left px-4 py-3 text-default text-sm hover:bg-surface-secondary flex items-center gap-3 transition-colors"
               onClick={() => onReplyClick(review)}
             >
-              {ICONS.reply}
+              <span className="text-subtle">
+                {ICONS.reply}
+              </span>
               Reply to Review
             </button>
-            <button className="w-full text-left px-4 py-2 text-gray-700 text-sm hover:bg-gray-100 flex items-center gap-3">
-              {ICONS.view}
+            <button className="w-full text-left px-4 py-3 text-default text-sm hover:bg-surface-secondary flex items-center gap-3 transition-colors">
+              <span className="text-subtle">
+                {ICONS.view}
+              </span>
               View Review
             </button>
             {review.reply && (
               <>
-                <div className="h-px bg-gray-200 my-2"></div>
+                <div className="h-px bg-[#E0E0E0] my-2"></div>
                 <button
-                  className="w-full text-left px-4 py-2 text-red-600 text-sm hover:bg-red-50 flex items-center gap-3"
+                  className="w-full text-left px-4 py-3 text-[#FF4D4D] text-sm hover:bg-[#FFF1F1] flex items-center gap-3 transition-colors"
                   onClick={() => onDelete(review.id)}
                 >
-                  {ICONS.delete}
+                  <span className="text-[#FF4D4D]">
+                    {ICONS.delete}
+                  </span>
                   Delete Reply
                 </button>
               </>

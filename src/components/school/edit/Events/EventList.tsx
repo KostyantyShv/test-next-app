@@ -94,6 +94,14 @@ export default function EventList({
     return a.order - b.order;
   });
 
+  if (sortedEvents.length === 0) {
+    return (
+      <div className="mt-6 py-8 text-center text-[#5F5F5F] text-sm">
+        No events yet. Click "Add Event" to create your first event.
+      </div>
+    );
+  }
+
   return (
     <div
       ref={listRef}

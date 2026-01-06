@@ -47,23 +47,25 @@ export const Section: React.FC<SectionProps> = ({
   });
 
   return (
-    <div className="m-4 border border-border rounded-lg overflow-hidden">
+    <div className="m-4 border rounded-lg overflow-hidden" style={{ borderColor: 'var(--border-color)' }}>
       <div
-        className="p-[16px_24px] bg-gray-50 flex justify-between items-center"
+        className="px-6 py-4 flex justify-between items-center"
+        style={{ background: 'var(--surface-secondary)' }}
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            toggleSection(title);
+            const chevron = e.currentTarget.querySelector('.chevron');
+            if (chevron) (chevron as HTMLElement).click();
           }
         }}
       >
-        <div className="flex md:items-center max-md:flex-col md:gap-4">
-          <div className="text-base font-semibold text-header-green">
+        <div className="flex items-center gap-4">
+          <div className="text-base font-semibold" style={{ color: 'var(--header-green)' }}>
             {title}
           </div>
           {completedCount === totalItems ? (
-            <div className="flex max-md:bg-[#d1fae5] max-md:w-fit items-center gap-1.5 px-3 py-1 rounded-full bg-success-bg text-[#089E68] text-[13px] font-medium min-w-[95px]">
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[13px] font-medium min-w-[95px]" style={{ background: 'var(--state-success-bg)', color: 'var(--success-green)' }}>
               <svg
                 width="20"
                 height="20"
@@ -75,7 +77,7 @@ export const Section: React.FC<SectionProps> = ({
               All done
             </div>
           ) : incompleteCount > 0 && issuesCount === 0 ? (
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ebf5ff] text-[#1d77bd] text-[13px] font-medium min-w-[95px]">
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[13px] font-medium min-w-[95px]" style={{ background: 'var(--state-incomplete-bg)', color: 'var(--verification-blue)' }}>
               <svg
                 viewBox="0 0 448 512"
                 width="15"
@@ -87,7 +89,7 @@ export const Section: React.FC<SectionProps> = ({
               {incompleteCount} incomplete
             </div>
           ) : (
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#fee2e2] text-[#ef4444] text-[13px] font-medium min-w-[95px]">
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[13px] font-medium min-w-[95px]" style={{ background: 'var(--state-error-bg)', color: 'var(--state-error-text)' }}>
               <svg
                 viewBox="0 0 15 15"
                 width="15"
@@ -111,13 +113,17 @@ export const Section: React.FC<SectionProps> = ({
         <div className="flex items-center gap-4">
           <ProgressCircle progress={progress} />
           <svg
-            className={`w-5 h-5 transition-transform cursor-pointer ${
+            className={`chevron w-5 h-5 transition-transform cursor-pointer ${
               isExpanded ? "rotate-180" : ""
             }`}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            onClick={() => toggleSection(title)}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleSection(title);
+            }}
+            style={{ color: 'var(--dark-text)' }}
           >
             <path
               strokeLinecap="round"

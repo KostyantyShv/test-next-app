@@ -1,6 +1,6 @@
 "use client";
-import { FC } from "react";
-import { PinIcon, EditIcon, DeleteIcon } from "../Icons";
+import { FC, useState } from "react";
+import { PinIcon, EditIcon, DeleteIcon, DragHandleIcon } from "../Icons";
 import { Link } from "../types/link";
 
 interface LinksSectionMobileProps {
@@ -10,6 +10,10 @@ interface LinksSectionMobileProps {
   onEditLink: (id: number) => void;
   onDeleteLink: (id: number) => void;
   onTogglePin: (id: number) => void;
+  draggedItemId: number | null;
+  onDragStart: (id: number) => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDrop: (e: React.DragEvent, id: number) => void;
 }
 
 export const LinksSectionMobile: FC<LinksSectionMobileProps> = ({
@@ -18,14 +22,35 @@ export const LinksSectionMobile: FC<LinksSectionMobileProps> = ({
   onEditLink,
   onDeleteLink,
   onTogglePin,
+  draggedItemId,
+  onDragStart,
+  onDragOver,
+  onDrop,
 }) => {
   const MAX_LINKS = 10;
+  const [isDragging, setIsDragging] = useState(false);
 
   const sortedLinks = [...links].sort((a, b) => {
-    if (a.pinned && !b.pinned) return -1;
-    if (!a.pinned && b.pinned) return 1;
+    if (a.pinned !== b.pinned) {
+      return a.pinned ? -1 : 1;
+    }
     return a.order - b.order;
   });
+
+  const handleDragStart = (e: React.DragEvent, linkId: number) => {
+    setIsDragging(true);
+    onDragStart(linkId);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent, linkId: number) => {
+    onDrop(e, linkId);
+    setIsDragging(false);
+  };
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -45,13 +70,22 @@ export const LinksSectionMobile: FC<LinksSectionMobileProps> = ({
           {sortedLinks.map((link) => (
             <div
               key={link.id}
-              className={`flex items-center rounded-lg border-l-4 p-3 transition-colors ${
+              className={`link-item flex items-center rounded-lg border-l-4 p-3 transition-all ${
                 link.pinned
                   ? "border-l-[#02C5AF] bg-[#F8F9FD]"
                   : "border-l-transparent bg-[#EDF2F7]"
-              }`}
+              } ${draggedItemId === link.id ? "opacity-40" : "opacity-100"}`}
               style={{ backgroundColor: link.color }}
+              draggable
+              data-id={link.id}
+              onDragStart={(e) => handleDragStart(e, link.id)}
+              onDragEnd={handleDragEnd}
+              onDragOver={onDragOver}
+              onDrop={(e) => handleDrop(e, link.id)}
             >
+              <div className="cursor-move mr-2 text-[#D1D5DB]">
+                <DragHandleIcon />
+              </div>
               <div className="mr-3 h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg">
                 <img
                   src={link.icon}

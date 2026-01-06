@@ -70,12 +70,12 @@ export default function SidebarSection({
 
   return (
     <div className="pb-6">
-      <h3 className="text-lg font-semibold text-[#262B47] mb-4">
+      <h3 className="text-lg font-semibold text-dark mb-4">
         Sidebar Details
       </h3>
-      <div className="bg-[#F8F9FD] rounded-lg p-4 mb-6">
+      <div className="bg-surface-tertiary rounded-lg p-4 mb-6">
         <div className="mb-4">
-          <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
+          <label className="block font-semibold text-default mb-2 text-sm">
             Sidebar Banner
           </label>
           <div className="relative w-full h-[150px] rounded-lg overflow-hidden">
@@ -106,30 +106,52 @@ export default function SidebarSection({
           </div>
         </div>
         <div className="mb-4">
-          <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
+          <label className="block font-semibold text-default mb-2 text-sm">
             Sidebar Title
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+            className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+            style={{ 
+              borderColor: 'var(--border-color)',
+              color: 'var(--text-default)',
+              backgroundColor: 'var(--surface-color)'
+            }}
+            onFocus={(e) => {
+              (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+            }}
+            onBlur={(e) => {
+              (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+            }}
             placeholder="e.g., EduTech Solutions"
           />
         </div>
         <div className="mb-4">
-          <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
+          <label className="block font-semibold text-default mb-2 text-sm">
             Sidebar Description
           </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF] min-h-[100px]"
+            className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none min-h-[100px]"
+            style={{ 
+              borderColor: 'var(--border-color)',
+              color: 'var(--text-default)',
+              backgroundColor: 'var(--surface-color)'
+            }}
+            onFocus={(e) => {
+              (e.target as HTMLTextAreaElement).style.borderColor = 'var(--brand-teal)';
+            }}
+            onBlur={(e) => {
+              (e.target as HTMLTextAreaElement).style.borderColor = 'var(--border-color)';
+            }}
             placeholder="e.g., Leading provider of innovative educational technology solutions..."
           />
         </div>
         <div className="mb-4">
-          <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
+          <label className="block font-semibold text-default mb-2 text-sm">
             Sidebar Links
           </label>
           <div className="flex flex-col gap-3 mb-3">
@@ -146,7 +168,7 @@ export default function SidebarSection({
                   ×
                 </button>
                 <div className="flex-1 max-md:w-full">
-                  <label className="max-md:block hidden font-semibold text-[#4A4A4A] mb-2 text-sm">
+                  <label className="max-md:block hidden font-semibold text-default mb-2 text-sm">
                     Link Text
                   </label>
                   <input
@@ -157,12 +179,23 @@ export default function SidebarSection({
                       newLinks[index].text = e.target.value;
                       setLinks(newLinks);
                     }}
-                    className="w-full p-2 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                    className="w-full px-2 py-2 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+                    style={{ 
+                      borderColor: 'var(--border-color)',
+                      color: 'var(--text-default)',
+                      backgroundColor: 'var(--surface-color)'
+                    }}
+                    onFocus={(e) => {
+                      (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+                    }}
+                    onBlur={(e) => {
+                      (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+                    }}
                     placeholder="Link Text"
                   />
                 </div>
                 <div className="flex-1 max-md:w-full">
-                  <label className="max-md:block hidden font-semibold text-[#4A4A4A] mb-2 text-sm">
+                  <label className="max-md:block hidden font-semibold text-default mb-2 text-sm">
                     URL
                   </label>
                   <input
@@ -173,7 +206,18 @@ export default function SidebarSection({
                       newLinks[index].url = e.target.value;
                       setLinks(newLinks);
                     }}
-                    className="w-full p-2 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                    className="w-full px-2 py-2 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+                    style={{ 
+                      borderColor: 'var(--border-color)',
+                      color: 'var(--text-default)',
+                      backgroundColor: 'var(--surface-color)'
+                    }}
+                    onFocus={(e) => {
+                      (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+                    }}
+                    onBlur={(e) => {
+                      (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+                    }}
                     placeholder="Link URL"
                   />
                 </div>
@@ -185,14 +229,36 @@ export default function SidebarSection({
               type="text"
               value={newLinkText}
               onChange={(e) => setNewLinkText(e.target.value)}
-              className="flex-1 p-2 border border-[#E5E5E5] rounded-lg text-sm max-md:w-full text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+              className="flex-1 px-2 py-2 border border-theme rounded-lg text-sm max-md:w-full text-default bg-surface focus:outline-none"
+              style={{ 
+                borderColor: 'var(--border-color)',
+                color: 'var(--text-default)',
+                backgroundColor: 'var(--surface-color)'
+              }}
+              onFocus={(e) => {
+                (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+              }}
+              onBlur={(e) => {
+                (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+              }}
               placeholder="Enter link text"
             />
             <input
               type="url"
               value={newLinkUrl}
               onChange={(e) => setNewLinkUrl(e.target.value)}
-              className="flex-1 p-2 border border-[#E5E5E5] rounded-lg text-sm max-md:w-full text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+              className="flex-1 px-2 py-2 border border-theme rounded-lg text-sm max-md:w-full text-default bg-surface focus:outline-none"
+              style={{ 
+                borderColor: 'var(--border-color)',
+                color: 'var(--text-default)',
+                backgroundColor: 'var(--surface-color)'
+              }}
+              onFocus={(e) => {
+                (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+              }}
+              onBlur={(e) => {
+                (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+              }}
               placeholder="Enter link URL"
             />
             <button
@@ -205,7 +271,7 @@ export default function SidebarSection({
           </div>
         </div>
         <div>
-          <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
+          <label className="block font-semibold text-default mb-2 text-sm">
             Social Buttons
           </label>
           <div className="flex flex-col gap-3 mb-3">
@@ -230,7 +296,18 @@ export default function SidebarSection({
                       newButtons[index].type = e.target.value;
                       setSocialButtons(newButtons);
                     }}
-                    className="w-full p-2 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                    className="w-full px-2 py-2 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+                    style={{ 
+                      borderColor: 'var(--border-color)',
+                      color: 'var(--text-default)',
+                      backgroundColor: 'var(--surface-color)'
+                    }}
+                    onFocus={(e) => {
+                      (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+                    }}
+                    onBlur={(e) => {
+                      (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+                    }}
                     placeholder="Social Platform (e.g., twitter)"
                   />
                 </div>
@@ -243,7 +320,18 @@ export default function SidebarSection({
                       newButtons[index].url = e.target.value;
                       setSocialButtons(newButtons);
                     }}
-                    className="w-full p-2 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                    className="w-full px-2 py-2 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+                    style={{ 
+                      borderColor: 'var(--border-color)',
+                      color: 'var(--text-default)',
+                      backgroundColor: 'var(--surface-color)'
+                    }}
+                    onFocus={(e) => {
+                      (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+                    }}
+                    onBlur={(e) => {
+                      (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+                    }}
                     placeholder="Social URL"
                   />
                 </div>
@@ -255,14 +343,36 @@ export default function SidebarSection({
               type="text"
               value={newSocialType}
               onChange={(e) => setNewSocialType(e.target.value)}
-              className="flex-1 p-2 border border-[#E5E5E5] max-md:w-full rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+              className="flex-1 px-2 py-2 border border-theme max-md:w-full rounded-lg text-sm text-default bg-surface focus:outline-none"
+              style={{ 
+                borderColor: 'var(--border-color)',
+                color: 'var(--text-default)',
+                backgroundColor: 'var(--surface-color)'
+              }}
+              onFocus={(e) => {
+                (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+              }}
+              onBlur={(e) => {
+                (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+              }}
               placeholder="Enter social platform"
             />
             <input
               type="url"
               value={newSocialUrl}
               onChange={(e) => setNewSocialUrl(e.target.value)}
-              className="flex-1 p-2 border border-[#E5E5E5] max-md:w-full rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+              className="flex-1 px-2 py-2 border border-theme max-md:w-full rounded-lg text-sm text-default bg-surface focus:outline-none"
+              style={{ 
+                borderColor: 'var(--border-color)',
+                color: 'var(--text-default)',
+                backgroundColor: 'var(--surface-color)'
+              }}
+              onFocus={(e) => {
+                (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+              }}
+              onBlur={(e) => {
+                (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+              }}
               placeholder="Enter social URL"
             />
             <button

@@ -14,17 +14,19 @@ export default function CaseStudyList({
 }: CaseStudyListProps) {
   return (
     <div className="mt-6 pt-[10px] relative">
-      <div className="absolute top-[-24px] right-0 text-sm font-semibold text-[#4A4A4A] px-3 py-1 bg-[#F8F9FA] rounded-2xl">
+      <div className="absolute top-6 right-6 text-sm font-semibold text-[#4A4A4A] px-3 py-1 bg-[#F8F9FA] rounded-2xl">
         {caseStudies.length}/10
       </div>
-      {caseStudies.map((study) => (
-        <CaseStudyItem
-          key={study.id}
-          caseStudy={study}
-          onEdit={() => onEdit(study.id)}
-          onTogglePin={() => onTogglePin(study.id)}
-        />
-      ))}
+      <div className="mt-6">
+        {caseStudies.map((study) => (
+          <CaseStudyItem
+            key={study.id}
+            caseStudy={study}
+            onEdit={() => onEdit(study.id)}
+            onTogglePin={() => onTogglePin(study.id)}
+          />
+        ))}
+      </div>
     </div>
   );
 }

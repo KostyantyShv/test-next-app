@@ -32,7 +32,7 @@ const CaseStudiesModal: React.FC<CaseStudyModalProps> = ({
         </MobileDrawer>
       </div>
       <div className="max-md:hidden block">
-        <DesktopModal onClose={onClose} isOpen={isOpen}>
+        <DesktopModal onClose={onClose} isOpen={isOpen} className="max-w-[1200px] w-[90%]">
           <CaseStudyModalContent
             onClose={onClose}
             onDelete={onDelete}

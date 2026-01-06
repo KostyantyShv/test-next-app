@@ -55,7 +55,18 @@ export default function TagsSection({ tags, setTags }: TagsSectionProps) {
           value={newTag}
           onChange={(e) => setNewTag(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="px-3 py-1.5 border max-md:w-full border-[#E5E5E5] rounded-full text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF] w-[200px]"
+          className="px-3 py-1.5 border max-md:w-full border-theme rounded-full text-sm text-default bg-surface focus:outline-none w-[200px]"
+          style={{ 
+            borderColor: 'var(--border-color)',
+            color: 'var(--text-default)',
+            backgroundColor: 'var(--surface-color)'
+          }}
+          onFocus={(e) => {
+            (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+          }}
+          onBlur={(e) => {
+            (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+          }}
           placeholder="Enter tag"
         />
         <button

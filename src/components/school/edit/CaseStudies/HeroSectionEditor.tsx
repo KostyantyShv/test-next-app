@@ -48,7 +48,7 @@ export default function HeroSection({
 
   return (
     <div>
-      <div className="bg-surface-secondary p-5 rounded-lg mb-6">
+      <div className="bg-surface-secondary p-5 rounded-lg mb-6" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
         <div className="mb-6">
           <label className="block text-sm font-semibold text-default mb-2">
             Hero Subtitle
@@ -62,14 +62,7 @@ export default function HeroSection({
                 hero: { ...formData.hero, subtitle: e.target.value },
               })
             }
-            className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
-            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
-            onFocus={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
-            }}
-            onBlur={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
-            }}
+            className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
             placeholder="e.g., Web Design for Construction Firms"
           />
         </div>
@@ -86,14 +79,7 @@ export default function HeroSection({
                 hero: { ...formData.hero, title: e.target.value },
               })
             }
-            className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
-            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
-            onFocus={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
-            }}
-            onBlur={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
-            }}
+            className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
             placeholder="e.g., Aecon Green Energy Solutions"
           />
         </div>
@@ -110,14 +96,7 @@ export default function HeroSection({
                 hero: { ...formData.hero, buttonText: e.target.value },
               })
             }
-            className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
-            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
-            onFocus={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
-            }}
-            onBlur={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
-            }}
+            className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
             placeholder="e.g., Launch Website"
           />
         </div>
@@ -134,14 +113,7 @@ export default function HeroSection({
                 hero: { ...formData.hero, buttonUrl: e.target.value },
               })
             }
-            className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
-            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
-            onFocus={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
-            }}
-            onBlur={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
-            }}
+            className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
             placeholder="e.g., https://example.com"
           />
         </div>
@@ -209,14 +181,7 @@ export default function HeroSection({
                     },
                   })
                 }
-                className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
-                style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
-                onFocus={(e) => {
-                  (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
-                }}
-                onBlur={(e) => {
-                  (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
-                }}
+                className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
                 placeholder={
                   column === "column1"
                     ? "e.g., Web Design Services"
@@ -247,21 +212,13 @@ export default function HeroSection({
                         },
                       });
                     }}
-                    className="flex-1 p-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
-                    style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
-                    onFocus={(e) => {
-                      (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
-                    }}
-                    onBlur={(e) => {
-                      (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
-                    }}
+                    className="flex-1 px-3 py-2 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
                     placeholder="Enter list item"
                   />
                   <button
                     type="button"
                     onClick={() => handleRemoveListItem(column, index)}
-                    className="text-lg bg-transparent border-none"
-                    style={{ color: '#f93a37' }}
+                    className="text-lg bg-transparent border-none text-[#f93a37] cursor-pointer"
                   >
                     ×
                   </button>
@@ -286,7 +243,7 @@ export default function HeroSection({
           </div>
         ))}
       </div>
-      <div className="bg-header-green text-white p-5 rounded-lg">
+      <div className="bg-[var(--header-green)] text-white p-5 rounded-lg">
         <div className="mb-6">
           <label className="block text-sm font-semibold text-white mb-2">
             Overview Title
@@ -300,14 +257,7 @@ export default function HeroSection({
                 overview: { ...formData.overview, title: e.target.value },
               })
             }
-            className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-[rgba(255,255,255,0.9)] focus:outline-none"
-            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
-            onFocus={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
-            }}
-            onBlur={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
-            }}
+            className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-[var(--surface-color)] focus:outline-none focus:border-[var(--brand-teal)]"
             placeholder="e.g., Project Overview"
           />
         </div>
@@ -323,14 +273,7 @@ export default function HeroSection({
                 overview: { ...formData.overview, text: e.target.value },
               })
             }
-            className="w-full p-3 border border-theme rounded-lg text-sm text-default bg-[rgba(255,255,255,0.9)] focus:outline-none"
-            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
-            onFocus={(e) => {
-              (e.target as HTMLTextAreaElement).style.borderColor = 'var(--brand-teal)';
-            }}
-            onBlur={(e) => {
-              (e.target as HTMLTextAreaElement).style.borderColor = 'var(--border-color)';
-            }}
+            className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-[var(--surface-color)] focus:outline-none focus:border-[var(--brand-teal)]"
             rows={4}
             placeholder="Enter the project overview text"
           />

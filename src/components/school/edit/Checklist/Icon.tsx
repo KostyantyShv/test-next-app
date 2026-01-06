@@ -1,11 +1,12 @@
-import { ReactNode } from "react";
+import { ReactNode, CSSProperties } from "react";
 
 interface IconProps {
   name: string;
   className?: string;
+  style?: CSSProperties;
 }
 
-export const Icon: React.FC<IconProps> = ({ name, className }) => {
+export const Icon: React.FC<IconProps> = ({ name, className, style }) => {
   const icons: { [key: string]: ReactNode } = {
     announcement: (
       <svg
@@ -13,6 +14,7 @@ export const Icon: React.FC<IconProps> = ({ name, className }) => {
         fill="none"
         stroke="currentColor"
         className={className}
+        style={style}
       >
         <path
           strokeLinecap="round"
@@ -28,6 +30,7 @@ export const Icon: React.FC<IconProps> = ({ name, className }) => {
         fill="none"
         stroke="currentColor"
         className={className}
+        style={style}
       >
         <path
           strokeLinecap="round"
@@ -43,6 +46,7 @@ export const Icon: React.FC<IconProps> = ({ name, className }) => {
         fill="none"
         stroke="currentColor"
         className={className}
+        style={style}
       >
         <path
           strokeLinecap="round"
@@ -58,6 +62,7 @@ export const Icon: React.FC<IconProps> = ({ name, className }) => {
         fill="none"
         stroke="currentColor"
         className={className}
+        style={style}
       >
         <path
           strokeLinecap="round"
@@ -73,6 +78,7 @@ export const Icon: React.FC<IconProps> = ({ name, className }) => {
         fill="none"
         stroke="currentColor"
         className={className}
+        style={style}
       >
         <path
           strokeLinecap="round"
@@ -88,6 +94,7 @@ export const Icon: React.FC<IconProps> = ({ name, className }) => {
         fill="none"
         stroke="currentColor"
         className={className}
+        style={style}
       >
         <path
           strokeLinecap="round"
@@ -103,6 +110,7 @@ export const Icon: React.FC<IconProps> = ({ name, className }) => {
         fill="none"
         stroke="currentColor"
         className={className}
+        style={style}
       >
         <path
           strokeLinecap="round"
@@ -118,6 +126,7 @@ export const Icon: React.FC<IconProps> = ({ name, className }) => {
         fill="none"
         stroke="currentColor"
         className={className}
+        style={style}
       >
         <path
           strokeLinecap="round"
@@ -133,6 +142,7 @@ export const Icon: React.FC<IconProps> = ({ name, className }) => {
         fill="none"
         stroke="currentColor"
         className={className}
+        style={style}
       >
         <path
           strokeLinecap="round"
@@ -148,6 +158,7 @@ export const Icon: React.FC<IconProps> = ({ name, className }) => {
         fill="none"
         stroke="currentColor"
         className={className}
+        style={style}
       >
         <path
           strokeLinecap="round"
@@ -163,6 +174,7 @@ export const Icon: React.FC<IconProps> = ({ name, className }) => {
         fill="none"
         stroke="currentColor"
         className={className}
+        style={style}
       >
         <path
           strokeLinecap="round"
@@ -178,6 +190,7 @@ export const Icon: React.FC<IconProps> = ({ name, className }) => {
         fill="none"
         stroke="currentColor"
         className={className}
+        style={style}
       >
         <path
           strokeLinecap="round"
@@ -193,6 +206,7 @@ export const Icon: React.FC<IconProps> = ({ name, className }) => {
         fill="none"
         stroke="currentColor"
         className={className}
+        style={style}
       >
         <path
           strokeLinecap="round"
@@ -208,6 +222,7 @@ export const Icon: React.FC<IconProps> = ({ name, className }) => {
         fill="none"
         stroke="currentColor"
         className={className}
+        style={style}
       >
         <path
           strokeLinecap="round"

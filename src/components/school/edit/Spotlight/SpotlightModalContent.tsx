@@ -184,13 +184,14 @@ export default function SpotlightModalContent({
 
   return (
     <>
-      <div className="sticky top-0 bg-white z-10 flex justify-between items-center p-6 border-b border-[#E5E5E5]">
-        <h2 className="text-2xl font-bold text-[#262B47]">
+      <div className="sticky top-0 bg-white z-10 flex justify-between items-center px-6 py-6 border-b border-theme">
+        <h2 className="text-2xl font-bold text-[#262B3D]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
           {spotlight ? "Edit Spotlight" : "Create Spotlight"}
         </h2>
         <button
           onClick={onClose}
-          className="p-2 hover:bg-[#E1E7EE] rounded-full"
+          className="p-2 hover:bg-[#E1E7EE] rounded-full transition-colors"
+          type="button"
         >
           <svg fill="none" viewBox="0 0 24 24" width="24" height="24">
             <path
@@ -202,10 +203,10 @@ export default function SpotlightModalContent({
           </svg>
         </button>
       </div>
-      <form onSubmit={handleSubmit} className="p-6">
+      <form onSubmit={handleSubmit} className="px-6 py-6" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
         {/* Author Information */}
         <div className="border-b border-[#eee] pb-6 mb-6">
-          <h3 className="text-lg font-semibold text-[#262B47] mb-4">
+          <h3 className="text-lg font-semibold text-[#262B3D] mb-4">
             Author Information
           </h3>
           <div className="flex max-md:flex-col gap-4">
@@ -261,27 +262,49 @@ export default function SpotlightModalContent({
             </div>
             <div className="flex-1">
               <div className="mb-6">
-                <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
+                <label className="block font-semibold text-default mb-2 text-sm">
                   Author Name
                 </label>
                 <input
                   type="text"
                   value={authorName}
                   onChange={(e) => setAuthorName(e.target.value)}
-                  className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                  className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+                  style={{ 
+                    borderColor: 'var(--border-color)',
+                    color: 'var(--text-default)',
+                    backgroundColor: 'var(--surface-color)'
+                  }}
+                  onFocus={(e) => {
+                    (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+                  }}
+                  onBlur={(e) => {
+                    (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+                  }}
                   placeholder="Enter author name"
                   required
                 />
               </div>
               <div>
-                <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
+                <label className="block font-semibold text-default mb-2 text-sm">
                   Project Date
                 </label>
                 <input
                   type="month"
                   value={projectDate}
                   onChange={(e) => setProjectDate(e.target.value)}
-                  className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                  className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+                  style={{ 
+                    borderColor: 'var(--border-color)',
+                    color: 'var(--text-default)',
+                    backgroundColor: 'var(--surface-color)'
+                  }}
+                  onFocus={(e) => {
+                    (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+                  }}
+                  onBlur={(e) => {
+                    (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+                  }}
                   required
                 />
               </div>
@@ -291,18 +314,29 @@ export default function SpotlightModalContent({
 
         {/* Project Details */}
         <div className="border-b border-[#eee] pb-6 mb-6">
-          <h3 className="text-lg font-semibold text-[#262B47] mb-4">
+          <h3 className="text-lg font-semibold text-[#262B3D] mb-4">
             Project Details
           </h3>
           <div className="mb-6">
-            <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
+            <label className="block font-semibold text-default mb-2 text-sm">
               Project Title
             </label>
             <input
               type="text"
               value={projectTitle}
               onChange={(e) => setProjectTitle(e.target.value)}
-              className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+              className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+              style={{ 
+                borderColor: 'var(--border-color)',
+                color: 'var(--text-default)',
+                backgroundColor: 'var(--surface-color)'
+              }}
+              onFocus={(e) => {
+                (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+              }}
+              onBlur={(e) => {
+                (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+              }}
               placeholder="Enter project title"
               required
             />
@@ -364,7 +398,7 @@ export default function SpotlightModalContent({
           onBannerUpload={handleSidebarBannerUpload}
         />
 
-        <div className="flex justify-between max-md:flex-col max-md:gap-4 md:items-center p-6 border-t border-[#E5E5E5]">
+        <div className="flex justify-between max-md:flex-col max-md:gap-4 md:items-center px-6 py-6 border-t border-theme">
           <button
             type="button"
             onClick={onDelete}
@@ -384,13 +418,13 @@ export default function SpotlightModalContent({
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-3 max-md:w-full bg-[#F8F9FA] border border-[#E5E5E5] text-[#4A4A4A] rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+              className="px-6 py-3 max-md:w-full bg-surface-secondary border border-theme text-[#4A4A4A] rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-3 max-md:w-full bg-[#02C5AF] text-white rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+              className="px-6 py-3 max-md:w-full bg-[var(--brand-teal)] text-white rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
             >
               Save Changes
             </button>

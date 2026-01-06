@@ -53,8 +53,35 @@ export const LinkModalContent = ({ link, onSave, onClose }: LinkModalProps) => {
       alert("Please fill in all required fields");
       return;
     }
+    // Validate URL
+    try {
+      const parsedUrl = new URL(url);
+      if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+        alert("Please enter a valid URL (must start with http:// or https://)");
+        return;
+      }
+    } catch {
+      alert("Please enter a valid URL (e.g., https://example.com)");
+      return;
+    }
     onSave({ title, url, icon: iconSrc, color: selectedColor });
   };
+
+  // Reset form when link changes (for add vs edit)
+  useEffect(() => {
+    if (link) {
+      setTitle(link.title);
+      setUrl(link.url);
+      setIconSrc(link.icon);
+      setSelectedColor(link.color);
+    } else {
+      // Reset to default values for new link
+      setTitle("");
+      setUrl("");
+      setIconSrc("/api/placeholder/96/96");
+      setSelectedColor("#EDF2F7");
+    }
+  }, [link]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -68,12 +95,12 @@ export const LinkModalContent = ({ link, onSave, onClose }: LinkModalProps) => {
 
   return (
     <>
-      <div className="p-5 border-b border-theme flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-dark">
+      <div className="p-6 border-b border-theme flex items-center justify-between">
+        <h3 className="text-xl font-semibold text-dark">
           {link ? "Edit Link" : "Add New Link"}
         </h3>
         <button
-          className="w-8 h-8 flex items-center justify-center rounded-md border border-theme bg-surface text-subtle"
+          className="w-8 h-8 flex items-center justify-center rounded-md border border-theme bg-surface text-subtle hover:bg-background transition-colors"
           onClick={onClose}
         >
           <CloseIcon />
@@ -186,17 +213,17 @@ export const LinkModalContent = ({ link, onSave, onClose }: LinkModalProps) => {
             onChange={handleFileUpload}
           />
         </div>
-        <div className="p-4 border-t border-theme flex justify-end gap-3">
+        <div className="p-6 border-t border-theme flex justify-end gap-3">
           <button
             type="button"
-            className="px-4 py-2 rounded-md border border-theme bg-surface text-default text-sm font-medium hover:opacity-90 transition"
+            className="px-6 py-3 rounded-lg border border-theme bg-surface-secondary text-default text-sm font-semibold hover:opacity-90 transition-opacity"
             onClick={onClose}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-4 py-2 rounded-md text-white text-sm font-medium hover:opacity-90 transition"
+            className="px-6 py-3 rounded-lg text-white text-sm font-semibold hover:opacity-90 transition-opacity"
             style={{ backgroundColor: 'var(--brand-teal)' }}
           >
             Save Link

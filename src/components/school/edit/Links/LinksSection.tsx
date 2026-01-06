@@ -11,11 +11,20 @@ const LinksSection = () => {
   const [links, setLinks] = useState<Link[]>(LINKS);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentEditId, setCurrentEditId] = useState<number | null>(null);
+  const [draggedItemId, setDraggedItemId] = useState<number | null>(null);
   const [toast, setToast] = useState<{ message: string; show: boolean }>({
     message: "",
     show: false,
   });
   const MAX_LINKS = 10;
+
+  // Sort items to show pinned first, then by order
+  const sortedLinks = [...links].sort((a, b) => {
+    if (a.pinned !== b.pinned) {
+      return a.pinned ? -1 : 1;
+    }
+    return a.order - b.order;
+  });
 
   const openAddLinkModal = () => {
     setCurrentEditId(null);
@@ -107,6 +116,51 @@ const LinksSection = () => {
     );
   };
 
+  const handleDragStart = (id: number) => {
+    setDraggedItemId(id);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent, targetId: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!draggedItemId || draggedItemId === targetId) {
+      setDraggedItemId(null);
+      return;
+    }
+
+    // Find indices in the sorted links array (what user sees)
+    const draggedIndex = sortedLinks.findIndex((link) => link.id === draggedItemId);
+    const targetIndex = sortedLinks.findIndex((link) => link.id === targetId);
+
+    if (draggedIndex === -1 || targetIndex === -1) {
+      setDraggedItemId(null);
+      return;
+    }
+
+    // Reorder the sorted links
+    const newSortedLinks = [...sortedLinks];
+    const [removed] = newSortedLinks.splice(draggedIndex, 1);
+    newSortedLinks.splice(targetIndex, 0, removed);
+
+    // Update order values based on new positions
+    const updatedLinks = links.map((link) => {
+      const newIndex = newSortedLinks.findIndex((sortedLink) => sortedLink.id === link.id);
+      if (newIndex !== -1) {
+        return { ...link, order: newIndex };
+      }
+      return link;
+    });
+
+    setLinks(updatedLinks);
+    setDraggedItemId(null);
+  };
+
   return (
     <>
       <div className="max-md:block hidden w-full">
@@ -123,9 +177,19 @@ const LinksSection = () => {
           onEditLink={openEditLinkModal}
           onDeleteLink={deleteLink}
           onTogglePin={togglePin}
+          draggedItemId={draggedItemId}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
         />
       </div>
       <div className="max-md:hidden block w-full">
+        <LinkModal
+          isOpen={isModalOpen}
+          link={links.find((l) => l.id === currentEditId)}
+          onSave={saveLink}
+          onClose={closeModal}
+        />
         <LinksSectionDesktop
           links={links}
           setLinks={setLinks}
@@ -134,6 +198,10 @@ const LinksSection = () => {
           onDeleteLink={deleteLink}
           onTogglePin={togglePin}
           onUpdateColor={updateColor}
+          draggedItemId={draggedItemId}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
         />
       </div>
 

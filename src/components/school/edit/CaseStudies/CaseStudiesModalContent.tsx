@@ -76,13 +76,14 @@ export default function CaseStudyModalContent({
 
   return (
     <>
-      <div className="flex justify-between items-center p-6 border-b border-[#E5E5E5] sticky top-0 bg-white z-10">
-        <h2 className="text-2xl font-bold text-[#262B3D]">
+      <div className="flex justify-between items-center px-6 py-6 border-b border-theme sticky top-0 bg-surface z-10">
+        <h2 className="text-2xl font-bold text-dark" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
           {caseStudy ? "Edit Case Study" : "Create Case Study"}
         </h2>
         <button
           onClick={onClose}
           className="p-2 hover:bg-[#E1E7EE] rounded-full transition-colors"
+          type="button"
         >
           <svg fill="none" viewBox="0 0 24 24" width="24" height="24">
             <path
@@ -94,9 +95,9 @@ export default function CaseStudyModalContent({
           </svg>
         </button>
       </div>
-      <form onSubmit={handleSubmit} className="p-6">
+      <form id="caseStudyForm" onSubmit={handleSubmit} className="px-6 py-6" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
         <div className="flex items-center gap-3 mb-6">
-          <span className="text-sm font-semibold text-[#4A4A4A]">Status:</span>
+          <span className="text-sm font-semibold text-default">Status:</span>
           <label className="relative inline-block w-[50px] h-[26px]">
             <input
               type="checkbox"
@@ -110,9 +111,9 @@ export default function CaseStudyModalContent({
               className="opacity-0 w-0 h-0"
             />
             <span
-              className={`absolute cursor-pointer inset-0 bg-[#ccc] transition-all duration-400 rounded-[34px] before:absolute before:content-[''] before:h-[18px] before:w-[18px] before:left-1 before:bottom-1 before:bg-white before:transition-all before:duration-400 before:rounded-full ${
+              className={`absolute cursor-pointer inset-0 bg-[var(--gray-300)] transition-all duration-400 rounded-[34px] before:absolute before:content-[''] before:h-[18px] before:w-[18px] before:left-1 before:bottom-1 before:bg-surface before:transition-all before:duration-400 before:rounded-full ${
                 formData.status === "published"
-                  ? "bg-[#0B6333] before:translate-x-6"
+                  ? "bg-[var(--active-green)] before:translate-x-6"
                   : ""
               }`}
             />
@@ -121,13 +122,13 @@ export default function CaseStudyModalContent({
             {formData.status === "published" ? "Published" : "Draft"}
           </span>
         </div>
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-[#262B3D] mb-4">
+        <div className="border-b border-theme pb-6 mb-6">
+          <h3 className="text-lg font-semibold text-dark mb-4">
             Basic Information
           </h3>
           <div className="flex gap-4 max-md:flex-col mb-4">
             <div className="flex-1">
-              <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+              <label className="block text-sm font-semibold text-default mb-2">
                 Case Study Title
               </label>
               <input
@@ -136,13 +137,13 @@ export default function CaseStudyModalContent({
                 onChange={(e) =>
                   setFormData({ ...formData, title: e.target.value })
                 }
-                className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default focus:outline-none focus:border-[var(--brand-teal)] bg-surface"
                 placeholder="Enter the main title"
                 required
               />
             </div>
             <div className="flex-1">
-              <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+              <label className="block text-sm font-semibold text-default mb-2">
                 Category
               </label>
               <input
@@ -151,14 +152,14 @@ export default function CaseStudyModalContent({
                 onChange={(e) =>
                   setFormData({ ...formData, category: e.target.value })
                 }
-                className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default focus:outline-none focus:border-[var(--brand-teal)] bg-surface"
                 placeholder="e.g., Web Design, App Development"
                 required
               />
             </div>
           </div>
           <div className="mb-6">
-            <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+            <label className="block text-sm font-semibold text-default mb-2">
               Brief Description
             </label>
             <textarea
@@ -166,17 +167,17 @@ export default function CaseStudyModalContent({
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
               }
-              className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+              className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default focus:outline-none focus:border-[var(--brand-teal)] bg-surface"
               rows={3}
               placeholder="Brief summary of the case study"
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+            <label className="block text-sm font-semibold text-default mb-2">
               Thumbnail
             </label>
             <div className="flex items-start gap-4 mt-2">
-              <div className="w-[120px] h-[120px] rounded-lg overflow-hidden border border-[#E5E5E5]">
+              <div className="w-[120px] h-[120px] rounded-lg overflow-hidden border border-theme">
                 <img
                   src={formData.thumbnail}
                   alt="Thumbnail"
@@ -189,7 +190,7 @@ export default function CaseStudyModalContent({
                   onClick={() =>
                     document.getElementById("thumbnailInput")?.click()
                   }
-                  className="px-4 py-2 ms-2 bg-[#f5f5f5] border border-[#ddd] rounded text-sm hover:bg-[#eee] transition-colors flex items-center gap-2"
+                  className="px-4 py-2 ms-2 bg-surface-secondary border border-theme rounded text-sm hover:bg-hover transition-colors flex items-center gap-2"
                 >
                   <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
                     <path
@@ -232,14 +233,14 @@ export default function CaseStudyModalContent({
             </div>
           </div>
         </div>
-        <div className="flex border-b max-md:overflow-x-scroll scrollbar-hide border-[#E5E5E5] mb-6">
+        <div className="flex border-b max-md:overflow-x-scroll scrollbar-hide border-theme mb-6">
           {["hero", "content", "gallery", "testimonial"].map((tab) => (
             <div
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-6 py-3 text-sm font-semibold cursor-pointer border-b-2 transition-colors ${
                 activeTab === tab
-                  ? "text-[#02C5AF] border-[#02C5AF]"
+                  ? "text-[var(--brand-teal)] border-[var(--brand-teal)]"
                   : "text-[#5F5F5F] border-transparent"
               }`}
             >
@@ -266,10 +267,11 @@ export default function CaseStudyModalContent({
           <TestimonialSection formData={formData} setFormData={setFormData} />
         </div>
       </form>
-      <div className="flex justify-between items-center p-6 border-t border-[#E5E5E5]">
+      <div className="flex justify-between max-md:flex-col max-md:gap-4 md:items-center px-6 py-6 border-t border-theme">
         <button
           onClick={onDelete}
-          className="flex items-center gap-2 text-[#f93a37] text-sm bg-transparent border-none"
+          type="button"
+          className="flex max-md:w-full items-center gap-2 text-[#f93a37] text-sm bg-transparent border-none"
         >
           <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
             <path
@@ -284,14 +286,15 @@ export default function CaseStudyModalContent({
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="px-6 py-3 bg-[#F8F9FA] border border-[#E5E5E5] text-[#4A4A4A] rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+            type="button"
+            className="px-6 py-3 max-md:w-full bg-surface-secondary border border-theme text-default rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
           >
             Cancel
           </button>
           <button
             type="submit"
             form="caseStudyForm"
-            className="px-6 py-3 bg-[#02C5AF] text-white rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+            className="px-6 py-3 max-md:w-full bg-[var(--brand-teal)] text-white rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
           >
             Save Changes
           </button>

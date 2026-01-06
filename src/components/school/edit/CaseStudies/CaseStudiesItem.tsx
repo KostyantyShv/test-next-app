@@ -28,6 +28,7 @@ export default function CaseStudyItem({
           ? "bg-[#EBFCF4] border border-[#D7F7E9]"
           : "bg-[#F8F9FA]"
       }`}
+      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}
     >
       <div className="w-[75px] h-[75px] rounded-lg overflow-hidden flex-shrink-0">
         <img
@@ -38,15 +39,15 @@ export default function CaseStudyItem({
       </div>
       <div className="flex-1">
         <div className="flex justify-between items-start mb-2">
-          <div>
+          <div className="flex flex-col">
             <span className="font-semibold text-[#262B3D] text-sm">
               {caseStudy.category}
             </span>
-            <div className="flex items-center gap-2 text-[#5F5F5F] text-sm">
+            <div className="flex items-center gap-2 mt-0.5">
               <span
-                className={`font-medium ${
+                className={`text-sm font-medium ${
                   caseStudy.status === "published"
-                    ? "text-[#0B6333]"
+                    ? "text-[var(--active-green)]"
                     : "text-[#5F5F5F]"
                 }`}
               >
@@ -57,7 +58,8 @@ export default function CaseStudyItem({
           <div className="flex gap-3">
             <button
               onClick={onTogglePin}
-              className="w-9 h-9 rounded-full border border-[#E5E5E5] bg-white flex items-center justify-center hover:bg-[#f8f9fa] transition-colors"
+              className="w-9 h-9 rounded-full border border-theme bg-surface flex items-center justify-center hover:bg-surface-secondary transition-colors"
+              type="button"
             >
               <svg viewBox="0 0 20 20" fill="none" width="20" height="20">
                 <path
@@ -85,7 +87,8 @@ export default function CaseStudyItem({
             </button>
             <button
               onClick={onEdit}
-              className="w-9 h-9 rounded-full border border-[#E5E5E5] bg-white flex items-center justify-center hover:bg-[#f8f9fa] transition-colors"
+              className="w-9 h-9 rounded-full border border-theme bg-surface flex items-center justify-center hover:bg-surface-secondary transition-colors"
+              type="button"
             >
               <svg fill="none" viewBox="0 0 24 24" width="20" height="20">
                 <path

@@ -36,6 +36,7 @@ export default function EventModalContent({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const getEventStatus = (
     startDate: string,
@@ -142,9 +143,24 @@ export default function EventModalContent({
   };
 
   const handleImageChange = () => {
-    const currentIndex = EVENT_IMAGES.indexOf(image);
-    const nextIndex = (currentIndex + 1) % EVENT_IMAGES.length;
-    setImage(EVENT_IMAGES[nextIndex]);
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setImage(event.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+    // Reset input value to allow selecting the same file again
+    if (e.target) {
+      e.target.value = "";
+    }
   };
 
   const handleTypeSelect = (type: "zoom" | "teams" | "session") => {
@@ -372,6 +388,13 @@ export default function EventModalContent({
                   </svg>
                   Choose Image
                 </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
               </div>
             </div>
           </div>
@@ -518,8 +541,21 @@ export default function EventModalContent({
             Cancel
           </button>
           <button
-            type="submit"
-            form="eventForm"
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              // Trigger form validation and submit
+              const form = document.getElementById('eventForm') as HTMLFormElement;
+              if (form) {
+                // Check if form is valid
+                if (!form.checkValidity()) {
+                  form.reportValidity();
+                  return;
+                }
+                // Use requestSubmit to trigger form submit with validation
+                form.requestSubmit();
+              }
+            }}
             className="px-6 py-3 text-white rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
             style={{ backgroundColor: 'var(--brand-teal)' }}
           >

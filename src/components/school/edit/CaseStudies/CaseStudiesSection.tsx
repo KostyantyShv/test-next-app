@@ -72,17 +72,17 @@ export default function CaseStudiesSection() {
 
   return (
     <>
-      <div className="w-full mx-auto flex max-md:flex-col gap-[25px]">
-        <div className="max-w-[350px] w-full max-md:pt-6 max-md:pb-6 max-md:pr-6">
+      <div className="max-w-[1150px] mx-auto flex gap-[25px] max-md:flex-col">
+        <div className="w-[375px] max-md:w-full max-md:pt-6 max-md:pb-6 max-md:pr-6">
           <h1 className="text-[#1a1a19] text-2xl font-semibold mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
             Case Studies
           </h1>
-          <p className="text-[#5F5F5F] text-base leading-[1.6] w-[350px]">
+          <p className="text-[#5F5F5F] text-base leading-[1.6]">
             Create and manage detailed case studies to showcase your best work,
             highlight successful projects, and demonstrate your expertise.
           </p>
         </div>
-        <div className="w-full bg-white rounded-lg p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative">
+        <div className="w-[750px] max-md:w-full bg-white rounded-lg p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
           <CaseStudyList
             caseStudies={caseStudies}
             onEdit={handleEditCaseStudy}
@@ -90,7 +90,8 @@ export default function CaseStudiesSection() {
           />
           <button
             onClick={handleAddCaseStudy}
-            className="bg-[#02C5AF] text-white px-6 py-3 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+            className="bg-[var(--brand-teal)] text-white px-6 py-3 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+            style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}
           >
             Add Case Study
           </button>

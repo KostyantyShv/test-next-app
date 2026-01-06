@@ -127,7 +127,7 @@ export default function ContentSections({
         {formData.sections.map((section, index) => (
           <div
             key={index}
-            className="bg-[#f8f9fa] p-5 rounded-lg mb-4 relative"
+            className="bg-surface-secondary p-5 rounded-lg mb-4 relative"
           >
             <div className="flex justify-between items-center mb-4">
               <div className="text-base font-semibold text-[#262B3D]">
@@ -170,7 +170,7 @@ export default function ContentSections({
               }
             >
               <div className="mb-4">
-                <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+                <label className="block text-sm font-semibold text-default mb-2">
                   Section Label
                 </label>
                 <input
@@ -184,12 +184,12 @@ export default function ContentSections({
                     };
                     setFormData({ ...formData, sections: newSections });
                   }}
-                  className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                  className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
                   placeholder="e.g., Web Design Process"
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+                <label className="block text-sm font-semibold text-default mb-2">
                   Section Title
                 </label>
                 <input
@@ -203,12 +203,12 @@ export default function ContentSections({
                     };
                     setFormData({ ...formData, sections: newSections });
                   }}
-                  className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                  className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
                   placeholder="e.g., Building a Sustainable Digital Presence"
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+                <label className="block text-sm font-semibold text-default mb-2">
                   Section Description
                 </label>
                 <textarea
@@ -221,12 +221,12 @@ export default function ContentSections({
                     };
                     setFormData({ ...formData, sections: newSections });
                   }}
-                  className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                  className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
                   rows={3}
                   placeholder="Enter section description"
                 />
               </div>
-              <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+              <label className="block text-sm font-semibold text-default mb-2">
                 Features List (max 5)
               </label>
               <div className="mb-4">
@@ -240,7 +240,7 @@ export default function ContentSections({
                         newSections[index].features[fIndex] = e.target.value;
                         setFormData({ ...formData, sections: newSections });
                       }}
-                      className="flex-1 p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                      className="flex-1 px-3 py-2 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
                       placeholder="Enter feature"
                     />
                     <button
@@ -256,7 +256,7 @@ export default function ContentSections({
               <button
                 type="button"
                 onClick={() => handleAddFeature(index)}
-                className="w-full py-2 bg-[#f5f5f5] border border-dashed border-[#E5E5E5] rounded text-sm text-[#4A4A4A] flex items-center justify-center gap-2 hover:bg-[#eee] transition-colors mb-4"
+                className="w-full py-2 bg-surface-secondary border border-dashed border-theme rounded text-sm text-default flex items-center justify-center gap-2 hover:bg-hover transition-colors mb-4"
               >
                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
                   <path
@@ -269,7 +269,7 @@ export default function ContentSections({
                 Add Feature
               </button>
               <div className="mb-4">
-                <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+                <label className="block text-sm font-semibold text-default mb-2">
                   Button Text
                 </label>
                 <input
@@ -283,15 +283,15 @@ export default function ContentSections({
                     };
                     setFormData({ ...formData, sections: newSections });
                   }}
-                  className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                  className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
                   placeholder="e.g., View Technical Details"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+                <label className="block text-sm font-semibold text-default mb-2">
                   Section Image
                 </label>
-                <div className="relative w-full h-[120px] rounded-lg overflow-hidden border border-dashed border-[#E5E5E5] bg-white">
+                <div className="relative w-full h-[120px] rounded-lg overflow-hidden border border-dashed border-theme bg-surface">
                   <img
                     src={section.image}
                     alt="Section Image"
@@ -343,7 +343,7 @@ export default function ContentSections({
         <button
           type="button"
           onClick={handleAddSection}
-          className="w-full py-3 bg-[#f5f5f5] border border-dashed border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] flex items-center justify-center gap-2 hover:bg-[#eee] transition-colors"
+          className="w-full py-3 bg-surface-secondary border border-dashed border-theme rounded-lg text-sm text-default flex items-center justify-center gap-2 hover:bg-hover transition-colors"
         >
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
             <path
@@ -361,7 +361,7 @@ export default function ContentSections({
           Key Features Section
         </h3>
         <div className="mb-4">
-          <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+          <label className="block text-sm font-semibold text-default mb-2">
             Section Label
           </label>
           <input
@@ -373,12 +373,12 @@ export default function ContentSections({
                 keyFeatures: { ...formData.keyFeatures, label: e.target.value },
               })
             }
-            className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+            className="w-full p-3 border border-theme rounded-lg text-sm text-default focus:outline-none focus:border-[var(--brand-teal)]"
             placeholder="e.g., Key Features"
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+          <label className="block text-sm font-semibold text-default mb-2">
             Section Title
           </label>
           <input
@@ -390,18 +390,18 @@ export default function ContentSections({
                 keyFeatures: { ...formData.keyFeatures, title: e.target.value },
               })
             }
-            className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+            className="w-full p-3 border border-theme rounded-lg text-sm text-default focus:outline-none focus:border-[var(--brand-teal)]"
             placeholder="e.g., Advanced Functionality"
           />
         </div>
-        <label className="block text-sm font-semibold text-[#4A4A4A] mb-2">
+        <label className="block text-sm font-semibold text-default mb-2">
           Feature Boxes
         </label>
         <div className="grid grid-cols-2 max-md:grid-cols-1 gap-4 mb-4">
           {formData.keyFeatures.features.map((feature, index) => (
             <div
               key={index}
-              className="bg-white p-5 rounded-lg border border-[#E5E5E5] relative"
+              className="bg-surface p-5 rounded-lg border border-theme relative"
             >
               <button
                 type="button"
@@ -431,7 +431,7 @@ export default function ContentSections({
                       },
                     });
                   }}
-                  className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                  className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
                   placeholder="Feature Title"
                 />
               </div>
@@ -452,7 +452,7 @@ export default function ContentSections({
                       },
                     });
                   }}
-                  className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                  className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
                   rows={2}
                   placeholder="Feature Description"
                 />
@@ -463,7 +463,7 @@ export default function ContentSections({
         <button
           type="button"
           onClick={handleAddFeatureBox}
-          className="w-full py-3 bg-[#f5f5f5] border border-dashed border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] flex items-center justify-center gap-2 hover:bg-[#eee] transition-colors"
+          className="w-full py-3 bg-surface-secondary border border-dashed border-theme rounded-lg text-sm text-default flex items-center justify-center gap-2 hover:bg-hover transition-colors"
         >
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
             <path

@@ -46,19 +46,30 @@ export default function CtaRowsSection({
               ×
             </button>
             <div className="flex-1 max-md:w-full">
-              <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
+              <label className="block font-semibold text-default mb-2 text-sm">
                 CTA Text
               </label>
               <input
                 type="text"
                 value={cta.text}
                 onChange={(e) => updateCtaRow(index, "text", e.target.value)}
-                className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+                style={{ 
+                  borderColor: 'var(--border-color)',
+                  color: 'var(--text-default)',
+                  backgroundColor: 'var(--surface-color)'
+                }}
+                onFocus={(e) => {
+                  (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+                }}
+                onBlur={(e) => {
+                  (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+                }}
                 placeholder="e.g., Schedule a Demo Session"
               />
             </div>
             <div className="w-[150px] max-md:w-full">
-              <label className="block font-semibold text-[#4A4A4A] mb-2 text-sm">
+              <label className="block font-semibold text-default mb-2 text-sm">
                 Button Text
               </label>
               <input
@@ -67,7 +78,18 @@ export default function CtaRowsSection({
                 onChange={(e) =>
                   updateCtaRow(index, "buttonText", e.target.value)
                 }
-                className="w-full p-3 border border-[#E5E5E5] rounded-lg text-sm text-[#4A4A4A] focus:outline-none focus:border-[#02C5AF]"
+                className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none"
+                style={{ 
+                  borderColor: 'var(--border-color)',
+                  color: 'var(--text-default)',
+                  backgroundColor: 'var(--surface-color)'
+                }}
+                onFocus={(e) => {
+                  (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
+                }}
+                onBlur={(e) => {
+                  (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
+                }}
                 placeholder="e.g., Book Now"
               />
             </div>

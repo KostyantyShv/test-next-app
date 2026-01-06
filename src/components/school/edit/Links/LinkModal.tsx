@@ -25,7 +25,7 @@ const LinkModal: React.FC<LinkModalProps> = ({
         </MobileDrawer>
       </div>
       <div className={`max-md:hidden block ${!isOpen ? "w-0 h-0" : ""}`}>
-        <DesktopModal isOpen={isOpen} onClose={onClose}>
+        <DesktopModal isOpen={isOpen} onClose={onClose} className="max-w-[500px] w-[90%] max-h-[90vh]">
           <LinkModalContent onClose={onClose} onSave={onSave} link={link} />
         </DesktopModal>
       </div>
