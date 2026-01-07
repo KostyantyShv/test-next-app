@@ -1,9 +1,11 @@
-import { useSearchParams } from "next/navigation";
+"use client";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 export default function NavTabs() {
   const searchParams = useSearchParams();
-
-  const activeTab = searchParams.get("tab");
+  const router = useRouter();
+  const pathname = usePathname();
+  const activeTab = searchParams.get("tab") || "listings";
 
   const tabs = [
     {
@@ -122,7 +124,9 @@ export default function NavTabs() {
               ? "text-[#016853] border-[#016853]"
               : "border-transparent"
           }`}
-          onClick={() => window.history.pushState(null, "", `?tab=${tab.id}`)}
+          onClick={() => {
+            router.push(`${pathname}?tab=${tab.id}`);
+          }}
         >
           <span className="w-5 h-5">{tab.icon}</span>
           {tab.label}

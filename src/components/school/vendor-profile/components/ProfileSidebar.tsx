@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 
 export default function ProfileSidebar() {
@@ -20,60 +21,60 @@ With a strong commitment to community engagement, Lincoln University actively pa
   };
 
   return (
-    <aside className="bg-white rounded-xl border border-[#E5E7EB] overflow-hidden h-fit shadow-[0_1px_3px_rgba(0,0,0,0.1)] lg:mt-0 mt-8">
-      <div className="flex flex-col divide-y divide-[#E5E7EB]">
+    <aside className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden h-fit shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
+      <div className="flex flex-col">
         {/* Published Content Section */}
-        <div className="p-4">
-          <h2 className="flex items-center justify-between text-[15px] font-semibold mb-4 text-[#464646]">
+        <div className="p-6 border-b border-[#E5E7EB]">
+          <h2 className="flex items-center gap-3 text-base font-semibold mb-4 text-[#464646]">
             Published Content
           </h2>
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-3">
-              <span className="w-5 h-5 text-[#4F4F4F]">
-                <svg viewBox="0 0 16 16" strokeLinejoin="round">
-                  <path
-                    fill="currentColor"
-                    d="M2.5 4C3.19036 4 3.75 3.44036 3.75 2.75C3.75 2.05964 3.19036 1.5 2.5 1.5C1.80964 1.5 1.25 2.05964 1.25 2.75C1.25 3.44036 1.80964 4 2.5 4ZM2.5 9.25C3.19036 9.25 3.75 8.69036 3.75 8C3.75 7.30964 3.19036 6.75 2.5 6.75C1.80964 6.75 1.25 7.30964 1.25 8C1.25 8.69036 1.80964 9.25 2.5 9.25ZM3.75 13.25C3.75 13.9404 3.19036 14.5 2.5 14.5C1.80964 14.5 1.25 13.9404 1.25 13.25C1.25 12.5596 1.80964 12 2.5 12C3.19036 12 3.75 12.5596 3.75 13.25ZM6.75 2H6V3.5H6.75H14.25H15V2H14.25H6.75ZM6.75 7.25H6V8.75H6.75H14.25H15V7.25H14.25H6.75ZM6.75 12.5H6V14H6.75H14.25H15V12.5H14.25H6.75Z"
-                    clipRule="evenodd"
-                    fillRule="evenodd"
-                  ></path>
-                </svg>
-              </span>
+              <svg
+                viewBox="0 0 16 16"
+                strokeLinejoin="round"
+                className="w-5 h-5 text-[#4F4F4F]"
+              >
+                <path
+                  fill="currentColor"
+                  d="M2.5 4C3.19036 4 3.75 3.44036 3.75 2.75C3.75 2.05964 3.19036 1.5 2.5 1.5C1.80964 1.5 1.25 2.05964 1.25 2.75C1.25 3.44036 1.80964 4 2.5 4ZM2.5 9.25C3.19036 9.25 3.75 8.69036 3.75 8C3.75 7.30964 3.19036 6.75 2.5 6.75C1.80964 6.75 1.25 7.30964 1.25 8C1.25 8.69036 1.80964 9.25 2.5 9.25ZM3.75 13.25C3.75 13.9404 3.19036 14.5 2.5 14.5C1.80964 14.5 1.25 13.9404 1.25 13.25C1.25 12.5596 1.80964 12 2.5 12C3.19036 12 3.75 12.5596 3.75 13.25ZM6.75 2H6V3.5H6.75H14.25H15V2H14.25H6.75ZM6.75 7.25H6V8.75H6.75H14.25H15V7.25H14.25H6.75ZM6.75 12.5H6V14H6.75H14.25H15V12.5H14.25H6.75Z"
+                  clipRule="evenodd"
+                  fillRule="evenodd"
+                ></path>
+              </svg>
               <span className="text-sm text-[#1A1D1F]">25 Listings</span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="w-5 h-5 text-[#4F4F4F]">
-                <svg
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  strokeWidth="1.2"
-                  stroke="currentColor"
-                  fill="none"
-                  viewBox="0 0 18 18"
-                >
-                  <rect
-                    ry="1.5"
-                    rx="1.5"
-                    height="8"
-                    width="12"
-                    y="6.5"
-                    x="3"
-                  ></rect>
-                  <path d="M7 6.5V5.5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1"></path>
-                </svg>
-              </span>
+              <svg
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                strokeWidth="1.2"
+                stroke="currentColor"
+                fill="none"
+                viewBox="0 0 18 18"
+                className="w-5 h-5 text-[#4F4F4F]"
+              >
+                <rect
+                  ry="1.5"
+                  rx="1.5"
+                  height="8"
+                  width="12"
+                  y="6.5"
+                  x="3"
+                ></rect>
+                <path d="M7 6.5V5.5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1"></path>
+              </svg>
               <span className="text-sm text-[#1A1D1F]">9 Offers</span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="w-5 h-5 text-[#4F4F4F]">
-                <svg
-                  fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M22.954 9.395C22.832 9.017 22.481 8.756 22.058 8.747L15.298 8.823L12.878 1.628C12.746 1.252 12.39 1 11.992 1H11.99C11.591 1 11.236 1.254 11.103 1.639L8.72301 8.822L1.92101 8.686C1.52101 8.693 1.16901 8.953 1.04601 9.333C0.922011 9.714 1.05401 10.132 1.36001 10.361L6.82101 14.607L4.55601 21.791C4.44101 22.173 4.58101 22.588 4.90501 22.821C5.23101 23.056 5.66501 23.056 5.99101 22.829L12.121 18.526L17.994 22.83C18.155 22.942 18.343 22.998 18.531 22.998C18.726 22.998 18.919 22.938 19.083 22.819C19.406 22.583 19.544 22.169 19.424 21.777L17.129 14.74L22.628 10.43C22.946 10.189 23.077 9.772 22.954 9.393V9.395ZM16.211 13.554C15.736 13.916 15.534 14.541 15.711 15.123L17.463 20.581L12.942 17.268C12.451 16.925 11.794 16.927 11.304 17.268L6.49301 20.646L8.25601 15.053C8.42901 14.482 8.22601 13.856 7.76201 13.504L3.60601 10.222L8.80301 10.326C9.39901 10.313 9.93101 9.927 10.13 9.353L11.997 3.719L13.895 9.363C14.091 9.927 14.622 10.313 15.243 10.326L20.405 10.267L16.211 13.554Z"></path>
-                </svg>
-              </span>
+              <svg
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                className="w-5 h-5 text-[#4F4F4F]"
+              >
+                <path d="M22.954 9.395C22.832 9.017 22.481 8.756 22.058 8.747L15.298 8.823L12.878 1.628C12.746 1.252 12.39 1 11.992 1H11.99C11.591 1 11.236 1.254 11.103 1.639L8.72301 8.822L1.92101 8.686C1.52101 8.693 1.16901 8.953 1.04601 9.333C0.922011 9.714 1.05401 10.132 1.36001 10.361L6.82101 14.607L4.55601 21.791C4.44101 22.173 4.58101 22.588 4.90501 22.821C5.23101 23.056 5.66501 23.056 5.99101 22.829L12.121 18.526L17.994 22.83C18.155 22.942 18.343 22.998 18.531 22.998C18.726 22.998 18.919 22.938 19.083 22.819C19.406 22.583 19.544 22.169 19.424 21.777L17.129 14.74L22.628 10.43C22.946 10.189 23.077 9.772 22.954 9.393V9.395ZM16.211 13.554C15.736 13.916 15.534 14.541 15.711 15.123L17.463 20.581L12.942 17.268C12.451 16.925 11.794 16.927 11.304 17.268L6.49301 20.646L8.25601 15.053C8.42901 14.482 8.22601 13.856 7.76201 13.504L3.60601 10.222L8.80301 10.326C9.39901 10.313 9.93101 9.927 10.13 9.353L11.997 3.719L13.895 9.363C14.091 9.927 14.622 10.313 15.243 10.326L20.405 10.267L16.211 13.554Z"></path>
+              </svg>
               <span className="text-sm text-[#1A1D1F]">
                 <strong>4.9</strong> (575)
               </span>
@@ -82,12 +83,12 @@ With a strong commitment to community engagement, Lincoln University actively pa
         </div>
 
         {/* Badges Section */}
-        <div className="p-4">
-          <h2 className="flex items-center justify-between text-[15px] font-semibold mb-4 text-[#464646]">
+        <div className="p-6 border-b border-[#E5E7EB]">
+          <h2 className="flex items-center gap-3 text-base font-semibold mb-4 text-[#464646]">
             Badges
           </h2>
           <div className="flex gap-3 flex-wrap">
-            <div className="relative w-9 h-9 cursor-pointer">
+            <div className="relative w-9 h-9 cursor-pointer group">
               <svg
                 viewBox="0 0 33 36"
                 fill="none"
@@ -99,67 +100,40 @@ With a strong commitment to community engagement, Lincoln University actively pa
                   d="M0 12.847v10.306c0 2.772 1.464 5.318 3.878 6.734l8.662 5.05a7.91 7.91 0 0 0 7.92 0l8.662-5.05A7.81 7.81 0 0 0 33 23.153V12.847c0-2.772-1.464-5.317-3.878-6.734l-8.662-5.05a7.91 7.91 0 0 0-7.92 0l-8.662 5.05A7.81 7.81 0 0 0 0 12.847"
                   fill="#03EF62"
                 ></path>
-                <g clipPath="url(#TopProductSmall_svg__a)">
-                  <path
-                    d="M14.82 21.91V22a.82.82 0 01-.82.82H8.82a.82.82 0 01-.82-.82v-5.15a.82.82 0 01.82-.82h1.65v-1.65a3.29 3.29 0 013.29-3.29h.02a3.29 3.29 0 013.29 3.29v1.65h1.65a.82.82 0 01.82.82v2.06a.82.82 0 01-.24.58l-3.09 3.09a.82.82 0 01-.58.24h-2.06a.82.82 0 01-.58-.24l-3.09-3.09a.82.82 0 01-.24-.58v-1.23h-1.65v3.29h3.29v-1.65l2.47 2.47h.82zm1.65-7.41a1.65 1.65 0 00-1.65-1.65h-.02a1.65 1.65 0 00-1.65 1.65v1.65h3.29v-1.65z"
-                    fill="#fff"
-                  ></path>
-                </g>
-                <defs>
-                  <clipPath id="TopProductSmall_svg__a">
+                <g transform="translate(7 8)">
+                  <g
+                    clipPath="url(#TopProductSmall_svg__a)"
+                    strokeWidth="1.4"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    stroke="#fff"
+                  >
+                    <path d="M7.125 16.625h4.75M9.5 12.294v4.33M4.75 9.5h-.754c-.64 0-1.254-.286-1.706-.795a2.9 2.9 0 0 1-.707-1.92V5.43c0-.18.064-.353.177-.48a.57.57 0 0 1 .426-.199H4.6M14.25 9.5h.754c.64 0 1.254-.286 1.706-.795.453-.509.707-1.2.707-1.92V5.43a.72.72 0 0 0-.177-.48.57.57 0 0 0-.426-.199H14.4"></path>
                     <path
+                      d="M4.75 3.167h9.5v4.408c0 2.773-2.095 5.07-4.714 5.092a4.5 4.5 0 0 1-1.829-.372 4.7 4.7 0 0 1-1.553-1.088 5.1 5.1 0 0 1-1.039-1.636 5.3 5.3 0 0 1-.365-1.933z"
                       fill="#fff"
-                      transform="translate(7 8)"
-                      d="M0 0h19v19H0z"
                     ></path>
-                  </clipPath>
-                </defs>
-              </svg>
-              <span className="absolute top-[-8px] right-[-8px] w-4 h-4 bg-[#FF4D4D] rounded-full flex items-center justify-center text-white text-[10px] font-semibold">
-                3
-              </span>
-            </div>
-            <div className="relative w-9 h-9 cursor-pointer">
-              <svg
-                viewBox="0 0 33 36"
-                fill="none"
-                height="36"
-                width="33"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M0 12.847v10.306c0 2.772 1.464 5.318 3.878 6.734l8.662 5.05a7.91 7.91 0 0 0 7.92 0l8.662-5.05A7.81 7.81 0 0 0 33 23.153V12.847c0-2.772-1.464-5.317-3.878-6.734l-8.662-5.05a7.91 7.91 0 0 0-7.92 0l-8.662 5.05A7.81 7.81 0 0 0 0 12.847"
-                  fill="#FFD700"
-                ></path>
-                <g clipPath="url(#TopProductSmall_svg__b)">
-                  <path
-                    d="M14.82 21.91V22a.82.82 0 01-.82.82H8.82a.82.82 0 01-.82-.82v-5.15a.82.82 0 01.82-.82h1.65v-1.65a3.29 3.29 0 013.29-3.29h.02a3.29 3.29 0 013.29 3.29v1.65h1.65a.82.82 0 01.82.82v2.06a.82.82 0 01-.24.58l-3.09 3.09a.82.82 0 01-.58.24h-2.06a.82.82 0 01-.58-.24l-3.09-3.09a.82.82 0 01-.24-.58v-1.23h-1.65v3.29h3.29v-1.65l2.47 2.47h.82zm1.65-7.41a1.65 1.65 0 00-1.65-1.65h-.02a1.65 1.65 0 00-1.65 1.65v1.65h3.29v-1.65z"
-                    fill="#fff"
-                  ></path>
+                  </g>
+                  <defs>
+                    <clipPath id="TopProductSmall_svg__a">
+                      <path d="M0 0h19v19H0z" fill="#fff"></path>
+                    </clipPath>
+                  </defs>
                 </g>
-                <defs>
-                  <clipPath id="TopProductSmall_svg__b">
-                    <path
-                      fill="#fff"
-                      transform="translate(7 8)"
-                      d="M0 0h19v19H0z"
-                    ></path>
-                  </clipPath>
-                </defs>
               </svg>
-              <span className="absolute top-[-8px] right-[-8px] w-4 h-4 bg-[#FF4D4D] rounded-full flex items-center justify-center text-white text-[10px] font-semibold">
-                2
-              </span>
+              <div className="absolute top-[-32px] left-1/2 -translate-x-1/2 bg-black/80 text-white px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-[1000]">
+                Vendor
+              </div>
             </div>
           </div>
         </div>
 
         {/* Social & Links Section */}
-        <div className="p-4">
-          <h2 className="flex items-center justify-between text-[15px] font-semibold mb-4 text-[#464646]">
+        <div className="p-6 border-b border-[#E5E7EB]">
+          <h2 className="flex items-center gap-3 text-base font-semibold mb-4 text-[#464646]">
             Social & Links
           </h2>
-          <div className="flex gap-3 flex-wrap">
+          <div className="flex gap-4 flex-wrap">
             <a
               href="#"
               className="w-8 h-8 flex items-center justify-center bg-[#F5F5F7] rounded-md cursor-pointer hover:bg-[#E5E7EB] transition-colors"
@@ -168,8 +142,6 @@ With a strong commitment to community engagement, Lincoln University actively pa
                 <path
                   fill="currentColor"
                   strokeLinejoin="miter"
-                  clipRule="unset"
-                  fillRule={undefined}
                   d="M40 7.5c-17.949 0-32.5 14.551-32.5 32.5s14.551 32.5 32.5 32.5c17.949 0 32.5-14.551 32.5-32.5v0c-0.019-17.942-14.558-32.481-32.498-32.5h-0.002zM66.033 48.767h-11.567c0.565-2.632 0.893-5.659 0.9-8.761v-0.005c-0.018-2.745-0.272-5.418-0.742-8.016l0.042 0.282h11.033c0.095 0.009 0.205 0.014 0.317 0.014s0.222-0.005 0.331-0.015l-0.014 0.001c0.733 2.312 1.159 4.972 1.167 7.73v0.004c-0.008 3.141-0.544 6.154-1.525 8.958l0.058-0.192zM30.567 48.767c-0.593-2.621-0.933-5.631-0.933-8.72 0-0.016 0-0.033 0-0.049v0.003c0.019-2.747 0.297-5.417 0.811-8.002l-0.045 0.269h19.2c0.47 2.316 0.748 4.986 0.767 7.718l0 0.015c-0.002 3.083-0.341 6.086-0.985 8.974l0.051-0.274zM48.033 53.767c-1.925 4.893-4.646 9.081-8.045 12.612l0.012-0.012c-3.394-3.537-6.116-7.748-7.944-12.409l-0.089-0.258zM13.967 48.767c-0.922-2.613-1.459-5.626-1.467-8.763v-0.004c-0-0.019-0-0.042-0-0.065 0-2.784 0.427-5.468 1.218-7.991l-0.051 0.189c0.095 0.009 0.205 0.014 0.317 0.014s0.222-0.005 0.331-0.015l-0.014 0.001h11.033c-0.436 2.36-0.69 5.080-0.7 7.858v0.008c0.012 3.087 0.339 6.090 0.951 8.988l-0.051-0.288h-11.233zM31.7 27.267c1.868-5.306 4.699-9.854 8.314-13.649l-0.014 0.015c3.601 3.779 6.432 8.328 8.219 13.37l0.081 0.263zM64.333 27.267h-10.833c-1.62-5.343-4.094-9.985-7.299-14.019l0.066 0.086c7.891 1.89 14.333 6.979 17.995 13.787l0.072 0.147zM33.733 13.333c-3.079 3.954-5.498 8.597-6.992 13.638l-0.075 0.295h-11c3.734-6.954 10.176-12.044 17.879-13.895l0.188-0.038zM16.167 53.7h10.5c1.699 4.974 4.111 9.279 7.162 13.045l-0.062-0.079c-7.548-1.804-13.765-6.507-17.53-12.839l-0.070-0.127zM46.167 66.767c3.010-3.719 5.444-8.055 7.076-12.767l0.090-0.3h10.6c-3.843 6.478-10.089 11.187-17.479 12.929l-0.187 0.037z"
                 />
               </svg>
@@ -230,77 +202,107 @@ With a strong commitment to community engagement, Lincoln University actively pa
         </div>
 
         {/* Followers Section */}
-        <div className="p-4">
-          <h2 className="flex items-center justify-between text-[15px] font-semibold mb-4 text-[#464646]">
+        <div className="p-6 border-b border-[#E5E7EB]">
+          <h2 className="flex items-center gap-3 text-base font-semibold mb-4 text-[#464646]">
             Followers
             <div className="inline-flex items-center bg-[#f6f8fa] px-3 py-1 rounded-full text-sm text-[#1F2328] font-medium">
               111
             </div>
           </h2>
           <div className="flex flex-wrap gap-2 mb-3">
-            <img
-              src="https://i.ibb.co/87nXCrv/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg"
-              alt="Follower"
-              className="w-8 h-8 rounded-full object-cover border-2 border-white"
-            />
-            <img
-              src="https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png"
-              alt="Follower"
-              className="w-8 h-8 rounded-full object-cover border-2 border-white"
-            />
-            <img
-              src="https://i.ibb.co/87nXCrv/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg"
-              alt="Follower"
-              className="w-8 h-8 rounded-full object-cover border-2 border-white"
-            />
-            <img
-              src="https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png"
-              alt="Follower"
-              className="w-8 h-8 rounded-full object-cover border-2 border-white"
-            />
-            <img
-              src="https://i.ibb.co/87nXCrv/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg"
-              alt="Follower"
-              className="w-8 h-8 rounded-full object-cover border-2 border-white"
-            />
-            <img
-              src="https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png"
-              alt="Follower"
-              className="w-8 h-8 rounded-full object-cover border-2 border-white"
-            />
-            <img
-              src="https://i.ibb.co/87nXCrv/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg"
-              alt="Follower"
-              className="w-8 h-8 rounded-full object-cover border-2 border-white"
-            />
-            <img
-              src="https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png"
-              alt="Follower"
-              className="w-8 h-8 rounded-full object-cover border-2 border-white"
-            />
+            {[
+              "https://i.ibb.co/87nXCrv/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
+              "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
+              "https://i.ibb.co/mFj8fCs/AVATAR-couponcodefinder.jpg",
+              "https://i.ibb.co/87nXCrv/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
+              "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
+              "https://i.ibb.co/mFj8fCs/AVATAR-couponcodefinder.jpg",
+              "https://i.ibb.co/87nXCrv/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
+            ].map((src, idx) => (
+              <img
+                key={idx}
+                src={src}
+                alt="Follower"
+                className="w-8 h-8 rounded-full object-cover border-2 border-white"
+              />
+            ))}
           </div>
-          <button className="w-full text-sm text-[#016853] font-medium hover:text-[#015745] transition-colors">
-            View all followers
-          </button>
+          <a
+            href="#"
+            className="text-xs text-[#346DC2] font-medium hover:underline"
+          >
+            +97 followers
+          </a>
+        </div>
+
+        {/* Following Section */}
+        <div className="p-6 border-b border-[#E5E7EB]">
+          <h2 className="flex items-center gap-3 text-base font-semibold mb-4 text-[#464646]">
+            Following
+            <div className="inline-flex items-center bg-[#f6f8fa] px-3 py-1 rounded-full text-sm text-[#1F2328] font-medium">
+              98
+            </div>
+          </h2>
+          <div className="flex flex-wrap gap-2 mb-3">
+            {[
+              "https://i.ibb.co/mFj8fCs/AVATAR-couponcodefinder.jpg",
+              "https://i.ibb.co/87nXCrv/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
+              "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
+              "https://i.ibb.co/mFj8fCs/AVATAR-couponcodefinder.jpg",
+              "https://i.ibb.co/87nXCrv/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
+              "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
+              "https://i.ibb.co/mFj8fCs/AVATAR-couponcodefinder.jpg",
+            ].map((src, idx) => (
+              <img
+                key={idx}
+                src={src}
+                alt="Following"
+                className="w-8 h-8 rounded-full object-cover border-2 border-white"
+              />
+            ))}
+          </div>
+          <a
+            href="#"
+            className="text-xs text-[#346DC2] font-medium hover:underline"
+          >
+            +93 following
+          </a>
         </div>
 
         {/* About Section */}
-        <div className="p-4">
-          <h2 className="flex items-center justify-between text-[15px] font-semibold mb-4 text-[#464646]">
+        <div className="p-6">
+          <h2 className="flex items-center gap-3 text-base font-semibold mb-4 text-[#464646]">
             About
           </h2>
-          <div className="text-sm text-[#6F767E] leading-relaxed">
-            <p className={isExpanded ? "" : "line-clamp-6"}>
-              {initialAboutText}
-              {isExpanded && additionalAboutText}
-            </p>
-            <button
-              onClick={handleShowMore}
-              className="mt-2 text-sm text-[#016853] font-medium hover:text-[#015745] transition-colors"
+          <p
+            className={`text-sm leading-relaxed text-[#4F4F4F] ${
+              isExpanded ? "" : "max-h-[120px] overflow-hidden"
+            }`}
+          >
+            {initialAboutText}
+            {isExpanded && additionalAboutText}
+          </p>
+          <button
+            onClick={handleShowMore}
+            className="inline-flex items-center justify-center mt-4 px-4 py-2 rounded-md text-sm font-medium text-[#1F2328] bg-[#f6f8fa] gap-2 w-full hover:bg-[#eaecef] transition-colors"
+          >
+            {isExpanded ? "SHOW LESS" : "SHOW MORE"}
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              className={`w-4 h-4 transition-transform ${
+                isExpanded ? "rotate-180" : ""
+              }`}
             >
-              {isExpanded ? "Show less" : "Show more"}
-            </button>
-          </div>
+              <path
+                d="M19 9L12 16L5 9"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+            </svg>
+          </button>
         </div>
       </div>
     </aside>

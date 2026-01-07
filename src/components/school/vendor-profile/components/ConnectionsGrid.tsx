@@ -1,5 +1,7 @@
+"use client";
 import { Inter } from "next/font/google";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -116,6 +118,7 @@ const ICONS = {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      className="w-4 h-4"
     >
       <path d="M20 6L9 17L4 12"></path>
     </svg>
@@ -123,105 +126,149 @@ const ICONS = {
 };
 
 const ConnectionsGrid: React.FC = () => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const viewParam = searchParams.get("view") as "followers" | "following" | null;
+  const [viewType, setViewType] = useState<"followers" | "following">(
+    viewParam || "followers"
+  );
+  const [followingStates, setFollowingStates] = useState<boolean[]>(
+    new Array(followersData.length).fill(false)
+  );
+
+  useEffect(() => {
+    if (viewParam && viewParam !== viewType) {
+      setViewType(viewParam);
+    }
+  }, [viewParam]);
+
+  const handleFollowClick = (index: number) => {
+    setFollowingStates((prev) => {
+      const newStates = [...prev];
+      newStates[index] = !newStates[index];
+      return newStates;
+    });
+  };
+
+  const handleViewChange = (type: "followers" | "following") => {
+    setViewType(type);
+    const url = new URL(window.location.href);
+    url.searchParams.set("view", type);
+    router.push(url.toString());
+  };
+
+  const headerTitle =
+    viewType === "followers" ? "4 Followers" : "45 Following";
+
   return (
     <div className={`${inter.className} text-[#4A4A4A]`}>
-      <div className="mx-auto">
-        <div className="bg-white">
-          <nav className="flex gap-8 border-b border-gray-200 mb-8 pb-1 overflow-x-auto">
-            <div className="flex items-center gap-2 py-3 text-[#016853] font-medium border-b-2 border-[#016853] whitespace-nowrap">
-              <svg
-                viewBox="0 0 256 256"
-                fill="currentColor"
-                className="w-5 h-5"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M125.18,156.94a64,64,0,1,0-82.36,0,100.23,100.23,0,0,0-39.49,32,12,12,0,0,0,19.35,14.2,76,76,0,0,1,122.64,0,12,12,0,0,0,19.36-14.2A100.33,100.33,0,0,0,125.18,156.94ZM44,108a40,40,0,1,1,40,40A40,40,0,0,1,44,108Zm206.1,97.67a12,12,0,0,1-16.78-2.57A76.31,76.31,0,0,0,172,172a12,12,0,0,1,0-24,40,40,0,1,0-10.3-78.67,12,12,0,1,1-6.16-23.19,64,64,0,0,1,57.64,110.8,100.23,100.23,0,0,1,39.49,32A12,12,0,0,1,250.1,205.67Z" />
-              </svg>
-              Connections
-            </div>
-          </nav>
-
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-semibold text-[#464646]">
-              4 Followers
-            </h2>
-            <div className="text-sm text-[#6F767E]">
-              View:{" "}
-              <span className="cursor-pointer text-[#016853] font-medium">
-                Followers
-              </span>{" "}
-              •{" "}
-              <span className="cursor-pointer hover:underline">Following</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {followersData.map((follower, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 flex flex-col hover:-translate-y-1 hover:shadow-lg transition-all"
-              >
-                <div className="flex items-center gap-4 mb-4">
-                  <img
-                    src={follower.image}
-                    alt={follower.name}
-                    className="w-14 h-14 rounded-full object-cover"
-                  />
-                  <div>
-                    <h3 className="text-[#13C4CC] font-semibold text-base mb-1">
-                      {follower.name}
-                    </h3>
-                    <p className="text-sm text-[#6F767E] font-medium">
-                      {follower.followers} Followers
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4 text-xs text-[#6F767E] mb-5">
-                  <div className="flex items-center gap-1 relative group">
-                    <span className="flex items-center gap-1 font-medium text-[#464646]">
-                      <span className="w-4 h-4 flex items-center justify-center">
-                        {ICONS.location}
-                      </span>
-                      {follower.location}
-                    </span>
-                    <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                      Location
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-1 relative group">
-                    <span className="flex items-center gap-1 font-medium text-[#464646]">
-                      <span className="w-4 h-4 flex items-center justify-center">
-                        {ICONS.following}
-                      </span>
-                      {follower.following}
-                    </span>
-                    <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                      Following
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-1 relative group">
-                    <span className="flex items-center gap-1 font-medium text-[#464646]">
-                      <span className="w-4 h-4 flex items-center justify-center">
-                        {ICONS.reviews}
-                      </span>
-                      {follower.reviews}
-                    </span>
-                    <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                      Reviews
-                    </div>
-                  </div>
-                </div>
-
-                <button className="mt-auto bg-[#F5F5F7] hover:bg-[#E8E8EA] text-[#4A4A4A] rounded-lg px-4 py-2 text-sm font-medium flex justify-center items-center gap-2">
-                  {ICONS.followButton}
-                  Follow
-                </button>
-              </div>
-            ))}
-          </div>
+      <div className="flex justify-between items-center mb-6">
+        <div className="text-lg font-semibold text-[#464646]">
+          {headerTitle}
         </div>
+        <div className="text-sm text-[#6F767E]">
+          View:{" "}
+          <span
+            className={`cursor-pointer ${
+              viewType === "followers"
+                ? "text-[#016853] font-medium"
+                : "hover:underline hover:text-[#464646]"
+            }`}
+            onClick={() => handleViewChange("followers")}
+          >
+            Followers
+          </span>{" "}
+          •{" "}
+          <span
+            className={`cursor-pointer ${
+              viewType === "following"
+                ? "text-[#016853] font-medium"
+                : "hover:underline hover:text-[#464646]"
+            }`}
+            onClick={() => handleViewChange("following")}
+          >
+            Following
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {followersData.map((follower, index) => (
+          <div
+            key={index}
+            className="bg-white rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E5E7EB] flex flex-col transition-all hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(0,0,0,0.08)]"
+          >
+            <div className="flex items-center gap-4 mb-4">
+              <img
+                src={follower.image}
+                alt={follower.name}
+                className="w-[60px] h-[60px] rounded-full object-cover flex-shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <h3 className="text-base font-semibold text-[#13C4CC] mb-1 tracking-[-0.01em]">
+                  {follower.name}
+                </h3>
+                <div className="text-sm text-[#6F767E] font-medium">
+                  {follower.followers} Followers
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-4 mt-4 mb-5">
+              <div className="relative group">
+                <div className="flex items-center gap-1.5 text-[13px] text-[#6F767E] cursor-pointer">
+                  {ICONS.location}
+                  <span className="font-medium text-[#464646]">
+                    {follower.location}
+                  </span>
+                </div>
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black/80 text-white px-2.5 py-1.5 rounded text-xs whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 pointer-events-none">
+                  Location
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-solid border-black/80 border-t-transparent border-l-transparent border-r-transparent"></div>
+                </div>
+              </div>
+
+              <div className="relative group">
+                <div className="flex items-center gap-1.5 text-[13px] text-[#6F767E] cursor-pointer">
+                  {ICONS.following}
+                  <span className="font-medium text-[#464646]">
+                    {follower.following}
+                  </span>
+                </div>
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black/80 text-white px-2.5 py-1.5 rounded text-xs whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 pointer-events-none">
+                  Following
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-solid border-black/80 border-t-transparent border-l-transparent border-r-transparent"></div>
+                </div>
+              </div>
+
+              <div className="relative group">
+                <div className="flex items-center gap-1.5 text-[13px] text-[#6F767E] cursor-pointer">
+                  {ICONS.reviews}
+                  <span className="font-medium text-[#464646]">
+                    {follower.reviews}
+                  </span>
+                </div>
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black/80 text-white px-2.5 py-1.5 rounded text-xs whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 pointer-events-none">
+                  Reviews
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-solid border-black/80 border-t-transparent border-l-transparent border-r-transparent"></div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              className={`mt-auto flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all ${
+                followingStates[index]
+                  ? "bg-[rgba(1,104,83,0.1)] text-[#016853]"
+                  : "bg-[#F5F5F7] text-[#4A4A4A] hover:bg-[#E8E8EA]"
+              }`}
+              onClick={() => handleFollowClick(index)}
+            >
+              {followingStates[index] ? ICONS.following_check : ICONS.followButton}
+              {followingStates[index] ? "Following" : "Follow"}
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );

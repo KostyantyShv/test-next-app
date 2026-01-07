@@ -184,10 +184,10 @@ export default function SchoolsGrid() {
       {schools.map((school) => (
         <div
           key={school.name}
-          className="bg-white rounded-xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#E5E7EB] w-full"
+          className="bg-white rounded-xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#E5E7EB] w-full flex flex-col transition-all hover:-translate-y-1 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)]"
         >
-          <div className="hidden lg:block">
-            <div className="relative w-full h-40 overflow-hidden">
+          <div className="hidden lg:flex flex-col flex-grow">
+            <div className="relative w-full h-40 overflow-hidden bg-gray-200 flex-shrink-0">
               <div className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all z-10">
                 <span className="w-4 h-4 mr-1">{ICONS.like}</span>
               </div>
@@ -228,22 +228,19 @@ export default function SchoolsGrid() {
               <div className="flex flex-wrap gap-3 mb-4">
                 <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F] font-[450]">
                   <span className="w-4 h-4 mr-1">{ICONS.location}</span>
-
                   <span className="text-[#464646]">{school.location}</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F] font-[450]">
                   <span className="w-4 h-4 mr-1">{ICONS.ratio}</span>
-
                   <span className="text-[#464646]">{school.ratio}</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F] font-[450]">
                   <span className="w-4 h-4 mr-1">{ICONS.star}</span>
-
                   <span className="text-[#464646]">{school.rating}</span>
                 </div>
               </div>
             </div>
-            <div className="p-4 border-t border-[rgba(1,104,83,0.1)] flex items-center justify-between">
+            <div className="p-4 border-t border-[rgba(1,104,83,0.1)] flex items-center justify-between mt-auto">
               <div className="flex items-center gap-2 text-[#016853] font-semibold">
                 <div className="w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-sm font-semibold">
                   {school.grade}
@@ -251,7 +248,6 @@ export default function SchoolsGrid() {
               </div>
               <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F]">
                 <span className="w-4 h-4 mr-1">{ICONS.students}</span>
-
                 <span>Students: {school.students}</span>
               </div>
             </div>

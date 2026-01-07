@@ -39,7 +39,7 @@ export default function ReviewsModal() {
         </MobileDrawer>
       </div>
       <div className="hidden md:block">
-        <DesktopModal isOpen={isOpen} onClose={closeReviews}>
+        <DesktopModal isOpen={isOpen} onClose={closeReviews} className="w-[800px]">
           <ReviewsModalContent onClose={closeReviews} />
         </DesktopModal>
       </div>
