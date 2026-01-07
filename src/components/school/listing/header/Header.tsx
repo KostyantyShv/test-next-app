@@ -46,7 +46,7 @@ const Header = ({
           : "relative md:opacity-0 md:pointer-events-none md:hidden transition-all duration-300"
       }${classes || ""}`}
     >
-      <div className="max-w-full flex justify-center pt-3">
+      <div className="max-w-full flex justify-center pt-6 ">
         <div className="px-4 sm:px-5 flex w-full max-w-[1080px] justify-between">
           {/* School Info */}
           <div className="flex gap-3 sm:gap-5 flex-1 min-w-0">
