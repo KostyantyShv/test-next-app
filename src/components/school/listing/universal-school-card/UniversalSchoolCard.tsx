@@ -146,7 +146,11 @@ const UniversalSchoolCard: React.FC<UniversalSchoolCardProps> = ({
                 <div className="text-[#5F5F5F] text-[13px]">
                   {poll.responses} responses
                 </div>
+                {index < section.polls.length - 1 && (
+                  <hr className="border-[rgba(0,0,0,0.1)] mt-4"/>
+                )}
               </div>
+              
             ))}
           </div>
         </div>

@@ -53,7 +53,7 @@ const SocialMediaCardMobile: React.FC<{ id: string }> = ({ id }) => {
   return (
     <div
       id={id}
-      className="w-full max-w-[400px] mx-auto h-auto min-h-[400px] bg-[#E1E7EE] rounded-2xl overflow-hidden shadow-lg flex flex-col md:max-w-lg lg:max-w-xl"
+      className="w-full max-w-[400px] mx-auto h-auto min-h-[400px] bg-[#E1E7EE] rounded-2xl overflow-hidden flex flex-col md:max-w-lg lg:max-w-xl"
     >
       <div className="flex-1 p-4 sm:p-5">
         <h2 className="text-xl sm:text-2xl font-bold text-[#1B1B1B] mb-4 sm:mb-5">
@@ -113,7 +113,7 @@ const SocialMediaCardMobile: React.FC<{ id: string }> = ({ id }) => {
                     {data.content}
                   </div>
                   <div className="flex text-xs sm:text-[13px] text-[#5F5F5F] mb-2 sm:mb-3">
-                    <div className="relative mr-3 after:content-['•'] after:absolute after:right-[-7px]">
+                    <div className="relative mr-3 after:content-['•'] after:absolute after:right-[-11px]">
                       {data.date}
                     </div>
                     {data.time && <div className="ml-1">{data.time}</div>}

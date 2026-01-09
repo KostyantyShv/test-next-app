@@ -19,7 +19,7 @@ const MajorsModalContent: React.FC<MajorsModalContentProps> = ({
   return (
     <div className="flex flex-col h-full font-['Inter'] relative">
       {/* Fixed Header within Modal */}
-      <div className="sticky top-0 z-10 bg-white">
+      <div className="sticky top-0 z-50 bg-white">
         <div className="h-2 bg-gradient-to-r from-[#016853] to-[#089E68] md:h-[11px] md:mb-[-1px]" />
         <div className="relative p-5 md:p-8 md:border-b md:border-black/8">
           <h1 className="text-[#016853] text-[22px] font-bold mb-2 md:text-[28px]">

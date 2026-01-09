@@ -25,8 +25,12 @@ export default function MapCard({ id }: { id: string }) {
       <MobileMapCard id={id} />
 
       {/* Desktop Map Card */}
-      <div id={id} className="hidden md:flex justify-center my-cardMargin">
-        <div className="w-full max-w-[875px] bg-white rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.05)] overflow-hidden border border-black/10 md:px-[87px]">
+      <div 
+        id={id} 
+        className="hidden md:flex justify-center my-cardMargin"
+        style={{ scrollMarginTop: "176px" }}
+      >
+        <div className="w-full max-w-[875px] bg-white rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.05)] overflow-hidden border border-black/10">
           <MapHeader />
           <div className="relative h-[500px]">
             <MapControls 

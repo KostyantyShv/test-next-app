@@ -20,16 +20,6 @@ export default function MapControls({
   showLabels,
   setShowLabels,
 }: MapControlsProps) {
-  const toggleFullscreen = () => {
-    const mapContent = document.querySelector(".map-content");
-    if (!mapContent) return;
-    if (!document.fullscreenElement) {
-      mapContent.requestFullscreen?.();
-    } else {
-      document.exitFullscreen?.();
-    }
-  };
-
   const handleMapTypeClick = (type: "roadmap" | "satellite") => {
     setMapType(type);
     onMapTypeChange(type);
@@ -112,27 +102,6 @@ export default function MapControls({
           </button>
         )}
       </div>
-      <button
-        className="absolute top-2 right-2 z-10 bg-white rounded-md w-10 h-10 flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors"
-        onClick={toggleFullscreen}
-        aria-label="Toggle fullscreen"
-      >
-        <svg
-          className="w-4 h-4 text-[#565656]"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <polyline points="15 3 21 3 21 9" />
-          <polyline points="9 21 3 21 3 15" />
-          <line x1="21" y1="3" x2="14" y2="10" />
-          <line x1="3" y1="21" x2="10" y2="14" />
-        </svg>
-      </button>
     </>
   );
 }

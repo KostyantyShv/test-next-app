@@ -19,27 +19,25 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
   }, []);
 
   return (
-    <div className="w-full h-full md:max-w-[1100px] md:h-[90vh] bg-white md:rounded-2xl relative shadow-[0_4px_24px_rgba(0,0,0,0.15)] transition-all duration-300 ease-in-out flex flex-col overflow-hidden">
-      {/* Scrollable container */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <div className="bg-[#016853] text-white p-4 md:p-6 flex justify-between items-center sticky top-0 z-10 border-b border-white/10 flex-shrink-0">
-          <div>
-            <h1 className="text-xl md:text-3xl font-bold m-0">Panama City</h1>
-            <p className="mt-1 md:mt-2 text-sm md:text-base font-normal opacity-90">
-              Florida
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            className="bg-transparent border-none text-white text-2xl md:text-3xl cursor-pointer w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full hover:bg-[rgba(255,255,255,0.1)] transition duration-300"
-          >
-            ×
-          </button>
+    <div className="w-full h-full md:max-w-[1100px] md:h-[90vh] bg-white md:rounded-2xl relative shadow-[0_4px_24px_rgba(0,0,0,0.15)] transition-all duration-300 ease-in-out">
+      {/* Header - Sticky */}
+      <div className="sticky top-0 bg-[#016853] text-white p-4 md:p-6 flex justify-between items-center z-50 border-b border-white/10">
+        <div>
+          <h1 className="text-xl md:text-3xl font-bold m-0">Panama City</h1>
+          <p className="mt-1 md:mt-2 text-sm md:text-base font-normal opacity-90">
+            Florida
+          </p>
         </div>
+        <button
+          onClick={onClose}
+          className="bg-transparent border-none text-white text-2xl md:text-3xl cursor-pointer w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full hover:bg-[rgba(255,255,255,0.1)] transition duration-300"
+        >
+          ×
+        </button>
+      </div>
 
-        {/* Content */}
-        <div className="p-4 md:p-8">
+      {/* Content */}
+      <div className="h-[calc(100%-93px)] md:max-h-[calc(90vh-93px)] overflow-y-auto p-4 md:p-8">
         {/* Section 1: Living in the Area */}
         <div className="mb-4 md:mb-7">
           <h2 className="mb-3 md:mb-4 text-lg md:text-[22px] text-[#016853] font-semibold">
@@ -55,20 +53,6 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
                 <div>
                   <div className="text-sm md:text-[15px] text-[#464646] md:text-center font-medium">
                     Overall SchoolScout Grade
-                  </div>
-                  <div className="flex flex-col md:items-center md:gap-2 md:mt-3">
-                    <a
-                      href="#"
-                      className="text-xs md:text-[13px] text-[#346DC2] no-underline hover:underline"
-                    >
-                      How are grades calculated?
-                    </a>
-                    <a
-                      href="#"
-                      className="text-xs md:text-[13px] text-[#346DC2] no-underline hover:underline"
-                    >
-                      Data Sources
-                    </a>
                   </div>
                 </div>
               </div>
@@ -103,6 +87,20 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
                   ))}
                 </div>
               </div>
+            </div>
+            <div className="px-4 md:px-6 pb-4 md:pb-6 flex flex-col md:flex-row md:items-center md:justify-center gap-2 md:gap-4">
+              <a
+                href="#"
+                className="text-xs md:text-[13px] text-[#346DC2] no-underline hover:underline text-center md:text-left"
+              >
+                How are grades calculated?
+              </a>
+              <a
+                href="#"
+                className="text-xs md:text-[13px] text-[#346DC2] no-underline hover:underline text-center md:text-left"
+              >
+                Data Sources
+              </a>
             </div>
           </div>
         </div>
@@ -880,7 +878,6 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
             </div>
           </div>
         </div>
-      </div>
       </div>
     </div>
   );

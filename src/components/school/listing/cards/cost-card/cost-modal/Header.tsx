@@ -6,7 +6,7 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ closePopup }) => (
-  <div className="sticky top-0 z-[2] flex items-center justify-between border-b border-black/5 bg-white p-4 md:p-6">
+  <div className="sticky top-0 z-50 flex items-center justify-between border-b border-black/5 bg-white p-4 md:p-6">
     <h2 className="text-lg font-semibold tracking-tight text-[#016853] md:text-2xl">
       {headerData.title}
     </h2>

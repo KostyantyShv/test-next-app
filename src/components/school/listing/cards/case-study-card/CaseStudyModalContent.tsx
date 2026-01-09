@@ -6,11 +6,116 @@ interface CaseStudyModalProps {
   onClose: () => void;
 }
 
-const galleryImages = [
-  "https://i.ibb.co/jJ4GHXP/img1.jpg",
-  "https://i.ibb.co/LJwrLdW/coaching-image.webp",
-  "https://i.ibb.co/fVRCnNZY/school2.webp",
-  "https://i.ibb.co/zh3VFyBg/thumbnail1.webp",
+interface CaseStudy {
+  title: string;
+  subtitle: string;
+  heroImage: string;
+  galleryImages: string[];
+  testimonial: {
+    quote: string;
+    author: string;
+    role: string;
+    avatar: string;
+  };
+  testimonialImage: string;
+}
+
+const caseStudies: CaseStudy[] = [
+  {
+    title: "Aecon Green Energy Solutions",
+    subtitle: "Web Design for Construction Firms",
+    heroImage: "https://i.ibb.co/nMwVdhDY/hero1.webp",
+    galleryImages: [
+      "https://i.ibb.co/jJ4GHXP/img1.jpg",
+      "https://i.ibb.co/LJwrLdW/coaching-image.webp",
+      "https://i.ibb.co/fVRCnNZY/school2.webp",
+      "https://i.ibb.co/zh3VFyBg/thumbnail1.webp",
+    ],
+    testimonial: {
+      quote:
+        "The new website perfectly captures our vision for sustainable energy solutions. The lead generation capabilities have exceeded our expectations.",
+      author: "John Smith",
+      role: "Director of Digital Strategy, Aecon",
+      avatar: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
+    },
+    testimonialImage: "https://i.ibb.co/vcJmbRn/japan.webp",
+  },
+  {
+    title: "TechStart Innovation Hub",
+    subtitle: "E-commerce Platform Development",
+    heroImage: "https://i.ibb.co/LJwrLdW/coaching-image.webp",
+    galleryImages: [
+      "https://i.ibb.co/fVRCnNZY/school2.webp",
+      "https://i.ibb.co/zh3VFyBg/thumbnail1.webp",
+      "https://i.ibb.co/jJ4GHXP/img1.jpg",
+      "https://i.ibb.co/nMwVdhDY/hero1.webp",
+    ],
+    testimonial: {
+      quote:
+        "The platform has transformed our business operations. We've seen a 300% increase in online sales since launch.",
+      author: "Sarah Johnson",
+      role: "CEO, TechStart Innovation",
+      avatar: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
+    },
+    testimonialImage: "https://i.ibb.co/jJ4GHXP/img1.jpg",
+  },
+  {
+    title: "EduLearn Academy",
+    subtitle: "Educational Platform Redesign",
+    heroImage: "https://i.ibb.co/fVRCnNZY/school2.webp",
+    galleryImages: [
+      "https://i.ibb.co/zh3VFyBg/thumbnail1.webp",
+      "https://i.ibb.co/nMwVdhDY/hero1.webp",
+      "https://i.ibb.co/LJwrLdW/coaching-image.webp",
+      "https://i.ibb.co/jJ4GHXP/img1.jpg",
+    ],
+    testimonial: {
+      quote:
+        "The new design has made our platform more engaging for students. User engagement is up 250% and course completion rates have improved significantly.",
+      author: "Michael Chen",
+      role: "Founder, EduLearn Academy",
+      avatar: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
+    },
+    testimonialImage: "https://i.ibb.co/LJwrLdW/coaching-image.webp",
+  },
+  {
+    title: "HealthCare Connect",
+    subtitle: "Telemedicine Platform",
+    heroImage: "https://i.ibb.co/zh3VFyBg/thumbnail1.webp",
+    galleryImages: [
+      "https://i.ibb.co/nMwVdhDY/hero1.webp",
+      "https://i.ibb.co/jJ4GHXP/img1.jpg",
+      "https://i.ibb.co/LJwrLdW/coaching-image.webp",
+      "https://i.ibb.co/fVRCnNZY/school2.webp",
+    ],
+    testimonial: {
+      quote:
+        "The platform has revolutionized how we deliver healthcare services. Patient satisfaction scores are at an all-time high.",
+      author: "Dr. Emily Rodriguez",
+      role: "Chief Medical Officer, HealthCare Connect",
+      avatar: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
+    },
+    testimonialImage: "https://i.ibb.co/fVRCnNZY/school2.webp",
+  },
+  {
+    title: "Green Finance Solutions",
+    subtitle: "FinTech Mobile Application",
+    heroImage: "https://i.ibb.co/jJ4GHXP/img1.jpg",
+    galleryImages: [
+      "https://i.ibb.co/LJwrLdW/coaching-image.webp",
+      "https://i.ibb.co/nMwVdhDY/hero1.webp",
+      "https://i.ibb.co/zh3VFyBg/thumbnail1.webp",
+      "https://i.ibb.co/fVRCnNZY/school2.webp",
+    ],
+    testimonial: {
+      quote:
+        "The app has made sustainable investing accessible to everyone. We've onboarded over 100,000 users in the first quarter.",
+      author: "David Kim",
+      role: "Head of Product, Green Finance",
+      avatar: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
+    },
+    testimonialImage: "https://i.ibb.co/zh3VFyBg/thumbnail1.webp",
+  },
 ];
 
 export default function CaseStudyModalContent({
@@ -20,8 +125,11 @@ export default function CaseStudyModalContent({
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const totalSlides = 5;
+  const totalSlides = caseStudies.length;
   const imagesPerPage = 3;
+  
+  const currentCaseStudy = caseStudies[currentSlide];
+  const galleryImages = currentCaseStudy.galleryImages;
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -41,6 +149,12 @@ export default function CaseStudyModalContent({
   const setGalleryImage = (index: number) => {
     setCurrentImageIndex(index);
   };
+
+  // Reset gallery state when case study changes
+  useEffect(() => {
+    setCurrentImageIndex(0);
+    setCurrentPage(0);
+  }, [currentSlide]);
 
   const showNextThumbnails = () => {
     if ((currentPage + 1) * imagesPerPage < galleryImages.length) {
@@ -197,16 +311,16 @@ export default function CaseStudyModalContent({
 
           <div className="relative w-full h-[200px] md:h-[600px] overflow-hidden md:rounded-2xl">
             <img
-              src="https://i.ibb.co/nMwVdhDY/hero1.webp"
+              src={currentCaseStudy.heroImage}
               alt="Case Study Hero"
               className="w-full h-full object-cover"
             />
             <div className="absolute bottom-5 left-4 md:bottom-40 md:left-10 text-white max-w-[90%] md:max-w-[600px] z-10">
               <div className="text-xs md:text-lg font-medium opacity-90 mb-1 md:mb-3">
-                Web Design for Construction Firms
+                {currentCaseStudy.subtitle}
               </div>
               <h1 className="text-2xl md:text-5xl font-bold mb-3 md:mb-6 leading-[1.2]">
-                Aecon Green Energy Solutions
+                {currentCaseStudy.title}
               </h1>
               <a
                 href="#"
@@ -390,17 +504,10 @@ export default function CaseStudyModalContent({
         </div>
 
         {/* Gallery */}
-        <div className="w-full md:w-3/4 mx-auto px-4 md:pl-[100px] md:pr-[100px] py-4 md:py-10">
-          {/* Main Gallery Image */}
-          <div className="w-full h-[200px] md:h-[500px] rounded-lg overflow-hidden mb-4 md:mb-6">
-            <img
-              src={galleryImages[currentImageIndex]}
-              alt="Active Gallery"
-              className="w-full h-full object-cover transition-all"
-            />
-          </div>
-          {/* Thumbnails */}
-          <div className="relative mb-4 md:mb-6 overflow-hidden">
+        <div className="w-full md:max-w-[1200px] mx-auto px-4 md:px-20 py-4 md:py-10">
+
+{/* Thumbnails */}
+        <div className="relative mb-4 md:mb-6 overflow-hidden">
             <div
               className="flex gap-2.5 md:gap-4 transition-transform px-1"
               style={{
@@ -466,6 +573,17 @@ export default function CaseStudyModalContent({
               </svg>
             </button>
           </div>
+
+          {/* Main Gallery Image */}
+          <div className="w-full h-[200px] md:h-[500px] rounded-lg overflow-hidden mb-4 md:mb-6">
+            <img
+              src={galleryImages[currentImageIndex]}
+              alt="Active Gallery"
+              className="w-full h-full object-cover transition-all"
+            />
+          </div>
+          
+          
         </div>
 
         {/* Testimonials */}
@@ -489,30 +607,29 @@ export default function CaseStudyModalContent({
                 />
               </svg>
               <div className="text-base md:text-2xl font-semibold leading-[1.5] text-[#262B3D] mb-4 md:mb-8">
-                The new website perfectly captures our vision for sustainable
-                energy solutions. The lead generation capabilities have exceeded our expectations.
+                {currentCaseStudy.testimonial.quote}
               </div>
               <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-0">
                 <Image
                   height={40}
                   width={40}
-                  src="https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png"
-                  alt="John Smith"
+                  src={currentCaseStudy.testimonial.avatar}
+                  alt={currentCaseStudy.testimonial.author}
                   className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover"
                 />
                 <div>
                   <div className="text-sm md:text-lg font-semibold text-[#262B3D] mb-0.5 md:mb-1">
-                    John Smith
+                    {currentCaseStudy.testimonial.author}
                   </div>
                   <div className="text-xs md:text-sm text-[#4A4A4A]">
-                    Director of Digital Strategy, Aecon
+                    {currentCaseStudy.testimonial.role}
                   </div>
                 </div>
               </div>
             </div>
             <div className="relative rounded-lg overflow-hidden aspect-[16/9] w-full md:flex-[0_0_43%]">
               <img
-                src="https://i.ibb.co/vcJmbRn/japan.webp"
+                src={currentCaseStudy.testimonialImage}
                 alt="Client Interview"
                 className="w-full h-full object-cover"
               />

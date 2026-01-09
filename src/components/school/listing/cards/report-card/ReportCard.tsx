@@ -43,7 +43,7 @@ const ReportCard: React.FC<{ id: string }> = ({ id }) => {
               >
                 How are grades calculated?
               </a>
-              <span className="text-[var(--subtle-text)]">•</span>
+              <span className="text-[var(--subtle-text)] relative bottom-[3px]">•</span>
               <a
                 href="#"
                 className="text-[13px] text-[#346DC2] no-underline hover:underline"

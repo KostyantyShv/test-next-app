@@ -42,7 +42,7 @@ export default function AdmissionsModalMobile({ isOpen, onClose }: PopupProps) {
         <div className="w-10 h-[5px] bg-[#E5E5E5] rounded-[3px] my-[10px] mx-auto md:hidden" />
 
         {/* Header */}
-        <div className="p-4 px-5 border-b border-black/10 relative flex justify-center items-center md:p-8 md:pb-0">
+        <div className="sticky top-0 z-50 bg-white p-4 px-5 border-b border-black/10 relative flex justify-center items-center md:p-8 md:pb-0">
           <h2 className="text-[#016853] text-lg font-semibold text-center md:text-2xl">
             Admissions Information
           </h2>

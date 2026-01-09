@@ -34,7 +34,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
   const descId = `${tab}-desc-${index}`;
 
   return (
-    <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl p-6 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all min-h-[630px]">
+    <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl p-6 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all min-h-[630px] flex flex-col">
       <div className="text-[#5F5F5F] text-xs font-semibold uppercase tracking-wide mb-2">
         {program.university}
       </div>
@@ -199,7 +199,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
           </div>
         )}
       </div>
-      <div className="flex justify-between items-center pt-4 border-t border-[rgba(0,0,0,0.08)]">
+      <div className="flex justify-between items-center pt-4 border-t border-[rgba(0,0,0,0.08)] mt-auto">
         <button className="text-[#016853] font-semibold text-sm hover:text-[#089E68] transition-colors">
           Apply Now
         </button>

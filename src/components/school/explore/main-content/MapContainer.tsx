@@ -106,10 +106,7 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
             },
           ],
           disableDefaultUI: false,
-          zoomControl: true,
-          zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_BOTTOM,
-          },
+          zoomControl: false,
           mapTypeControl: false,
           streetViewControl: true,
           streetViewControlOptions: {
@@ -175,7 +172,7 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
                 </div>
               </div>
             `,
-            pixelOffset: new google.maps.Size(0, -45),
+            pixelOffset: new google.maps.Size(0, -5),
           });
 
           marker.addListener("mouseover", () => {

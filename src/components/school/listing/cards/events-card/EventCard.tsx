@@ -127,9 +127,9 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
         {titleAndAddButton("desktop")}
         <div className="flex items-center gap-3 flex-wrap mb-2 md:mb-3">
           
-          <div className="flex items-center gap-1.5 text-[#3B6E91] text-sm">
+          <div className="flex items-center gap-1.5 text-[#4A4A4A] text-sm">
             <svg
-              className="w-4 h-4 text-[#828282]"
+              className="w-4 h-4 text-[#4A4A4A]"
               fill="none"
               viewBox="0 0 20 20"
             >
@@ -142,9 +142,9 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
             </svg>
             {event.date}
 
-            <div className="flex items-center gap-1 text-[#00e28f]">
+            <div className="flex items-center gap-1 text-[#4a4a4a]">
             <svg
-              className="w-4 h-4 text-[#00e28f]"
+              className="w-4 h-4 text-[#4A4A4A]"
               fill="none"
               viewBox="0 0 32 32"
             >

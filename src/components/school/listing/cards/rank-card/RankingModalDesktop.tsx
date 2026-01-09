@@ -42,7 +42,7 @@ const RankingModalDesktop: React.FC<PopupProps> = ({ isOpen, onClose }) => {
 
   return (
     <DesktopModal isOpen={isOpen} onClose={onClose}>
-      <div className="sticky top-0 bg-white z-[2]">
+      <div className="sticky top-0 bg-white z-50">
         <div className="h-[11px] bg-gradient-to-r from-[#016853] to-[#089E68]" />
         <div className="p-8 border-b border-black/8 relative">
           <h1 className="text-[#016853] text-[28px] font-bold mb-2 flex items-center gap-3">

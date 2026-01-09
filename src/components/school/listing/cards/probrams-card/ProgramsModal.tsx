@@ -188,7 +188,7 @@ const ProgramsModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
   return (
     <>
       {/* Header */}
-      <div className="bg-[#016853] text-white p-4 md:p-6 flex justify-between items-center sticky top-0 z-10 border-b border-white/10">
+      <div className="bg-[#016853] text-white p-4 md:p-6 flex justify-between items-center sticky top-0 z-50 border-b border-white/10">
         <div>
           <h1 className="text-xl md:text-[28px] font-bold">Lincoln Academy</h1>
           <p className="mt-1 md:mt-2 text-sm md:text-base opacity-90">
@@ -247,10 +247,10 @@ const ProgramsModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
             ].map((category) => (
               <button
                 key={category}
-                className={`border border-[#016853] text-[#016853] px-3 md:px-5 py-1 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                className={`border px-3 md:px-5 py-1 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
                   activeCategory === category
-                    ? "bg-[#016853] text-white"
-                    : "hover:bg-[#016853] hover:text-white"
+                    ? "bg-[#016853] text-white border-[#016853]"
+                    : "text-[#464646] border-[#016853] hover:bg-[#016853] hover:text-white"
                 }`}
                 onClick={() => setActiveCategory(category)}
               >
@@ -327,10 +327,10 @@ const ProgramsModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
             ].map((category) => (
               <button
                 key={category}
-                className={`border border-[#016853] text-[#016853] px-3 md:px-5 py-1 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                className={`border px-3 md:px-5 py-1 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
                   activeCategory === category
-                    ? "bg-[#016853] text-white"
-                    : "hover:bg-[#016853] hover:text-white"
+                    ? "bg-[#016853] text-white border-[#016853]"
+                    : "text-[#464646] border-[#016853] hover:bg-[#016853] hover:text-white"
                 }`}
                 onClick={() => setActiveCategory(category)}
               >

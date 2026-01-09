@@ -146,7 +146,9 @@ const StudentsModalContent: React.FC<{ closeModal: () => void }> = ({
                 <div className="text-[#5F5F5F] text-[13px]">
                   {poll.responses} responses
                 </div>
+                
               </div>
+              
             ))}
           </div>
 

@@ -6,30 +6,33 @@ interface AfterCollegeModalProps {
 
 const AfterCollegeModal: React.FC<AfterCollegeModalProps> = ({ onClose }) => {
   return (
-    <>
-      <div
-        className="w-full p-6 md:p-8 relative overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex justify-between items-center mb-4 md:mb-0 border-b border-gray-100 pb-3 md:border-none">
-          <h1 className="text-[#016853] text-xl md:text-2xl font-semibold tracking-[-0.02em]">
-            Overall Value
-          </h1>
-          <button
-            className="bg-transparent border-none cursor-pointer text-[#565656] p-1 w-8 h-8 flex items-center justify-center"
-            onClick={onClose}
+    <div
+      className="w-full relative"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Header - Sticky */}
+      <div className="sticky top-0 flex justify-between items-center bg-white px-6 py-5 md:px-8 md:py-5 z-50 border-b border-gray-100">
+        <h1 className="text-[#016853] text-xl md:text-2xl font-semibold tracking-[-0.02em]">
+          Overall Value
+        </h1>
+        <button
+          className="bg-transparent border-none cursor-pointer text-[#565656] p-1 w-8 h-8 flex items-center justify-center"
+          onClick={onClose}
+        >
+          <svg
+            className="w-6 h-6"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
           >
-            <svg
-              className="w-6 h-6"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Content */}
+      <div className="p-6 md:p-8">
 
         {/* Overall Value Section */}
         <div className="mb-8 pb-6 border-b border-gray-100">
@@ -358,7 +361,7 @@ const AfterCollegeModal: React.FC<AfterCollegeModalProps> = ({ onClose }) => {
           </a>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

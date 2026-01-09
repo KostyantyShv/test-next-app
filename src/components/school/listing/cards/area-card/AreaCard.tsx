@@ -12,7 +12,7 @@ const AreaCard: React.FC<{ id: string }> = ({ id }) => {
     <>
       <div
         id={id}
-        className="w-full bg-cardBackground rounded-cardBorderRadius shadow-cardShadow overflow-hidden my-cardMargin md:px-[87px]"
+        className="w-full bg-cardBackground rounded-cardBorderRadius shadow-cardShadow overflow-hidden my-cardMargin"
       >
         <div className="bg-[#F2F7EF] p-8 border-b border-[rgba(0,0,0,0.05)]">
           <div className="flex items-center gap-2 mb-1.5">

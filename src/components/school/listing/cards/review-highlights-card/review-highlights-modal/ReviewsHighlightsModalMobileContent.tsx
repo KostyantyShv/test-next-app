@@ -6,7 +6,7 @@ const ReviewsHighlightsModalMobile = () => {
   return (
     <>
       {/* Drawer Header */}
-      <div className="border-b border-black/10 px-5 pb-4">
+      <div className="sticky top-0 z-50 bg-white border-b border-black/10 px-5 pb-4">
         <div className="mt-1 text-center text-lg font-bold text-gray-800">
           Review Highlights
         </div>

@@ -69,7 +69,7 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({
   return (
     <>
       {/* Header */}
-      <div className="p-4 md:p-6 border-b border-[#E0E0E0] flex items-center justify-between sticky top-0 bg-white z-10">
+      <div className="p-4 md:p-6 border-b border-[#E0E0E0] flex items-center justify-between sticky top-0 bg-white z-50">
         <div className="author-info flex items-center gap-3">
           <Image
             src={project.authorAvatar}

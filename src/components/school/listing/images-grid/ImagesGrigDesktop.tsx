@@ -58,10 +58,10 @@ const ImagesGrigDesktop = ({ images }: { images: Array<string> }) => {
           fill
           className="object-cover"
         />
-        <div className="absolute bottom-[5px] left-[10px] bg-white px-2 py-1 font-bold text-sm">
+        <div className="absolute bottom-0 left-[10px] bg-white px-2 py-1 font-bold text-sm">
           COLLEGE
         </div>
-        <div className="absolute bottom-[5px] left-[87px] bg-[#eee] px-2 py-1 font-bold text-sm text-[#5F5F5F]">
+        <div className="absolute bottom-0 left-[98px] bg-[#eee] px-2 py-1 font-bold text-sm text-[#5F5F5F]">
           GRAD SCHOOL
         </div>
       </div>

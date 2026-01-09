@@ -88,7 +88,7 @@ const RankingModalMobile: React.FC<MobileDrawerProps> = ({
     <>
       {/* Full-screen overlay */}
       <MobileDrawer isOpen={isOpen} onClose={onClose}>
-        <div className="sticky top-0 bg-white z-10">
+        <div className="sticky top-0 bg-white z-50">
           <div className="p-5 border-b border-black/8 relative">
             <h1 className="text-[#016853] text-xl font-bold mb-2 flex items-center gap-3">
               <svg

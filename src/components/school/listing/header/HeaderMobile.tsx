@@ -53,10 +53,10 @@ const Header: React.FC<HeaderProps> = ({ isFooterVisible }) => {
   };
 
   return (
-    <div className="absolute top-0 left-0 right-0 pointer-events-none z-[20]">
+    <div className="absolute top-0 left-0 right-0 pointer-events-none z-[1001]">
       <div
-        className={`fixed top-0 bg-white shadow-md p-3 transition-transform duration-300 w-full overflow-x-auto whitespace-nowrap scrollbar-hide ${
-          isFooterVisible ? "translate-y-0" : "-translate-y-full"
+        className={`fixed top-[68px] bg-white shadow-md p-3 transition-transform duration-300 z-[1001] w-full overflow-x-auto whitespace-nowrap scrollbar-hide ${
+          isFooterVisible ? "translate-y-0" : "hidden"
         }`}
       >
         <div className="flex px-4">

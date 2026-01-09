@@ -68,7 +68,7 @@ export const Header: FC<HeaderProps> = ({ className, onOpenSidebar }) => {
             className="h-full bg-[#00DF8B] transition-all duration-150"
             style={{ width: `${scrollProgress}%` }}
           />
-          <div className="h-[12px] bg-[#f8fcff] flex-shrink-0 border-t border-gray-100"></div>
+          <div className="h-[12px] bg-[#f8fcff] flex-shrink-0 border-t border-gray-100 "></div>
 
         </div>
 
