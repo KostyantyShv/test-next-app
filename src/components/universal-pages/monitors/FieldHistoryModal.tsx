@@ -158,7 +158,7 @@ export default function FieldHistoryModal({
           {/* Header */}
           <div className="flex justify-between items-center p-5 border-b flex-shrink-0" style={{ borderBottomColor: 'var(--border-color)' }}>
             <h2 className="text-xl font-semibold flex items-center gap-2" style={{ color: 'var(--header-green)' }}>
-              History for <span className="px-2.5 py-1 rounded-md font-semibold text-sm" style={{ backgroundColor: 'var(--apply-button-bg)', color: 'var(--header-green)' }}>{monitorName || fieldName}</span>
+              History for <span className="px-2.5 py-1 rounded-md font-semibold text-sm" style={{ backgroundColor: 'var(--apply-button-bg)', color: 'var(--header-green)' }}>{fieldName.toLowerCase()}</span>
             </h2>
             <div className="flex items-center gap-2">
               {onViewMonitorHistory && (

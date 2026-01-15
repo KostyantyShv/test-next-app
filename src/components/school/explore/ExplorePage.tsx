@@ -1,18 +1,26 @@
 "use client";
+import { useState } from "react";
 import FiltersSection from "./sections/FiltersSection";
 import MainContentSection from "./sections/MainContentSection";
 
 const ExplorePage = () => {
+  const [isContainerExpanded, setIsContainerExpanded] = useState(false);
+
   return (
     <div
       className="min-h-screen flex flex-col items-center py-4 md:py-5 px-3 md:px-5"
       style={{ backgroundColor: 'var(--background-color)' }}
     >
-      <div className="w-full max-w-[1055px]">
+      <div 
+        className="w-full transition-all duration-300"
+        style={{ 
+          maxWidth: isContainerExpanded ? '1318.75px' : '1055px' 
+        }}
+      >
         <div className="hidden md:block">
           <FiltersSection />
         </div>
-        <MainContentSection />
+        <MainContentSection onContainerExpandChange={setIsContainerExpanded} />
       </div>
     </div>
   );

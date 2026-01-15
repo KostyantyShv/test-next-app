@@ -26,10 +26,10 @@ const caseStudies: CaseStudy[] = [
     subtitle: "Web Design for Construction Firms",
     heroImage: "https://i.ibb.co/nMwVdhDY/hero1.webp",
     galleryImages: [
-      "https://i.ibb.co/jJ4GHXP/img1.jpg",
-      "https://i.ibb.co/LJwrLdW/coaching-image.webp",
-      "https://i.ibb.co/fVRCnNZY/school2.webp",
-      "https://i.ibb.co/zh3VFyBg/thumbnail1.webp",
+  "https://i.ibb.co/jJ4GHXP/img1.jpg",
+  "https://i.ibb.co/LJwrLdW/coaching-image.webp",
+  "https://i.ibb.co/fVRCnNZY/school2.webp",
+  "https://i.ibb.co/zh3VFyBg/thumbnail1.webp",
     ],
     testimonial: {
       quote:

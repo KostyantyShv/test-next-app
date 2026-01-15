@@ -173,7 +173,7 @@ const SocialAccountCard: React.FC<SocialAccountCardProps> = ({
             }`}
             onClick={handleConnect}
           >
-            Connect to {providerName}
+            Connect
           </button>
         </div>
       </div>

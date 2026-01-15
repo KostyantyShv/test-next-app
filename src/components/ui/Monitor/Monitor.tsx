@@ -200,22 +200,12 @@ export const Monitor: React.FC<MonitorProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[1001]">
-      {/* Backdrop */}
-      <div 
-        className="absolute top-[75px] left-0 right-0 bottom-0 cursor-pointer" 
-        style={{ backgroundColor: 'rgba(0, 0, 0, 0.25)' }}
-        onClick={onClose}
-      />
-      
+    <div className="fixed inset-0 z-[1001] pointer-events-none">
       {/* Monitor Modal */}
       <div 
         ref={modalRef}
         className={cn(
-          "absolute top-[72px] right-0 w-[440px] bg-[var(--surface-color)] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] border border-[var(--border-color)]",
-          "opacity-0 visibility-hidden transform -translate-y-2.5 transition-all duration-300 ease-out",
-          "z-[1000]",
-          isOpen && "opacity-100 visibility-visible transform translate-y-0",
+          "absolute top-[72px] right-0 w-[440px] bg-[var(--surface-color)] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] border border-[var(--border-color)] pointer-events-auto",
           className
         )}
         style={{

@@ -6,6 +6,7 @@ import { useMonitors, type Monitor, type MonitorDetail } from '@/hooks/useMonito
 import { mockStats, mockPageHistoryData, mockItemHistoryData, mockFieldHistoryData } from '@/mocks/monitors';
 import NewMonitorModal from './NewMonitorModal';
 import FieldHistoryModal from './FieldHistoryModal';
+import PageHistoryModal from './PageHistoryModal';
 import useWindowWidth from '@/hooks/useWindowWidth';
 
 
@@ -1070,7 +1071,7 @@ export default function Monitors() {
                     <div className="flex items-center gap-2.5">
                       <span className="text-lg font-semibold" style={{ color: 'var(--bold-text)' }}>History for</span>
                       <span className="px-3 py-1.5 rounded-lg font-semibold text-sm" style={{ backgroundColor: 'var(--apply-button-bg)', color: 'var(--header-green)' }}>
-                        {mobileHistoryData.fieldName === 'Monitor' ? monitors.find(m => m.id === mobileHistoryData.monitorId)?.name || 'Monitor' : mobileHistoryData.fieldName}
+                        {mobileHistoryData.fieldName === 'Monitor' ? monitors.find(m => m.id === mobileHistoryData.monitorId)?.name || 'Monitor' : (mobileHistoryData.fieldName || '').toLowerCase()}
                       </span>
                     </div>
                   )}
@@ -1903,29 +1904,22 @@ export default function Monitors() {
                         </td>
                          <td className="px-3 py-3">
                            <div className="relative">
-                             <button
-                               ref={getButtonRef(`options-${monitor.id}`)}
-                               onClick={(e) => {
-                                 e.stopPropagation();
-                                 toggleDropdown(`options-${monitor.id}`);
-                               }}
-                               className="w-9 h-9 rounded-lg flex items-center justify-center transition-all"
-                               style={{
-                                 backgroundColor: 'white',
-                                 boxShadow: '0 2px 4px rgba(0, 0, 0, 0.08)'
-                               }}
-                               onMouseEnter={(e) => {
-                                 e.currentTarget.style.backgroundColor = '#F5F6F8';
-                                 e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.12)';
-                               }}
-                               onMouseLeave={(e) => {
-                                 e.currentTarget.style.backgroundColor = 'white';
-                                 e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.08)';
-                               }}
-                             >
-                              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5" style={{ color: '#4A4A4A' }}>
-                                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
-                              </svg>
+                            <button
+                              ref={getButtonRef(`options-${monitor.id}`)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleDropdown(`options-${monitor.id}`);
+                              }}
+                              className="w-9 h-9 flex items-center justify-center transition-all"
+                              style={{
+                                backgroundColor: 'transparent'
+                              }}
+                            >
+                             <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5" style={{ color: '#4A4A4A' }}>
+                               <circle cx="5" cy="12" r="1.5"/>
+                               <circle cx="12" cy="12" r="1.5"/>
+                               <circle cx="19" cy="12" r="1.5"/>
+                             </svg>
                             </button>
                           </div>
                         </td>
@@ -1939,50 +1933,52 @@ export default function Monitors() {
                               <table className="w-full overflow-visible">
                                 <thead>
                                   <tr>
-                                    <th className="bg-[#f3f4f6] text-[11px] text-[#5F5F5F] px-3 py-2.5 text-left border-b border-[#e5e7eb] overflow-visible">Field</th>
-                                    <th className="bg-[#f3f4f6] text-[11px] text-[#5F5F5F] px-3 py-2.5 text-left border-b border-[#e5e7eb] overflow-visible">Type</th>
-                                    <th className="bg-[#f3f4f6] text-[11px] text-[#5F5F5F] px-3 py-2.5 text-left border-b border-[#e5e7eb] overflow-visible">Current Value</th>
-                                    <th className="bg-[#f3f4f6] text-[11px] text-[#5F5F5F] px-3 py-2.5 text-left border-b border-[#e5e7eb] overflow-visible">Previous</th>
-                                    <th className="bg-[#f3f4f6] text-[11px] text-[#5F5F5F] px-3 py-2.5 text-left border-b border-[#e5e7eb] overflow-visible">Magnitude</th>
-                                    <th className="bg-[#f3f4f6] text-[11px] text-[#5F5F5F] px-3 py-2.5 text-left border-b border-[#e5e7eb] overflow-visible">Modified</th>
-                                    <th className="bg-[#f3f4f6] text-[11px] text-[#5F5F5F] px-3 py-2.5 text-left border-b border-[#e5e7eb] overflow-visible">Unread</th>
-                                    <th className="bg-[#f3f4f6] text-[11px] text-[#5F5F5F] px-3 py-2.5 text-left border-b border-[#e5e7eb] overflow-visible">Actions</th>
+                                    <th className="bg-[#f3f4f6] text-[#5F5F5F] text-left border-b border-[#e5e7eb] overflow-visible" style={{ fontSize: "11px", padding: "10px 12px" }}>Field</th>
+                                    <th className="bg-[#f3f4f6] text-[#5F5F5F] text-left border-b border-[#e5e7eb] overflow-visible" style={{ fontSize: "11px", padding: "10px 12px" }}>Type</th>
+                                    <th className="bg-[#f3f4f6] text-[#5F5F5F] text-left border-b border-[#e5e7eb] overflow-visible" style={{ fontSize: "11px", padding: "10px 12px" }}>Current Value</th>
+                                    <th className="bg-[#f3f4f6] text-[#5F5F5F] text-left border-b border-[#e5e7eb] overflow-visible" style={{ fontSize: "11px", padding: "10px 12px" }}>Previous</th>
+                                    <th className="bg-[#f3f4f6] text-[#5F5F5F] text-left border-b border-[#e5e7eb] overflow-visible" style={{ fontSize: "11px", padding: "10px 12px" }}>Magnitude</th>
+                                    <th className="bg-[#f3f4f6] text-[#5F5F5F] text-left border-b border-[#e5e7eb] overflow-visible" style={{ fontSize: "11px", padding: "10px 12px" }}>Modified</th>
+                                    <th className="bg-[#f3f4f6] text-[#5F5F5F] text-left border-b border-[#e5e7eb] overflow-visible" style={{ fontSize: "11px", padding: "10px 12px" }}>Unread</th>
+                                    <th className="bg-[#f3f4f6] text-[#5F5F5F] text-left border-b border-[#e5e7eb] overflow-visible" style={{ fontSize: "11px", padding: "10px 12px" }}>Actions</th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                   {monitor.details.map((detail, idx) => (
-                                    <tr key={idx} className={idx === monitor.details.length - 1 ? '' : 'border-b border-[#e5e7eb]'}>
-                                      <td className="bg-[#f9fafb] px-3 py-3 overflow-visible">
-                                        <span className="inline-flex items-center px-3 py-1 rounded-md text-xs font-mono bg-[#f3f4f6] text-[#464646] font-medium relative group cursor-help">
+                                    <tr key={idx} style={{ borderBottom: idx === monitor.details.length - 1 ? 'none' : '1px solid #e5e7eb' }}>
+                                      <td className="bg-[#f9fafb] overflow-visible" style={{ padding: "12px", fontSize: "13px" }}>
+                                        <span className="inline-flex items-center bg-[#f3f4f6] text-[#464646] font-medium relative group cursor-help" style={{ padding: "4px 12px", borderRadius: "6px", fontSize: "12px", fontFamily: "monospace" }}>
                                           {detail.field}
-                                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-[#1B1B1B] text-white text-[11px] rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-pre-line pointer-events-none">
+                                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-[#1B1B1B] text-white rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-pre-line pointer-events-none" style={{ fontSize: "11px" }}>
                                             Triggers:{'\n'}
                                             {detail.triggers.join('\n')}
                                           </div>
                                         </span>
                                       </td>
-                                      <td className="bg-[#f9fafb] px-3 py-3 overflow-visible">
-                                        <div className="text-xs text-[#4A4A4A] max-w-[120px] truncate">{detail.type}</div>
+                                      <td className="bg-[#f9fafb] overflow-visible" style={{ padding: "12px", fontSize: "13px" }}>
+                                        <div className="text-[#4A4A4A] max-w-[120px] truncate" style={{ fontSize: "12px" }}>{detail.type}</div>
                                       </td>
-                                      <td className="bg-[#f9fafb] px-3 py-3 overflow-visible">
+                                      <td className="bg-[#f9fafb] overflow-visible" style={{ padding: "12px", fontSize: "13px" }}>
                                         <span
                                           onClick={() => copyToClipboard(detail.currentValueFull)}
-                                          className="font-mono text-xs text-[#4A4A4A] cursor-pointer px-2 py-1 rounded hover:bg-[#f3f4f6] transition-colors max-w-[120px] truncate inline-block"
+                                          className="font-mono text-[#4A4A4A] cursor-pointer rounded hover:bg-[#f3f4f6] transition-colors max-w-[120px] truncate inline-block"
+                                          style={{ fontSize: "12px", padding: "4px 8px" }}
                                           title={detail.currentValueFull}
                                         >
                                           {detail.currentValue}
                                         </span>
                                       </td>
-                                      <td className="bg-[#f9fafb] px-3 py-3 overflow-visible">
+                                      <td className="bg-[#f9fafb] overflow-visible" style={{ padding: "12px", fontSize: "13px" }}>
                                         <span
                                           onClick={() => copyToClipboard(detail.previousValueFull)}
-                                          className="font-mono text-xs text-[#4A4A4A] cursor-pointer px-2 py-1 rounded hover:bg-[#f3f4f6] transition-colors max-w-[120px] truncate inline-block"
+                                          className="font-mono text-[#4A4A4A] cursor-pointer rounded hover:bg-[#f3f4f6] transition-colors max-w-[120px] truncate inline-block"
+                                          style={{ fontSize: "12px", padding: "4px 8px" }}
                                           title={detail.previousValueFull}
                                         >
                                           {detail.previousValue}
                                         </span>
                                       </td>
-                                      <td className="bg-[#f9fafb] px-3 py-3 overflow-visible">
+                                      <td className="bg-[#f9fafb] overflow-visible" style={{ padding: "12px", fontSize: "13px" }}>
                                         <div className="flex items-center gap-2 min-w-[80px]">
                                           <div className="flex-grow h-1.5 bg-[#e5e7eb] rounded-full overflow-hidden min-w-[40px]">
                                             <div
@@ -1990,12 +1986,12 @@ export default function Monitors() {
                                               style={{ width: `${detail.magnitude}%` }}
                                             />
                                           </div>
-                                          <span className="text-[11px] text-[#5F5F5F] whitespace-nowrap">{detail.magnitude}%</span>
+                                          <span className="text-[#5F5F5F] whitespace-nowrap" style={{ fontSize: "11px" }}>{detail.magnitude}%</span>
                                         </div>
                                       </td>
-                                      <td className="bg-[#f9fafb] px-3 py-3 overflow-visible">
-                                        <div className="flex items-center gap-1 text-[#5F5F5F] text-xs">
-                                          <svg viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
+                                      <td className="bg-[#f9fafb] overflow-visible" style={{ padding: "12px", fontSize: "13px" }}>
+                                        <div className="flex items-center gap-1 text-[#5F5F5F]" style={{ fontSize: "12px" }}>
+                                          <svg viewBox="0 0 20 20" fill="currentColor" style={{ width: "12px", height: "12px" }}>
                                             <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12zm1-6a1 1 0 10-2 0v3a1 1 0 002 0V8zm-1-4a1 1 0 100 2 1 1 0 000-2z" />
                                           </svg>
                                           {detail.modified}
@@ -2008,17 +2004,18 @@ export default function Monitors() {
                                           </div>
                                         </div>
                                       </td>
-                                      <td className="bg-[#f9fafb] px-3 py-3 overflow-visible">
-                                        <div className="flex items-center gap-2">
+                                      <td className="bg-[#f9fafb] overflow-visible" style={{ padding: "12px", fontSize: "13px" }}>
+                                        <div className="flex items-center" style={{ gap: "8px" }}>
                                           <div 
-                                            className="w-7 h-7 rounded-full bg-[#EBFCF4] flex items-center justify-center cursor-pointer hover:-translate-y-0.5 hover:bg-[#D7F7E9] transition-all relative group"
+                                            className="rounded-full bg-[#EBFCF4] flex items-center justify-center cursor-pointer hover:-translate-y-0.5 hover:bg-[#D7F7E9] transition-all relative group"
+                                            style={{ width: "28px", height: "28px" }}
                                             onClick={(e) => {
                                               e.stopPropagation();
                                               setSelectedFieldHistory({ monitorId: monitor.id, fieldName: detail.field });
                                               setFieldHistoryModalOpen(true);
                                             }}
                                           >
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="w-3.5 h-3.5 text-[#016853]">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="text-[#016853]" style={{ width: "14px", height: "14px" }}>
                                               <path
                                                 fill="currentColor"
                                                 d="M17.1282 5.53408C15.6009 4.20127 13.6364 3.47739 11.6095 3.50054C9.58258 3.52369 7.63513 4.29225 6.1387 5.6596C4.64227 7.02694 3.70161 8.89735 3.4962 10.914C3.45422 11.326 3.08614 11.6261 2.67405 11.5841C2.26197 11.5421 1.96194 11.174 2.00392 10.762C2.24668 8.37868 3.35837 6.1682 5.12688 4.55225C6.89539 2.9363 9.19692 2.028 11.5924 2.00064C13.9878 1.97328 16.3095 2.82877 18.1145 4.40391C19.9194 5.97904 21.0813 8.16356 21.3784 10.5407C21.6756 12.9178 21.0872 15.3211 19.7255 17.292C18.3638 19.263 16.3241 20.6637 13.9956 21.2268C11.6672 21.7899 9.21286 21.4761 7.101 20.3452C5.62665 19.5557 4.39125 18.4065 3.50006 17.019V19.838C3.50006 20.2522 3.16427 20.588 2.75006 20.588C2.33584 20.588 2.00006 20.2522 2.00006 19.838V14.838C2.00006 14.4237 2.33584 14.088 2.75006 14.088H3.23256C3.24421 14.0877 3.25584 14.0877 3.26743 14.088H7.75006C8.16427 14.088 8.50006 14.4237 8.50006 14.838C8.50006 15.2522 8.16427 15.588 7.75006 15.588H4.40079C5.1641 17.0404 6.34792 18.2404 7.80911 19.0229C9.59607 19.9798 11.6728 20.2453 13.643 19.7688C15.6133 19.2923 17.3392 18.1072 18.4914 16.4394C19.6436 14.7717 20.1414 12.7381 19.89 10.7267C19.6386 8.71532 18.6555 6.86688 17.1282 5.53408ZM11.7003 7.08789C12.1145 7.08789 12.4503 7.42368 12.4503 7.83789V11.5272L14.2306 13.3076C14.5235 13.6005 14.5235 14.0753 14.2306 14.3682C13.9377 14.6611 13.4628 14.6611 13.1699 14.3682L11.1699 12.3682C11.0293 12.2276 10.9503 12.0368 10.9503 11.8379V7.83789C10.9503 7.42368 11.286 7.08789 11.7003 7.08789Z"
@@ -2026,16 +2023,16 @@ export default function Monitors() {
                                                 fillRule="evenodd"
                                               />
                                             </svg>
-                                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-[#1B1B1B] text-white text-[11px] rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap pointer-events-none z-10">
+                                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-[#1B1B1B] text-white rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap pointer-events-none z-10" style={{ fontSize: "11px" }}>
                                               View History
                                             </div>
                                           </div>
-                                          <div className="w-7 h-7 rounded-full bg-[#EBFCF4] flex items-center justify-center cursor-pointer hover:-translate-y-0.5 hover:bg-[#D7F7E9] transition-all relative group">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-[#016853]">
+                                          <div className="rounded-full bg-[#EBFCF4] flex items-center justify-center cursor-pointer hover:-translate-y-0.5 hover:bg-[#D7F7E9] transition-all relative group" style={{ width: "28px", height: "28px" }}>
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#016853]" style={{ width: "14px", height: "14px" }}>
                                               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                                               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                                             </svg>
-                                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-[#1B1B1B] text-white text-[11px] rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap pointer-events-none z-10">
+                                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-[#1B1B1B] text-white rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap pointer-events-none z-10" style={{ fontSize: "11px" }}>
                                               Modify/Edit
                                             </div>
                                           </div>
@@ -2233,29 +2230,49 @@ export default function Monitors() {
       />
 
       {/* Field History Modal */}
-      {selectedFieldHistory && (
-        <FieldHistoryModal
-          isOpen={fieldHistoryModalOpen}
-          onClose={() => {
-            setFieldHistoryModalOpen(false);
-            setSelectedFieldHistory(null);
-          }}
-          fieldName={selectedFieldHistory.fieldName}
-          monitorId={selectedFieldHistory.monitorId}
-          monitorName={monitors.find(m => m.id === selectedFieldHistory.monitorId)?.name}
-          onViewMonitorHistory={() => {
-            // Close field history modal and open monitor history (using same modal for monitor)
-            setFieldHistoryModalOpen(false);
-            // Open monitor history - reuse FieldHistoryModal but for the entire monitor
-            const monitor = monitors.find(m => m.id === selectedFieldHistory.monitorId);
-            setSelectedFieldHistory({ 
-              monitorId: selectedFieldHistory.monitorId, 
-              fieldName: monitor?.name || 'Monitor' // Use monitor name for full monitor history
-            });
-            setFieldHistoryModalOpen(true);
-          }}
-        />
-      )}
+      {selectedFieldHistory && (() => {
+        const monitor = monitors.find(m => m.id === selectedFieldHistory.monitorId);
+        const isPageHistory = selectedFieldHistory.fieldName === monitor?.name;
+        
+        if (isPageHistory && monitor) {
+          return (
+            <PageHistoryModal
+              isOpen={fieldHistoryModalOpen}
+              onClose={() => {
+                setFieldHistoryModalOpen(false);
+                setSelectedFieldHistory(null);
+              }}
+              monitorId={selectedFieldHistory.monitorId}
+              itemImage={monitor.item.image}
+              itemTitle={monitor.item.title}
+            />
+          );
+        }
+        
+        return (
+          <FieldHistoryModal
+            isOpen={fieldHistoryModalOpen}
+            onClose={() => {
+              setFieldHistoryModalOpen(false);
+              setSelectedFieldHistory(null);
+            }}
+            fieldName={selectedFieldHistory.fieldName}
+            monitorId={selectedFieldHistory.monitorId}
+            monitorName={monitor?.name}
+            onViewMonitorHistory={() => {
+              // Close field history modal and open monitor history (using same modal for monitor)
+              setFieldHistoryModalOpen(false);
+              // Open monitor history - reuse FieldHistoryModal but for the entire monitor
+              const monitor = monitors.find(m => m.id === selectedFieldHistory.monitorId);
+              setSelectedFieldHistory({ 
+                monitorId: selectedFieldHistory.monitorId, 
+                fieldName: monitor?.name || 'Monitor' // Use monitor name for full monitor history
+              });
+              setFieldHistoryModalOpen(true);
+            }}
+          />
+        );
+      })()}
     </div>
   );
 }

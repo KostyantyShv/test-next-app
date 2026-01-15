@@ -68,20 +68,25 @@ const CalendarDesktop: React.FC = () => {
   return (
     <div className="flex justify-center font-sans">
       <div className="w-full bg-white rounded-xl shadow-md p-6 mt-6 relative overflow-hidden">
-        <header className="flex items-center mb-6 relative z-10 bg-white">
-          <h1 className="text-2xl font-semibold text-[#202124] flex items-center gap-2">
+        <header className="flex items-start flex-col mb-6 relative z-10 bg-white">
+          <h1 className="text-2xl font-semibold text-[#202124] mb-10">
             What`s on this month?
           </h1>
+          <hr className="w-full border-t border-[#E0E0E0]"/>
         </header>
 
-        <FilterNav filter={filter} setFilter={setFilter} />
+        
 
         <div className="flex justify-between items-center mb-6 relative z-10 bg-white">
+          
+          <FilterNav filter={filter} setFilter={setFilter} />
+          
           <CalendarHeader
             currentMonth={currentMonthDisplay}
             onPrevMonth={handlePrevMonth}
             onNextMonth={handleNextMonth}
           />
+          
           <ViewControls
             view={view}
             setView={setView}

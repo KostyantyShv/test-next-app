@@ -452,27 +452,40 @@ export const MobileLeftSidebar: FC<MobileLeftSidebarProps> = ({ isOpen, onClose 
           
           <div className="sidebar-footer space-y-1">
             {bottomItems.map((item) => (
-              <div
-                key={item.href}
-                onClick={(e) => {
-                  if (item.href === '#') {
+              item.href === '#' ? (
+                <div
+                  key={item.href}
+                  onClick={(e) => {
                     e.preventDefault();
                     useAudioPlayer.getState().setPlaylistVisible(true);
                     onClose();
-                  } else {
-                    onClose();
-                  }
-                }}
-                className={cn(
-                  "flex items-center gap-3 px-5 py-2 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
-                  "text-sm font-medium border border-transparent mx-2 my-0.5",
-                  "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800",
-                  pathname === item.href && "bg-gradient-to-r from-[#EBFCF4] to-[#D7F7E9] border-[#D7F7E9] text-[#0B6333] font-semibold"
-                )}
-              >
-                <span className={cn("shrink-0", pathname === item.href && "text-[#0B6333]")}>{item.icon}</span>
-                <span>{item.label}</span>
-              </div>
+                  }}
+                  className={cn(
+                    "flex items-center gap-3 px-5 py-2 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
+                    "text-sm font-medium border border-transparent mx-2 my-0.5",
+                    "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800",
+                    pathname === item.href && "bg-gradient-to-r from-[#EBFCF4] to-[#D7F7E9] border-[#D7F7E9] text-[#0B6333] font-semibold"
+                  )}
+                >
+                  <span className={cn("shrink-0", pathname === item.href && "text-[#0B6333]")}>{item.icon}</span>
+                  <span>{item.label}</span>
+                </div>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={onClose}
+                  className={cn(
+                    "flex items-center gap-3 px-5 py-2 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
+                    "text-sm font-medium border border-transparent mx-2 my-0.5",
+                    "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800",
+                    pathname === item.href && "bg-gradient-to-r from-[#EBFCF4] to-[#D7F7E9] border-[#D7F7E9] text-[#0B6333] font-semibold"
+                  )}
+                >
+                  <span className={cn("shrink-0", pathname === item.href && "text-[#0B6333]")}>{item.icon}</span>
+                  <span>{item.label}</span>
+                </Link>
+              )
             ))}
 
             {/* User Profile */}

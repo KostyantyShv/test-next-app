@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import SearchMapContainer from "./SearchMapContainer";
 import SchoolCard from "../../explore/SchoolCard";
 import { School } from "../../explore/types";
@@ -14,6 +14,7 @@ const SearchContentArea: React.FC<SearchContentAreaProps> = ({
   layout,
   schools,
 }) => {
+  const [isMapExpanded, setIsMapExpanded] = useState(false);
   const cardCounts = {
     grid: 6,
     list: 4,
@@ -29,7 +30,7 @@ const SearchContentArea: React.FC<SearchContentAreaProps> = ({
       return isMapActive ? "grid-cols-1" : "grid-cols-2";
     }
     if (layout === "classic") {
-      return isMapActive ? "grid-cols-3" : "grid-cols-4";
+      return isMapActive ? "grid-cols-2" : "grid-cols-4";
     }
     return "";
   };
@@ -45,7 +46,7 @@ const SearchContentArea: React.FC<SearchContentAreaProps> = ({
 
   return (
     <div className="flex flex-col md:flex-row min-h-[400px]">
-      <div className="flex-1 p-6 transition-all duration-300">
+      <div className={`flex-1 p-6 transition-all duration-300 ${isMapExpanded ? 'hidden' : ''}`}>
         {/* Mobile Layouts */}
         <div className="md:hidden">
           {layout === "grid" && (
@@ -83,7 +84,7 @@ const SearchContentArea: React.FC<SearchContentAreaProps> = ({
           )}
         </div>
       </div>
-      <SearchMapContainer isMapActive={isMapActive} schools={schools} />
+      <SearchMapContainer isMapActive={isMapActive} schools={schools} onExpandedChange={setIsMapExpanded} />
     </div>
   );
 };

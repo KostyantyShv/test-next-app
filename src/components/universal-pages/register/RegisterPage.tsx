@@ -59,7 +59,7 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="absolute inset-0 flex z-[100] items-center justify-center bg-[#F2F2F2] font-inter max-md:mt-16">
+    <div className="absolute inset-0 flex z-[100] items-center justify-center bg-[#F2F2F2] font-inter h-screen">
       {/* Desktop close button - hidden on mobile */}
       <AppLink
         href={ROUTES.HOME}
@@ -69,7 +69,7 @@ const RegisterPage: React.FC = () => {
       </AppLink>
 
       {/* Main content - desktop layout by default, modified for mobile */}
-      <div className="w-full max-w-[360px] bg-white p-8 rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.1)] max-md:shadow-none max-md:rounded-none max-md:p-0 max-md:max-w-none max-md:flex max-md:flex-col max-md:h-full">
+      <div className="w-full max-w-[360px] bg-white p-8 rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.1)] max-md:shadow-none max-md:rounded-none max-md:p-0 max-md:max-w-none max-md:flex max-md:flex-col max-md:h-screen">
         {/* Mobile header - only visible on small screens */}
         <div className="hidden max-md:flex items-center p-5 gap-2 border-b border-gray-100">
           <Logo className="h-10" />

@@ -1,9 +1,13 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
 import { Portal } from '@/components/ui/Portal';
 import { cn } from '@/lib/utils';
+
+interface SupportProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
 
 // Hook to detect mobile devices
@@ -43,15 +47,11 @@ interface LocationInfo {
 declare global {
   interface Window {
     google: typeof google;
-    initMap: () => void;
   }
 }
 
-const Support: React.FC = () => {
-  const pathname = usePathname();
-  const router = useRouter();
+const Support: React.FC<SupportProps> = ({ isOpen, onClose }) => {
   const isMobile = useIsMobile();
-  const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [debugChecked, setDebugChecked] = useState(true);
   const [screenshotChecked, setScreenshotChecked] = useState(false);
@@ -67,6 +67,7 @@ const Support: React.FC = () => {
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
+  const scriptRef = useRef<HTMLScriptElement | null>(null);
 
   // Update debug info when modal opens
   useEffect(() => {
@@ -213,28 +214,72 @@ const Support: React.FC = () => {
 
   const loadGoogleMaps = () => {
     if (window.google && window.google.maps) {
-      initMap();
       setLocationLoaded(true);
+      setTimeout(() => {
+        initMap();
+      }, 100);
+      return;
+    }
+    
+    // Check if script already exists
+    const existingScript = document.querySelector('script[src*="maps.googleapis.com/maps/api/js"]') as HTMLScriptElement;
+    if (existingScript) {
+      // Script already exists, wait for it to load
+      if (window.google && window.google.maps) {
+        setLocationLoaded(true);
+        setTimeout(() => {
+          initMap();
+        }, 100);
+      } else {
+        // Wait for script to load
+        const handleLoad = () => {
+          setLocationLoaded(true);
+          setTimeout(() => {
+            initMap();
+          }, 100);
+          existingScript.removeEventListener('load', handleLoad);
+        };
+        existingScript.addEventListener('load', handleLoad);
+      }
+      return;
+    }
+    
+    // Check if script with our ID already exists
+    if (document.head.querySelector('#google-maps-script-support')) {
       return;
     }
     
     const script = document.createElement('script');
-    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCUCfMPDqV_QffjP19EA905jGthitQiBlM&callback=initMap';
+    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCUCfMPDqV_QffjP19EA905jGthitQiBlM&libraries=places';
     script.async = true;
     script.defer = true;
-    
-    // Define initMap in global scope so Google Maps can call it
-    window.initMap = initMap;
+    script.id = 'google-maps-script-support';
     
     script.onload = () => {
       setLocationLoaded(true);
+      setTimeout(() => {
+        if (mapRef.current) {
+          initMap();
+        }
+      }, 100);
     };
     
+    script.onerror = () => {
+      console.error('Failed to load Google Maps script');
+      setLocationLoaded(false);
+    };
+    
+    scriptRef.current = script;
     document.head.appendChild(script);
   };
 
   const initMap = () => {
-    if (!mapRef.current) return;
+    if (!mapRef.current || !window.google || !window.google.maps) return;
+    
+    // Don't create a new map if one already exists
+    if (map) {
+      return;
+    }
     
     // Create map with default location (will be updated)
     const newMap = new window.google.maps.Map(mapRef.current, {
@@ -301,22 +346,11 @@ const Support: React.FC = () => {
           
           setUserMarker(marker);
           
-          // Get address from coordinates
-          const geocoder = new window.google.maps.Geocoder();
-          geocoder.geocode({ location: userLocation }, (results, status) => {
-            if (status === 'OK' && results && results[0]) {
-              setLocation({
-                lat: userLocation.lat,
-                lng: userLocation.lng,
-                address: `Your location: ${results[0].formatted_address}`
-              });
-            } else {
-              setLocation({
-                lat: userLocation.lat,
-                lng: userLocation.lng,
-                address: `Your location: ${userLocation.lat.toFixed(5)}, ${userLocation.lng.toFixed(5)}`
-              });
-            }
+          // Set location with coordinates (Geocoding API is not enabled, so we skip address lookup)
+          setLocation({
+            lat: userLocation.lat,
+            lng: userLocation.lng,
+            address: `Your location: ${userLocation.lat.toFixed(5)}, ${userLocation.lng.toFixed(5)}`
           });
         },
         (error) => {
@@ -381,35 +415,26 @@ const Support: React.FC = () => {
     setLocationChecked(false);
     handleFileRemove();
     
-    setIsOpen(false);
+    onClose();
     
     alert('Your message has been sent successfully. We will respond within 3 business days.');
   };
 
   const toggleModal = () => {
-    setIsOpen(!isOpen);
-    if (!isOpen) {
+    onClose();
+  };
+
+  // Handle body overflow when modal opens/closes
+  useEffect(() => {
+    if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
-      // If we're on /support route, navigate back
-      if (pathname === '/support') {
-        router.back();
-      }
     }
-  };
-
-  // Auto-open modal when on /support route
-  useEffect(() => {
-    if (pathname === '/support' && !isOpen) {
-      setIsOpen(true);
-      document.body.style.overflow = 'hidden';
-    } else if (pathname !== '/support' && isOpen) {
-      // Close modal if we navigate away from /support
-      setIsOpen(false);
+    return () => {
       document.body.style.overflow = '';
-    }
-  }, [pathname, isOpen]);
+    };
+  }, [isOpen]);
 
   // Handle ESC key
   useEffect(() => {
@@ -444,19 +469,20 @@ const Support: React.FC = () => {
     };
   }, [isOpen, isMobile]);
 
+  if (!isOpen) return null;
+
   return (
     <>
-      {isOpen && (
-        <>
-          <div 
-            className="fixed inset-0 backdrop-blur-sm transition-all duration-300"
-            style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}
-            onClick={toggleModal}
-          />
-          
-          {/* Desktop Modal */}
-          {!isMobile && (
-            <div className="fixed top-1/2 left-1/2 ml-20 mt-9 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-[600px] bg-white rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto overflow-x-hidden sidebar-scroll border border-gray-200">
+      {/* Desktop Modal */}
+      {!isMobile && (
+        <Portal containerId="support-desktop-portal">
+          <>
+            <div 
+              className="fixed inset-0 backdrop-blur-sm transition-all duration-300 z-[2000]"
+              style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}
+              onClick={toggleModal}
+            />
+            <div className="fixed top-1/2 left-1/2 ml-20 mt-9 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-[600px] bg-white rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto overflow-x-hidden sidebar-scroll border border-gray-200 z-[2001]">
               {/* Custom scrollbar styles */}
               <style jsx>{`
                 .sidebar-scroll::-webkit-scrollbar {
@@ -799,11 +825,13 @@ const Support: React.FC = () => {
                 </div>
               </div>
             </div>
-          )}
+          </>
+        </Portal>
+      )}
 
-          {/* Mobile Drawer */}
-          {isMobile && isOpen && (
-            <Portal containerId="support-mobile-portal">
+      {/* Mobile Drawer */}
+      {isMobile && (
+        <Portal containerId="support-mobile-portal">
               <div className="fixed inset-0 z-[1001] md:hidden">
                 {/* Overlay */}
                 <div 
@@ -1185,9 +1213,7 @@ const Support: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </Portal>
-          )}
-        </>
+        </Portal>
       )}
     </>
   );

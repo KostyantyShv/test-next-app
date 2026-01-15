@@ -53,6 +53,16 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
   const [contextTab, setContextTab] = useState<'tabs' | 'collections'>('tabs');
   const [selectedContexts, setSelectedContexts] = useState<string[]>([]);
   const [draggedPrompt, setDraggedPrompt] = useState<number | null>(null);
+  const [collectionsItemsView, setCollectionsItemsView] = useState<string | null>(null);
+  const [selectedCollectionItems, setSelectedCollectionItems] = useState<string[]>([]);
+  const [showCreatePromptModal, setShowCreatePromptModal] = useState(false);
+  const [contextCollectionView, setContextCollectionView] = useState<string | null>(null);
+  const [promptForm, setPromptForm] = useState({
+    name: '',
+    text: '',
+    model: 'GPT-4o mini',
+    access: 'Accessible to everyone'
+  });
   
   const panelRef = useRef<HTMLDivElement>(null);
   const chatInputRef = useRef<HTMLTextAreaElement>(null);
@@ -84,6 +94,50 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
     { id: 'summarize', title: 'Summarize', desc: 'Create concise summaries', icon: 'summarize' },
     { id: 'analyze', title: 'Analyze', desc: 'Analyze data and content', icon: 'analyze' }
   ]);
+
+  const collectionsData = {
+    research: { 
+      name: 'Research Papers', 
+      icon: '📚', 
+      count: 25, 
+      updated: '1 week ago', 
+      items: [
+        { id: 'r1', title: 'Machine Learning Fundamentals', type: 'PDF' },
+        { id: 'r2', title: 'Neural Networks Deep Dive', type: 'Article' },
+        { id: 'r3', title: 'AI Ethics and Bias', type: 'Research' }
+      ]
+    },
+    design: { 
+      name: 'Design Resources', 
+      icon: '🎨', 
+      count: 87, 
+      updated: '3 days ago', 
+      items: [
+        { id: 'd1', title: 'UI Design Principles', type: 'Guide' },
+        { id: 'd2', title: 'Color Theory Basics', type: 'Tutorial' }
+      ]
+    },
+    learning: { 
+      name: 'Learning Materials', 
+      icon: '📖', 
+      count: 142, 
+      updated: '6 hours ago', 
+      items: [
+        { id: 'l1', title: 'JavaScript Essentials', type: 'Course' },
+        { id: 'l2', title: 'React Patterns', type: 'Book' }
+      ]
+    },
+    projects: { 
+      name: 'Project Ideas', 
+      icon: '💡', 
+      count: 33, 
+      updated: '2 weeks ago', 
+      items: [
+        { id: 'p1', title: 'AI Chat Application', type: 'Idea' },
+        { id: 'p2', title: 'E-commerce Platform', type: 'MVP' }
+      ]
+    }
+  };
 
   const handleClickOutside = useCallback((event: MouseEvent) => {
     const target = event.target as HTMLElement;
@@ -206,32 +260,37 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[1001] pointer-events-none">
-      {/* Backdrop - invisible, only for click outside */}
-      <div 
-        className="absolute top-[64px] left-0 right-0 bottom-0 cursor-pointer pointer-events-auto" 
-        onClick={handleBackdropClick}
-      />
-      
-      {/* AI Panel */}
-      <div 
-        ref={panelRef}
-        className={cn(
-          "absolute top-[64px] bottom-0 right-0 w-[450px] bg-white shadow-2xl flex pointer-events-auto",
-          "transform transition-all duration-300 ease-in-out",
-          "border-l border-gray-200",
-          styles.aiPanel,
-          isOpen ? "translate-x-0" : "translate-x-full",
-          isExpanded && "w-[580px]",
-          className
-        )}
-        style={{
-          backgroundColor: 'white !important',
-          boxShadow: '-4px 0 20px rgba(0, 0, 0, 0.1)',
-          overflow: 'hidden',
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
+    <>
+      {typeof window !== 'undefined' && (
+        <Portal containerId="ai-assistant-platform-desktop-portal">
+          <div className="fixed inset-0 z-[1001] pointer-events-none">
+            {/* Backdrop - invisible, only for click outside */}
+            <div 
+              className="fixed inset-0 cursor-pointer pointer-events-auto" 
+              onClick={handleBackdropClick}
+            />
+            
+            {/* AI Panel */}
+            <div 
+              ref={panelRef}
+              className={cn(
+                "fixed top-0 right-0 w-[450px] bg-white shadow-2xl flex pointer-events-auto",
+                "transform transition-all duration-300 ease-in-out",
+                "border-l border-gray-200",
+                styles.aiPanel,
+                isOpen ? "translate-x-0" : "translate-x-full",
+                isExpanded && "w-[580px]",
+                className
+              )}
+              style={{
+                backgroundColor: 'white !important',
+                boxShadow: '-4px 0 20px rgba(0, 0, 0, 0.1)',
+                overflow: 'hidden',
+                height: '100vh',
+                minHeight: '100vh',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
         {/* Left Column */}
         <div className="flex-1 flex flex-col bg-white overflow-hidden" style={{ height: '100%', maxHeight: '100%', minHeight: 0 }}>
           {/* Header */}
@@ -416,7 +475,7 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
               )}
 
               <div className="relative bg-[var(--surface-color)] border-[1.5px] border-[var(--border-color)] rounded-xl transition-all focus-within:border-[var(--verification-blue)] focus-within:shadow-[0_0_0_3px_rgba(29,119,189,0.1)]">
-                <div className="flex items-end gap-2 px-3 py-[18px] bg-[var(--surface-color)]">
+                <div className="flex items-end gap-2 px-3 py-[18px] bg-[var(--surface-color)] rounded-xl">
                   <textarea
                     ref={chatInputRef}
                     value={chatInput}
@@ -521,6 +580,9 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                   } else if (action.id === 'collectionsBtn') {
                     setShowCollectionsModal(true);
                     setShowChatHistory(false);
+                  } else if (action.id === 'newPromptBtn') {
+                    setShowCreatePromptModal(true);
+                    setShowChatHistory(false);
                   } else {
                     setShowChatHistory(false);
                   }
@@ -533,31 +595,31 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
               >
                 {action.icon === 'chat' && (
                   <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M17.063 2.931A9.99 9.99 0 0 0 .123 8.444a9.883 9.883 0 0 0 1.195 6.49L.085 19.009a.729.729 0 0 0 .9.913l4.166-1.194a9.856 9.856 0 0 0 6.448 1.142 9.989 9.989 0 0 0 8.12-12.214 9.991 9.991 0 0 0-2.656-4.725Zm1.57 8.499a8.784 8.784 0 0 1-7.227 7.2 8.664 8.664 0 0 1-5.856-1.112l-.231-.139-3.762 1.078 1.118-3.691-.145-.238a8.655 8.655 0 0 1-1.172-5.893 8.751 8.751 0 1 1 17.275 2.8v-.005Z" />
+                    <path d="M17.063 2.931A9.99 9.99 0 0 0 .123 8.444a9.883 9.883 0 0 0 1.195 6.49L.085 19.009a.729.729 0 0 0 .9.913l4.166-1.194a9.856 9.856 0 0 0 6.448 1.142 9.989 9.989 0 0 0 8.12-12.214 9.991 9.991 0 0 0-2.656-4.725Zm1.57 8.499a8.784 8.784 0 0 1-7.227 7.2 8.664 8.664 0 0 1-5.856-1.112l-.231-.139-3.762 1.078 1.118-3.691-.145-.238a8.655 8.655 0 0 1-1.172-5.893 8.751 8.751 0 1 1 17.275 2.8v-.005Z"></path>
                   </svg>
                 )}
                 {action.icon === 'newChat' && (
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 20 20">
-                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M7.5 10H12.5" />
-                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 7.5V12.5" />
-                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M2.5 4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H15.8333C16.2754 2.5 16.6993 2.67559 17.0118 2.98816C17.3244 3.30072 17.5 3.72464 17.5 4.16667V15.8333C17.5 16.2754 17.3244 16.6993 17.0118 17.0118C16.6993 17.3244 16.2754 17.5 15.8333 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667Z" />
+                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M7.5 10H12.5"></path>
+                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 7.5V12.5"></path>
+                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M2.5 4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H15.8333C16.2754 2.5 16.6993 2.67559 17.0118 2.98816C17.3244 3.30072 17.5 3.72464 17.5 4.16667V15.8333C17.5 16.2754 17.3244 16.6993 17.0118 17.0118C16.6993 17.3244 16.2754 17.5 15.8333 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667Z"></path>
                   </svg>
                 )}
                 {action.icon === 'history' && (
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 16 16">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M8 2.625C5.03147 2.625 2.625 5.03147 2.625 8C2.625 10.9685 5.03147 13.375 8 13.375C10.9685 13.375 13.375 10.9685 13.375 8C13.375 5.03147 10.9685 2.625 8 2.625ZM1.375 8C1.375 4.34111 4.34111 1.375 8 1.375C11.6589 1.375 14.625 4.34111 14.625 8C14.625 11.6589 11.6589 14.625 8 14.625C4.34111 14.625 1.375 11.6589 1.375 8ZM8 3.775C8.34518 3.775 8.625 4.05482 8.625 4.4V7.61373L10.6795 8.64098C10.9882 8.79535 11.1134 9.17077 10.959 9.47951C10.8046 9.78825 10.4292 9.91339 10.1205 9.75902L7.72049 8.55902C7.50875 8.45315 7.375 8.23673 7.375 8V4.4C7.375 4.05482 7.65482 3.775 8 3.775Z" fill="currentColor" />
+                    <path fillRule="evenodd" clipRule="evenodd" d="M8 2.625C5.03147 2.625 2.625 5.03147 2.625 8C2.625 10.9685 5.03147 13.375 8 13.375C10.9685 13.375 13.375 10.9685 13.375 8C13.375 5.03147 10.9685 2.625 8 2.625ZM1.375 8C1.375 4.34111 4.34111 1.375 8 1.375C11.6589 1.375 14.625 4.34111 14.625 8C14.625 11.6589 11.6589 14.625 8 14.625C4.34111 14.625 1.375 11.6589 1.375 8ZM8 3.775C8.34518 3.775 8.625 4.05482 8.625 4.4V7.61373L10.6795 8.64098C10.9882 8.79535 11.1134 9.17077 10.959 9.47951C10.8046 9.78825 10.4292 9.91339 10.1205 9.75902L7.72049 8.55902C7.50875 8.45315 7.375 8.23673 7.375 8V4.4C7.375 4.05482 7.65482 3.775 8 3.775Z" fill="currentColor"></path>
                   </svg>
                 )}
                 {action.icon === 'prompt' && (
                   <svg className="w-4 h-4" strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                    <path d="M8 12a2 2 0 0 0 2-2V8H8" />
-                    <path d="M14 12a2 2 0 0 0 2-2V8h-2" />
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    <path d="M8 12a2 2 0 0 0 2-2V8H8"></path>
+                    <path d="M14 12a2 2 0 0 0 2-2V8h-2"></path>
                   </svg>
                 )}
                 {action.icon === 'collections' && (
                   <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-                    <path fill="currentColor" d="M3.938 3.25c0-.345.28-.625.624-.625h6.875c.346 0 .626.28.626.625v9.985a.125.125 0 0 1-.18.113l-3.278-1.605a1.375 1.375 0 0 0-1.21 0l-3.278 1.605a.125.125 0 0 1-.18-.113V3.25Zm.624-1.875c-1.035 0-1.875.84-1.875 1.875v9.985a1.375 1.375 0 0 0 1.98 1.235l3.278-1.604a.125.125 0 0 1 .11 0l3.278 1.604a1.375 1.375 0 0 0 1.98-1.235V3.25c0-1.036-.84-1.875-1.876-1.875H4.564Zm3.123 4.933.345-.84.353.845c.063.15.178.274.323.347l.903.46-.898.447a.687.687 0 0 0-.329.352l-.352.85-.344-.845a.688.688 0 0 0-.333-.358L6.45 7.12l.91-.458a.688.688 0 0 0 .326-.354Zm.974-2.247a.688.688 0 0 0-1.27.004L6.706 5.73l-1.548.78a.687.687 0 0 0 .006 1.23l1.542.761.682 1.679a.688.688 0 0 0 1.272.004l.699-1.683 1.53-.762a.687.687 0 0 0 .005-1.228l-1.535-.78-.7-1.67Z" />
+                    <path fill="currentColor" d="M3.938 3.25c0-.345.28-.625.624-.625h6.875c.346 0 .626.28.626.625v9.985a.125.125 0 0 1-.18.113l-3.278-1.605a1.375 1.375 0 0 0-1.21 0l-3.278 1.605a.125.125 0 0 1-.18-.113V3.25Zm.624-1.875c-1.035 0-1.875.84-1.875 1.875v9.985a1.375 1.375 0 0 0 1.98 1.235l3.278-1.604a.125.125 0 0 1 .11 0l3.278 1.604a1.375 1.375 0 0 0 1.98-1.235V3.25c0-1.036-.84-1.875-1.876-1.875H4.564Zm3.123 4.933.345-.84.353.845c.063.15.178.274.323.347l.903.46-.898.447a.687.687 0 0 0-.329.352l-.352.85-.344-.845a.688.688 0 0 0-.333-.358L6.45 7.12l.91-.458a.688.688 0 0 0 .326-.354Zm.974-2.247a.688.688 0 0 0-1.27.004L6.706 5.73l-1.548.78a.687.687 0 0 0 .006 1.23l1.542.761.682 1.679a.688.688 0 0 0 1.272.004l.699-1.683 1.53-.762a.687.687 0 0 0 .005-1.228l-1.535-.78-.7-1.67Z"></path>
                   </svg>
                 )}
               </button>
@@ -569,10 +631,11 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
       {/* Chat History Panel */}
       {showChatHistory && (
         <div className={cn(
-          "fixed top-[64px] bottom-0 right-[450px] w-[400px] bg-[var(--surface-color)] shadow-[-4px_0_20px_rgba(0,0,0,0.1)] transition-transform duration-300 ease-in-out z-[998] flex flex-col",
+          "fixed top-0 bottom-0 right-[450px] w-[400px] bg-[var(--surface-color)] shadow-[-4px_0_20px_rgba(0,0,0,0.1)] transition-transform duration-300 ease-in-out z-[998] flex flex-col",
           isExpanded && "right-[580px]",
           showChatHistory ? "translate-x-0" : "translate-x-full"
-        )}>
+        )}
+        style={{ height: '100vh' }}>
           {/* Chat History Header */}
           <div className="p-5 border-b border-[var(--border-color)] flex items-center justify-between">
             <h2 className="text-lg font-semibold text-[var(--bold-text)] font-inter">Chat History</h2>
@@ -686,35 +749,38 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
               }}
               onClick={(e) => e.stopPropagation()}
             >
-            <div className="p-5 pb-4 border-b border-[var(--border-color)] relative flex-shrink-0">
-              <h2 className="text-base font-semibold text-[var(--bold-text)] font-inter">Context</h2>
+            <div className="px-5 pt-5 pb-4 border-b border-[var(--border-color)] relative flex-shrink-0" style={{ padding: '20px 20px 16px 20px' }}>
+              <h2 className="text-[var(--bold-text)]" style={{ fontSize: '16px', fontWeight: 600, margin: 0, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>Context</h2>
               <button
                 onClick={() => setShowContextModal(false)}
-                className="absolute top-4 right-4 bg-transparent border-none text-[var(--subtle-text)] cursor-pointer p-1 rounded transition-all hover:bg-[var(--gray-100)] hover:text-[var(--text-default)] w-7 h-7 flex items-center justify-center"
+                className="absolute bg-transparent border-none text-[var(--subtle-text)] cursor-pointer rounded transition-all hover:bg-[#f5f5f5] hover:text-[var(--text-default)] flex items-center justify-center"
+                style={{ top: '16px', right: '16px', padding: '4px', width: '28px', height: '28px' }}
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 18 18">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 18 18" style={{ fontSize: '20px', lineHeight: 1 }}>
                   <path fillRule="evenodd" clipRule="evenodd" d="M4.51025 3.51594C4.2386 3.23845 3.79343 3.23372 3.51594 3.50537C3.23845 3.77702 3.23372 4.22219 3.50537 4.49968L8.00075 9.09168L3.5155 13.4902C3.23825 13.7621 3.2339 14.2072 3.50579 14.4845C3.77769 14.7617 4.22286 14.7661 4.50012 14.4942L9 10.0814L13.4999 14.4942C13.7771 14.7661 14.2223 14.7617 14.4942 14.4845C14.7661 14.2072 14.7617 13.7621 14.4845 13.4902L9.99924 9.09168L14.4946 4.49968C14.7663 4.22219 14.7615 3.77702 14.4841 3.50537C14.2066 3.23372 13.7614 3.23845 13.4897 3.51594L9 8.10217L4.51025 3.51594Z" fill="currentColor"/>
                 </svg>
               </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-5">
+            <div className="flex-1 overflow-y-auto" style={{ padding: '20px' }}>
               <div className="flex border-b border-[var(--border-color)] mb-4">
                 <button
                   onClick={() => setContextTab('tabs')}
                   className={cn(
-                    "flex-1 px-4 py-3 bg-transparent border-none text-sm font-medium cursor-pointer transition-all text-[var(--subtle-text)] border-b-2 border-transparent font-inter",
+                    "flex-1 bg-transparent border-none font-medium cursor-pointer transition-all text-[var(--subtle-text)] border-b-2 border-transparent",
                     contextTab === 'tabs' && "text-[var(--verification-blue)] border-b-[var(--verification-blue)]"
                   )}
+                  style={{ padding: '12px 16px', fontSize: '14px', fontWeight: 500, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
                 >
                   Tabs
                 </button>
                 <button
                   onClick={() => setContextTab('collections')}
                   className={cn(
-                    "flex-1 px-4 py-3 bg-transparent border-none text-sm font-medium cursor-pointer transition-all text-[var(--subtle-text)] border-b-2 border-transparent font-inter",
+                    "flex-1 bg-transparent border-none font-medium cursor-pointer transition-all text-[var(--subtle-text)] border-b-2 border-transparent",
                     contextTab === 'collections' && "text-[var(--verification-blue)] border-b-[var(--verification-blue)]"
                   )}
+                  style={{ padding: '12px 16px', fontSize: '14px', fontWeight: 500, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
                 >
                   Collections
                 </button>
@@ -743,66 +809,44 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                       }}
                     >
                       <div className={cn(
-                        "w-4 h-4 border-2 border-[var(--border-color)] rounded flex items-center justify-center transition-all flex-shrink-0",
+                        "w-4 h-4 border-2 border-[var(--border-color)] flex items-center justify-center transition-all flex-shrink-0",
                         selectedContexts.includes(tab.id) && "bg-[var(--verification-blue)] border-[var(--verification-blue)]"
-                      )}>
+                      )}
+                      style={{ borderRadius: '3px' }}>
                         {selectedContexts.includes(tab.id) && (
-                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20" style={{ display: 'flex' }}>
                             <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
                           </svg>
                         )}
                       </div>
-                      <div className="w-6 h-6 bg-[var(--gray-100)] rounded flex items-center justify-center text-xs flex-shrink-0">
+                      <div className="bg-[#f5f5f5] rounded flex items-center justify-center flex-shrink-0" style={{ width: '24px', height: '24px', fontSize: '12px' }}>
                         {tab.icon}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-[var(--text-default)] font-inter whitespace-nowrap overflow-hidden text-ellipsis">{tab.title}</div>
-                        <div className="text-xs text-[var(--subtle-text)] font-inter whitespace-nowrap overflow-hidden text-ellipsis">{tab.url}</div>
+                        <div className="text-[var(--text-default)] whitespace-nowrap overflow-hidden text-ellipsis" style={{ fontSize: '13px', fontWeight: 500, marginBottom: '2px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>{tab.title}</div>
+                        <div className="text-[var(--subtle-text)] whitespace-nowrap overflow-hidden text-ellipsis" style={{ fontSize: '11px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>{tab.url}</div>
                       </div>
                     </div>
                   ))}
                 </div>
               )}
               
-              {contextTab === 'collections' && (
+              {contextTab === 'collections' && !contextCollectionView && (
                 <div className="flex flex-col gap-2">
-                  {[
-                    { id: 'research', name: 'Research Papers', count: 25, updated: '1 week ago', icon: '📚' },
-                    { id: 'design', name: 'Design Resources', count: 87, updated: '3 days ago', icon: '🎨' },
-                    { id: 'learning', name: 'Learning Materials', count: 142, updated: '6 hours ago', icon: '📖' }
-                  ].map((collection) => (
+                  {Object.entries(collectionsData).map(([id, collection]) => (
                     <div
-                      key={collection.id}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-3 border border-[var(--border-color)] rounded-lg cursor-pointer transition-all",
-                        selectedContexts.includes(collection.id) && "bg-[var(--apply-button-bg)] border-[var(--active-green)]"
-                      )}
-                      onClick={() => {
-                        if (selectedContexts.includes(collection.id)) {
-                          setSelectedContexts(prev => prev.filter(id => id !== collection.id));
-                        } else {
-                          setSelectedContexts(prev => [...prev, collection.id]);
-                        }
-                      }}
+                      key={id}
+                      className="flex items-center gap-3 px-3 py-3 border border-[var(--border-color)] rounded-lg cursor-pointer transition-all hover:bg-[#f8f9fa] hover:border-[var(--verification-blue)]"
+                      onClick={() => setContextCollectionView(id)}
                     >
-                      <div className={cn(
-                        "w-4 h-4 border-2 border-[var(--border-color)] rounded flex items-center justify-center transition-all flex-shrink-0",
-                        selectedContexts.includes(collection.id) && "bg-[var(--verification-blue)] border-[var(--verification-blue)]"
-                      )}>
-                        {selectedContexts.includes(collection.id) && (
-                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-                          </svg>
-                        )}
-                      </div>
-                      <div className="w-8 h-8 bg-[var(--apply-button-bg)] rounded-lg flex items-center justify-center text-base flex-shrink-0">
+                      <div className="bg-[var(--apply-button-bg)] rounded-lg flex items-center justify-center flex-shrink-0" style={{ width: '32px', height: '32px', fontSize: '16px' }}>
                         {collection.icon}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-[var(--text-default)] font-inter whitespace-nowrap overflow-hidden text-ellipsis">{collection.name}</div>
-                        <div className="text-xs text-[var(--subtle-text)] font-inter flex items-center gap-1.5">
+                        <div className="text-[var(--text-default)] whitespace-nowrap overflow-hidden text-ellipsis" style={{ fontSize: '13px', fontWeight: 500, marginBottom: '2px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>{collection.name}</div>
+                        <div className="text-[var(--subtle-text)] flex items-center gap-1.5" style={{ fontSize: '11px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
                           <span>{collection.count} items</span>
-                          <span className="w-0.5 h-0.5 bg-[var(--subtle-text)] rounded-full" />
+                          <span className="bg-[var(--subtle-text)] rounded-full" style={{ width: '3px', height: '3px' }} />
                           <span>Updated {collection.updated}</span>
                         </div>
                       </div>
@@ -810,12 +854,73 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                   ))}
                 </div>
               )}
+              
+              {contextTab === 'collections' && contextCollectionView && (
+                <div>
+                  <div style={{ marginBottom: '16px' }}>
+                    <button
+                      onClick={() => setContextCollectionView(null)}
+                      className="rounded-md font-medium cursor-pointer transition-all bg-transparent text-[var(--text-default)] border border-[var(--border-color)] hover:bg-[var(--apply-button-bg)] hover:border-[var(--active-green)]"
+                      style={{ padding: '10px 20px', fontSize: '14px', fontWeight: 500, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
+                    >
+                      ← Back to Collections
+                    </button>
+                  </div>
+                  <h4 className="text-[var(--bold-text)] mb-3" style={{ fontSize: '14px', fontWeight: 600, marginBottom: '12px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+                    {collectionsData[contextCollectionView as keyof typeof collectionsData]?.name}
+                  </h4>
+                  <div className="flex flex-col gap-2">
+                    {collectionsData[contextCollectionView as keyof typeof collectionsData]?.items.map((item) => (
+                      <div
+                        key={item.id}
+                        className={cn(
+                          "flex items-center gap-3 px-3 py-3 border border-[var(--border-color)] rounded-lg cursor-pointer transition-all",
+                          selectedContexts.includes(`collection-item-${item.id}`) && "bg-[var(--apply-button-bg)] border-[var(--active-green)]",
+                          "hover:bg-[#f8f9fa] hover:border-[var(--verification-blue)]"
+                        )}
+                        onClick={() => {
+                          const itemContextId = `collection-item-${item.id}`;
+                          if (selectedContexts.includes(itemContextId)) {
+                            setSelectedContexts(prev => prev.filter(ctxId => ctxId !== itemContextId));
+                          } else {
+                            setSelectedContexts(prev => [...prev, itemContextId]);
+                          }
+                        }}
+                      >
+                        <div className={cn(
+                          "w-4 h-4 border-2 border-[var(--border-color)] flex items-center justify-center transition-all flex-shrink-0",
+                          selectedContexts.includes(`collection-item-${item.id}`) && "bg-[var(--verification-blue)] border-[var(--verification-blue)]"
+                        )}
+                        style={{ borderRadius: '3px' }}>
+                          {selectedContexts.includes(`collection-item-${item.id}`) && (
+                            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20" style={{ display: 'flex' }}>
+                              <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                        </div>
+                        <div className="bg-[#f5f5f5] rounded flex items-center justify-center flex-shrink-0" style={{ width: '24px', height: '24px', fontSize: '12px' }}>
+                          {item.type === 'PDF' ? '📄' : item.type === 'Article' ? '📝' : item.type === 'Research' ? '🔬' : item.type === 'Guide' ? '📖' : item.type === 'Tutorial' ? '💡' : item.type === 'Course' ? '🎓' : item.type === 'Book' ? '📚' : item.type === 'Idea' ? '💭' : item.type === 'MVP' ? '🚀' : '📄'}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[var(--text-default)] whitespace-nowrap overflow-hidden text-ellipsis" style={{ fontSize: '13px', fontWeight: 500, marginBottom: '2px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>{item.title}</div>
+                          <div className="text-[var(--subtle-text)] whitespace-nowrap overflow-hidden text-ellipsis" style={{ fontSize: '11px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>{item.type}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
             
-            <div className="p-5 pt-4 border-t border-[var(--border-color)] flex gap-3 justify-end flex-shrink-0">
+            <div className="border-t border-[var(--border-color)] flex gap-3 justify-end flex-shrink-0" style={{ padding: '16px 20px 20px 20px' }}>
               <button
-                onClick={() => setShowContextModal(false)}
-                className="px-5 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-all bg-transparent text-[var(--text-default)] border border-[var(--border-color)] hover:bg-[var(--apply-button-bg)] hover:border-[var(--active-green)] font-inter"
+                onClick={() => {
+                  setShowContextModal(false);
+                  setContextCollectionView(null);
+                  setSelectedContexts([]);
+                }}
+                className="rounded-md font-medium cursor-pointer transition-all bg-transparent text-[var(--text-default)] border border-[var(--border-color)] hover:bg-[var(--apply-button-bg)] hover:border-[var(--active-green)]"
+                style={{ padding: '10px 20px', fontSize: '14px', fontWeight: 500, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
               >
                 Cancel
               </button>
@@ -828,22 +933,29 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                       { id: 'google', title: 'Google', url: 'https://www.google.com/', icon: 'G' },
                       { id: 'llm-training', title: 'LLM Training: A Step-by-Step Guide', url: 'https://example.com/llm-training', icon: '📚' }
                     ].find(t => t.id === id);
-                    const collection = [
-                      { id: 'research', name: 'Research Papers', count: 25, updated: '1 week ago', icon: '📚' },
-                      { id: 'design', name: 'Design Resources', count: 87, updated: '3 days ago', icon: '🎨' },
-                      { id: 'learning', name: 'Learning Materials', count: 142, updated: '6 hours ago', icon: '📖' }
-                    ].find(c => c.id === id);
                     
                     if (tab) {
                       addContextPill(tab.title, 'tab', tab.id);
-                    } else if (collection) {
-                      addContextPill(collection.name, 'collection', collection.id);
+                    } else if (id.startsWith('collection-item-')) {
+                      const itemId = id.replace('collection-item-', '');
+                      const allItems = Object.values(collectionsData).flatMap(c => c.items);
+                      const item = allItems.find(i => i.id === itemId);
+                      if (item) {
+                        addContextPill(item.title, 'collection-item', itemId);
+                      }
+                    } else {
+                      const collection = collectionsData[id as keyof typeof collectionsData];
+                      if (collection) {
+                        addContextPill(collection.name, 'collection', id);
+                      }
                     }
                   });
                   setShowContextModal(false);
                   setSelectedContexts([]);
+                  setContextCollectionView(null);
                 }}
-                className="px-5 py-2.5 rounded-md text-sm font-medium cursor-pointer transition-all bg-[var(--verification-blue)] text-white hover:bg-[#1565c0] font-inter"
+                className="rounded-md font-medium cursor-pointer transition-all bg-[var(--verification-blue)] text-white hover:bg-[#1565c0]"
+                style={{ padding: '10px 20px', fontSize: '14px', fontWeight: 500, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
               >
                 Apply
               </button>
@@ -858,65 +970,296 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
         <Portal containerId="ai-collections-modal-portal">
           <div 
             className="fixed inset-0 flex items-center justify-center z-[1500] pointer-events-none"
-            onClick={() => setShowCollectionsModal(false)}
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
+            onClick={() => {
+              setShowCollectionsModal(false);
+              setCollectionsItemsView(null);
+              setSelectedCollectionItems([]);
+            }}
           >
             <div 
-              className="bg-[var(--surface-color)] rounded-xl w-full max-w-[400px] max-h-[80vh] overflow-hidden flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.15)] pointer-events-auto"
+              className="bg-white rounded-xl w-full max-w-[400px] max-h-[80vh] overflow-hidden flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.15)] pointer-events-auto"
               style={{
-                animation: 'modalSlideIn 0.3s ease-out'
+                animation: 'modalSlideIn 0.3s ease-out',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
               }}
               onClick={(e) => e.stopPropagation()}
             >
-            <div className="p-5 pb-4 border-b border-[var(--border-color)] relative flex-shrink-0">
-              <h2 className="text-base font-semibold text-[var(--bold-text)] font-inter">Collections</h2>
+            <div className="px-5 pt-5 pb-4 border-b border-[var(--border-color)] relative flex-shrink-0" style={{ padding: '20px 20px 16px 20px' }}>
+              <button
+                onClick={() => {
+                  setCollectionsItemsView(null);
+                  setSelectedCollectionItems([]);
+                }}
+                className={cn(
+                  "absolute bg-transparent border-none text-[var(--subtle-text)] cursor-pointer rounded transition-all hover:bg-[#f5f5f5] hover:text-[var(--text-default)] flex items-center justify-center",
+                  !collectionsItemsView && "hidden"
+                )}
+                style={{ top: '16px', left: '16px', padding: '4px', width: '28px', height: '28px', fontSize: '20px', lineHeight: 1 }}
+              >
+                ←
+              </button>
+              <h2 className={cn("text-[var(--bold-text)]", collectionsItemsView && "ml-[40px]")} style={{ fontSize: '16px', fontWeight: 600, margin: 0, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+                {collectionsItemsView ? collectionsData[collectionsItemsView as keyof typeof collectionsData]?.name + ' Items' : 'Collections'}
+              </h2>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowCollectionsModal(false);
+                  setCollectionsItemsView(null);
+                  setSelectedCollectionItems([]);
                 }}
-                className="absolute top-4 right-4 bg-transparent border-none text-[var(--subtle-text)] cursor-pointer p-1 rounded transition-all hover:bg-[var(--gray-100)] hover:text-[var(--text-default)] w-7 h-7 flex items-center justify-center"
+                className="absolute bg-transparent border-none text-[var(--subtle-text)] cursor-pointer rounded transition-all hover:bg-[#f5f5f5] hover:text-[var(--text-default)] flex items-center justify-center"
+                style={{ top: '16px', right: '16px', padding: '4px', width: '28px', height: '28px' }}
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 18 18">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 18 18" style={{ fontSize: '20px', lineHeight: 1 }}>
                   <path fillRule="evenodd" clipRule="evenodd" d="M4.51025 3.51594C4.2386 3.23845 3.79343 3.23372 3.51594 3.50537C3.23845 3.77702 3.23372 4.22219 3.50537 4.49968L8.00075 9.09168L3.5155 13.4902C3.23825 13.7621 3.2339 14.2072 3.50579 14.4845C3.77769 14.7617 4.22286 14.7661 4.50012 14.4942L9 10.0814L13.4999 14.4942C13.7771 14.7661 14.2223 14.7617 14.4942 14.4845C14.7661 14.2072 14.7617 13.7621 14.4845 13.4902L9.99924 9.09168L14.4946 4.49968C14.7663 4.22219 14.7615 3.77702 14.4841 3.50537C14.2066 3.23372 13.7614 3.23845 13.4897 3.51594L9 8.10217L4.51025 3.51594Z" fill="currentColor"/>
                 </svg>
               </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-5">
-              <div className="flex flex-col gap-2">
-                {[
-                  { id: 'research', name: 'Research Papers', count: 25, updated: '1 week ago', icon: '📚' },
-                  { id: 'design', name: 'Design Resources', count: 87, updated: '3 days ago', icon: '🎨' },
-                  { id: 'learning', name: 'Learning Materials', count: 142, updated: '6 hours ago', icon: '📖' },
-                  { id: 'projects', name: 'Project Ideas', count: 33, updated: '2 weeks ago', icon: '💡' }
-                ].map((collection) => (
-                  <div
-                    key={collection.id}
-                    className="flex items-center gap-3 px-3 py-3 border border-[var(--border-color)] rounded-lg cursor-pointer transition-all hover:bg-[var(--surface-secondary)] hover:border-[var(--verification-blue)]"
-                    onClick={() => {
-                      addContextPill(collection.name, 'collection', collection.id);
-                      setShowCollectionsModal(false);
-                    }}
-                  >
-                    <div className="w-8 h-8 bg-[var(--apply-button-bg)] rounded-lg flex items-center justify-center text-base flex-shrink-0">
-                      {collection.icon}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-[var(--text-default)] font-inter whitespace-nowrap overflow-hidden text-ellipsis">{collection.name}</div>
-                      <div className="text-xs text-[var(--subtle-text)] font-inter flex items-center gap-1.5">
-                        <span>{collection.count} items</span>
-                        <span className="w-0.5 h-0.5 bg-[var(--subtle-text)] rounded-full" />
-                        <span>Updated {collection.updated}</span>
+            <div className="flex-1 overflow-y-auto" style={{ padding: '20px' }}>
+              {!collectionsItemsView ? (
+                <div className="flex flex-col gap-2">
+                  {Object.entries(collectionsData).map(([id, collection]) => (
+                    <div
+                      key={id}
+                      className="flex items-center gap-3 px-3 py-3 border border-[var(--border-color)] rounded-lg cursor-pointer transition-all hover:bg-[#f8f9fa] hover:border-[var(--verification-blue)]"
+                      onClick={() => setCollectionsItemsView(id)}
+                    >
+                      <div className="bg-[var(--apply-button-bg)] rounded-lg flex items-center justify-center flex-shrink-0" style={{ width: '32px', height: '32px', fontSize: '16px' }}>
+                        {collection.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[var(--text-default)] whitespace-nowrap overflow-hidden text-ellipsis" style={{ fontSize: '13px', fontWeight: 500, marginBottom: '2px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>{collection.name}</div>
+                        <div className="text-[var(--subtle-text)] flex items-center gap-1.5" style={{ fontSize: '11px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+                          <span>{collection.count} items</span>
+                          <span className="bg-[var(--subtle-text)] rounded-full" style={{ width: '3px', height: '3px' }} />
+                          <span>Updated {collection.updated}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {collectionsData[collectionsItemsView as keyof typeof collectionsData]?.items.map((item) => (
+                    <div
+                      key={item.id}
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-3 border border-[var(--border-color)] rounded-lg cursor-pointer transition-all",
+                        selectedCollectionItems.includes(item.id) && "bg-[var(--apply-button-bg)] border-[var(--active-green)]",
+                        "hover:bg-[#f8f9fa] hover:border-[var(--verification-blue)]"
+                      )}
+                      onClick={() => {
+                        if (selectedCollectionItems.includes(item.id)) {
+                          setSelectedCollectionItems(prev => prev.filter(id => id !== item.id));
+                        } else {
+                          setSelectedCollectionItems(prev => [...prev, item.id]);
+                        }
+                      }}
+                    >
+                      <div className={cn(
+                        "w-4 h-4 border-2 border-[var(--border-color)] flex items-center justify-center transition-all flex-shrink-0",
+                        selectedCollectionItems.includes(item.id) && "bg-[var(--verification-blue)] border-[var(--verification-blue)]"
+                      )}
+                      style={{ borderRadius: '3px' }}>
+                        {selectedCollectionItems.includes(item.id) && (
+                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20" style={{ display: 'flex' }}>
+                            <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </div>
+                      <div className="bg-[#f5f5f5] rounded flex items-center justify-center flex-shrink-0" style={{ width: '24px', height: '24px', fontSize: '12px' }}>
+                        {item.type === 'PDF' ? '📄' : item.type === 'Article' ? '📝' : item.type === 'Research' ? '🔬' : item.type === 'Guide' ? '📖' : item.type === 'Tutorial' ? '💡' : item.type === 'Course' ? '🎓' : item.type === 'Book' ? '📚' : item.type === 'Idea' ? '💭' : item.type === 'MVP' ? '🚀' : '📄'}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[var(--text-default)] whitespace-nowrap overflow-hidden text-ellipsis" style={{ fontSize: '13px', fontWeight: 500, marginBottom: '2px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>{item.title}</div>
+                        <div className="text-[var(--subtle-text)] whitespace-nowrap overflow-hidden text-ellipsis" style={{ fontSize: '11px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>{item.type}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            {collectionsItemsView && (
+              <div className="border-t border-[var(--border-color)] flex gap-3 justify-end flex-shrink-0" style={{ padding: '16px 20px 20px 20px' }}>
+                <button
+                  onClick={() => {
+                    setCollectionsItemsView(null);
+                    setSelectedCollectionItems([]);
+                  }}
+                  className="rounded-md font-medium cursor-pointer transition-all bg-transparent text-[var(--text-default)] border border-[var(--border-color)] hover:bg-[var(--apply-button-bg)] hover:border-[var(--active-green)]"
+                  style={{ padding: '10px 20px', fontSize: '14px', fontWeight: 500, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    const collection = collectionsData[collectionsItemsView as keyof typeof collectionsData];
+                    if (collection && selectedCollectionItems.length > 0) {
+                      selectedCollectionItems.forEach(itemId => {
+                        const item = collection.items.find(i => i.id === itemId);
+                        if (item) {
+                          addContextPill(item.title, 'collection-item', itemId);
+                        }
+                      });
+                    } else if (collection) {
+                      addContextPill(collection.name, 'collection', collectionsItemsView);
+                    }
+                    setShowCollectionsModal(false);
+                    setCollectionsItemsView(null);
+                    setSelectedCollectionItems([]);
+                  }}
+                  className="rounded-md font-medium cursor-pointer transition-all bg-[var(--verification-blue)] text-white hover:bg-[#1565c0]"
+                  style={{ padding: '10px 20px', fontSize: '14px', fontWeight: 500, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
+                >
+                  Apply
+                </button>
               </div>
+            )}
+            </div>
+          </div>
+        </Portal>
+      )}
+
+      {/* Create Prompt Modal */}
+      {showCreatePromptModal && (
+        <Portal containerId="ai-create-prompt-modal-portal">
+          <div 
+            className="fixed inset-0 flex items-center justify-center z-[1500] pointer-events-none"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
+            onClick={() => {
+              setShowCreatePromptModal(false);
+              setPromptForm({ name: '', text: '', model: 'GPT-4o mini', access: 'Accessible to everyone' });
+            }}
+          >
+            <div 
+              className="bg-white rounded-xl w-full max-w-[400px] max-h-[80vh] overflow-hidden flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.15)] pointer-events-auto"
+              style={{
+                animation: 'modalSlideIn 0.3s ease-out',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+            <div className="px-5 pt-5 pb-4 border-b border-[var(--border-color)] relative flex-shrink-0" style={{ padding: '20px 20px 16px 20px' }}>
+              <h2 className="text-[var(--bold-text)]" style={{ fontSize: '16px', fontWeight: 600, margin: 0, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>Create Prompt</h2>
+              <button
+                onClick={() => {
+                  setShowCreatePromptModal(false);
+                  setPromptForm({ name: '', text: '', model: 'GPT-4o mini', access: 'Accessible to everyone' });
+                }}
+                className="absolute bg-transparent border-none text-[var(--subtle-text)] cursor-pointer rounded transition-all hover:bg-[#f5f5f5] hover:text-[var(--text-default)] flex items-center justify-center"
+                style={{ top: '16px', right: '16px', padding: '4px', width: '28px', height: '28px' }}
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 18 18" style={{ fontSize: '20px', lineHeight: 1 }}>
+                  <path fillRule="evenodd" clipRule="evenodd" d="M4.51025 3.51594C4.2386 3.23845 3.79343 3.23372 3.51594 3.50537C3.23845 3.77702 3.23372 4.22219 3.50537 4.49968L8.00075 9.09168L3.5155 13.4902C3.23825 13.7621 3.2339 14.2072 3.50579 14.4845C3.77769 14.7617 4.22286 14.7661 4.50012 14.4942L9 10.0814L13.4999 14.4942C13.7771 14.7661 14.2223 14.7617 14.4942 14.4845C14.7661 14.2072 14.7617 13.7621 14.4845 13.4902L9.99924 9.09168L14.4946 4.49968C14.7663 4.22219 14.7615 3.77702 14.4841 3.50537C14.2066 3.23372 13.7614 3.23845 13.4897 3.51594L9 8.10217L4.51025 3.51594Z" fill="currentColor"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto" style={{ padding: '20px' }}>
+              <div style={{ marginBottom: '20px' }}>
+                <label className="block text-[var(--text-default)] mb-2" style={{ fontSize: '14px', fontWeight: 500, marginBottom: '8px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>Name</label>
+                <input
+                  type="text"
+                  value={promptForm.name}
+                  onChange={(e) => setPromptForm(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Enter the name"
+                  className="w-full rounded-md border border-[var(--border-color)] text-[var(--text-default)] bg-white transition-all focus:outline-none focus:border-[var(--verification-blue)] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)]"
+                  style={{ padding: '12px', fontSize: '14px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
+                />
+                <div className="text-[var(--subtle-text)] mt-1" style={{ fontSize: '12px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+                  Example: Master translator, Writing expert, Code assistant
+                </div>
+              </div>
+              
+              <div style={{ marginBottom: '20px' }}>
+                <label className="block text-[var(--text-default)] mb-2" style={{ fontSize: '14px', fontWeight: 500, marginBottom: '8px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>Prompt</label>
+                <textarea
+                  value={promptForm.text}
+                  onChange={(e) => setPromptForm(prev => ({ ...prev, text: e.target.value }))}
+                  placeholder="Example: You are an experienced translator with skills in multiple languages around the world. You are good at translating business scenario cases, making the translation results more formal and professional."
+                  className="w-full rounded-md border border-[var(--border-color)] text-[var(--text-default)] bg-white transition-all focus:outline-none focus:border-[var(--verification-blue)] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)] resize-y"
+                  style={{ padding: '12px', fontSize: '14px', minHeight: '100px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
+                  rows={5}
+                />
+              </div>
+              
+              <div style={{ marginBottom: '20px' }}>
+                <label className="block text-[var(--text-default)] mb-2" style={{ fontSize: '14px', fontWeight: 500, marginBottom: '8px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>Model</label>
+                <select
+                  value={promptForm.model}
+                  onChange={(e) => setPromptForm(prev => ({ ...prev, model: e.target.value }))}
+                  className="w-full rounded-md border border-[var(--border-color)] text-[var(--text-default)] bg-white transition-all focus:outline-none focus:border-[var(--verification-blue)] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)]"
+                  style={{ padding: '12px', fontSize: '14px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
+                >
+                  <option>GPT-4o mini</option>
+                  <option>GPT-4o</option>
+                  <option>Claude Sonnet</option>
+                  <option>Claude Opus</option>
+                </select>
+              </div>
+              
+              <div style={{ marginBottom: '20px' }}>
+                <label className="block text-[var(--text-default)] mb-2" style={{ fontSize: '14px', fontWeight: 500, marginBottom: '8px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>Accessibility</label>
+                <select
+                  value={promptForm.access}
+                  onChange={(e) => setPromptForm(prev => ({ ...prev, access: e.target.value }))}
+                  className="w-full rounded-md border border-[var(--border-color)] text-[var(--text-default)] bg-white transition-all focus:outline-none focus:border-[var(--verification-blue)] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)]"
+                  style={{ padding: '12px', fontSize: '14px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
+                >
+                  <option>Accessible to everyone</option>
+                  <option>Private</option>
+                  <option>Team only</option>
+                </select>
+              </div>
+            </div>
+            
+            <div className="border-t border-[var(--border-color)] flex gap-3 justify-end flex-shrink-0" style={{ padding: '16px 20px 20px 20px' }}>
+              <button
+                onClick={() => {
+                  setShowCreatePromptModal(false);
+                  setPromptForm({ name: '', text: '', model: 'GPT-4o mini', access: 'Accessible to everyone' });
+                }}
+                className="rounded-md font-medium cursor-pointer transition-all bg-transparent text-[var(--text-default)] border border-[var(--border-color)] hover:bg-[var(--apply-button-bg)] hover:border-[var(--active-green)]"
+                style={{ padding: '10px 20px', fontSize: '14px', fontWeight: 500, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  if (!promptForm.name || !promptForm.text) {
+                    alert('Please fill in all required fields');
+                    return;
+                  }
+                  
+                  const newPrompt = {
+                    id: promptForm.name.toLowerCase().replace(/\s+/g, '-'),
+                    title: promptForm.name,
+                    desc: promptForm.text.substring(0, 50) + '...',
+                    icon: 'write'
+                  };
+                  
+                  setAllPromptsData(prev => [...prev, newPrompt]);
+                  setShowCreatePromptModal(false);
+                  setPromptForm({ name: '', text: '', model: 'GPT-4o mini', access: 'Accessible to everyone' });
+                  alert('Prompt created successfully!');
+                }}
+                className="rounded-md font-medium cursor-pointer transition-all bg-[var(--verification-blue)] text-white hover:bg-[#1565c0]"
+                style={{ padding: '10px 20px', fontSize: '14px', fontWeight: 500, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
+              >
+                Create Now
+              </button>
             </div>
             </div>
           </div>
         </Portal>
       )}
-    </div>
+        </div>
+        </Portal>
+      )}
+    </>
   );
 };

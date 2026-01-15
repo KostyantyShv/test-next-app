@@ -147,19 +147,21 @@ export const MemberRow: React.FC<MemberRowProps> = ({
             )}
             {(member.status === "accepted" || member.status === "pending") &&
               !member.isAdmin && (
-                <div className="dropdown-item-with-arrow relative px-0 w-full group">
+                <div className="dropdown-item-with-arrow relative px-0 w-full group" style={{ display: 'flex', alignItems: 'center', paddingRight: '15px' }}>
                   <button
                     type="button"
-                    className="flex-grow w-full flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors text-left"
+                    className="flex-grow flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-100 transition-colors text-left"
+                    style={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}
                   >
                     Assign to Listing
+                  </button>
                     <svg
-                      className="bundle-arrow w-[10px] h-[10px] ml-2 fill-gray-500"
+                    className="bundle-arrow"
                       viewBox="0 0 25 40"
+                    style={{ width: '10px', height: '10px', marginLeft: '8px', fill: '#6B7280', flexShrink: 0 }}
                     >
                       <path d="M0.494387 4.20556C0.221231 4.47872 0.22099 4.92152 0.493848 5.19497L14.7733 19.5056C15.0459 19.7788 15.0459 20.2212 14.7733 20.4944L0.493849 34.805C0.220991 35.0785 0.221231 35.5213 0.494388 35.7944L4.20498 39.505C4.47834 39.7784 4.92156 39.7784 5.19493 39.505L24.205 20.495C24.4783 20.2216 24.4783 19.7784 24.205 19.505L5.19493 0.494976C4.92156 0.221609 4.47834 0.221608 4.20498 0.494975L0.494387 4.20556Z"></path>
                     </svg>
-                  </button>
                   <div className="nested-dropdown absolute left-full top-0 ml-2 bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.15)] p-2 min-w-[250px] opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible z-20">
                     {availableListings.map((listing) => {
                       const selected = selectedListingIds.includes(listing.id);

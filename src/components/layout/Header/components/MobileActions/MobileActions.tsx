@@ -24,6 +24,20 @@ export const MobileActions: FC = () => {
     setMounted(true);
   }, [theme]);
 
+  // Close Cart when Monitor opens
+  useEffect(() => {
+    if (isMonitorOpen && isCartOpen) {
+      setIsCartOpen(false);
+    }
+  }, [isMonitorOpen]);
+
+  // Close Monitor when Cart opens
+  useEffect(() => {
+    if (isCartOpen && isMonitorOpen) {
+      setIsMonitorOpen(false);
+    }
+  }, [isCartOpen]);
+
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
@@ -70,7 +84,12 @@ export const MobileActions: FC = () => {
 
       {/* Cart */}
       <button 
-        onClick={() => setIsCartOpen(!isCartOpen)}
+        onClick={() => {
+          if (!isCartOpen) {
+            setIsMonitorOpen(false);
+          }
+          setIsCartOpen(!isCartOpen);
+        }}
         className={cn(
           "relative w-10 h-10 border border-[#e9ecef] bg-white rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:opacity-90",
           isCartOpen && "bg-[#EBFCF4] border-[#0B6333] text-[#0B6333]"

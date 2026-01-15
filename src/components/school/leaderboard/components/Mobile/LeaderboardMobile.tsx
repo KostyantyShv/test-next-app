@@ -41,6 +41,7 @@ export default function LeaderboardMobile() {
   const [active, setActive] = useState<LeaderboardType>("reviews");
   const [items, setItems] = useState<LBItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const metricCards = useMemo(
     () => [
@@ -140,53 +141,107 @@ export default function LeaderboardMobile() {
       </div>
 
       {/* Leaderboard section */}
-      <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-md overflow-hidden" style={{ width: '366px', margin: '0 auto' }}>
         <button
-          className="w-full flex items-center justify-between px-4 py-4 border-b border-[#F3F4F6]"
-          onClick={() => setActive((a) => a)}
+          className="w-full flex items-center justify-between px-5 py-5 border-b border-[#F8F9FA] bg-white cursor-pointer"
+          onClick={() => setIsExpanded(!isExpanded)}
         >
-          <span className="text-[17px] font-bold text-[#464646]">7 Day Leaderboard</span>
-          <svg className="w-6 h-6 text-[#5F5F5F]" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5H7z"/></svg>
+          <span className="text-[18px] font-bold text-[#464646]">7 Day Leaderboard</span>
+          <svg
+            className={`w-6 h-6 text-[#5F5F5F] transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M7 10l5 5 5-5H7z" />
+          </svg>
         </button>
 
-        {/* Tabs */}
-        <div className="flex gap-0 overflow-x-auto border-b border-[#F3F4F6] px-2">
-          {([
-            { id: "reviews", label: "Reviews" },
-            { id: "followers", label: "Followers" },
-            { id: "events", label: "Events" },
-          ] as { id: LeaderboardType; label: string }[]).map((t) => (
-            <button
-              key={t.id}
-              className={`flex items-center gap-2 px-3 py-2.5 text-[13px] font-semibold border-b-4 -mb-[1px] whitespace-nowrap transition ${
-                active === t.id ? "text-[#016853] border-[#016853]" : "text-[#5F5F5F] border-transparent hover:bg-[rgba(1,104,83,0.05)]"
-              }`}
-              onClick={() => setActive(t.id)}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-
-        {/* List */}
-        <div className={`flex flex-col gap-2.5 p-4 ${loading ? "animate-pulse" : ""}`}>
-          {items.map((it) => (
-            <div key={it.rank} className="flex items-center p-3 bg-[#F8F9FA] rounded-xl">
-              <div className={`w-7 h-7 rounded-md flex items-center justify-center mr-3 ${
-                it.rank === 1 
-                  ? "bg-[#00DF8B] text-white font-bold" 
-                  : it.rank === 2 
-                  ? "bg-[#089E68] text-white font-bold" 
-                  : it.rank === 3 
-                  ? "bg-[#0B6333] text-white font-bold" 
-                  : "bg-white text-[#5F5F5F] font-bold"
-              }`}>{it.rank}</div>
-              <img src={it.imageUrl} alt={it.schoolName} className="w-9 h-9 rounded-lg object-cover mr-3" />
-              <div className="flex-1 text-[13px] font-semibold text-[#464646] truncate">{it.schoolName}</div>
-              <div className="text-[15px] font-bold text-[#1D77BD]">+{it.points}</div>
+        {isExpanded && (
+          <>
+            {/* Tabs */}
+            <div className="flex gap-0 overflow-x-auto scrollbar-hide border-b-2 border-[#F8F9FA] px-2">
+              {([
+                {
+                  id: "reviews" as LeaderboardType,
+                  label: "Reviews",
+                  icon: (
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                      <path d="M22.954 9.395C22.832 9.017 22.481 8.756 22.058 8.747L15.298 8.823L12.878 1.628C12.746 1.252 12.39 1 11.992 1H11.99C11.591 1 11.236 1.254 11.103 1.639L8.72301 8.822L1.92101 8.686C1.52101 8.693 1.16901 8.953 1.04601 9.333C0.922011 9.714 1.05401 10.132 1.36001 10.361L6.82101 14.607L4.55601 21.791C4.44101 22.173 4.58101 22.588 4.90501 22.821C5.23101 23.056 5.66501 23.056 5.99101 22.829L12.121 18.526L17.994 22.83C18.155 22.942 18.343 22.998 18.531 22.998C18.726 22.998 18.919 22.938 19.083 22.819C19.406 22.583 19.544 22.169 19.424 21.777L17.129 14.74L22.628 10.43C22.946 10.189 23.077 9.772 22.954 9.393V9.395ZM16.211 13.554C15.736 13.916 15.534 14.541 15.711 15.123L17.463 20.581L12.942 17.268C12.451 16.925 11.794 16.927 11.304 17.268L6.49301 20.646L8.25601 15.053C8.42901 14.482 8.22601 13.856 7.76201 13.504L3.60601 10.222L8.80301 10.326C9.39901 10.313 9.93101 9.927 10.13 9.353L11.997 3.719L13.895 9.363C14.091 9.927 14.622 10.313 15.243 10.326L20.405 10.267L16.211 13.554Z" />
+                    </svg>
+                  ),
+                },
+                {
+                  id: "followers" as LeaderboardType,
+                  label: "Followers",
+                  icon: (
+                    <svg viewBox="0 0 256 256" fill="currentColor" className="w-4 h-4">
+                      <path d="M125.18,156.94a64,64,0,1,0-82.36,0,100.23,100.23,0,0,0-39.49,32,12,12,0,0,0,19.35,14.2,76,76,0,0,1,122.64,0,12,12,0,0,0,19.36-14.2A100.33,100.33,0,0,0,125.18,156.94ZM44,108a40,40,0,1,1,40,40A40,40,0,0,1,44,108Zm206.1,97.67a12,12,0,0,1-16.78-2.57A76.31,76.31,0,0,0,172,172a12,12,0,0,1,0-24,40,40,0,1,0-10.3-78.67,12,12,0,1,1-6.16-23.19,64,64,0,0,1,57.64,110.8,100.23,100.23,0,0,1,39.49,32A12,12,0,0,1,250.1,205.67Z" />
+                    </svg>
+                  ),
+                },
+                {
+                  id: "events" as LeaderboardType,
+                  label: "Events",
+                  icon: (
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-4 h-4">
+                      <rect x="0.5" y="2.5" width="15" height="13" rx="1.5" strokeLinejoin="round" />
+                      <path d="M.5 6.5h15" strokeLinejoin="round" />
+                      <path d="M4.5 4V.5M11.5 4V.5" strokeLinecap="round" strokeLinejoin="round" />
+                      <path
+                        d="M7.71 8.455a.326.326 0 01.58 0l.675 1.361c.048.095.139.16.244.175l1.515.22a.317.317 0 01.18.543l-1.1 1.065a.317.317 0 00-.093.281l.26 1.503c.02.12-.03.242-.13.312a.328.328 0 01-.34.023l-1.35-.706a.328.328 0 00-.302 0l-1.35.706a.328.328 0 01-.34-.023.315.315 0 01-.13-.312l.26-1.503a.317.317 0 00-.092-.28l-1.1-1.067a.317.317 0 01.179-.543l1.515-.22a.323.323 0 00.244-.174l.674-1.361z"
+                        clipRule="evenodd"
+                        fillRule="evenodd"
+                      />
+                    </svg>
+                  ),
+                },
+              ]).map((t) => (
+                <button
+                  key={t.id}
+                  className={`flex items-center gap-2 px-4 py-3 text-[13px] font-semibold border-b-[3px] -mb-[1px] whitespace-nowrap transition-all duration-300 ${
+                    active === t.id
+                      ? "text-[#016853] border-[#016853]"
+                      : "text-[#5F5F5F] border-transparent hover:bg-[rgba(1,104,83,0.05)]"
+                  }`}
+                  onClick={() => setActive(t.id)}
+                >
+                  <span className={active === t.id ? "text-[#016853]" : "text-[#5F5F5F]"}>{t.icon}</span>
+                  {t.label}
+                </button>
+              ))}
             </div>
-          ))}
-        </div>
+
+            {/* List */}
+            <div className={`flex flex-col gap-3 p-5 ${loading ? "animate-pulse" : ""}`}>
+              {items.map((it) => (
+                <div key={it.rank} className="flex items-center p-4 bg-[#F8F9FA] rounded-xl">
+                  <div
+                    className={`w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-[14px] font-bold flex-shrink-0 ${
+                      it.rank === 1
+                        ? "bg-[#00DF8B] text-white"
+                        : it.rank === 2
+                        ? "bg-[#089E68] text-white"
+                        : it.rank === 3
+                        ? "bg-[#0B6333] text-white"
+                        : "bg-white text-[#5F5F5F]"
+                    }`}
+                  >
+                    {it.rank}
+                  </div>
+                  <img
+                    src={it.imageUrl}
+                    alt={it.schoolName}
+                    className="w-10 h-10 rounded-[10px] object-cover mr-3 flex-shrink-0"
+                  />
+                  <div className="flex-1 text-[14px] font-semibold text-[#464646] truncate">{it.schoolName}</div>
+                  <div className="text-[16px] font-bold text-[#1D77BD] flex-shrink-0">+{it.points}</div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

@@ -1,12 +1,13 @@
 "use client";
 import React, { useState, useRef, useEffect, useImperativeHandle, forwardRef } from "react";
 import Script from "next/script";
-import MapControls from "../../listing/cards/map-card/MapControls";
+import MapControls from "./MapControls";
 import { School } from "../../explore/types";
 
 interface SearchMapContainerProps {
   isMapActive: boolean;
   schools: School[];
+  onExpandedChange?: (isExpanded: boolean) => void;
 }
 
 export interface SearchMapContainerRef {
@@ -62,10 +63,11 @@ const getMarkerColor = (grade: string): string => {
 };
 
 const SearchMapContainer = forwardRef<SearchMapContainerRef, SearchMapContainerProps>(
-  ({ isMapActive, schools }, ref) => {
+  ({ isMapActive, schools, onExpandedChange }, ref) => {
     const [mapType, setMapType] = useState<"roadmap" | "satellite">("roadmap");
     const [showTerrain, setShowTerrain] = useState(false);
     const [showLabels, setShowLabels] = useState(true);
+    const [isExpanded, setIsExpanded] = useState(false);
     const mapRef = useRef<HTMLDivElement>(null);
     const mapInstanceRef = useRef<google.maps.Map | null>(null);
     const markersRef = useRef<google.maps.Marker[]>([]);
@@ -105,20 +107,11 @@ const SearchMapContainer = forwardRef<SearchMapContainerRef, SearchMapContainerP
               stylers: [{ color: "#d1e6ea" }],
             },
           ],
-          disableDefaultUI: false,
-          zoomControl: true,
-          zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_BOTTOM,
-          },
+          disableDefaultUI: true,
+          zoomControl: false,
           mapTypeControl: false,
-          streetViewControl: true,
-          streetViewControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_BOTTOM,
-          },
-          fullscreenControl: true,
-          fullscreenControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_TOP,
-          },
+          streetViewControl: false,
+          fullscreenControl: false,
         });
 
         mapInstanceRef.current = map;
@@ -244,23 +237,26 @@ const SearchMapContainer = forwardRef<SearchMapContainerRef, SearchMapContainerP
 
     const handleMapTypeChange = (type: "roadmap" | "satellite") => {
       if (mapInstanceRef.current) {
-        (mapInstanceRef.current as any).exitStreetView();
+        (mapInstanceRef.current as any).setStreetView(null);
       }
     };
 
     return (
       <>
         <div
-          className={`h-[600px] bg-white rounded-xl overflow-hidden transition-all duration-300 ${
-            isMapActive ? "w-[400px] ml-6 border border-[rgba(0,0,0,0.1)]" : "w-0 overflow-hidden"
+          className={`bg-white rounded-xl overflow-hidden transition-all duration-300 ${
+            isMapActive 
+              ? isExpanded 
+                ? "w-full m-6 border border-[rgba(0,0,0,0.1)]" 
+                : "w-[400px] mr-6 mt-6 mb-6 border border-[rgba(0,0,0,0.1)]"
+              : "w-0 overflow-hidden"
           }`}
+          style={isExpanded ? { minHeight: '600px' } : {}}
         >
           {isMapActive && (
             <>
-              <div className="px-6 py-5 border-b border-black/8 flex-shrink-0">
-                <h2 className="text-[#333] text-2xl font-semibold m-0">Map</h2>
-              </div>
-              <div className="relative h-[calc(600px-73px)] flex-1">
+              
+              <div className="relative h-full flex-1" style={{ minHeight: isExpanded ? '600px' : '400px' }}>
                 <MapControls 
                   mapType={mapType} 
                   setMapType={setMapType}
@@ -269,6 +265,16 @@ const SearchMapContainer = forwardRef<SearchMapContainerRef, SearchMapContainerP
                   setShowTerrain={setShowTerrain}
                   showLabels={showLabels}
                   setShowLabels={setShowLabels}
+                  isExpanded={isExpanded}
+                  onExpand={() => {
+                    setIsExpanded(true);
+                    onExpandedChange?.(true);
+                  }}
+                  onCollapse={() => {
+                    setIsExpanded(false);
+                    onExpandedChange?.(false);
+                  }}
+                  mapInstanceRef={mapInstanceRef}
                 />
                 <div ref={mapRef} id="searchMap" className="w-full h-full" />
               </div>

@@ -149,23 +149,12 @@ export const Cart: React.FC<CartProps> = ({
       <CartMobile isOpen={isOpen} onClose={onClose} className={className} />
       
       {/* Desktop Version */}
-      <div className="fixed inset-0 z-[1001] hidden md:block">
-      {/* Backdrop */}
-      <div 
-        className="absolute top-[75px] left-0 right-0 bottom-0 cursor-pointer" 
-        style={{ backgroundColor: 'rgba(0, 0, 0, 0.25)' }}
-        onClick={onClose}
-        data-backdrop="cart"
-      />
-      
+      <div className="fixed inset-0 z-[1001] hidden md:block pointer-events-none">
       {/* Cart Modal */}
       <div 
         ref={modalRef}
         className={cn(
-          "absolute top-[72px] right-0 w-[380px] bg-[var(--surface-color)] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] border border-[var(--border-color)]",
-          "opacity-0 visibility-hidden transform -translate-y-2.5 transition-all duration-300 ease-out",
-          "z-[1000]",
-          isOpen && "opacity-100 visibility-visible transform translate-y-0",
+          "absolute top-[72px] right-0 w-[380px] bg-[var(--surface-color)] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.15)] border border-[var(--border-color)] pointer-events-auto",
           className
         )}
         style={{

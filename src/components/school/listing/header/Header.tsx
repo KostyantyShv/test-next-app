@@ -115,7 +115,7 @@ const Header = ({
   return (
     <>
       <header
-        className={`fixed -top-3 z-[1000] transition-all duration-300 min-h-[5.8rem] bg-white border-b shadow-[0_2px_8px_rgba(0,0,0,0.06)] ${classes || ""}`}
+        className={`fixed -top-3 z-[1001] transition-all duration-300 min-h-[5.8rem] bg-white border-b shadow-[0_2px_8px_rgba(0,0,0,0.06)] ${classes || ""}`}
         style={{ 
           borderColor: "rgba(223, 221, 219, 0.4)",
           top: "63px",

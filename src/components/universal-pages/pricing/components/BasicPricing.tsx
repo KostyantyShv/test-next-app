@@ -620,17 +620,18 @@ const PricingCard: React.FC<PricingCardProps> = ({
   customContent
 }) => {
   const accentColors = {
-    blue: 'border-t-[#1D77BD]',
-    green: 'border-t-[#0B6333]',
-    purple: 'border-t-[#6F42C1]',
-    dark: 'border-t-[#464646]'
+    blue: '#1D77BD',
+    green: '#0B6333',
+    purple: '#6F42C1',
+    dark: '#464646'
   };
 
   return (
     <div
       className={`w-full max-md:max-w-[360px] md:w-[340px] bg-white rounded-2xl p-6 md:p-8 relative overflow-hidden flex flex-col min-h-auto md:min-h-[520px] shadow-md transition-all hover:-translate-y-1 hover:shadow-lg border border-[#E7E7E7] ${
-        accentColor ? `border-t-4 ${accentColors[accentColor]}` : ''
+        accentColor ? 'border-t-4' : ''
       }`}
+      style={accentColor ? { borderTopColor: accentColors[accentColor] } : {}}
     >
       <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-3 text-[#1B1B1B]">{title}</h2>
       <p className="text-sm md:text-[15px] leading-relaxed text-[#5F5F5F] min-h-auto md:min-h-[72px] mb-5 md:mb-6">
@@ -680,12 +681,59 @@ interface PricingToggleProps {
 }
 
 const PricingToggle: React.FC<PricingToggleProps> = ({ options, active, onChange }) => {
+  const containerRef = useRef<HTMLUListElement | null>(null);
+  const bgRef = useRef<HTMLDivElement | null>(null);
+  const itemRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const bg = bgRef.current;
+    const activeItem = itemRefs.current[active];
+    
+    if (!container || !bg || !activeItem) return;
+    
+    const containerRect = container.getBoundingClientRect();
+    const itemRect = activeItem.getBoundingClientRect();
+    const width = itemRect.width - 5;
+    const translateX = itemRect.left - containerRect.left;
+    
+    bg.style.width = `${width}px`;
+    bg.style.transform = `translateX(${translateX}px)`;
+  }, [active]);
+
+  // Initial positioning
+  useEffect(() => {
+    const id = setTimeout(() => {
+      const container = containerRef.current;
+      const bg = bgRef.current;
+      const activeItem = itemRefs.current[active];
+      
+      if (!container || !bg || !activeItem) return;
+      
+      const containerRect = container.getBoundingClientRect();
+      const itemRect = activeItem.getBoundingClientRect();
+      bg.style.width = `${itemRect.width}px`;
+      bg.style.transform = `translateX(${itemRect.left - containerRect.left}px)`;
+    }, 0);
+    return () => clearTimeout(id);
+  }, []);
+
   return (
-    <ul className="list-none flex bg-[#E7F0F5] rounded-full p-1 my-4 md:my-5 w-full md:w-fit self-center">
+    <ul 
+      ref={containerRef}
+      className="list-none flex bg-[#E7F0F5] rounded-full p-1 my-4 md:my-5 w-full md:w-fit self-center relative"
+    >
+      <div
+        ref={bgRef}
+        className="absolute top-1 left-1 h-[calc(100%-8px)] bg-white rounded-full shadow-sm transition-[transform,width] duration-300 ease-out"
+      />
       {options.map((option, index) => (
         <li
           key={option.value}
-          className={`flex-1 md:flex-none px-3 md:px-5 py-2 text-[13px] md:text-sm font-semibold cursor-pointer transition-colors flex items-center justify-center gap-1 md:gap-1.5 whitespace-nowrap ${
+          ref={(el) => {
+            itemRefs.current[option.value] = el;
+          }}
+          className={`flex-1 md:flex-none px-3 md:px-5 py-2 text-[13px] md:text-sm font-semibold cursor-pointer transition-colors flex items-center justify-center gap-1 md:gap-1.5 whitespace-nowrap relative z-10 ${
             active === option.value ? 'text-[#1D77BD]' : 'text-[#5F5F5F]'
           }`}
           onClick={() => onChange(option.value)}
@@ -754,7 +802,7 @@ const ProfileManagementCard: React.FC<any> = ({
 }) => {
   return (
     <div className="w-full max-w-[900px] max-md:max-w-[390px] mx-auto bg-white rounded-2xl shadow-md border border-[#E7E7E7] border-t-4 border-t-[#0B6333] flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-8 p-6 md:p-8 hover:shadow-lg hover:-translate-y-1 transition-all">
-      <div className="flex flex-col gap-5 order-1">
+      <div className="flex flex-col justify-between order-1">
         <div>
           <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-3 text-[#1B1B1B]">Profile Management</h2>
           <p className="text-sm md:text-[15px] leading-relaxed text-[#5F5F5F]">
@@ -790,7 +838,7 @@ const ProfileManagementCard: React.FC<any> = ({
 
         {/* Subscription Model */}
         {profileModel === 'subscription' && (
-          <div className="bg-[#F7F9FB] rounded-lg p-5 mb-6">
+          <div className="bg-[#F7F9FB] rounded-lg p-5">
             <div className="mb-4">
               <label className="block text-sm font-semibold text-[#1B1B1B] mb-2">
                 Average Monthly Views
@@ -861,7 +909,7 @@ const ProfileManagementCard: React.FC<any> = ({
 
         {/* PAYG Model */}
         {profileModel === 'credits' && (
-          <div className="bg-[#F7F9FB] rounded-lg p-5 mb-6">
+          <div className="bg-[#F7F9FB] rounded-lg p-5">
             <div className="mb-4">
               <label className="block text-sm font-semibold text-[#1B1B1B] mb-2">
                 Select Profile Level
@@ -1009,7 +1057,7 @@ const ProfileManagementCard: React.FC<any> = ({
           </button>
         </div>
 
-        <button className="w-full py-3.5 px-6 rounded-lg font-semibold text-base mt-auto bg-[#1D77BD] text-white hover:bg-[#1565A0] transition-all">
+        <button className="w-full py-3.5 px-6 rounded-lg font-semibold text-base mt-4 bg-[#1D77BD] text-white hover:bg-[#1565A0] transition-all">
           Choose Plan
         </button>
       </div>
@@ -1035,7 +1083,10 @@ const AddonCard: React.FC<AddonCardProps> = ({
   buttonText,
   customContent
 }) => (
-  <div className="bg-white rounded-2xl p-5 md:p-8 border border-[#E7E7E7] border-t-4 border-t-[#464646] transition-all hover:shadow-lg hover:-translate-y-1 flex flex-col min-h-[300px] md:min-h-[400px] w-full md:w-[340px]">
+  <div 
+    className="bg-white rounded-2xl p-5 md:p-8 border border-[#E7E7E7] border-t-4 transition-all hover:shadow-lg hover:-translate-y-1 flex flex-col min-h-[300px] md:min-h-[400px] w-full md:w-[340px]"
+    style={{ borderTopColor: '#464646' }}
+  >
     <h3 className="text-xl md:text-2xl font-bold text-[#1B1B1B] mb-2 md:mb-3 text-left">{title}</h3>
     <div className="text-3xl md:text-4xl font-bold text-[#1B1B1B] mb-3 text-left">
       {price}

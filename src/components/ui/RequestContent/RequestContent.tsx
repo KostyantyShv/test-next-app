@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
 import { Portal } from '@/components/ui/Portal';
 
 interface ContentType {
@@ -20,8 +19,8 @@ interface MatchingRequest {
 }
 
 interface RequestContentProps {
-  isOpen?: boolean;
-  onClose?: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 const contentTypes: ContentType[] = [
@@ -195,11 +194,7 @@ const sampleRequests: MatchingRequest[] = [
   },
 ];
 
-export default function RequestContent({ isOpen: externalIsOpen, onClose: externalOnClose }: RequestContentProps) {
-  const pathname = usePathname();
-  const router = useRouter();
-  const [internalIsOpen, setInternalIsOpen] = useState(false);
-  const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
+export default function RequestContent({ isOpen, onClose }: RequestContentProps) {
   const [selectedContentType, setSelectedContentType] = useState(contentTypes[0]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [title, setTitle] = useState('');
@@ -220,42 +215,20 @@ export default function RequestContent({ isOpen: externalIsOpen, onClose: extern
   const lastFocusableRef = useRef<HTMLButtonElement>(null);
 
   const toggleModal = useCallback(() => {
-    const newState = !isOpen;
-    if (externalIsOpen !== undefined && externalOnClose) {
-      // External control
-      if (!newState) {
-        externalOnClose();
-      }
-    } else {
-      // Internal control
-      setInternalIsOpen(newState);
-    }
-    if (!newState) {
-      document.body.style.overflow = '';
-      // If we're on /request-content route, navigate back
-      if (pathname === '/request-content') {
-        router.back();
-      }
-    } else {
-      document.body.style.overflow = 'hidden';
-    }
-  }, [isOpen, externalIsOpen, externalOnClose, pathname, router]);
+    onClose();
+  }, [onClose]);
 
-  // Auto-open modal when on /request-content route
+  // Handle body overflow when modal opens/closes
   useEffect(() => {
-    if (pathname === '/request-content' && !isOpen) {
-      if (externalOnClose) {
-        // External control - don't auto-open
-        return;
-      }
-      setInternalIsOpen(true);
+    if (isOpen) {
       document.body.style.overflow = 'hidden';
-    } else if (pathname !== '/request-content' && isOpen && !externalIsOpen) {
-      // Close modal if we navigate away from /request-content
-      setInternalIsOpen(false);
+    } else {
       document.body.style.overflow = '';
     }
-  }, [pathname, isOpen, externalIsOpen, externalOnClose]);
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   // Handle mobile detection
   useEffect(() => {
@@ -780,31 +753,33 @@ export default function RequestContent({ isOpen: externalIsOpen, onClose: extern
   if (!isOpen) return null;
 
   return (
-    <>
-      {/* Desktop overlay */}
-      <div 
-        className="hidden md:block fixed inset-0 backdrop-blur-sm z-[2000] transition-opacity duration-300"
-        style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}
-        onClick={toggleModal}
-      />
-      
-      {/* Desktop modal */}
-      <div className="hidden md:flex fixed inset-0 items-center justify-center z-[2001] pointer-events-none">
+    <Portal containerId="request-content-desktop-portal">
+      <>
+        {/* Desktop overlay */}
         <div 
-          ref={modalRef}
-          className="bg-[var(--surface-color)] rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl animate-in fade-in-0 zoom-in-95 duration-300 pointer-events-auto ml-20 mt-9"
-          role="dialog"
-          aria-labelledby="modal-title"
-          aria-modal="true"
-          onClick={(e) => e.stopPropagation()}
+          className="hidden md:flex fixed inset-0 items-center justify-center z-[2000] transition-opacity duration-300"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
+          onClick={toggleModal}
         >
+          {/* Desktop modal */}
+          <div 
+            ref={modalRef}
+            className="bg-white rounded-xl w-full max-w-[480px] max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.15)]"
+            role="dialog"
+            aria-labelledby="modal-title"
+            aria-modal="true"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              animation: 'modalSlideIn 0.3s ease-out',
+            }}
+          >
           {/* Header */}
-          <div className="p-6 pb-4 border-b border-[var(--border-color)] relative">
-            <h2 id="modal-title" className="text-xl font-semibold text-[var(--dark-text)] font-inter">Request New Content</h2>
+          <div className="px-6 pt-6 pb-4 border-b border-[#f0f0f0] relative">
+            <h2 id="modal-title" className="text-xl font-semibold text-[#1B1B1B] mb-0 font-inter">Request New Content</h2>
             <button
               ref={firstFocusableRef}
               onClick={toggleModal}
-              className="absolute top-5 right-5 text-[var(--subtle-text)] hover:text-[var(--bold-text)] hover:bg-[var(--gray-100)] p-1 rounded transition-colors"
+              className="absolute top-5 right-5 bg-none border-none text-[#5F5F5F] cursor-pointer p-1 rounded transition-colors text-2xl leading-none hover:bg-[#f5f5f5] hover:text-[#4A4A4A]"
               aria-label="Close modal"
             >
               ×
@@ -816,7 +791,7 @@ export default function RequestContent({ isOpen: externalIsOpen, onClose: extern
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Content Type Dropdown */}
             <div>
-              <label className="block text-sm font-medium text-[var(--bold-text)] mb-2 font-inter">
+              <label className="block text-sm font-medium text-[#464646] mb-2 font-inter">
                 Content Type
               </label>
               <div className="relative" ref={dropdownRef}>
@@ -824,19 +799,19 @@ export default function RequestContent({ isOpen: externalIsOpen, onClose: extern
                   type="button"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   onKeyDown={handleDropdownKeyDown}
-                  className="w-full p-3 border border-[var(--border-color)] rounded-lg bg-[var(--surface-color)] text-left flex items-center justify-between hover:border-[var(--gray-300)] focus:outline-none focus:ring-2 focus:ring-[var(--verification-blue)] focus:border-[var(--verification-blue)] transition-colors"
+                  className="w-full py-3 px-4 border border-[#e0e0e0] rounded-lg bg-white text-left flex items-center justify-between hover:border-[#ccc] focus:outline-none focus:border-[#1D77BD] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)] transition-colors"
                   aria-expanded={isDropdownOpen}
                   aria-haspopup="listbox"
                   id="content-type-dropdown"
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="text-[var(--success-green)]">
+                    <div className="text-[#089E68] w-4 h-4">
                       {selectedContentType.icon}
                     </div>
-                    <span className="text-[var(--text-default)] font-inter">{selectedContentType.name}</span>
+                    <span className="text-[#4A4A4A] text-sm font-inter">{selectedContentType.name}</span>
                   </div>
                   <svg 
-                    className={`w-4 h-4 text-[var(--subtle-text)] transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 text-[#5F5F5F] transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
                     viewBox="0 0 20 20" 
                     fill="currentColor"
                   >
@@ -846,9 +821,13 @@ export default function RequestContent({ isOpen: externalIsOpen, onClose: extern
 
                 {isDropdownOpen && (
                   <div 
-                    className="absolute top-full left-0 right-0 mt-1 bg-[var(--surface-color)] border border-[var(--border-color)] rounded-lg shadow-lg z-10 animate-in slide-in-from-top-2 duration-150"
+                    className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#e0e0e0] rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.1)] z-10 animate-in slide-in-from-top-2 duration-150"
                     role="listbox"
                     aria-labelledby="content-type-dropdown"
+                    style={{
+                      maxHeight: '200px',
+                      overflowY: 'auto',
+                    }}
                   >
                     {contentTypes.map((type, index) => (
                       <button
@@ -859,17 +838,17 @@ export default function RequestContent({ isOpen: externalIsOpen, onClose: extern
                           setIsDropdownOpen(false);
                           setFocusedDropdownIndex(-1);
                         }}
-                        className={`w-full p-3 text-left flex items-center gap-2.5 hover:bg-[var(--hover-bg)] focus:bg-[var(--hover-bg)] focus:outline-none transition-colors ${
-                          focusedDropdownIndex === index ? 'bg-[var(--hover-bg)]' : ''
+                        className={`w-full py-3 px-4 text-left flex items-center gap-2.5 hover:bg-[#f8f9fa] focus:bg-[#f8f9fa] focus:outline-none transition-colors border-none bg-none ${
+                          focusedDropdownIndex === index ? 'bg-[#f8f9fa]' : ''
                         }`}
                         role="option"
                         aria-selected={selectedContentType.id === type.id}
                         tabIndex={-1}
                       >
-                        <div className="text-[var(--success-green)]">
+                        <div className="text-[#089E68] w-4 h-4">
                           {type.icon}
                         </div>
-                        <span className="text-[var(--text-default)] font-inter">{type.name}</span>
+                        <span className="text-[#4A4A4A] text-sm font-inter">{type.name}</span>
                       </button>
                     ))}
                   </div>
@@ -879,7 +858,7 @@ export default function RequestContent({ isOpen: externalIsOpen, onClose: extern
 
             {/* Title Input */}
             <div>
-              <label className="block text-sm font-medium text-[var(--bold-text)] mb-2 font-inter">
+              <label className="block text-sm font-medium text-[#464646] mb-2 font-inter">
                 Title
               </label>
               <input
@@ -887,13 +866,13 @@ export default function RequestContent({ isOpen: externalIsOpen, onClose: extern
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter content title"
-                className="w-full p-3 border border-[var(--border-color)] rounded-lg bg-[var(--surface-color)] text-[var(--text-default)] placeholder:text-[var(--subtle-text)] focus:outline-none focus:ring-2 focus:ring-[var(--verification-blue)] focus:border-[var(--verification-blue)] transition-colors font-inter"
+                className="w-full py-3 px-4 border border-[#e0e0e0] rounded-lg bg-white text-[#4A4A4A] placeholder:text-[#5F5F5F] focus:outline-none focus:border-[#1D77BD] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)] transition-colors font-inter text-sm"
               />
             </div>
 
             {/* URL Input */}
             <div>
-              <label className="block text-sm font-medium text-[var(--bold-text)] mb-2 font-inter">
+              <label className="block text-sm font-medium text-[#464646] mb-2 font-inter">
                 URL
               </label>
               <input
@@ -901,17 +880,17 @@ export default function RequestContent({ isOpen: externalIsOpen, onClose: extern
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://example.com"
-                className="w-full p-3 border border-[var(--border-color)] rounded-lg bg-[var(--surface-color)] text-[var(--text-default)] placeholder:text-[var(--subtle-text)] focus:outline-none focus:ring-2 focus:ring-[var(--verification-blue)] focus:border-[var(--verification-blue)] transition-colors font-inter"
+                className="w-full py-3 px-4 border border-[#e0e0e0] rounded-lg bg-white text-[#4A4A4A] placeholder:text-[#5F5F5F] focus:outline-none focus:border-[#1D77BD] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)] transition-colors font-inter text-sm"
               />
 
               {/* URL Preview */}
               {(showUrlPreview || isLoadingPreview) && (
-                <div className="mt-4 p-4 border border-[var(--border-color)] rounded-lg bg-[var(--surface-secondary)] animate-in slide-in-from-top-2 duration-300">
-                  <span className="block text-xs font-medium text-[var(--subtle-text)] mb-3 font-inter">Preview</span>
+                <div className="mt-4 p-4 border border-[#e0e0e0] rounded-lg bg-[#fafafa] animate-in slide-in-from-top-2 duration-300">
+                  <span className="block text-xs font-medium text-[#5F5F5F] mb-3 font-inter">Preview</span>
                   {isLoadingPreview ? (
                     <div className="flex items-center justify-center py-4">
-                      <div className="w-4 h-4 border-2 border-[var(--border-color)] border-t-[var(--verification-blue)] rounded-full animate-spin"></div>
-                      <span className="ml-2 text-sm text-[var(--subtle-text)] font-inter">Loading preview...</span>
+                      <div className="w-4 h-4 border-2 border-[#e0e0e0] border-t-[#1D77BD] rounded-full animate-spin"></div>
+                      <span className="ml-2 text-sm text-[#5F5F5F] font-inter">Loading preview...</span>
                     </div>
                   ) : (
                     <div className="flex gap-3">
@@ -919,12 +898,13 @@ export default function RequestContent({ isOpen: externalIsOpen, onClose: extern
                         src={previewData.image} 
                         alt="Content preview" 
                         className="w-15 h-15 rounded-md object-cover flex-shrink-0"
+                        style={{ width: '60px', height: '60px' }}
                       />
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-[var(--bold-text)] line-clamp-3 mb-1.5 font-inter">
+                        <div className="text-sm font-medium text-[#464646] line-clamp-3 mb-1.5 font-inter" style={{ lineHeight: '1.4' }}>
                           {previewData.title}
                         </div>
-                        <div className="text-xs text-[var(--subtle-text)] line-clamp-3 font-inter">
+                        <div className="text-xs text-[#5F5F5F] line-clamp-3 font-inter" style={{ lineHeight: '1.4' }}>
                           {previewData.description}
                         </div>
                       </div>
@@ -936,43 +916,43 @@ export default function RequestContent({ isOpen: externalIsOpen, onClose: extern
 
             {/* Matching Requests */}
             {matchingRequests.length > 0 && (
-              <div className="mt-6 p-5 bg-[var(--surface-secondary)] rounded-lg border border-[var(--border-color)]">
-                <h4 className="text-sm font-medium text-[var(--subtle-text)] mb-4 font-inter">Matching Requests</h4>
+              <div className="mt-6 p-5 bg-[#f8f9fa] rounded-lg border border-[#e9ecef]">
+                <h4 className="text-sm font-medium text-[#5F5F5F] mb-4 font-inter">Matching Requests</h4>
                 <div className="space-y-2">
                   {matchingRequests.map((request) => (
-                    <div key={request.id} className="flex items-center gap-3 p-3 bg-[var(--surface-color)] border border-[var(--border-color)] rounded-lg hover:shadow-sm transition-shadow">
+                    <div key={request.id} className="flex items-center gap-3 p-3 bg-white border border-[#e0e0e0] rounded-lg hover:shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-shadow mb-2 last:mb-0">
                       <img 
                         src={request.image} 
                         alt={request.title} 
                         className="w-10 h-10 rounded-md object-cover flex-shrink-0"
                       />
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-[var(--bold-text)] truncate font-inter">
+                        <div className="text-sm font-medium text-[#464646] truncate font-inter mb-0.5">
                           {request.title}
                         </div>
-                        <div className="text-xs text-[var(--subtle-text)] flex items-center gap-2 font-inter">
+                        <div className="text-xs text-[#5F5F5F] flex items-center gap-2 font-inter">
                           <span>{request.author}</span>
-                          <div className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-[var(--apply-button-bg)] text-[var(--success-green)] rounded text-xs font-medium">
-                            {contentTypes.find(t => t.id === request.type)?.icon}
+                          <div className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-[#EBFCF4] text-[#089E68] rounded text-xs font-medium">
+                            <span className="w-2.5 h-2.5">{contentTypes.find(t => t.id === request.type)?.icon}</span>
                             <span>{contentTypes.find(t => t.id === request.type)?.name}</span>
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col items-center min-w-8">
+                      <div className="flex flex-col items-center" style={{ minWidth: '32px' }}>
                         <button
                           type="button"
                           onClick={() => handleVote(request.id, 'up')}
-                          className="text-[var(--subtle-text)] hover:text-[var(--success-green)] p-0.5 text-xs transition-colors"
+                          className="text-[#5F5F5F] hover:text-[#089E68] p-0.5 text-xs transition-colors bg-none border-none cursor-pointer"
                         >
                           ▲
                         </button>
-                        <span className="text-xs font-medium text-[var(--bold-text)] my-0.5 font-inter">
+                        <span className="text-xs font-medium text-[#464646] my-0.5 font-inter">
                           {request.votes}
                         </span>
                         <button
                           type="button"
                           onClick={() => handleVote(request.id, 'down')}
-                          className="text-[var(--subtle-text)] hover:text-[var(--success-green)] p-0.5 text-xs transition-colors"
+                          className="text-[#5F5F5F] hover:text-[#089E68] p-0.5 text-xs transition-colors bg-none border-none cursor-pointer"
                         >
                           ▼
                         </button>
@@ -984,14 +964,14 @@ export default function RequestContent({ isOpen: externalIsOpen, onClose: extern
             )}
 
             {/* Confirmation Section */}
-            <div className="pt-5 border-t border-[var(--border-color)]">
+            <div className="pt-5 border-t border-[#e9ecef] mt-6">
               {hasMatchingResults && (
                 <div className="flex items-start gap-3 mb-5">
                   <div
-                    className={`w-4.5 h-4.5 border-2 rounded cursor-pointer flex items-center justify-center transition-all ${
+                    className={`w-[18px] h-[18px] border-2 rounded cursor-pointer flex items-center justify-center transition-all flex-shrink-0 mt-0.5 ${
                       isCheckboxChecked 
-                        ? 'bg-[var(--verification-blue)] border-[var(--verification-blue)]' 
-                        : 'border-[var(--border-color)] hover:border-[var(--gray-300)]'
+                        ? 'bg-[#1D77BD] border-[#1D77BD]' 
+                        : 'border-[#e0e0e0] hover:border-[#ccc]'
                     }`}
                     onClick={() => setIsCheckboxChecked(!isCheckboxChecked)}
                     role="checkbox"
@@ -1005,12 +985,12 @@ export default function RequestContent({ isOpen: externalIsOpen, onClose: extern
                     }}
                   >
                     {isCheckboxChecked && (
-                      <svg className="w-3 h-3 text-white" viewBox="0 0 20 20" fill="currentColor">
+                      <svg className="w-3 h-3 text-white" viewBox="0 0 20 20" fill="currentColor" style={{ opacity: isCheckboxChecked ? 1 : 0, transition: 'opacity 0.2s' }}>
                         <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd"/>
                       </svg>
                     )}
                   </div>
-                  <label className="text-sm text-[var(--text-default)] cursor-pointer leading-relaxed font-inter">
+                  <label className="text-sm text-[#4A4A4A] cursor-pointer leading-relaxed font-inter" style={{ lineHeight: '1.4' }}>
                     I confirm my request is not in the list above
                   </label>
                 </div>
@@ -1020,11 +1000,11 @@ export default function RequestContent({ isOpen: externalIsOpen, onClose: extern
                 ref={lastFocusableRef}
                 type="submit"
                 disabled={!canSubmit || isSubmitting}
-                className="w-full py-3 px-6 bg-[var(--apply-button-bg)] text-[var(--header-green)] border border-[var(--apply-button-hover)] rounded-lg font-medium hover:bg-[var(--apply-button-hover)] hover:border-[var(--success-green)] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-inter"
+                className="w-full py-3 px-6 bg-[#EBFCF4] text-[#016853] border border-[#d0f0d0] rounded-lg font-medium hover:bg-[#D7F7E9] hover:border-[#c0e0c0] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-inter text-sm"
               >
                 {isSubmitting ? (
                   <div className="flex items-center justify-center gap-2">
-                    <div className="w-4 h-4 border-2 border-[var(--apply-button-hover)] border-t-[var(--success-green)] rounded-full animate-spin"></div>
+                    <div className="w-4 h-4 border-2 border-[#d0f0d0] border-t-[#016853] rounded-full animate-spin"></div>
                     <span className="font-inter">Submitting...</span>
                   </div>
                 ) : (
@@ -1035,7 +1015,8 @@ export default function RequestContent({ isOpen: externalIsOpen, onClose: extern
           </form>
         </div>
       </div>
-    </div>
-    </>
+      </div>
+      </>
+    </Portal>
   );
 }

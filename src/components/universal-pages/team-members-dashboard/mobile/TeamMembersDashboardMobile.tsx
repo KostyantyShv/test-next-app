@@ -236,7 +236,10 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
   };
 
   return (
-    <div className="h-[740px] overflow-hidden flex flex-col">
+    <div 
+      className="h-[740px] overflow-hidden flex flex-col"
+      style={{ backgroundColor: '#E1E7EE' }}
+    >
       <Header
         currentTeamType={currentTeamType}
         filterCount={filterCount}
@@ -251,7 +254,10 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
       />
-      <div className="flex-1 overflow-y-auto bg-gray-200">
+      <div 
+        className="flex-1 overflow-y-auto"
+        style={{ backgroundColor: '#E1E7EE' }}
+      >
         <MemberList
           members={displayedMembers}
           onActionClick={handleActionClick}

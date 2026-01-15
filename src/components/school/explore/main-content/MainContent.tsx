@@ -7,7 +7,11 @@ import { establishmentTypes, layouts } from "./mock";
 import { useSchoolsExplore } from "@/store/use-schools-explore";
 import SearchTypeButton from "./SearchTypeButton";
 
-const MainContent: React.FC = () => {
+interface MainContentProps {
+  onContainerExpandChange?: (isExpanded: boolean) => void;
+}
+
+const MainContent: React.FC<MainContentProps> = ({ onContainerExpandChange }) => {
   const { establishment, setEstablishment } = useSchoolsExplore(
     (state) => state
   );
@@ -63,6 +67,7 @@ const MainContent: React.FC = () => {
         setLayout={setLayout}
         layoutToggleWidth={134}
         renderSearchTypeButton={renderSearchTypeButton}
+        onContainerExpandChange={onContainerExpandChange}
       />
       <ContentArea
         isMapActive={isMapActive}

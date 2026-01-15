@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "./modals/Modal";
 import AddMemberModal from "./modals/AddMemberModal";
 import EditMemberModal from "./modals/EditMemberModal";
@@ -56,6 +56,28 @@ const TeamMembersDashboardDesktop: React.FC<
   const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
   const [selectedMemberIds, setSelectedMemberIds] = useState<number[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState<number | null>(null);
+
+  // Handle click outside dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isDropdownOpen !== null) {
+        const target = event.target as HTMLElement;
+        // Check if click was outside any manage-wrapper
+        const manageWrapper = target.closest('.manage-wrapper');
+        if (!manageWrapper) {
+          setIsDropdownOpen(null);
+        }
+      }
+    };
+
+    if (isDropdownOpen !== null) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
   // Modal states
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -249,6 +271,7 @@ const TeamMembersDashboardDesktop: React.FC<
     lastName: string;
     email: string;
     isAdmin: boolean;
+    listingIds?: number[];
   }) => {
     if (!selectedMemberId) return;
 
@@ -260,6 +283,9 @@ const TeamMembersDashboardDesktop: React.FC<
       setSaveError(null);
 
       const fullName = `${data.firstName} ${data.lastName}`.trim();
+      const selectedListings = data.listingIds 
+        ? AVAILABLE_LISTINGS.filter((l) => data.listingIds!.includes(l.id))
+        : [];
 
       const { error } = await supabase
         .from("team_members")
@@ -267,6 +293,7 @@ const TeamMembersDashboardDesktop: React.FC<
           email: data.email,
           role: data.isAdmin ? "admin" : "member",
           name: fullName || data.email.split("@")[0] || "Member",
+          permissions: selectedListings,
         })
         .eq("team_owner_id", ownerId)
         .eq("email", existing.email);
@@ -282,6 +309,7 @@ const TeamMembersDashboardDesktop: React.FC<
         lastName: data.lastName || existing.lastName,
         email: data.email,
         isAdmin: data.isAdmin,
+        listings: data.isAdmin ? [] : selectedListings,
       };
 
       setMembers((prev) =>
@@ -504,6 +532,7 @@ const TeamMembersDashboardDesktop: React.FC<
             onSave={handleUpdateMember}
             isSubmitting={isSavingMember}
             error={saveError}
+            availableListings={AVAILABLE_LISTINGS}
           />
         )}
         {isDeleteModalOpen && selectedMemberId && (

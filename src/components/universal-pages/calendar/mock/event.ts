@@ -1,6 +1,7 @@
 import { Event } from "../types/event";
 
 export const events: Event[] = [
+  // December 1, 2024
   {
     type: "zoom-meeting",
     title: "FREE 4D Copy Call",
@@ -10,9 +11,10 @@ export const events: Event[] = [
       "https://i.ibb.co/S3QRdcX/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
     avatar2: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
     date: 1,
-    month: 3,
-    year: 2025,
+    month: 11,
+    year: 2024,
   },
+  // December 7, 2024
   {
     type: "zoom-meeting",
     title: "FREE 4D Copy Call",
@@ -22,8 +24,8 @@ export const events: Event[] = [
       "https://i.ibb.co/S3QRdcX/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
     avatar2: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
     date: 7,
-    month: 4,
-    year: 2025,
+    month: 11,
+    year: 2024,
   },
   {
     type: "teams-meeting",
@@ -34,8 +36,8 @@ export const events: Event[] = [
       "https://i.ibb.co/S3QRdcX/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
     avatar2: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
     date: 7,
-    month: 3,
-    year: 2025,
+    month: 11,
+    year: 2024,
   },
   {
     type: "one-on-one",
@@ -46,8 +48,8 @@ export const events: Event[] = [
       "https://i.ibb.co/S3QRdcX/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
     avatar2: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
     date: 7,
-    month: 3,
-    year: 2025,
+    month: 11,
+    year: 2024,
   },
   {
     type: "webex-meeting",
@@ -58,8 +60,8 @@ export const events: Event[] = [
       "https://i.ibb.co/S3QRdcX/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
     avatar2: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
     date: 7,
-    month: 3,
-    year: 2025,
+    month: 11,
+    year: 2024,
   },
   {
     type: "group-session",
@@ -70,9 +72,10 @@ export const events: Event[] = [
       "https://i.ibb.co/S3QRdcX/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
     avatar2: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
     date: 7,
-    month: 3,
-    year: 2025,
+    month: 11,
+    year: 2024,
   },
+  // December 8, 2024
   {
     type: "one-on-one",
     title: "Career Planning Session",
@@ -82,9 +85,10 @@ export const events: Event[] = [
       "https://i.ibb.co/S3QRdcX/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
     avatar2: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
     date: 8,
-    month: 3,
-    year: 2025,
+    month: 11,
+    year: 2024,
   },
+  // December 15, 2024
   {
     type: "zoom-webinar",
     title: "Marketing Masterclass",
@@ -94,9 +98,10 @@ export const events: Event[] = [
       "https://i.ibb.co/S3QRdcX/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
     avatar2: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
     date: 15,
-    month: 2,
-    year: 2025,
+    month: 11,
+    year: 2024,
   },
+  // December 28, 2024
   {
     type: "zoom-meeting",
     title: "Sales Meeting",
@@ -106,8 +111,8 @@ export const events: Event[] = [
       "https://i.ibb.co/S3QRdcX/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
     avatar2: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
     date: 28,
-    month: 3,
-    year: 2025,
+    month: 11,
+    year: 2024,
   },
   {
     type: "teams-meeting",
@@ -118,8 +123,8 @@ export const events: Event[] = [
       "https://i.ibb.co/S3QRdcX/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
     avatar2: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
     date: 28,
-    month: 3,
-    year: 2025,
+    month: 11,
+    year: 2024,
   },
   {
     type: "one-on-one",
@@ -130,8 +135,8 @@ export const events: Event[] = [
       "https://i.ibb.co/S3QRdcX/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
     avatar2: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
     date: 28,
-    month: 3,
-    year: 2025,
+    month: 11,
+    year: 2024,
   },
   {
     type: "webex-meeting",
@@ -142,8 +147,8 @@ export const events: Event[] = [
       "https://i.ibb.co/S3QRdcX/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
     avatar2: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
     date: 28,
-    month: 3,
-    year: 2025,
+    month: 11,
+    year: 2024,
   },
   {
     type: "group-session",
@@ -154,9 +159,10 @@ export const events: Event[] = [
       "https://i.ibb.co/S3QRdcX/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
     avatar2: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
     date: 28,
-    month: 3,
-    year: 2025,
+    month: 11,
+    year: 2024,
   },
+  // December 29, 2024
   {
     type: "one-on-one",
     title: "1:1 Coaching Session",
@@ -165,8 +171,8 @@ export const events: Event[] = [
     avatar1:
       "https://i.ibb.co/S3QRdcX/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg",
     avatar2: "https://i.ibb.co/2gV13mw/AVATAR-Kostis-Kapelonis.png",
-    date: 25,
-    month: 3,
-    year: 2025,
+    date: 29,
+    month: 11,
+    year: 2024,
   },
 ];

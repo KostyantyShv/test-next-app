@@ -545,7 +545,9 @@ export const LeftSidebar: FC = () => {
         {/* Bottom Items */}
         <div className="px-2 py-2 border-t border-gray-200 flex-shrink-0">
           <div className="space-y-1">
-            {bottomItems.map((item, idx) => (
+            {bottomItems.map((item, idx) => {
+              const isActive = pathname === item.href;
+              return (
               <Link
                 key={item.href}
                 href={item.href}
@@ -554,8 +556,8 @@ export const LeftSidebar: FC = () => {
                   "flex items-center gap-3 px-3 py-2 text-gray-600 transition-all duration-200 relative group",
                   "font-inter text-sm font-medium border border-transparent",
                   "hover:bg-green-50 hover:border-green-200",
-                  pathname === item.href && "bg-gradient-to-r from-green-50 to-green-100 border-green-200 text-green-700",
-                  isCollapsed ? "justify-center w-11 h-11 mx-auto rounded-[18px]" : "rounded-3xl"
+                  isActive && "bg-gradient-to-r from-green-50 to-green-100 border-green-200 text-green-700",
+                  isCollapsed ? "justify-center w-11 h-11 mx-auto rounded-[12px]" : (isActive ? "rounded-[18px]" : "rounded-3xl")
                 )}
               >
                 {/* SVG from prototype */}
@@ -590,7 +592,8 @@ export const LeftSidebar: FC = () => {
                   </div>
                 )}
               </Link>
-            ))}
+            );
+            })}
           </div>
 
           {/* User Profile */}

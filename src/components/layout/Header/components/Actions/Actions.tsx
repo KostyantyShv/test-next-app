@@ -29,6 +29,20 @@ export const Actions: FC = () => {
     setMounted(true);
   }, [theme]);
 
+  // Close Cart when Monitor opens
+  useEffect(() => {
+    if (isMonitorOpen && isCartOpen) {
+      setIsCartOpen(false);
+    }
+  }, [isMonitorOpen]);
+
+  // Close Monitor when Cart opens
+  useEffect(() => {
+    if (isCartOpen && isMonitorOpen) {
+      setIsMonitorOpen(false);
+    }
+  }, [isCartOpen]);
+
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
@@ -74,7 +88,12 @@ export const Actions: FC = () => {
       {/* Monitor Icon */}
       <button 
         ref={monitorButtonRef}
-        onClick={() => setIsMonitorOpen(!isMonitorOpen)}
+        onClick={() => {
+          if (!isMonitorOpen) {
+            setIsCartOpen(false);
+          }
+          setIsMonitorOpen(!isMonitorOpen);
+        }}
         className={cn(
           "relative w-11 h-11 border border-[#e9ecef] bg-white rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:opacity-90",
           isMonitorOpen && "bg-[#EBFCF4] border-[#0B6333] text-[#0B6333]"
@@ -109,7 +128,12 @@ export const Actions: FC = () => {
       {/* Cart */}
       <button 
         ref={cartButtonRef}
-        onClick={() => setIsCartOpen(!isCartOpen)}
+        onClick={() => {
+          if (!isCartOpen) {
+            setIsMonitorOpen(false);
+          }
+          setIsCartOpen(!isCartOpen);
+        }}
         className={cn(
           "relative w-11 h-11 border border-[#e9ecef] bg-white rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:opacity-90",
           isCartOpen && "bg-[#EBFCF4] border-[#0B6333] text-[#0B6333]"

@@ -11,7 +11,7 @@ export default function EditPaymentModalContent({
 }: EditPaymentModalContentProps) {
   return (
     <>
-      <div className="flex justify-between items-center p-5 border-b border-[#E5E7EB]">
+      <div className="flex justify-between items-center p-5 border-b border-[#E5E7EB] w-[600px]">
         <h3 className="text-lg font-semibold text-[#464646]">
           Payment Methods
         </h3>
@@ -22,7 +22,10 @@ export default function EditPaymentModalContent({
           &times;
         </button>
       </div>
-      <div className="flex justify-between items-center px-5 py-2">
+      <div
+        className="flex justify-between items-center px-5 py-2"
+        style={{ borderTop: "none", borderBottom: "none", paddingTop: 0 }}
+      >
         <div></div>
         <button
           className="text-[#346DC2] bg-transparent border-none text-sm font-medium cursor-pointer"
@@ -31,9 +34,9 @@ export default function EditPaymentModalContent({
           Add
         </button>
       </div>
-      <div className="p-5 pt-0">
+      <div className="p-5" style={{ paddingTop: 0 }}>
         <ul className="p-0 m-0 list-none">
-          <li className="py-4 px-5 border-b border-[#E5E7EB] flex items-center relative">
+          <li className="group py-4 px-5 border-b border-[#E5E7EB] flex items-center relative">
             <div className="text-lg text-[#5F5F5F] mr-5">▶</div>
             <div className="w-10 h-7 rounded bg-[#F1F5F9] flex items-center justify-center mr-4">
               <img
@@ -43,7 +46,7 @@ export default function EditPaymentModalContent({
               />
             </div>
             <div className="flex-1">
-              <div className="font-medium text-[#464646]">
+              <div className="font-medium text-[#464646] mb-1">
                 Visa •••• XXXX
                 <span className="text-xs bg-[#F1F5F9] text-[#5F5F5F] py-0.5 px-2 rounded ml-2">
                   Default
@@ -103,7 +106,7 @@ export default function EditPaymentModalContent({
               </div>
             </div>
           </li>
-          <li className="py-4 px-5 border-b border-[#E5E7EB] flex items-center relative group">
+          <li className="group py-4 px-5 border-b border-[#E5E7EB] flex items-center relative">
             <div className="text-lg text-[#5F5F5F] mr-5">▶</div>
             <div className="w-10 h-7 rounded bg-[#F1F5F9] flex items-center justify-center mr-4">
               <img
@@ -113,7 +116,7 @@ export default function EditPaymentModalContent({
               />
             </div>
             <div className="flex-1">
-              <div className="font-medium text-[#464646]">Visa •••• XXXX</div>
+              <div className="font-medium text-[#464646] mb-1">Visa •••• XXXX</div>
               <div className="text-sm text-[#5F5F5F]">Expires Jul 2021</div>
             </div>
             <div className="absolute right-5 top-1/2 transform -translate-y-1/2 hidden gap-2 group-hover:flex">
@@ -168,7 +171,7 @@ export default function EditPaymentModalContent({
               </div>
             </div>
           </li>
-          <li className="py-4 px-5 border-b border-[#E5E7EB] flex items-center relative group">
+          <li className="group py-4 px-5 border-b border-[#E5E7EB] flex items-center relative">
             <div className="text-lg text-[#5F5F5F] mr-5">▶</div>
             <div className="w-10 h-7 rounded bg-[#F1F5F9] flex items-center justify-center mr-4">
               <img
@@ -178,7 +181,7 @@ export default function EditPaymentModalContent({
               />
             </div>
             <div className="flex-1">
-              <div className="font-medium text-[#464646]">Visa •••• XXXX</div>
+              <div className="font-medium text-[#464646] mb-1">Visa •••• XXXX</div>
               <div className="text-sm text-[#5F5F5F]">Expires Jul 2021</div>
             </div>
             <div className="absolute right-5 top-1/2 transform -translate-y-1/2 hidden gap-2 group-hover:flex">

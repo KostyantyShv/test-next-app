@@ -29,82 +29,102 @@ export const ListItem: React.FC<ListItemProps> = ({
       onEventClick(eventId);
     }
   };
+
+  const getEventTypeColor = (type: string) => {
+    switch (type) {
+      case "zoom-meeting":
+        return "#15B7C3";
+      case "zoom-webinar":
+        return "#22C376";
+      case "teams-meeting":
+        return "#608CFD";
+      case "one-on-one":
+        return "#E47EF4";
+      case "webex-meeting":
+        return "#F89E6C";
+      case "group-session":
+        return "#EE4206";
+      default:
+        return "#15B7C3";
+    }
+  };
+
+  const getEventTitleColor = (type: string) => {
+    switch (type) {
+      case "zoom-meeting":
+        return "#15B7C3";
+      case "zoom-webinar":
+        return "#22C376";
+      case "teams-meeting":
+        return "#608CFD";
+      case "one-on-one":
+        return "#E47EF4";
+      case "webex-meeting":
+        return "#F89E6C";
+      case "group-session":
+        return "#EE4206";
+      default:
+        return "#15B7C3";
+    }
+  };
+
   return (
-    <div className="list-item flex py-6 border-b border-[#E0E0E0] items-start">
+    <div className="flex py-6 border-b border-[#E0E0E0] items-start" style={{ padding: "24px 0" }}>
       <div
-        className={`list-date w-20 text-center pr-4 relative ${
-          isCurrent ? "current" : ""
-        } ${events[0]?.type || ""}`}
+        className={`list-date text-center relative ${isCurrent ? "current" : ""} ${events[0]?.type || ""}`}
+        style={{ width: "80px", paddingRight: "16px" }}
       >
         <div
-          className={`list-weekday text-base font-medium mb-1 ${
+          className={`list-weekday ${
             isCurrent ? "text-[#1A73E8]" : "text-[#5F6368]"
           }`}
+          style={{ fontSize: "16px", fontWeight: 500, marginBottom: "4px" }}
         >
-          {weekday}
+          {weekday.substring(0, 3).toUpperCase()}
         </div>
         <div
           onClick={handleDateClick}
-          className={`list-day text-3xl font-semibold cursor-pointer hover:bg-gray-100 rounded px-2 ${
+          className={`list-day cursor-pointer ${
             isCurrent ? "text-[#1A73E8]" : "text-[#202124]"
           }`}
+          style={{ fontSize: "28px", fontWeight: 600 }}
         >
           {date}
         </div>
-        {events[0] && (
-          <div
-            className={`absolute right-0 top-0 bottom-0 w-[3px] ${
-              events[0].type === "zoom-meeting" || events[0].type === "zoom-webinar"
-                ? "bg-[#15B7C3]"
-                : events[0].type === "teams-meeting"
-                ? "bg-[#608CFD]"
-                : events[0].type === "one-on-one"
-                ? "bg-[#E47EF4]"
-                : events[0].type === "webex-meeting"
-                ? "bg-[#F89E6C]"
-                : events[0].type === "group-session"
-                ? "bg-[#EE4206]"
-                : ""
-            }`}
-          ></div>
-        )}
       </div>
-      <div className="list-content flex-1 pl-0 flex flex-col gap-2">
+      <div className="list-content flex-1 pl-0 flex flex-col" style={{ gap: "8px" }}>
         {events.map((event, index) => (
           <div
             key={index}
-            className="list-item-content flex items-start gap-4 w-full"
+            className="flex items-start w-full"
+            style={{ gap: "16px" }}
           >
             <div
               onClick={() => handleEventClick(event.id)}
-              className={`event flex flex-col gap-2 cursor-pointer hover:bg-gray-50 rounded p-2 ${event.type}`}
+              className={`event flex flex-col cursor-pointer ${event.type}`}
+              style={{ padding: 0, margin: 0, gap: "8px", borderLeft: `3px solid ${getEventTypeColor(event.type)}`, borderRadius: "6px" }}
             >
               <div className="event-header">
                 <div
-                  className={`event-title text-base font-medium pl-1.5 mt-1 ${
-                    event.type === "zoom-meeting" || event.type === "zoom-webinar"
-                      ? "text-[#15B7C3]"
-                      : event.type === "teams-meeting"
-                      ? "text-[#608CFD]"
-                      : event.type === "one-on-one"
-                      ? "text-[#E47EF4]"
-                      : event.type === "webex-meeting"
-                      ? "text-[#F89E6C]"
-                      : event.type === "group-session"
-                      ? "text-[#EE4206]"
-                      : ""
-                  }`}
+                  className="event-title font-medium"
+                  style={{
+                    fontSize: "16px",
+                    marginTop: "4px",
+                    paddingLeft: "6px",
+                    color: getEventTitleColor(event.type),
+                  }}
                 >
                   {event.title}
                 </div>
               </div>
-              <div className="event-time flex items-center gap-1 text-sm text-[#5F6368]">
-                <div className="event-icon w-4 h-4 flex items-center justify-center">
+              <div className="event-time flex items-center gap-1 text-[#5F6368]" style={{ fontSize: "14px" }}>
+                <div className="event-icon flex items-center justify-center" style={{ width: "16px", height: "16px" }}>
                   {event.type === "zoom-meeting" && (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 38 38"
+                      style={{ width: "20px", height: "20px" }}
                     >
                       <path
                         strokeLinejoin="round"
@@ -120,6 +140,7 @@ export const ListItem: React.FC<ListItemProps> = ({
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 38 38"
+                      style={{ width: "20px", height: "20px" }}
                     >
                       <path
                         strokeLinejoin="round"
@@ -135,6 +156,7 @@ export const ListItem: React.FC<ListItemProps> = ({
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 55 55"
+                      style={{ width: "20px", height: "20px" }}
                     >
                       <path
                         fill="#608CFD"
@@ -147,6 +169,7 @@ export const ListItem: React.FC<ListItemProps> = ({
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 38 38"
+                      style={{ width: "20px", height: "20px" }}
                     >
                       <path
                         strokeWidth="0.25"
@@ -161,6 +184,7 @@ export const ListItem: React.FC<ListItemProps> = ({
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 38 38"
+                      style={{ width: "20px", height: "20px" }}
                     >
                       <path
                         strokeLinejoin="round"
@@ -176,6 +200,7 @@ export const ListItem: React.FC<ListItemProps> = ({
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 38 38"
+                      style={{ width: "20px", height: "20px" }}
                     >
                       <path
                         strokeWidth="0.25"
@@ -216,7 +241,8 @@ export const ListItem: React.FC<ListItemProps> = ({
                   ? "https://i.ibb.co/jJ4GHXP/img1.jpg"
                   : "https://i.ibb.co/LJwrLdW/coaching-image.webp"
               }
-              className="event-image w-[120px] h-20 rounded-lg object-cover ml-auto"
+              className="event-image rounded-lg object-cover ml-auto"
+              style={{ width: "120px", height: "80px", borderRadius: "8px" }}
               alt="Event Image"
             />
           </div>

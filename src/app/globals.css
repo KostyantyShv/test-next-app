@@ -397,6 +397,20 @@ body {
   scrollbar-width: none; /* Firefox */
 }
 
+/* Notifications Panel - Text styling */
+.notification-text-content strong {
+  font-weight: 600;
+  color: var(--bold-text, #464646);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.notification-text-content a {
+  color: var(--link-text, #346DC2);
+  text-decoration: underline;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
 .animate-slideDown {
   animation: slideDown 0.3s ease-out forwards;
 }
@@ -1048,5 +1062,67 @@ body {
 
 .bg-gray-100 {
   background-color: var(--surface-secondary);
+}
+
+/* Avatar Dropdown Menu Item Hover Line Animation */
+[data-avatar-dropdown] .menu-item {
+  position: relative;
+  overflow: hidden;
+}
+
+[data-avatar-dropdown] .menu-item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background-color: #00DF8B;
+  transition: width 0.2s ease;
+}
+
+[data-avatar-dropdown] .menu-item:hover::after {
+  width: 100%;
+}
+
+[data-avatar-dropdown] .logout-item:hover::after {
+  background-color: transparent;
+}
+
+/* Me Page Menu Item Hover Line Animation */
+.me-page .menu-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.me-page .menu-item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background-color: #00DF8B;
+  transition: width 0.2s ease;
+}
+
+.me-page .menu-item:hover::after {
+  width: 100%;
+}
+
+.me-page .logout-item:hover::after {
+  background-color: transparent;
+}
+
+/* Request Content Modal Animation */
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 

@@ -104,7 +104,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
           </div>
         ))}
       </div>
-      <div className="flex flex-wrap gap-2 mt-2.5 p-2 border border-gray-200 rounded bg-gray-50 min-h-10">
+      <div className="flex flex-wrap gap-2 mt-2.5 p-2 border border-gray-200 rounded min-h-10 bg-[#f6f6f6]">
         {selectedItems.map((item) => (
           <div
             key={item}

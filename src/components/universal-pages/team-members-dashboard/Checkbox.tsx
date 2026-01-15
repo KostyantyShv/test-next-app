@@ -1,3 +1,5 @@
+import React from "react";
+
 export const Checkbox: React.FC<{
   checked: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -12,8 +14,10 @@ export const Checkbox: React.FC<{
       />
       <span
         className={`relative h-4 w-4 border-2 rounded transition-colors duration-200
-        !bg-white border-gray-300 hover:border-gray-400
-        peer-checked:bg-[#0B6333] peer-checked:border-[#0B6333]`}
+        ${checked 
+          ? 'bg-[#1e6853] border-[#1e6853]' 
+          : 'bg-white border-gray-300 hover:border-gray-400'
+        }`}
       >
         {checked && (
           <svg

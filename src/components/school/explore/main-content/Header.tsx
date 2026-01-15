@@ -43,6 +43,7 @@ interface HeaderProps {
   renderItemsCount?: () => React.ReactNode;
   renderSearchTypeButton?: () => React.ReactNode;
   renderExpandCollapseButton?: () => React.ReactNode;
+  onContainerExpandChange?: (isExpanded: boolean) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -61,7 +62,9 @@ const Header: React.FC<HeaderProps> = ({
   renderActionsButton = () => <></>,
   renderSearchTypeButton = () => <></>,
   renderExpandCollapseButton = () => <></>,
+  onContainerExpandChange,
 }) => {
+  const [isContainerExpanded, setIsContainerExpanded] = useState(false);
   const { 
     setEstablishment,
     filterK12,
@@ -331,7 +334,13 @@ const Header: React.FC<HeaderProps> = ({
         
         <div className="flex items-center gap-3">
           {/* Expand/Collapse Button */}
-          <button className="w-8 h-8 rounded-full flex items-center justify-center text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)] transition-colors">
+          <button 
+            onClick={() => {
+              setIsContainerExpanded(!isContainerExpanded);
+              onContainerExpandChange?.(!isContainerExpanded);
+            }}
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
               <path d="M15 4v16"></path>
