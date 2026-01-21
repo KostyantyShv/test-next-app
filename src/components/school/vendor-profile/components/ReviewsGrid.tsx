@@ -132,11 +132,16 @@ const ReviewCard: React.FC<{
   const [isReportActive, setIsReportActive] = useState(false);
 
   const handleHelpfulClick = () => {
-    setIsHelpfulActive((prev) => {
-      const next = !prev;
-      setHelpfulCount((c) => (next ? c + 1 : Math.max(0, c - 1)));
-      return next;
-    });
+    const wasActive = isHelpfulActive;
+    const newActive = !wasActive;
+    
+    setIsHelpfulActive(newActive);
+    
+    if (newActive) {
+      setHelpfulCount((c) => c + 1);
+    } else {
+      setHelpfulCount((c) => Math.max(0, c - 1));
+    }
   };
 
   const handleReportClick = () => {
