@@ -155,16 +155,11 @@ export const OffersGrid: React.FC = () => {
     <div>
       <div className="mx-auto">
         {/* Mobile Header */}
-        <div className="lg:hidden mb-4">
-          <h1 className="text-xl font-semibold text-[#016853] flex items-center gap-2">
-            <BriefcaseIcon className="w-6 h-6" />
-            Offers
-          </h1>
-        </div>
+        
 
         <div>
           {/* Mobile Layout */}
-          <div className="lg:hidden flex flex-col gap-4 w-full">
+          <div className="lg:hidden flex flex-col gap-4 w-full pt-4 px-4">
             {offerData.map((offer, index) => {
               const imageUrl = offerImages[index % offerImages.length];
 
@@ -238,7 +233,7 @@ export const OffersGrid: React.FC = () => {
           </div>
 
           {/* Desktop Layout */}
-          <div className="hidden lg:grid grid-cols-3 gap-6 w-full">
+          <div className="hidden lg:grid grid-cols-3 gap-6 w-full pt-8">
             {offerData.map((offer, index) => {
               const imageUrl = offerImages[index % offerImages.length];
 

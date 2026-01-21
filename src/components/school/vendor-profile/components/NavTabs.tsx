@@ -115,11 +115,11 @@ export default function NavTabs() {
   ];
 
   return (
-    <nav className="flex gap-8 border-b border-[#E5E7EB] mb-8 pb-0.5 overflow-x-auto">
+    <nav className="flex gap-4 md:gap-8 border-b border-[#E5E7EB] mb-6 md:mb-8 pb-3 md:pb-0.5 overflow-x-auto scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
       {tabs.map((tab) => (
         <div
           key={tab.id}
-          className={`flex items-center gap-2 px-1 py-3 text-[#5F5F5F] font-medium cursor-pointer border-b-2 transition-all whitespace-nowrap ${
+          className={`flex items-center gap-2 px-3 md:px-1 py-2 md:py-3 text-sm md:text-base text-[#5F5F5F] font-medium cursor-pointer border-b-2 transition-all whitespace-nowrap ${
             activeTab === tab.id
               ? "text-[#016853] border-[#016853]"
               : "border-transparent"
@@ -128,7 +128,7 @@ export default function NavTabs() {
             router.push(`${pathname}?tab=${tab.id}`);
           }}
         >
-          <span className="w-5 h-5">{tab.icon}</span>
+          <span className="w-[18px] h-[18px] md:w-5 md:h-5">{tab.icon}</span>
           {tab.label}
         </div>
       ))}

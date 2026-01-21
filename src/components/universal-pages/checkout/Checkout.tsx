@@ -66,7 +66,7 @@ export default function Checkout() {
         {/* Sidebar */}
         <div className="lg:sticky lg:top-6 self-start mt-4 lg:mt-0">
           <div className="bg-white rounded-xl md:rounded-2xl p-5 md:p-8 shadow-sm">
-            <div className="flex justify-between items-center mb-5 md:mb-6">
+            <div className="flex justify-between items-center mb-5 md:mb-6 px-4 mt-4 md:mt-0">
               <h2 className="text-lg md:text-xl font-semibold text-[#1B1B1B]">Payment Details</h2>
               <span className="text-xs md:text-sm text-[#5F5F5F] font-medium">
                 {cartItems.length} ITEMS

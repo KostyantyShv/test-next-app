@@ -127,17 +127,16 @@ const ReviewCard: React.FC<{
   avatarUrl: string;
   productImageUrl: string;
 }> = ({ review, avatarUrl, productImageUrl }) => {
-  const [helpfulCount, setHelpfulCount] = useState(10);
+  const [helpfulCount, setHelpfulCount] = useState(review.helpfulCount);
   const [isHelpfulActive, setIsHelpfulActive] = useState(false);
   const [isReportActive, setIsReportActive] = useState(false);
 
   const handleHelpfulClick = () => {
-    if (isHelpfulActive) {
-      setHelpfulCount((prev) => prev - 1);
-    } else {
-      setHelpfulCount((prev) => prev + 1);
-    }
-    setIsHelpfulActive((prev) => !prev);
+    setIsHelpfulActive((prev) => {
+      const next = !prev;
+      setHelpfulCount((c) => (next ? c + 1 : Math.max(0, c - 1)));
+      return next;
+    });
   };
 
   const handleReportClick = () => {
@@ -210,27 +209,23 @@ const ReviewCard: React.FC<{
         </div>
       </div>
 
-      <div className="pt-4 pt-4 flex justify-between text-xs text-gray-500 font-medium">
-        <div
-          onClick={handleHelpfulClick}
-          className={`
-            review-action helpful-action
-            cursor-pointer flex items-center gap-1 select-none
-            text-sm font-medium text-gray-500
-            rounded-md px-2.5 py-1.5
-            transition-colors duration-200
-            hover:bg-gray-100 hover:text-[#016853]
-            ${
-              isHelpfulActive
-                ? "bg-[#0168531a] text-[#016853] font-semibold"
-                : ""
-            }
-          `}
-          style={{ userSelect: "none" }}
-        >
-          {ICONS.helpful}
-          Helpful ({review.helpfulCount})
-        </div>
+      <div className="pt-4 flex justify-between text-xs text-gray-500 font-medium">
+      <div
+        onClick={handleHelpfulClick}
+        className={`
+          review-action helpful-action
+          cursor-pointer flex items-center gap-1 select-none
+          text-sm font-medium text-gray-500
+          rounded-md px-2.5 py-1.5
+          transition-colors duration-200
+          hover:bg-gray-100 hover:text-[#016853]
+          ${isHelpfulActive ? "bg-[#0168531a] text-[#016853] font-semibold" : ""}
+        `}
+        style={{ userSelect: "none" }}
+      >
+        {ICONS.helpful}
+        Helpful ({helpfulCount})
+      </div>
 
         <div
           onClick={handleReportClick}
@@ -257,10 +252,8 @@ const ReviewsGrid: React.FC<ReviewsGridProps> = ({ reviews = mockReviews }) => {
   return (
     <div className={`${inter.className} text-[#4A4A4A]`}>
       <div className="mx-auto">
-        <div className="bg-white">
-          
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="md:bg-white">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4 md:pt-8 px-4 md:px-0">
             {reviews.map((review, idx) => (
               <ReviewCard
                 key={idx}

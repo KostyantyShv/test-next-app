@@ -163,7 +163,7 @@ const ConnectionsGrid: React.FC = () => {
 
   return (
     <div className={`${inter.className} text-[#4A4A4A]`}>
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center px-4 mt-4 md:mt-0">
         <div className="text-lg font-semibold text-[#464646]">
           {headerTitle}
         </div>
@@ -193,7 +193,7 @@ const ConnectionsGrid: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4 md:pt-8 px-4 md:px-0">
         {followersData.map((follower, index) => (
           <div
             key={index}
@@ -225,7 +225,7 @@ const ConnectionsGrid: React.FC = () => {
                 </div>
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black/80 text-white px-2.5 py-1.5 rounded text-xs whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 pointer-events-none">
                   Location
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-solid border-black/80 border-t-transparent border-l-transparent border-r-transparent"></div>
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-solid border-black/80 border-b-transparent border-l-transparent border-r-transparent"></div>
                 </div>
               </div>
 
@@ -238,7 +238,7 @@ const ConnectionsGrid: React.FC = () => {
                 </div>
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black/80 text-white px-2.5 py-1.5 rounded text-xs whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 pointer-events-none">
                   Following
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-solid border-black/80 border-t-transparent border-l-transparent border-r-transparent"></div>
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-solid border-black/80 border-b-transparent border-l-transparent border-r-transparent"></div>
                 </div>
               </div>
 
@@ -251,7 +251,7 @@ const ConnectionsGrid: React.FC = () => {
                 </div>
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black/80 text-white px-2.5 py-1.5 rounded text-xs whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 pointer-events-none">
                   Reviews
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-solid border-black/80 border-t-transparent border-l-transparent border-r-transparent"></div>
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-solid border-black/80 border-b-transparent border-l-transparent border-r-transparent"></div>
                 </div>
               </div>
             </div>

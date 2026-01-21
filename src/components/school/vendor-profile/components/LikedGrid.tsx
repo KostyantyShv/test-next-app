@@ -221,11 +221,11 @@ const SchoolCard: React.FC<{ school: School }> = ({ school }) => {
 
     return (
       <div
-        className={`bg-white font-semibold text-xs flex items-center gap-1 rounded-full px-3 py-2 w-fit absolute top-2 left-3 ${
+        className={`bg-white font-semibold text-[11px] md:text-xs flex items-center gap-1 rounded-full px-2.5 md:px-3 py-1.5 md:py-2 w-fit absolute top-2 left-2 md:left-3 shadow-[0_2px_4px_rgba(0,0,0,0.1)] md:shadow-none ${
           specialtyClasses[school.specialty]
         }`}
       >
-        {specialtyIcons[school.specialty]}
+        <div className="w-3.5 h-3.5 md:w-4 md:h-4">{specialtyIcons[school.specialty]}</div>
         {school.specialty === "hot" && "High demand"}
         {school.specialty === "instant-book" && "Instant book"}
         {school.specialty === "sponsored" && "Sponsored"}
@@ -234,10 +234,10 @@ const SchoolCard: React.FC<{ school: School }> = ({ school }) => {
   };
 
   return (
-    <div className="bg-white w-full rounded-xl overflow-hidden transition-all duration-300 ease-in-out relative border border-transparent hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:-translate-y-1 hover:border-gray-200 group">
-      <div className="relative w-full h-[160px] overflow-hidden">
-        <div className="absolute top-2 p-2 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#4A4A4A] transition-all duration-200 ease-in-out hover:bg-[#EBFCF4] hover:text-[#016853] z-10">
-          {ICONS.like}
+    <div className="bg-white w-full rounded-xl overflow-hidden transition-all duration-300 ease-in-out relative border border-gray-200 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:-translate-y-1 hover:border-gray-300 group shadow-[0_2px_8px_rgba(0,0,0,0.08)] md:shadow-none">
+      <div className="relative w-full h-[140px] md:h-[160px] overflow-hidden">
+        <div className="absolute top-2 right-2 md:top-2 md:right-3 w-7 h-7 md:w-8 md:h-8 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#4A4A4A] transition-all duration-200 ease-in-out hover:bg-[#EBFCF4] hover:text-[#016853] z-10 shadow-[0_2px_4px_rgba(0,0,0,0.1)] md:shadow-none">
+          <div className="w-3.5 h-3.5 md:w-4 md:h-4">{ICONS.like}</div>
         </div>
         {getSpecialtyLabel()}
         <img
@@ -245,31 +245,31 @@ const SchoolCard: React.FC<{ school: School }> = ({ school }) => {
           alt={school.name}
           className="w-full h-full object-cover"
         />
-        <div className="absolute bottom-0 left-2.5 bg-white px-2 py-1 text-xs font-semibold text-[#464646] tracking-wider uppercase rounded-t-md shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
+        <div className="absolute bottom-0 left-[10px] md:left-2.5 bg-white px-2 py-0 md:px-2 md:py-1 text-[11px] md:text-xs font-semibold text-[#464646] tracking-wider uppercase rounded-t-md md:rounded-t-md shadow-[0_-1px_4px_rgba(0,0,0,0.1)] h-6 md:h-auto flex items-center">
           {school.schoolType}
         </div>
       </div>
 
-      <div className="p-4 min-h-[168px] h-[168px] flex flex-col justify-between">
+      <div className="p-3 md:p-4 min-h-auto md:min-h-[168px] md:h-[168px] flex flex-col justify-between">
         <div>
-          <div className="text-[#089E68] text-xs font-medium mb-2 truncate">
+          <div className="text-[#089E68] text-[13px] md:text-xs font-medium md:font-medium mb-1.5 md:mb-2 truncate">
             {school.ranking}
           </div>
-          <h3 className="text-base font-semibold text-[#464646] mb-2 leading-[1.4] line-clamp-2">
+          <h3 className="text-base md:text-base font-semibold text-[#464646] mb-1.5 md:mb-2 leading-[1.4] line-clamp-2">
             {school.name}
           </h3>
 
-          <div className="flex gap-3 text-xs">
-            <div className="flex items-center gap-1.5 text-[#5F5F5F] h-[32px] whitespace-nowrap">
-              <div className="w-[16px] h-[16px] flex items-center justify-center shrink-0">
+          <div className="flex flex-wrap gap-2 md:gap-3 text-[13px] md:text-xs">
+            <div className="flex items-center gap-1.5 md:gap-1.5 text-[#5F5F5F] h-auto md:h-[32px] whitespace-nowrap">
+              <div className="w-4 h-4 md:w-[16px] md:h-[16px] flex items-center justify-center shrink-0">
                 {React.cloneElement(ICONS.location, {
-                  className: "w-[32px] h-[32px]",
+                  className: "w-4 h-4 md:w-[32px] md:h-[32px]",
                 })}
               </div>
               <span className="text-[#464646]">{school.location}</span>
             </div>
 
-            <div className="flex items-center gap-1.5 text-[#5F5F5F] h-[32px] whitespace-nowrap">
+            <div className="hidden md:flex items-center gap-1.5 text-[#5F5F5F] h-[32px] whitespace-nowrap">
               <div className="w-[16px] h-[16px] flex items-center justify-center shrink-0">
                 {React.cloneElement(ICONS.ratio, {
                   className: "w-[32px] h-[32px]",
@@ -278,10 +278,10 @@ const SchoolCard: React.FC<{ school: School }> = ({ school }) => {
               <span className="text-[#464646]">{school.ratio}</span>
             </div>
 
-            <div className="flex items-center gap-1.5 text-[#5F5F5F] h-[32px] whitespace-nowrap">
-              <div className="w-[16px] h-[16px] flex items-center justify-center shrink-0">
+            <div className="flex items-center gap-1.5 md:gap-1.5 text-[#5F5F5F] h-auto md:h-[32px] whitespace-nowrap">
+              <div className="w-4 h-4 md:w-[16px] md:h-[16px] flex items-center justify-center shrink-0">
                 {React.cloneElement(ICONS.star, {
-                  className: "w-[32px] h-[32px]",
+                  className: "w-4 h-4 md:w-[32px] md:h-[32px]",
                 })}
               </div>
               <span className="text-[#464646]">{school.rating}</span>
@@ -290,16 +290,16 @@ const SchoolCard: React.FC<{ school: School }> = ({ school }) => {
         </div>
       </div>
 
-      <div className="px-4 py-4 border-t border-[rgba(1,104,83,0.1)] flex items-center justify-between">
+      <div className="px-3 py-3 md:px-4 md:py-4 border-t border-[rgba(1,104,83,0.1)] flex items-center justify-between">
         <div className="flex items-center gap-2 font-semibold text-[#016853]">
-          <div className="w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-sm font-semibold">
+          <div className="w-7 h-7 md:w-8 md:h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-xs md:text-sm font-semibold">
             {school.grade}
           </div>
         </div>
-        <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F]">
-          <div className="w-[16px] h-[16px] flex items-center justify-center shrink-0">
+        <div className="flex items-center gap-1.5 text-xs md:text-sm text-[#5F5F5F]">
+          <div className="w-4 h-4 md:w-[16px] md:h-[16px] flex items-center justify-center shrink-0">
             {React.cloneElement(ICONS.students, {
-              className: "w-[32px] h-[32px]",
+              className: "w-4 h-4 md:w-[32px] md:h-[32px] text-[#089E68] md:text-current",
             })}
           </div>
           <span>Students: {school.students}</span>
@@ -313,23 +313,8 @@ export const LikedGrid: React.FC = () => {
   return (
     <div className={`${inter.className} text-[#4A4A4A]`}>
       <div className="mx-auto">
-        <div className="bg-white">
-          <nav className="flex gap-8 border-b border-gray-200 mb-8 pb-1 overflow-x-auto">
-            <div className="flex items-center gap-2 py-3 text-[#016853] font-medium border-b-2 border-[#016853] whitespace-nowrap">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 16 16">
-                <path
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  d="M10.7408 2C13.0889 2 14.6667 4.235 14.6667 6.32C14.6667 10.5425 8.11856 14 8.00004 14C7.88152 14 1.33337 10.5425 1.33337 6.32C1.33337 4.235 2.91115 2 5.2593 2C6.60745 2 7.48893 2.6825 8.00004 3.2825C8.51115 2.6825 9.39263 2 10.7408 2Z"
-                ></path>
-              </svg>
-              Liked
-            </div>
-          </nav>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="md:bg-white">
+          <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-4 py-4 md:px-0 md:pt-8 md:pb-0">
             {schools.map((school, index) => (
               <SchoolCard key={index} school={school} />
             ))}

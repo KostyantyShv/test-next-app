@@ -55,21 +55,30 @@ export default function VendorProfile() {
     }
   };
   return (
-    <div className="bg-[#E1E7EE] min-h-screen py-10">
-      <div className="w-full max-w-[1650px] mx-auto px-5">
+    <div className="bg-[#E1E7EE] min-h-screen pb-8">
+      <div className="w-full max-w-[1650px] mx-auto md:px-0">
         <div className="w-full max-w-[1300px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8">
-          <div className="bg-white rounded-2xl p-8 shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
-            <ProfileHeader
-              name="Lincoln University"
-              avatar="https://i.ibb.co/XkdtT1Yj/product2.png"
-              rating="4.9"
-              reviews={575}
-              followers={111}
-              following={98}
-              isFollowing={false}
-            />
-            <NavTabs />
-            {renderTabContent()}
+          <div>
+            <div className="bg-white px-4 pt-4 pb-0 md:px-8 md:pt-8 md:pb-8 shadow-[0_1px_3px_rgba(0,0,0,0.1)] overflow-hidden sm:rounded-none md:rounded-2xl">
+              <ProfileHeader
+                name="Lincoln University"
+                avatar="https://i.ibb.co/XkdtT1Yj/product2.png"
+                rating="4.9"
+                reviews={575}
+                followers={111}
+                following={98}
+                isFollowing={false}
+              />
+              <div className="-mx-4 px-4 md:mx-0 md:px-0">
+                <NavTabs />
+              </div>
+              <div className="hidden lg:block">
+                {renderTabContent()}
+              </div>
+            </div>
+            <div className="lg:hidden px-0">
+              {renderTabContent()}
+            </div>
           </div>
           <ProfileSidebar />
         </div>

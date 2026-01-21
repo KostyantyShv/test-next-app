@@ -180,7 +180,7 @@ const schools: School[] = [
 
 export default function SchoolsGrid() {
   return (
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6 w-full">
+    <div className="flex flex-col md:grid md:grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4 md:gap-6 w-full pt-4 md:pt-8 px-4 md:px-0">
       {schools.map((school) => (
         <div
           key={school.name}
@@ -189,7 +189,7 @@ export default function SchoolsGrid() {
           <div className="hidden lg:flex flex-col flex-grow">
             <div className="relative w-full h-40 overflow-hidden bg-gray-200 flex-shrink-0">
               <div className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all z-10">
-                <span className="w-4 h-4 mr-1">{ICONS.like}</span>
+                <span className="w-4 h-4">{ICONS.like}</span>
               </div>
               {school.specialty === "hot" && (
                 <div className="absolute top-3 left-3 h-8 bg-white rounded-2xl flex items-center px-3 cursor-pointer text-[#FF4D4D] text-xs font-medium shadow-[0_2px_4px_rgba(0,0,0,0.1)] z-10">
@@ -253,56 +253,57 @@ export default function SchoolsGrid() {
             </div>
           </div>
 
-          <div className="lg:hidden p-3 flex gap-3 w-full">
-            <img
-              src={school.image}
-              alt={school.name}
-              className="w-[100px] h-[70px] rounded-lg object-cover flex-shrink-0"
-            />
-            <div className="flex flex-col justify-between flex-1 min-w-0">
-              <div>
-                <div className="text-[#089E68] text-xs mb-1 font-medium truncate">
-                  {school.ranking}
+          {/* Mobile Layout */}
+          <div className="lg:hidden">
+            <div className="p-3 flex gap-3">
+              <img
+                src={school.image}
+                alt={school.name}
+                className="w-[120px] h-[80px] rounded-lg object-cover flex-shrink-0"
+              />
+              <div className="flex flex-col justify-between flex-1 min-w-0 pr-2">
+                <div>
+                  <div className="text-[#089E68] text-xs mb-1 font-medium max-w-[155px] whitespace-nowrap overflow-hidden text-ellipsis">
+                    {school.ranking}
+                  </div>
+                  <div className="text-[11px] font-semibold text-[#6F767E] uppercase mb-2">
+                    {school.schoolType}
+                  </div>
+                  <h3 className="text-[15px] font-semibold text-[#464646] leading-[1.4] line-clamp-2 mb-1 break-words pr-2">
+                    {school.name}
+                  </h3>
                 </div>
-                <h3 className="text-[15px] font-semibold text-[#464646] leading-[1.4] line-clamp-2 break-words">
-                  {school.name}
-                </h3>
-              </div>
-              <div className="flex flex-wrap gap-2 mt-1">
-                <div className="flex items-center gap-1 text-xs text-[#6F767E]">
-                  <span className="w-3.5 h-3.5 flex-shrink-0">
-                    {ICONS.location}
-                  </span>
-                  <span className="truncate">{school.location}</span>
-                </div>
-                <div className="flex items-center gap-1 text-xs text-[#6F767E]">
-                  <span className="w-3.5 h-3.5 flex-shrink-0">
-                    {ICONS.ratio}
-                  </span>
-                  <span>{school.ratio}</span>
-                </div>
-                <div className="flex items-center gap-1 text-xs text-[#6F767E]">
-                  <span className="w-3.5 h-3.5 flex-shrink-0">
-                    {ICONS.star}
-                  </span>
-                  <span>{school.rating}</span>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <div className="flex items-center gap-1 text-xs text-[#6F767E]">
+                    <span className="w-3.5 h-3.5 flex-shrink-0 text-[#6F767E]">
+                      {ICONS.location}
+                    </span>
+                    <span className="truncate">{school.location}</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs text-[#6F767E]">
+                    <span className="w-3.5 h-3.5 flex-shrink-0">
+                      {ICONS.star}
+                    </span>
+                    <span>
+                      <strong className="font-semibold text-[#464646]">4.9</strong> (875)
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="lg:hidden px-3 py-3 flex items-center justify-between bg-[#F8F9FA] border-t border-[rgba(1,104,83,0.1)]">
-            <div className="flex items-center gap-2 font-semibold text-[#016853]">
-              <div className="w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
-                {school.grade}
+            <div className="px-3 py-3 flex items-center justify-between bg-[#F8F9FA] border-t border-[rgba(1,104,83,0.1)]">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
+                  {school.grade}
+                </div>
               </div>
-              <span>Grade</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm text-[#5F5F5F]">
-              <span className="w-4 h-4 text-[#089E68] flex-shrink-0">
-                {ICONS.students}
-              </span>
-              <span className="truncate">Students: {school.students}</span>
+              <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                <span className="w-4 h-4 text-[#089E68] flex-shrink-0">
+                  {ICONS.students}
+                </span>
+                <span>Students: {school.students}</span>
+              </div>
             </div>
           </div>
         </div>

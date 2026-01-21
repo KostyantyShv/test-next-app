@@ -73,20 +73,6 @@ const PRO_BADGE_SVG = (
   </svg>
 );
 
-const FOLLOWING_CHECK = (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="w-4 h-4"
-  >
-    <path d="M20 6L9 17L4 12"></path>
-  </svg>
-);
-
 export default function MembersGrid() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -119,11 +105,16 @@ export default function MembersGrid() {
     router.push(url.toString());
   };
 
+  const truncateName = (name: string, maxLength: number = 12) => {
+    if (name.length <= maxLength) return name;
+    return name.substring(0, maxLength) + "...";
+  };
+
   return (
     <div className={`${inter.className} text-[#4A4A4A]`}>
-      <div className="flex justify-between items-center mb-6">
-        <div className="text-lg font-semibold text-[#464646]">4 Members</div>
-        <div className="text-sm text-[#6F767E]">
+      <div className="flex justify-between items-center px-4 mt-4 md:mt-0">
+        <div className="text-base md:text-lg font-semibold text-[#464646]">4 Members</div>
+        <div className="text-[13px] md:text-sm text-[#6F767E]">
           Sort:{" "}
           <span
             className={`cursor-pointer hover:underline ${
@@ -149,73 +140,66 @@ export default function MembersGrid() {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-6">
+      <div className="flex flex-col md:grid md:grid-cols-3 gap-4 md:gap-2 pt-4 md:pt-8 px-4 md:px-0">
         {membersData.map((member, index) => (
           <div
             key={index}
-            className="bg-white rounded-xl w-[348px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E5E7EB] flex flex-col transition-all hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(0,0,0,0.08)] pb-2"
+            className="bg-white rounded-xl w-full overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E5E7EB] flex flex-col transition-all hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(0,0,0,0.08)] pb-2"
           >
-            <div className="flex p-6 relative">
+            <div className="flex p-4 md:px-4 md:py-6 relative">
               <div className="relative flex-shrink-0">
                 <img
                   src={member.avatar}
                   alt={member.name}
-                  className="w-[60px] h-[60px] rounded-full object-cover"
+                  className="w-12 h-12 md:w-[60px] md:h-[60px] rounded-full object-cover"
                 />
                 {member.isPro && (
-                  <div className="absolute bottom-[5px] left-1/2 -translate-x-1/2 flex items-center justify-center text-white rounded-[3px] px-[3px] py-[1px] text-[8px] font-semibold uppercase bg-[#016853] z-10">
+                  <div className="absolute md:bottom-[1px] bottom-[6px] left-1/2 -translate-x-1/2 flex items-center justify-center text-white rounded-[3px] px-[3px] py-[1px] text-[8px] font-semibold uppercase bg-[#016853] z-10">
                     {PRO_BADGE_SVG}
                     <span className="ml-0.5">PRO</span>
                   </div>
                 )}
               </div>
-              <div className="pl-4 flex-1 min-w-0">
+              <div className="pl-3 md:pl-4 flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <div className="text-base font-semibold text-[#464646]">
-                    {member.name}
+                  <div className="text-[15px] md:text-base font-semibold text-[#464646]">
+                    {truncateName(member.name)}
                   </div>
                 </div>
-                <div className="flex flex-col gap-1">
-                  <div className="text-[13px] text-[#6F767E]">
+                <div className="flex flex-col gap-0.5 md:gap-1">
+                  <div className="text-xs md:text-[13px] text-[#6F767E]">
                     Joined {member.joined}
                   </div>
-                  <div className="text-[13px] text-[#6F767E]">
+                  <div className="text-xs md:text-[13px] text-[#6F767E]">
                     {member.location}
                   </div>
                 </div>
               </div>
               <button
-                className={`absolute top-6 right-6 flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                className={`absolute top-4 right-4 md:top-6 md:right-4 flex items-center justify-center gap-1 md:gap-2 rounded-lg px-3 py-1.5 md:px-2 md:py-1.5 text-xs font-medium transition-all ${
                   followingStates[index]
                     ? "bg-[rgba(1,104,83,0.1)] text-[#016853]"
                     : "bg-[#F5F5F7] text-[#4A4A4A] hover:bg-[#E8E8EA]"
                 }`}
                 onClick={() => handleFollowClick(index)}
               >
-                {followingStates[index] ? (
-                  <>
-                    {FOLLOWING_CHECK}
-                    Following
-                  </>
-                ) : (
-                  "Follow"
-                )}
+                {followingStates[index] ? "Following" : "Follow"}
               </button>
             </div>
 
             {member.hasListings && member.listings ? (
-              <div className="grid grid-cols-3 gap-1 px-4 pb-1 h-[88px]">
+              <div className="grid grid-cols-3 gap-1 px-3 md:px-4 pb-1 h-auto md:h-[88px]">
                 {member.listings.slice(0, 3).map((listing, i) => (
                   <img
                     key={i}
                     src={listing}
                     alt="Listing"
-                    className="w-full h-[80px] object-cover rounded-lg"
+                    className="w-full h-[70px] md:h-[80px] object-cover rounded-md md:rounded-lg"
                   />
                 ))}
               </div>
             ) : (
-              <div className="flex items-center justify-center w-[85%] h-[80px] mx-auto mb-2 bg-[#F8F9FA] text-[#6F767E] text-sm font-medium rounded-[10px]">
+              <div className="flex items-center justify-center w-[85%] h-[70px] md:h-[80px] mx-auto mb-2 bg-[#F8F9FA] text-[#6F767E] text-sm font-medium rounded-lg md:rounded-[10px]">
                 No Listings
               </div>
             )}
