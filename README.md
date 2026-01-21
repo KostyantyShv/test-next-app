@@ -2,6 +2,19 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### Environment Variables Setup
+
+Before running the development server, you need to set up environment variables. 
+
+1. Create a `.env.local` file in the root directory
+2. Copy the template from [ENV_TEMPLATE.md](./ENV_TEMPLATE.md) and fill in your values
+
+Required environment variables:
+- `NEXT_PUBLIC_SUPABASE_URL` - Your Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Your Supabase anonymous key
+- `NEXT_PUBLIC_BUNNY_STREAM_API_KEY` - Your Bunny Stream API key
+- `NEXT_PUBLIC_BUNNY_STREAM_LIBRARY_ID` - Your Bunny Stream library ID
+
 First, run the development server:
 
 ```bash
