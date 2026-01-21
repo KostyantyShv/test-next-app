@@ -231,6 +231,7 @@ const TeamMembersDashboardDesktop: React.FC<
           ? new Date(rawDate).toLocaleDateString("en-US", {
               month: "long",
               day: "numeric",
+              year: "numeric",
             })
           : "";
 

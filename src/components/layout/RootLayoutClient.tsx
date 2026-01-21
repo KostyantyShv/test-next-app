@@ -27,6 +27,9 @@ export const RootLayoutClient = ({
   
   // Check if current route is an auth route
   const isAuthRoute = AUTH_ROUTES.some(route => pathname?.startsWith(route));
+  
+  // Check if current route is team-members-dashboard (hide header on mobile)
+  const isTeamMembersPage = pathname?.startsWith("/team-members-dashboard");
 
   // If auth route, render children without layout
   if (isAuthRoute) {
@@ -51,11 +54,21 @@ export const RootLayoutClient = ({
         </div>
 
         <div className="flex-1 flex flex-col">
-          {/* Header with mobile menu button */}
-          <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} />
-          
-          {/* Spacer to maintain gap under sticky header */}
-          <div className="h-[12px] flex-shrink-0" />
+          {/* Header with mobile menu button - hide on mobile for team-members-dashboard */}
+          {!(isTeamMembersPage) && (
+            <>
+              <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} />
+              {/* Spacer to maintain gap under sticky header */}
+              <div className="h-[12px] flex-shrink-0" />
+            </>
+          )}
+          {/* Show header on desktop even for team-members-dashboard */}
+          {isTeamMembersPage && (
+            <div className="hidden md:block">
+              <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} />
+              <div className="h-[12px] flex-shrink-0" />
+            </div>
+          )}
 
           {/* Main Content */}
           <main
@@ -69,8 +82,8 @@ export const RootLayoutClient = ({
             <PageContainer>{children}</PageContainer>
           </main>
 
-          {/* Mobile Navigation - show only when player is not visible */}
-          {!isPlayerVisible && <MobileNavigation />}
+          {/* Mobile Navigation - show only when player is not visible and not on team-members-dashboard */}
+          {!isPlayerVisible && !isTeamMembersPage && <MobileNavigation />}
 
           {/* Audio Player - show when visible */}
           {isPlayerVisible && <AudioPlayer />}

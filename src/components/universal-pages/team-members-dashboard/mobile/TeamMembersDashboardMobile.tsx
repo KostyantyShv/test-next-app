@@ -18,6 +18,24 @@ import { SearchBar } from "./SearchBar";
 import { ActionsDrawer } from "./drawers/ActionsDrawer";
 // import { FiltersDrawer } from "./drawers/FiltersDrawer";
 
+const allListings = [
+  {
+    id: 1,
+    name: "Harvard University",
+    image: "https://i.ibb.co/fGKH7fDq/product2.png",
+  },
+  {
+    id: 2,
+    name: "Stanford University",
+    image: "https://i.ibb.co/fGKH7fDq/product2.png",
+  },
+  {
+    id: 3,
+    name: "Massachusetts Institute of Technology",
+    image: "https://i.ibb.co/63Y8x85/product3.jpg",
+  },
+];
+
 interface TeamMembersMobileProps {
   initialMembers?: TeamMember[];
   ownerId: string;
@@ -237,7 +255,7 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
 
   return (
     <div 
-      className="h-[740px] overflow-hidden flex flex-col"
+      className="min-h-screen flex flex-col"
       style={{ backgroundColor: '#E1E7EE' }}
     >
       <Header
@@ -334,9 +352,31 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
       />
       <AssignToListingDrawer
         isOpen={isAssignToListingDrawerOpen}
+        currentMemberId={currentMemberId}
+        members={members}
         onClose={closeDrawer}
-        onSave={() => {
-          closeDrawer(); /* Placeholder */
+        onSave={(memberId, selectedListingIds) => {
+          const selectedListings = allListings
+            .filter((listing) => selectedListingIds.includes(listing.id))
+            .map((listing) => ({
+              id: listing.id,
+              name: listing.name,
+              image: listing.image,
+            }));
+          
+          setMembers((prev) => {
+            const updated = prev.map((member) => {
+              if (member.id === memberId) {
+                return {
+                  ...member,
+                  listings: [...selectedListings], // Створюємо новий масив
+                };
+              }
+              return member;
+            });
+            return updated;
+          });
+          closeDrawer();
         }}
       />
       <DeleteConfirmationDrawer

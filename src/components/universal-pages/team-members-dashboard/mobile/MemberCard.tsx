@@ -22,10 +22,27 @@ export const MemberCard: React.FC<MemberCardProps> = ({
             />
           </div>
           <div className="flex flex-col justify-center min-w-0">
-            <div className="text-base font-semibold text-gray-700 mb-1 truncate">
+            <div 
+              className="mb-1 truncate"
+              style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: '#464646',
+                fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+              }}
+            >
               {member.firstName} {member.lastName}
             </div>
-            <div className="text-sm text-gray-500 truncate">{member.email}</div>
+            <div 
+              className="truncate"
+              style={{
+                fontSize: '14px',
+                color: '#6B7280',
+                fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+              }}
+            >
+              {member.email}
+            </div>
           </div>
         </div>
         <div className="flex-shrink-0">
@@ -35,7 +52,7 @@ export const MemberCard: React.FC<MemberCardProps> = ({
             aria-label="Member Actions"
           >
             <svg
-              className="w-4.5 h-4.5"
+              className="w-5 h-5"
               viewBox="0 0 24 24"
               fill="currentColor"
             >
@@ -51,13 +68,29 @@ export const MemberCard: React.FC<MemberCardProps> = ({
           ) : member.listings.length > 0 ? (
             <>
               <span
-                className="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-800 max-w-[180px] truncate"
+                className="px-2.5 py-1 rounded-full max-w-[180px] truncate"
                 title={member.listings[0].name}
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 500,
+                  backgroundColor: '#e4e4e4',
+                  color: '#343332',
+                  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+                }}
               >
                 {member.listings[0].name}
               </span>
               {member.listings.length > 1 && (
-                <div className="flex items-center justify-center w-[22px] h-[22px] rounded-full bg-gray-200 text-gray-600 text-[11px] font-semibold flex-shrink-0">
+                <div 
+                  className="flex items-center justify-center w-[22px] h-[22px] rounded-full flex-shrink-0"
+                  style={{
+                    backgroundColor: '#E5E7EB',
+                    color: '#4B5563',
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+                  }}
+                >
                   +{member.listings.length - 1}
                 </div>
               )}
@@ -69,7 +102,14 @@ export const MemberCard: React.FC<MemberCardProps> = ({
         </div>
       </div>
       <div className="flex justify-start items-center flex-wrap gap-2">
-        <div className="text-xs text-gray-500">
+        <div 
+          style={{
+            fontSize: '12px',
+            color: '#6B7280',
+            whiteSpace: 'nowrap',
+            fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+          }}
+        >
           Last active: {member.lastActive}
         </div>
       </div>

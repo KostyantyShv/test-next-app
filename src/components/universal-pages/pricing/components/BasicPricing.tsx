@@ -802,7 +802,7 @@ const ProfileManagementCard: React.FC<any> = ({
 }) => {
   return (
     <div className="w-full max-w-[900px] max-md:max-w-[390px] mx-auto bg-white rounded-2xl shadow-md border border-[#E7E7E7] border-t-4 border-t-[#0B6333] flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-8 p-6 md:p-8 hover:shadow-lg hover:-translate-y-1 transition-all">
-      <div className="flex flex-col justify-between order-1">
+      <div className="flex flex-col gap-4 order-1">
         <div>
           <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-3 text-[#1B1B1B]">Profile Management</h2>
           <p className="text-sm md:text-[15px] leading-relaxed text-[#5F5F5F]">

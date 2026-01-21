@@ -32,8 +32,14 @@ export const ActionsDrawer: React.FC<ActionsDrawerProps> = ({
       title=""
       footer={
         <button
-          className="w-full text-center py-3 rounded-lg text-sm font-semibold text-blue-600 bg-white hover:bg-gray-100"
+          className="w-full text-center py-3 rounded-lg bg-white hover:bg-gray-100"
           onClick={onClose}
+          style={{
+            fontSize: '15px',
+            fontWeight: 600,
+            color: '#2563EB',
+            fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+          }}
         >
           Cancel
         </button>
@@ -43,21 +49,36 @@ export const ActionsDrawer: React.FC<ActionsDrawerProps> = ({
         {currentMemberId && (
           <>
             <button
-              className="w-full text-left px-5 py-4 text-base text-gray-600 border-b border-gray-100 hover:bg-gray-100"
+              className="w-full text-left px-5 py-4 border-b border-gray-100 hover:bg-gray-100"
               onClick={onEditClick}
+              style={{
+                fontSize: '15px',
+                color: '#4A4A4A',
+                fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+              }}
             >
               Edit
             </button>
             <button
-              className="w-full text-left px-5 py-4 text-base text-gray-600 border-b border-gray-100 hover:bg-gray-100"
+              className="w-full text-left px-5 py-4 border-b border-gray-100 hover:bg-gray-100"
               onClick={onActivityLogClick}
+              style={{
+                fontSize: '15px',
+                color: '#4A4A4A',
+                fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+              }}
             >
               Activity Log
             </button>
             {!currentMember?.isAdmin && (
               <button
-                className="w-full text-left px-5 py-4 text-base text-gray-600 border-b border-gray-100 hover:bg-gray-100"
+                className="w-full text-left px-5 py-4 border-b border-gray-100 hover:bg-gray-100"
                 onClick={onAssignToListingClick}
+                style={{
+                  fontSize: '15px',
+                  color: '#4A4A4A',
+                  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+                }}
               >
                 Assign to Listing
               </button>
@@ -65,15 +86,25 @@ export const ActionsDrawer: React.FC<ActionsDrawerProps> = ({
             {(currentMember?.status === "pending" ||
               currentMember?.status === "rejected") && (
               <button
-                className="w-full text-left px-5 py-4 text-base text-gray-600 border-b border-gray-100 hover:bg-gray-100"
+                className="w-full text-left px-5 py-4 border-b border-gray-100 hover:bg-gray-100"
                 onClick={onResendInvitationClick}
+                style={{
+                  fontSize: '15px',
+                  color: '#4A4A4A',
+                  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+                }}
               >
                 Resend Invitation
               </button>
             )}
             <button
-              className="w-full text-left px-5 py-4 text-base text-red-800 border-b border-gray-100 hover:bg-gray-100"
+              className="w-full text-left px-5 py-4 border-b border-gray-100 hover:bg-gray-100"
               onClick={onDeleteClick}
+              style={{
+                fontSize: '15px',
+                color: '#991b1b',
+                fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+              }}
             >
               Delete
             </button>

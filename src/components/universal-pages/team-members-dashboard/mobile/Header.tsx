@@ -1,4 +1,5 @@
 import React from "react";
+import { useRouter } from "next/navigation";
 
 interface HeaderProps {
   currentTeamType: string;
@@ -19,77 +20,128 @@ export const Header: React.FC<HeaderProps> = ({
   onFiltersClick,
   onOptionsClick,
 }) => {
+  const router = useRouter();
+
   return (
-    <div 
+    <header 
       className="header"
       style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '10px 12px',
-        background: '#E1E7EE',
+        background: '#ffffff',
         position: 'sticky',
         top: 0,
-        zIndex: 10,
+        zIndex: 1001,
         flexShrink: 0,
+        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+        height: '60px',
         fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
       }}
     >
       <div 
         className="header-left"
-        onClick={onTeamTypeClick}
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
-          position: 'relative',
-          padding: '6px 8px',
-          borderRadius: '20px',
-          cursor: 'pointer',
-          transition: 'background-color 0.2s ease'
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = 'transparent';
+          gap: '6px'
         }}
       >
-        <h1 
-          className="header-title"
+        {/* Back Button */}
+        <button
+          className="header-btn back-btn"
+          onClick={() => router.back()}
+          aria-label="Go Back"
           style={{
-            fontSize: '18px',
-            fontWeight: 600,
-            color: '#464646',
-            lineHeight: 1,
-            margin: 0,
-            fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
-          }}
-        >
-          {currentTeamType.charAt(0).toUpperCase() + currentTeamType.slice(1)}
-        </h1>
-        <div 
-          className="header-arrow"
-          style={{
-            width: '18px',
-            height: '18px',
-            marginLeft: '2px',
-            color: '#4A4A4A',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#6B7280',
+            padding: 0,
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '50%',
+            width: '36px',
+            height: '36px',
+            transition: 'background-color 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#F3F4F6';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
           }}
         >
           <svg 
-            xmlns="http://www.w3.org/2000/svg" 
+            viewBox="0 0 24 24" 
             fill="none" 
-            viewBox="0 0 24 24"
-            style={{ width: '100%', height: '100%' }}
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+            style={{ width: '20px', height: '20px' }}
           >
-            <path 
-              fill="currentColor" 
-              d="M5.29289 9.29289C5.68342 8.90237 6.31658 8.90237 6.70711 9.29289L12 14.5858L17.2929 9.29289C17.6834 8.90237 18.3166 8.90237 18.7071 9.29289C19.0976 9.68342 19.0976 10.3166 18.7071 10.7071L12.7071 16.7071C12.5196 16.8946 12.2652 17 12 17C11.7348 17 11.4804 16.8946 11.2929 16.7071L5.29289 10.7071C4.90237 10.3166 4.90237 9.68342 5.29289 9.29289Z"
-            />
+            <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
+        </button>
+
+        {/* Title with Chevron */}
+        <div 
+          className="page-title-group"
+          onClick={onTeamTypeClick}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            cursor: 'pointer',
+            padding: '6px 10px',
+            borderRadius: '20px',
+            transition: 'background 0.2s'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#F3F4F6';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+          }}
+        >
+          <span 
+            className="page-title"
+            style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              color: '#464646',
+              letterSpacing: '-0.01em',
+              lineHeight: 1
+            }}
+          >
+            {currentTeamType.charAt(0).toUpperCase() + currentTeamType.slice(1)}
+          </span>
+          <div 
+            className="title-chevron"
+            style={{
+              color: '#4A4A4A',
+              width: '18px',
+              height: '18px',
+              marginTop: '1px',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            <svg 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2.5" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+              style={{ width: '100%', height: '100%' }}
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
         </div>
       </div>
       <div 
@@ -100,27 +152,27 @@ export const Header: React.FC<HeaderProps> = ({
           gap: '8px'
         }}
       >
+        {/* Search Button */}
         <button
-          className="header-action-button"
-          id="searchToggle"
+          className="header-btn"
           onClick={onSearchToggle}
           aria-label="Toggle Search"
           style={{
             background: 'none',
             border: 'none',
-            width: '36px',
-            height: '36px',
-            borderRadius: '50%',
+            cursor: 'pointer',
+            color: '#6B7280',
+            padding: 0,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            cursor: 'pointer',
-            color: '#464646',
-            transition: 'background-color 0.2s ease',
-            position: 'relative'
+            borderRadius: '50%',
+            width: '36px',
+            height: '36px',
+            transition: 'background-color 0.2s ease'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+            e.currentTarget.style.backgroundColor = '#F3F4F6';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor = 'transparent';
@@ -139,37 +191,38 @@ export const Header: React.FC<HeaderProps> = ({
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
         </button>
+
+        {/* Add Button - Dark circle with white icon */}
         <button
-          className="header-action-button"
-          id="addButton"
+          className="header-btn add-btn"
           onClick={onAddMemberClick}
           aria-label="Add Team Member"
           style={{
-            background: 'white',
-            border: '1px solid rgba(0, 0, 0, 0.1)',
-            width: '36px',
-            height: '36px',
+            width: '30px',
+            height: '30px',
+            background: '#1B1B1B',
+            color: '#ffffff',
+            border: 'none',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            color: '#464646',
             transition: 'background-color 0.2s ease',
-            position: 'relative'
+            padding: 0
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#f8f8f8';
+            e.currentTarget.style.backgroundColor = '#2d2d2d';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'white';
+            e.currentTarget.style.backgroundColor = '#1B1B1B';
           }}
         >
           <svg 
             viewBox="0 0 24 24" 
             fill="none" 
             xmlns="http://www.w3.org/2000/svg"
-            style={{ width: '22px', height: '22px' }}
+            style={{ width: '16px', height: '16px' }}
           >
             <path 
               d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" 
@@ -177,6 +230,8 @@ export const Header: React.FC<HeaderProps> = ({
             />
           </svg>
         </button>
+
+        {/* Vertical Divider */}
         <div 
           className="vertical-divider"
           style={{
@@ -186,27 +241,29 @@ export const Header: React.FC<HeaderProps> = ({
             margin: '0 2px'
           }}
         />
+
+        {/* Filter Button */}
         <button
-          className="header-action-button"
-          id="filterToggle"
+          className="header-btn"
           onClick={onFiltersClick}
           aria-label="Open Filters"
           style={{
             background: 'none',
             border: 'none',
-            width: '36px',
-            height: '36px',
-            borderRadius: '50%',
+            cursor: 'pointer',
+            color: '#6B7280',
+            padding: 0,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            cursor: 'pointer',
-            color: '#4A4A4A',
+            borderRadius: '50%',
+            width: '36px',
+            height: '36px',
             transition: 'background-color 0.2s ease',
             position: 'relative'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+            e.currentTarget.style.backgroundColor = '#F3F4F6';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor = 'transparent';
@@ -214,7 +271,7 @@ export const Header: React.FC<HeaderProps> = ({
         >
           <svg 
             viewBox="0 0 512 512"
-            style={{ width: '20px', height: '20px' }}
+            style={{ width: '18px', height: '18px' }}
           >
             <path
               d="M0 416c0 13.3 10.7 24 24 24l59.7 0c10.2 32.5 40.5 56 76.3 56s66.1-23.5 76.3-56L488 440c13.3 0 24-10.7 24-24s-10.7-24-24-24l-251.7 0c-10.2-32.5-40.5-56-76.3-56s-66.1 23.5-76.3 56L24 392c-13.3 0-24 10.7-24 24zm128 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM320 256a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm32-80c-35.8 0-66.1 23.5-76.3 56L24 232c-13.3 0-24 10.7-24 24s10.7 24 24 24l251.7 0c10.2 32.5 40.5 56 76.3 56s66.1-23.5 76.3-56l59.7 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-59.7 0c-10.2-32.5-40.5-56-76.3-56zM192 128a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm76.3-56C258.1 39.5 227.8 16 192 16s-66.1 23.5-76.3 56L24 72C10.7 72 0 82.7 0 96s10.7 24 24 24l91.7 0c10.2 32.5 40.5 56 76.3 56s66.1-23.5 76.3-56L488 120c13.3 0 24-10.7 24-24s-10.7-24-24-24L268.3 72z"
@@ -226,8 +283,8 @@ export const Header: React.FC<HeaderProps> = ({
               className="filter-count-badge visible"
               style={{
                 position: 'absolute',
-                top: '0px',
-                right: '0px',
+                top: '-2px',
+                right: '-2px',
                 backgroundColor: '#00DF8B',
                 color: 'white',
                 width: '18px',
@@ -245,27 +302,28 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           )}
         </button>
+
+        {/* Options Button */}
         <button
-          className="header-action-button"
-          id="moreOptionsToggle"
+          className="header-btn"
           onClick={onOptionsClick}
           aria-label="More Options"
           style={{
             background: 'none',
             border: 'none',
-            width: '36px',
-            height: '36px',
-            borderRadius: '50%',
+            cursor: 'pointer',
+            color: '#6B7280',
+            padding: 0,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            cursor: 'pointer',
-            color: '#4A4A4A',
-            transition: 'background-color 0.2s ease',
-            position: 'relative'
+            borderRadius: '50%',
+            width: '36px',
+            height: '36px',
+            transition: 'background-color 0.2s ease'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+            e.currentTarget.style.backgroundColor = '#F3F4F6';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor = 'transparent';
@@ -273,15 +331,13 @@ export const Header: React.FC<HeaderProps> = ({
         >
           <svg 
             viewBox="0 0 24 24"
+            fill="currentColor"
             style={{ width: '20px', height: '20px' }}
           >
-            <path
-              d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
-              fill="currentColor"
-            />
+            <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
           </svg>
         </button>
       </div>
-    </div>
+    </header>
   );
 };

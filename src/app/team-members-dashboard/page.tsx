@@ -3,6 +3,7 @@ import { TeamMember } from "@/components/universal-pages/team-members-dashboard/
 import { createClient } from "@/lib/supabase_utils/server";
 import { redirect } from "next/navigation";
 import React from "react";
+import { mockTeamMembers } from "@/components/universal-pages/team-members-dashboard/data/mockTeamMembers";
 
 const formatLastActive = (value: string | null): string => {
   if (!value) return "";
@@ -11,6 +12,7 @@ const formatLastActive = (value: string | null): string => {
   return date.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
+    year: "numeric",
   });
 };
 
@@ -44,7 +46,8 @@ const page = async () => {
     console.error("Failed to load team members from Supabase:", error.message);
   }
 
-  const initialMembers: TeamMember[] | undefined = teamMembersData?.map(
+  // Map database members to TeamMember format
+  const dbMembers: TeamMember[] = teamMembersData?.map(
     (member, index) => {
       const { firstName, lastName } = splitName(member.name, member.email);
 
@@ -77,7 +80,11 @@ const page = async () => {
         listings,
       };
     }
-  );
+  ) || [];
+
+  // Merge database members with mock members
+  // Database members come first, then mock members
+  const initialMembers: TeamMember[] = [...dbMembers, ...mockTeamMembers];
 
   return (
     <div className="font-inter">

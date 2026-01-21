@@ -52,15 +52,26 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
       footer={
         <>
           <button
-            className="px-5 py-3 rounded-lg text-sm font-medium text-gray-600 border border-gray-300 bg-white hover:bg-gray-100"
+            className="px-5 py-3 rounded-lg border border-gray-300 bg-white hover:bg-gray-100"
             onClick={onClose}
+            style={{
+              fontSize: '15px',
+              fontWeight: 500,
+              color: '#4B5563',
+              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+            }}
           >
             Cancel
           </button>
           <button
-            className="px-5 py-3 rounded-lg text-sm font-medium text-white bg-black hover:bg-gray-900 disabled:opacity-60"
+            className="px-5 py-3 rounded-lg text-white bg-[#1B1B1B] hover:bg-black disabled:opacity-60"
             onClick={handleSubmit}
             disabled={!email.trim()}
+            style={{
+              fontSize: '15px',
+              fontWeight: 500,
+              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+            }}
           >
             Send Invitation
           </button>
@@ -71,69 +82,115 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
         <div className="mb-4">
           <label
             htmlFor="firstName"
-            className="block text-sm font-medium text-gray-700 mb-1.5"
+            className="block mb-1.5"
+            style={{
+              fontSize: '14px',
+              fontWeight: 500,
+              color: '#464646',
+              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+            }}
           >
             First Name
           </label>
           <input
             type="text"
             id="firstName"
-            className="w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-600 !bg-white focus:outline-none focus:border-green-800 focus:ring-2 focus:ring-green-100"
+            className="w-full p-3 border border-gray-300 rounded-lg !bg-white focus:outline-none focus:border-[#0B6333] focus:ring-2 focus:ring-[#0B6333]/20"
             required
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
+            style={{
+              fontSize: '15px',
+              color: '#4A4A4A',
+              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+            }}
           />
         </div>
         <div className="mb-4">
           <label
             htmlFor="lastName"
-            className="block text-sm font-medium text-gray-700 mb-1.5"
+            className="block mb-1.5"
+            style={{
+              fontSize: '14px',
+              fontWeight: 500,
+              color: '#464646',
+              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+            }}
           >
             Last Name
           </label>
           <input
             type="text"
             id="lastName"
-            className="w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-600 !bg-white focus:outline-none focus:border-green-800 focus:ring-2 focus:ring-green-100"
+            className="w-full p-3 border border-gray-300 rounded-lg !bg-white focus:outline-none focus:border-[#0B6333] focus:ring-2 focus:ring-[#0B6333]/20"
             required
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
+            style={{
+              fontSize: '15px',
+              color: '#4A4A4A',
+              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+            }}
           />
         </div>
         <div className="mb-4">
           <label
             htmlFor="email"
-            className="block text-sm font-medium text-gray-700 mb-1.5"
+            className="block mb-1.5"
+            style={{
+              fontSize: '14px',
+              fontWeight: 500,
+              color: '#464646',
+              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+            }}
           >
             Email
           </label>
           <input
             type="email"
             id="email"
-            className="w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-600 !bg-white focus:outline-none focus:border-green-800 focus:ring-2 focus:ring-green-100"
+            className="w-full p-3 border border-gray-300 rounded-lg !bg-white focus:outline-none focus:border-[#0B6333] focus:ring-2 focus:ring-[#0B6333]/20"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            style={{
+              fontSize: '15px',
+              color: '#4A4A4A',
+              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+            }}
           />
         </div>
         <div className="flex items-center gap-2.5 mb-4">
           <input
             type="checkbox"
             id="adminCheckbox"
-            className="appearance-none h-5 w-5 border-2 border-gray-300 rounded !bg-white checked:bg-green-800 checked:border-green-800 focus:outline-none"
+            className="appearance-none h-5 w-5 border-2 border-gray-300 rounded !bg-white checked:bg-[#0B6333] checked:border-[#0B6333] focus:outline-none"
             checked={isAdmin}
             onChange={(e) => setIsAdmin(e.target.checked)}
           />
           <label
             htmlFor="adminCheckbox"
-            className="text-sm text-gray-600 cursor-pointer"
+            className="cursor-pointer"
+            style={{
+              fontSize: '15px',
+              color: '#4A4A4A',
+              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+            }}
           >
             Admin access
           </label>
         </div>
         <div className="h-px bg-gray-200 my-5" />
         <div>
-          <h3 className="text-base font-medium text-gray-700 mb-4">
+          <h3 
+            className="mb-4"
+            style={{
+              fontSize: '16px',
+              fontWeight: 500,
+              color: '#464646',
+              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+            }}
+          >
             Assign to Listings
           </h3>
           {listings.map((listing) => (
@@ -145,7 +202,7 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
               <input
                 type="checkbox"
                 id={`listing${listing.id}`}
-                className="appearance-none h-5 w-5 border-2 border-gray-300 rounded !bg-white checked:bg-green-800 checked:border-green-800 focus:outline-none"
+                className="appearance-none h-5 w-5 border-2 border-gray-300 rounded !bg-white checked:bg-[#0B6333] checked:border-[#0B6333] focus:outline-none"
                 value={listing.id}
               />
               <img
@@ -153,7 +210,14 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
                 alt={listing.name}
                 className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
               />
-              <span className="text-sm text-gray-600 flex-1 truncate">
+              <span 
+                className="flex-1 truncate"
+                style={{
+                  fontSize: '15px',
+                  color: '#4A4A4A',
+                  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+                }}
+              >
                 {listing.name}
               </span>
             </label>

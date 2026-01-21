@@ -27,7 +27,16 @@ export const Drawer: React.FC<DrawerProps> = ({
         }`}
       >
         <div className="sticky top-0 bg-white p-4 border-b border-gray-200 flex justify-between items-center z-10">
-          <h2 className="text-lg font-semibold text-gray-700">{title}</h2>
+          <h2 
+            style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              color: '#464646',
+              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+            }}
+          >
+            {title}
+          </h2>
           <button
             className="w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100"
             onClick={onClose}

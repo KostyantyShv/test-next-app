@@ -41,7 +41,14 @@ export const ActivityLogDrawer: React.FC<ActivityLogDrawerProps> = ({
   return (
     <Drawer isOpen={isOpen} onClose={onClose} title="Activity Log">
       <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-        <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+        <label 
+          className="flex items-center gap-2 cursor-pointer"
+          style={{
+            fontSize: '14px',
+            color: '#4B5563',
+            fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+          }}
+        >
           Hide Read
           <input
             type="checkbox"
@@ -95,10 +102,15 @@ export const ActivityLogDrawer: React.FC<ActivityLogDrawerProps> = ({
       <div className="relative mb-4">
         <input
           type="search"
-          className="w-full p-3 pl-10 bg-gray-100 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:border-green-800 focus:bg-white focus:ring-2 focus:ring-green-100"
+          className="w-full p-3 pl-10 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-[#0B6333] focus:bg-white focus:ring-2 focus:ring-[#0B6333]/20"
           placeholder="Search activities..."
           value={activitySearchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
+          style={{
+            fontSize: '14px',
+            color: '#4A4A4A',
+            fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+          }}
         />
         <svg
           className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"
@@ -134,30 +146,43 @@ export const ActivityLogDrawer: React.FC<ActivityLogDrawerProps> = ({
               </div>
               <div className="flex-1 pr-[70px] min-w-0">
                 <div
-                  className="mb-1 text-sm leading-snug text-gray-600"
+                  className="mb-1 leading-snug"
+                  style={{
+                    fontSize: '14px',
+                    lineHeight: 1.5,
+                    color: '#4A4A4A',
+                    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+                  }}
                   dangerouslySetInnerHTML={{
                     __html:
                       log.content ??
                       (log.action === "modified"
-                        ? `<strong>${log.userName}</strong> modified the ${
+                        ? `<strong style="font-weight: 600; color: #464646;">${log.userName}</strong> modified the ${
                             log.field
                           } of <a href="${
                             log.listingLink || "#"
-                          }" class="text-blue-600 font-medium hover:underline">${
+                          }" style="color: #346DC2; text-decoration: none; font-weight: 500;">${
                             log.listingName
                           }</a>`
                         : log.action === "published"
-                        ? `<strong>${
+                        ? `<strong style="font-weight: 600; color: #464646;">${
                             log.userName
                           }</strong> published <a href="${
                             log.listingLink || "#"
-                          }" class="text-blue-600 font-medium hover:underline">${
+                          }" style="color: #346DC2; text-decoration: none; font-weight: 500;">${
                             log.listingName
                           }</a> listing`
-                        : `Activity by <strong>${log.userName}</strong>`),
+                        : `Activity by <strong style="font-weight: 600; color: #464646;">${log.userName}</strong>`),
                   }}
                 />
-                <div className="flex justify-between text-xs text-gray-500 flex-wrap">
+                <div 
+                  className="flex justify-between flex-wrap"
+                  style={{
+                    fontSize: '12px',
+                    color: '#6B7280',
+                    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+                  }}
+                >
                   <span>{log.date}</span>
                   <span>{log.timeAgo}</span>
                 </div>
