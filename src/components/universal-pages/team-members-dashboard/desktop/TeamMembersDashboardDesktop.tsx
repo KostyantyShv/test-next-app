@@ -157,9 +157,9 @@ const TeamMembersDashboardDesktop: React.FC<
       }
 
       // Update local state
-      setMembers((prev) => prev.filter((member) => member.id !== memberId));
-      setSelectedMemberIds((prev) => prev.filter((id) => id !== memberId));
-      closeModal();
+    setMembers((prev) => prev.filter((member) => member.id !== memberId));
+    setSelectedMemberIds((prev) => prev.filter((id) => id !== memberId));
+    closeModal();
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : "Failed to delete member");
     } finally {
@@ -197,10 +197,10 @@ const TeamMembersDashboardDesktop: React.FC<
           }
 
           // Update local state
-          setMembers((prev) =>
-            prev.filter((member) => !selectedMemberIds.includes(member.id))
-          );
-          setSelectedMemberIds([]);
+        setMembers((prev) =>
+          prev.filter((member) => !selectedMemberIds.includes(member.id))
+        );
+        setSelectedMemberIds([]);
         } catch (err) {
           setSaveError(err instanceof Error ? err.message : "Failed to delete members");
         } finally {

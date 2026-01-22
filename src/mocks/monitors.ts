@@ -3,7 +3,7 @@ import { Monitor } from '@/hooks/useMonitors.hook';
 export const mockMonitors: Monitor[] = [
   {
     id: '1',
-    name: 'Price Tracker Pro',
+    name: 'price',
     item: {
       title: 'The Complete Guide to Machine Learning',
       id: 'ITM-A7B9C3',
@@ -130,7 +130,7 @@ export const mockPageHistoryData: Record<string, {
     stats: [
       { label: 'Total Changes', value: '285' },
       { label: 'Alerts Triggered', value: '42' },
-      { label: 'Most Active Field', value: 'Price Tracker Pro' },
+      { label: 'Most Active Field', value: 'price' },
       { label: 'Last Alert', value: '5 min ago' }
     ]
   },

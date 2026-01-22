@@ -32,20 +32,17 @@ function DropdownPortal({ children, isOpen, buttonRef }: {
     <div 
       style={{
         ...style,
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)'
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+        minWidth: '180px',
+        zIndex: 10,
+        display: 'block',
+        padding: '8px',
+        border: '1px solid #eaeaea'
       }} 
-      className="bg-white rounded-[10px] w-[200px] p-1.5 relative"
       onClick={(e) => e.stopPropagation()}
     >
-      {/* Triangle */}
-      <div 
-        className="absolute -top-1.5 left-1/2 -translate-x-1/2 rotate-45 w-3 h-3"
-        style={{
-          backgroundColor: 'white',
-          boxShadow: '-2px -2px 4px rgba(0, 0, 0, 0.06)',
-          zIndex: -1
-        }}
-      />
       {children}
     </div>,
     document.body
@@ -132,6 +129,8 @@ export default function Monitors() {
   const [mobileCountryFilter, setMobileCountryFilter] = useState('all');
   const [fieldHistoryModalOpen, setFieldHistoryModalOpen] = useState(false);
   const [selectedFieldHistory, setSelectedFieldHistory] = useState<{ monitorId: string; fieldName: string } | null>(null);
+  const [pageHistoryModalOpen, setPageHistoryModalOpen] = useState(false);
+  const [selectedPageHistory, setSelectedPageHistory] = useState<{ monitorId: string } | null>(null);
   
   // Mobile history drawer filters
   const [mobileHistorySearch, setMobileHistorySearch] = useState('');
@@ -1373,27 +1372,33 @@ export default function Monitors() {
 
   // Desktop version (existing code)
   return (
-    <div className="min-h-screen p-8" style={{ backgroundColor: 'var(--background-color)' }}>
-      <div className="w-full max-w-[1235px] mx-auto">
+    <div className="min-h-screen" style={{ backgroundColor: '#E1E7EE', padding: '2rem', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif" }}>
+      <div className="w-full" style={{ maxWidth: '1235px', margin: '0 auto' }}>
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-semibold" style={{ color: 'var(--bold-text)' }}>Monitors</h1>
+        <div className="flex justify-between items-center" style={{ marginBottom: '24px' }}>
+          <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#464646' }}>Monitors</h1>
           <button 
             onClick={() => setIsNewMonitorModalOpen(true)}
-            className="px-5 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            className="flex items-center transition-all"
             style={{
-              borderColor: 'var(--active-green)',
-              backgroundColor: 'var(--apply-button-bg)',
-              color: 'var(--header-green)'
+              padding: '10px 20px',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: 500,
+              cursor: 'pointer',
+              gap: '8px',
+              border: '1px solid #0B6333',
+              backgroundColor: '#EBFCF4',
+              color: '#016853'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--apply-button-hover)';
+              e.currentTarget.style.backgroundColor = '#D7F7E9';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--apply-button-bg)';
+              e.currentTarget.style.backgroundColor = '#EBFCF4';
             }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16" className="w-4 h-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16" style={{ width: '16px', height: '16px', color: '#016853' }}>
               <path fill="currentColor" d="M9 4H7V7H4V9H7V12H9V9H12V7H9V4Z" clipRule="evenodd" fillRule="evenodd" />
             </svg>
             New Monitor
@@ -1401,64 +1406,64 @@ export default function Monitors() {
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="rounded-xl p-5 shadow-sm flex items-center" style={{ backgroundColor: 'var(--surface-color)' }}>
-            <div className="w-12 h-12 rounded-full flex items-center justify-center mr-4 flex-shrink-0" style={{ backgroundColor: 'var(--apply-button-bg)' }}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6" style={{ color: 'var(--header-green)' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4" style={{ gap: '16px', marginBottom: '24px' }}>
+          <div className="flex items-center" style={{ backgroundColor: 'white', borderRadius: '12px', padding: '20px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
+            <div className="flex items-center justify-center flex-shrink-0" style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#EBFCF4', marginRight: '16px' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" style={{ width: '24px', height: '24px', color: '#016853' }}>
                 <path d="M12 2C6.579 2 2 6.58 2 12s4.579 10 10 10 10-4.58 10-10S17.421 2 12 2zm0 18c-4.337 0-8-3.664-8-8 0-3.998 3.115-7.417 7-7.927V6.09C8.167 6.569 6 9.033 6 12c0 3.309 2.691 6 6 6 1.595 0 3.1-.626 4.237-1.763l-1.414-1.415A3.97 3.97 0 0 1 12 16c-2.206 0-4-1.794-4-4 0-1.858 1.279-3.411 3-3.858v2.146c-.59.353-1 .993-1 1.712 0 1.081.919 2 2 2s2-.919 2-2c0-.719-.41-1.359-1-1.712V4.073c3.885.51 7 3.929 7 7.927 0 4.336-3.663 8-8 8z" />
               </svg>
             </div>
             <div>
-              <h3 className="text-sm font-medium mb-1" style={{ color: 'var(--subtle-text)' }}>Total Monitors</h3>
-              <div className="text-xl font-semibold" style={{ color: 'var(--bold-text)' }}>{formatNumber(mockStats.total)}</div>
+              <h3 style={{ fontSize: '14px', color: '#5F5F5F', fontWeight: 500, marginBottom: '4px' }}>Total Monitors</h3>
+              <div style={{ fontSize: '20px', fontWeight: 600, color: '#464646' }}>{formatNumber(mockStats.total)}</div>
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm flex items-center" style={{ backgroundColor: 'var(--surface-color)' }}>
-            <div className="w-12 h-12 rounded-full flex items-center justify-center mr-4 flex-shrink-0" style={{ backgroundColor: 'var(--apply-button-bg)' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6" style={{ color: 'var(--header-green)' }}>
+          <div className="flex items-center" style={{ backgroundColor: 'white', borderRadius: '12px', padding: '20px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
+            <div className="flex items-center justify-center flex-shrink-0" style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#EBFCF4', marginRight: '16px' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '24px', height: '24px', color: '#016853' }}>
                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
               </svg>
             </div>
             <div>
-              <h3 className="text-sm font-medium mb-1" style={{ color: 'var(--subtle-text)' }}>Active</h3>
-              <div className="text-xl font-semibold" style={{ color: 'var(--bold-text)' }}>{formatNumber(mockStats.active)}</div>
+              <h3 style={{ fontSize: '14px', color: '#5F5F5F', fontWeight: 500, marginBottom: '4px' }}>Active</h3>
+              <div style={{ fontSize: '20px', fontWeight: 600, color: '#464646' }}>{formatNumber(mockStats.active)}</div>
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm flex items-center" style={{ backgroundColor: 'var(--surface-color)' }}>
-            <div className="w-12 h-12 rounded-full flex items-center justify-center mr-4 flex-shrink-0" style={{ backgroundColor: 'var(--apply-button-bg)' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6" style={{ color: 'var(--header-green)' }}>
+          <div className="flex items-center" style={{ backgroundColor: 'white', borderRadius: '12px', padding: '20px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
+            <div className="flex items-center justify-center flex-shrink-0" style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#EBFCF4', marginRight: '16px' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '24px', height: '24px', color: '#016853' }}>
                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
               </svg>
             </div>
             <div>
-              <h3 className="text-sm font-medium mb-1" style={{ color: 'var(--subtle-text)' }}>Unread Changes</h3>
-              <div className="text-xl font-semibold" style={{ color: 'var(--bold-text)' }}>{formatNumber(mockStats.unreadChanges)}</div>
+              <h3 style={{ fontSize: '14px', color: '#5F5F5F', fontWeight: 500, marginBottom: '4px' }}>Unread Changes</h3>
+              <div style={{ fontSize: '20px', fontWeight: 600, color: '#464646' }}>{formatNumber(mockStats.unreadChanges)}</div>
             </div>
           </div>
 
-          <div className="rounded-xl p-5 shadow-sm flex items-center" style={{ backgroundColor: 'var(--surface-color)' }}>
-            <div className="w-12 h-12 rounded-full flex items-center justify-center mr-4 flex-shrink-0" style={{ backgroundColor: 'var(--apply-button-bg)' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6" style={{ color: 'var(--header-green)' }}>
+          <div className="flex items-center" style={{ backgroundColor: 'white', borderRadius: '12px', padding: '20px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
+            <div className="flex items-center justify-center flex-shrink-0" style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#EBFCF4', marginRight: '16px' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '24px', height: '24px', color: '#016853' }}>
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="8" x2="12" y2="12" />
                 <line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
             </div>
             <div>
-              <h3 className="text-sm font-medium mb-1" style={{ color: 'var(--subtle-text)' }}>Issues</h3>
-              <div className="text-xl font-semibold" style={{ color: 'var(--bold-text)' }}>{formatNumber(mockStats.issues)}</div>
+              <h3 style={{ fontSize: '14px', color: '#5F5F5F', fontWeight: 500, marginBottom: '4px' }}>Issues</h3>
+              <div style={{ fontSize: '20px', fontWeight: 600, color: '#464646' }}>{formatNumber(mockStats.issues)}</div>
             </div>
           </div>
         </div>
 
         {/* Table Container */}
-        <div className="rounded-xl shadow-sm overflow-hidden" style={{ backgroundColor: 'var(--surface-color)' }}>
+        <div style={{ backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', overflow: 'hidden', width: '100%' }}>
            {/* Filters Row */}
-           <div className="flex justify-between items-center p-4 overflow-visible max-md:flex-col max-md:items-stretch max-md:gap-3" style={{ borderBottomColor: 'var(--border-color)', borderBottomWidth: '1px', borderBottomStyle: 'solid' }}>
-             <div className="relative w-full md:w-80 overflow-visible">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--subtle-text)' }}>
+           <div className="flex justify-between items-center overflow-visible max-md:flex-col max-md:items-stretch max-md:gap-3" style={{ padding: '20px', borderBottom: '1px solid #eaeaea' }}>
+             <div className="relative overflow-visible" style={{ width: '320px' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: '#5F5F5F' }}>
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
@@ -1467,57 +1472,54 @@ export default function Monitors() {
                 placeholder="Search monitors..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm focus:outline-none focus:ring-2"
+                className="w-full"
                 style={{
-                  borderColor: 'var(--border-color)',
-                  color: 'var(--text-default)',
-                  backgroundColor: 'var(--surface-color)',
-                  borderWidth: '1px',
-                  borderStyle: 'solid'
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--header-green)';
-                  e.currentTarget.style.boxShadow = '0 0 0 2px rgba(var(--header-green-rgb, 1, 104, 83), 0.2)';
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--border-color)';
-                  e.currentTarget.style.boxShadow = 'none';
+                  padding: '10px 16px 10px 40px',
+                  border: '1px solid #eaeaea',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  color: '#4A4A4A',
+                  backgroundColor: 'white'
                 }}
               />
             </div>
 
-            <div className="flex gap-3 overflow-visible flex-wrap md:flex-nowrap">
+            <div className="flex overflow-visible flex-wrap md:flex-nowrap" style={{ gap: '12px' }}>
               {/* Sort Dropdown */}
               <div className="relative overflow-visible">
                 <button
                   onClick={() => toggleDropdown('sort')}
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 relative overflow-visible"
+                  className="flex items-center transition-all relative overflow-visible"
                   style={{
-                    borderColor: 'var(--border-color)',
-                    backgroundColor: 'var(--surface-color)',
-                    color: 'var(--text-default)',
-                    borderWidth: '1px',
-                    borderStyle: 'solid'
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    gap: '8px',
+                    border: '1px solid #eaeaea',
+                    backgroundColor: 'white',
+                    color: '#4A4A4A'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--hover-bg)';
+                    e.currentTarget.style.backgroundColor = '#f9fafb';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--surface-color)';
+                    e.currentTarget.style.backgroundColor = 'white';
                   }}
                 >
-                  <svg viewBox="0 0 16 16" strokeLinejoin="round" fill="currentColor" className="w-4 h-4" style={{ color: 'var(--subtle-text)' }}>
+                  <svg viewBox="0 0 16 16" strokeLinejoin="round" fill="currentColor" style={{ width: '16px', height: '16px', color: '#5F5F5F' }}>
                     <path d="M1.75 12H1V10.5H1.75H5.25H6V12H5.25H1.75ZM1.75 7.75H1V6.25H1.75H4.25H5V7.75H4.25H1.75ZM1.75 3.5H1V2H1.75H7.25H8V3.5H7.25H1.75ZM12.5303 14.7803C12.2374 15.0732 11.7626 15.0732 11.4697 14.7803L9.21967 12.5303L8.68934 12L9.75 10.9393L10.2803 11.4697L11.25 12.4393V2.75V2H12.75V2.75V12.4393L13.7197 11.4697L14.25 10.9393L15.3107 12L14.7803 12.5303L12.5303 14.7803Z" />
                   </svg>
                   Sort
                 </button>
                 {openDropdown === 'sort' && (
-                  <div className="absolute top-full right-0 mt-2 rounded-lg shadow-lg min-w-[180px] z-10 p-2" style={{ backgroundColor: 'var(--surface-color)', borderColor: 'var(--border-color)', borderWidth: '1px', borderStyle: 'solid' }}>
-                    <a href="#" className="block px-3 py-2.5 text-sm rounded-md transition-colors" style={{ color: 'var(--text-default)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--hover-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>Name (A-Z)</a>
-                    <a href="#" className="block px-3 py-2.5 text-sm rounded-md transition-colors" style={{ color: 'var(--text-default)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--hover-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>Name (Z-A)</a>
-                    <a href="#" className="block px-3 py-2.5 text-sm rounded-md transition-colors" style={{ color: 'var(--text-default)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--hover-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>Last Modified</a>
-                    <a href="#" className="block px-3 py-2.5 text-sm rounded-md transition-colors" style={{ color: 'var(--text-default)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--hover-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>Most Active</a>
-                    <a href="#" className="block px-3 py-2.5 text-sm rounded-md transition-colors" style={{ color: 'var(--text-default)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--hover-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>Status</a>
+                  <div className="absolute" style={{ top: 'calc(100% + 8px)', right: 0, backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)', minWidth: '180px', zIndex: 10, display: 'block', padding: '8px', border: '1px solid #eaeaea' }}>
+                    <a href="#" className="flex items-center transition-colors" style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>Name (A-Z)</a>
+                    <a href="#" className="flex items-center transition-colors" style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>Name (Z-A)</a>
+                    <a href="#" className="flex items-center transition-colors" style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>Last Modified</a>
+                    <a href="#" className="flex items-center transition-colors" style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>Most Active</a>
+                    <a href="#" className="flex items-center transition-colors" style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>Status</a>
                   </div>
                 )}
               </div>
@@ -1526,33 +1528,37 @@ export default function Monitors() {
               <div className="relative overflow-visible">
                 <button
                   onClick={() => toggleDropdown('status')}
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 relative overflow-visible"
+                  className="flex items-center transition-all relative overflow-visible"
                   style={{
-                    borderColor: 'var(--border-color)',
-                    backgroundColor: 'var(--surface-color)',
-                    color: 'var(--text-default)',
-                    borderWidth: '1px',
-                    borderStyle: 'solid'
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    gap: '8px',
+                    border: '1px solid #eaeaea',
+                    backgroundColor: 'white',
+                    color: '#4A4A4A'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--hover-bg)';
+                    e.currentTarget.style.backgroundColor = '#f9fafb';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--surface-color)';
+                    e.currentTarget.style.backgroundColor = 'white';
                   }}
                 >
-                  <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4" style={{ color: 'var(--subtle-text)' }}>
+                  <svg viewBox="0 0 16 16" fill="currentColor" style={{ width: '16px', height: '16px', color: '#5F5F5F' }}>
                     <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
                     <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z" />
                   </svg>
                   Status
                 </button>
                 {openDropdown === 'status' && (
-                  <div className="absolute top-full right-0 mt-2 rounded-lg shadow-lg min-w-[180px] z-10 p-2" style={{ backgroundColor: 'var(--surface-color)', borderColor: 'var(--border-color)', borderWidth: '1px', borderStyle: 'solid' }}>
-                    <a href="#" className="block px-3 py-2.5 text-sm rounded-md transition-colors" style={{ color: 'var(--text-default)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--hover-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>All</a>
-                    <a href="#" className="block px-3 py-2.5 text-sm rounded-md transition-colors" style={{ color: 'var(--text-default)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--hover-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>Active</a>
-                    <a href="#" className="block px-3 py-2.5 text-sm rounded-md transition-colors" style={{ color: 'var(--text-default)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--hover-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>Paused</a>
-                    <a href="#" className="block px-3 py-2.5 text-sm rounded-md transition-colors" style={{ color: 'var(--text-default)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--hover-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>Error</a>
+                  <div className="absolute" style={{ top: 'calc(100% + 8px)', right: 0, backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)', minWidth: '180px', zIndex: 10, display: 'block', padding: '8px', border: '1px solid #eaeaea' }}>
+                    <a href="#" className="flex items-center transition-colors" style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>All</a>
+                    <a href="#" className="flex items-center transition-colors" style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>Active</a>
+                    <a href="#" className="flex items-center transition-colors" style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>Paused</a>
+                    <a href="#" className="flex items-center transition-colors" style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>Error</a>
                   </div>
                 )}
               </div>
@@ -1561,48 +1567,51 @@ export default function Monitors() {
               <div className="relative overflow-visible">
                 <button
                   onClick={() => toggleDropdown('bulk')}
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition-colors relative overflow-visible"
+                  className="transition-all relative overflow-visible"
                   style={{
-                    borderColor: 'var(--border-color)',
-                    backgroundColor: 'var(--surface-color)',
-                    color: 'var(--text-default)',
-                    borderWidth: '1px',
-                    borderStyle: 'solid'
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    border: '1px solid #eaeaea',
+                    backgroundColor: 'white',
+                    color: '#4A4A4A'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--hover-bg)';
+                    e.currentTarget.style.backgroundColor = '#f9fafb';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--surface-color)';
+                    e.currentTarget.style.backgroundColor = 'white';
                   }}
                 >
                   Bulk Actions
                 </button>
                 {openDropdown === 'bulk' && (
-                  <div className="absolute top-full right-0 mt-2 rounded-lg shadow-lg min-w-[180px] z-10 p-2" style={{ backgroundColor: 'var(--surface-color)', borderColor: 'var(--border-color)', borderWidth: '1px', borderStyle: 'solid' }}>
-                    <a href="#" className="flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-md transition-colors" style={{ color: 'var(--text-default)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--hover-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" style={{ color: 'var(--subtle-text)' }}>
+                  <div className="absolute" style={{ top: 'calc(100% + 8px)', right: 0, backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)', minWidth: '180px', zIndex: 10, display: 'block', padding: '8px', border: '1px solid #eaeaea' }}>
+                    <a href="#" className="flex items-center transition-colors" style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px', color: '#5F5F5F' }}>
                         <rect x="6" y="4" width="4" height="16" />
                         <rect x="14" y="4" width="4" height="16" />
                       </svg>
                       Pause Selected
                     </a>
-                    <a href="#" className="flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-md transition-colors" style={{ color: 'var(--text-default)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--hover-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" style={{ color: 'var(--subtle-text)' }}>
+                    <a href="#" className="flex items-center transition-colors" style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px', color: '#5F5F5F' }}>
                         <polygon points="5 3 19 12 5 21 5 3" />
                       </svg>
                       Resume Selected
                     </a>
-                    <a href="#" className="flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-md transition-colors" style={{ color: 'var(--text-default)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--hover-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" style={{ color: 'var(--subtle-text)' }}>
+                    <a href="#" className="flex items-center transition-colors" style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px', color: '#5F5F5F' }}>
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                         <polyline points="7 10 12 15 17 10" />
                         <line x1="12" y1="15" x2="12" y2="3" />
                       </svg>
                       Export Selected
                     </a>
-                    <a href="#" className="flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-md transition-colors" style={{ color: 'var(--text-default)' }} onMouseEnter={(e) => { e.currentTarget.style.color = 'white'; e.currentTarget.style.backgroundColor = '#ff4d4f'; }} onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-default)'; e.currentTarget.style.backgroundColor = 'transparent'; }}>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                    <a href="#" className="flex items-center transition-colors" style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }} onMouseEnter={(e) => { e.currentTarget.style.color = 'white'; e.currentTarget.style.backgroundColor = '#ff4d4f'; }} onMouseLeave={(e) => { e.currentTarget.style.color = '#4A4A4A'; e.currentTarget.style.backgroundColor = 'transparent'; }}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
                         <polyline points="3 6 5 6 21 6" />
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                       </svg>
@@ -1615,35 +1624,39 @@ export default function Monitors() {
           </div>
 
           {/* Table */}
-          <div className="overflow-x-auto overflow-y-visible">
-            <table className="w-full min-w-[720px] md:min-w-0 overflow-visible">
+          <div style={{ overflowX: 'hidden', overflowY: 'visible', width: '100%' }}>
+            <table className="w-full" style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, tableLayout: 'auto' }}>
               <thead className="overflow-visible">
                 <tr className="overflow-visible">
-                  <th className="px-4 py-3 text-left overflow-visible" style={{ backgroundColor: 'var(--gray-100)' }}>
+                  <th className="text-left overflow-visible" style={{ backgroundColor: '#f8f9fa', padding: '12px 16px', fontWeight: 500, color: '#5F5F5F', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #eaeaea' }}>
                     <div
                       onClick={toggleSelectAll}
-                      className="w-[18px] h-[18px] border-2 rounded cursor-pointer transition-all relative"
+                      className="inline-block cursor-pointer transition-all relative"
                       style={{
-                        backgroundColor: monitors.length > 0 && selectedMonitors.size === monitors.length ? 'var(--active-green)' : 'var(--surface-color)',
-                        borderColor: monitors.length > 0 && selectedMonitors.size === monitors.length ? 'var(--active-green)' : 'var(--border-color)'
+                        width: '18px',
+                        height: '18px',
+                        border: '2px solid #eaeaea',
+                        borderRadius: '4px',
+                        backgroundColor: monitors.length > 0 && selectedMonitors.size === monitors.length ? '#0B6333' : 'white',
+                        borderColor: monitors.length > 0 && selectedMonitors.size === monitors.length ? '#0B6333' : '#eaeaea'
                       }}
                     >
                       {monitors.length > 0 && selectedMonitors.size === monitors.length && (
-                        <div className="absolute left-[4px] top-[1px] w-[5px] h-[10px] border-white border-r-2 border-b-2 rotate-45" />
+                        <div style={{ position: 'absolute', left: '4px', top: '1px', width: '5px', height: '10px', border: 'solid white', borderWidth: '0 2px 2px 0', transform: 'rotate(45deg)' }} />
                       )}
                     </div>
                   </th>
-                  <th className="px-4 py-3 overflow-visible" style={{ backgroundColor: 'var(--gray-100)' }}></th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider overflow-visible" style={{ backgroundColor: 'var(--gray-100)', color: 'var(--subtle-text)' }}>Name</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider overflow-visible" style={{ backgroundColor: 'var(--gray-100)', color: 'var(--subtle-text)' }}>Item</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider overflow-visible" style={{ backgroundColor: 'var(--gray-100)', color: 'var(--subtle-text)' }}>Country</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider overflow-visible" style={{ backgroundColor: 'var(--gray-100)', color: 'var(--subtle-text)' }}>Interval</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider overflow-visible" style={{ backgroundColor: 'var(--gray-100)', color: 'var(--subtle-text)' }}>Last</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider overflow-visible" style={{ backgroundColor: 'var(--gray-100)', color: 'var(--subtle-text)' }}>Fields</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider overflow-visible" style={{ backgroundColor: 'var(--gray-100)', color: 'var(--subtle-text)' }}>Usage</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider overflow-visible" style={{ backgroundColor: 'var(--gray-100)', color: 'var(--subtle-text)' }}>Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider overflow-visible" style={{ backgroundColor: 'var(--gray-100)', color: 'var(--subtle-text)' }}>Alerts</th>
-                  <th className="px-4 py-3 overflow-visible" style={{ backgroundColor: 'var(--gray-100)' }}></th>
+                  <th className="overflow-visible" style={{ backgroundColor: '#f8f9fa', padding: '12px 16px', fontWeight: 500, color: '#5F5F5F', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #eaeaea' }}></th>
+                  <th className="text-left overflow-visible" style={{ backgroundColor: '#f8f9fa', padding: '12px 16px', fontWeight: 500, color: '#5F5F5F', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #eaeaea' }}>Name</th>
+                  <th className="text-left overflow-visible" style={{ backgroundColor: '#f8f9fa', padding: '12px 16px', fontWeight: 500, color: '#5F5F5F', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #eaeaea' }}>Item</th>
+                  <th className="text-left overflow-visible" style={{ backgroundColor: '#f8f9fa', padding: '12px 16px', fontWeight: 500, color: '#5F5F5F', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #eaeaea' }}>Country</th>
+                  <th className="text-left overflow-visible" style={{ backgroundColor: '#f8f9fa', padding: '12px 16px', fontWeight: 500, color: '#5F5F5F', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #eaeaea' }}>Interval</th>
+                  <th className="text-left overflow-visible" style={{ backgroundColor: '#f8f9fa', padding: '12px 16px', fontWeight: 500, color: '#5F5F5F', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #eaeaea' }}>Last</th>
+                  <th className="text-left overflow-visible" style={{ backgroundColor: '#f8f9fa', padding: '12px 16px', fontWeight: 500, color: '#5F5F5F', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #eaeaea' }}>Fields</th>
+                  <th className="text-left overflow-visible" style={{ backgroundColor: '#f8f9fa', padding: '12px 16px', fontWeight: 500, color: '#5F5F5F', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #eaeaea' }}>Usage</th>
+                  <th className="text-left overflow-visible" style={{ backgroundColor: '#f8f9fa', padding: '12px 16px', fontWeight: 500, color: '#5F5F5F', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #eaeaea' }}>Status</th>
+                  <th className="text-left overflow-visible" style={{ backgroundColor: '#f8f9fa', padding: '12px 16px', fontWeight: 500, color: '#5F5F5F', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #eaeaea' }}>Alerts</th>
+                  <th className="overflow-visible" style={{ backgroundColor: '#f8f9fa', padding: '12px 16px', fontWeight: 500, color: '#5F5F5F', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #eaeaea' }}></th>
                 </tr>
               </thead>
               <tbody className="overflow-visible">
@@ -1684,53 +1697,63 @@ export default function Monitors() {
                    return (
                      <Fragment key={monitor.id}>
                        <tr
-                         className="transition-colors border-b relative overflow-visible"
+                         className={isExpanded ? 'expanded' : ''}
                          style={{
-                           borderBottomColor: 'var(--border-color)',
-                           borderBottomWidth: '1px',
-                           borderBottomStyle: 'solid',
-                           backgroundColor: isExpanded ? 'var(--gray-100)' : 'var(--surface-color)'
+                           backgroundColor: isExpanded ? '#f9fafb' : 'white'
                          }}
                          onMouseEnter={(e) => {
                            if (!isExpanded) {
-                             e.currentTarget.style.backgroundColor = 'var(--hover-bg)';
+                             Array.from(e.currentTarget.querySelectorAll('td')).forEach(td => {
+                               (td as HTMLElement).style.backgroundColor = '#f9fafb';
+                             });
                            }
                          }}
                          onMouseLeave={(e) => {
                            if (!isExpanded) {
-                             e.currentTarget.style.backgroundColor = 'var(--surface-color)';
+                             Array.from(e.currentTarget.querySelectorAll('td')).forEach(td => {
+                               (td as HTMLElement).style.backgroundColor = 'white';
+                             });
                            }
                          }}
                        >
-                        <td className="px-4 py-4">
+                        <td style={{ padding: '16px', borderBottom: isExpanded ? '1px solid #e5e7eb' : '1px solid #eaeaea', color: '#4A4A4A', fontSize: '14px', lineHeight: 1.5, background: isExpanded ? '#f9fafb' : 'white' }}>
                           <div
                             onClick={(e) => {
                               e.stopPropagation();
                               toggleSelectMonitor(monitor.id);
                             }}
-                            className="w-[18px] h-[18px] border-2 rounded cursor-pointer transition-all relative"
+                            className="inline-block cursor-pointer transition-all relative"
                             style={{
-                              backgroundColor: selectedMonitors.has(monitor.id) ? 'var(--active-green)' : 'var(--surface-color)',
-                              borderColor: selectedMonitors.has(monitor.id) ? 'var(--active-green)' : 'var(--border-color)'
+                              width: '18px',
+                              height: '18px',
+                              border: '2px solid #eaeaea',
+                              borderRadius: '4px',
+                              backgroundColor: selectedMonitors.has(monitor.id) ? '#0B6333' : 'white',
+                              borderColor: selectedMonitors.has(monitor.id) ? '#0B6333' : '#eaeaea'
                             }}
                           >
                             {selectedMonitors.has(monitor.id) && (
-                              <div className="absolute left-[4px] top-[1px] w-[5px] h-[10px] border-white border-r-2 border-b-2 rotate-45" />
+                              <div style={{ position: 'absolute', left: '4px', top: '1px', width: '5px', height: '10px', border: 'solid white', borderWidth: '0 2px 2px 0', transform: 'rotate(45deg)' }} />
                             )}
                           </div>
                         </td>
-                        <td className="px-4 py-4">
+                        <td style={{ padding: '16px', borderBottom: isExpanded ? '1px solid #e5e7eb' : '1px solid #eaeaea', color: '#4A4A4A', fontSize: '14px', lineHeight: 1.5, background: isExpanded ? '#f9fafb' : 'white' }}>
                           <button
                             onClick={() => toggleExpand(monitor.id)}
-                            className="w-8 h-8 rounded-md flex items-center justify-center transition-colors"
+                            className="flex items-center justify-center transition-all"
                             style={{
-                              backgroundColor: 'var(--gray-200)'
+                              width: '32px',
+                              height: '32px',
+                              borderRadius: '6px',
+                              background: '#F1F3F6',
+                              border: 'none',
+                              cursor: 'pointer'
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = 'var(--gray-300)';
+                              e.currentTarget.style.background = '#e5e7eb';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = 'var(--gray-200)';
+                              e.currentTarget.style.background = '#F1F3F6';
                             }}
                           >
                             <svg
@@ -1740,47 +1763,53 @@ export default function Monitors() {
                               strokeWidth="2"
                               viewBox="0 0 24 24"
                               fill="none"
-                              className={`text-[#5F5F5F] transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                              style={{ 
+                                width: '16px', 
+                                height: '16px', 
+                                color: '#5F5F5F',
+                                transition: 'transform 0.2s',
+                                transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'
+                              }}
                             >
                               <path d="M19 9l-7 7-7-7" strokeLinejoin="round" strokeLinecap="round" />
                             </svg>
                           </button>
                         </td>
-                         <td className="px-4 py-4 overflow-visible">
-                           <div className="text-[15px] max-w-[140px] truncate font-semibold" style={{ color: 'var(--bold-text)' }} title={monitor.name}>
+                         <td className="overflow-visible" style={{ padding: '16px', borderBottom: isExpanded ? '1px solid #e5e7eb' : '1px solid #eaeaea', color: '#4A4A4A', fontSize: '14px', lineHeight: 1.5, background: isExpanded ? '#f9fafb' : 'white' }}>
+                           <div style={{ fontWeight: 600, color: '#464646', fontSize: '15px', whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: '140px', display: 'inline-block' }} title={monitor.name}>
                              {truncateText(monitor.name, 15)}
                            </div>
                          </td>
-                        <td className="px-4 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-md overflow-hidden flex-shrink-0">
+                        <td style={{ padding: '16px', borderBottom: isExpanded ? '1px solid #e5e7eb' : '1px solid #eaeaea', color: '#4A4A4A', fontSize: '14px', lineHeight: 1.5, background: isExpanded ? '#f9fafb' : 'white' }}>
+                          <div className="flex items-center" style={{ gap: '12px' }}>
+                            <div className="overflow-hidden flex-shrink-0" style={{ width: '40px', height: '40px', borderRadius: '6px' }}>
                               <img src={monitor.item.image} alt={monitor.item.title} className="w-full h-full object-cover" />
                             </div>
-                             <div className="flex flex-col overflow-hidden">
-                               <div className="font-semibold text-sm max-w-[180px] truncate" style={{ color: 'var(--bold-text)' }} title={monitor.item.title}>
+                             <div className="flex flex-col overflow-hidden" style={{ justifyContent: 'center' }}>
+                               <div style={{ fontWeight: 600, color: '#464646', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '180px', fontSize: '14px' }} title={monitor.item.title}>
                                  {monitor.item.title}
                                </div>
-                               <div className="text-xs truncate" style={{ color: 'var(--subtle-text)' }}>{monitor.item.id}</div>
+                               <div style={{ fontSize: '12px', color: '#5F5F5F', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{monitor.item.id}</div>
                              </div>
                           </div>
                         </td>
-                        <td className="px-4 py-4">
-                          <div className="relative group cursor-help">
-                            <img src={monitor.country.flag} alt={monitor.country.code} className="w-6 h-[18px] rounded-sm object-cover" />
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-[#1B1B1B] text-white text-xs rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap pointer-events-none">
+                        <td style={{ padding: '16px', borderBottom: isExpanded ? '1px solid #e5e7eb' : '1px solid #eaeaea', color: '#4A4A4A', fontSize: '14px', lineHeight: 1.5, background: isExpanded ? '#f9fafb' : 'white' }}>
+                          <div className="relative" style={{ cursor: 'help' }}>
+                            <img src={monitor.country.flag} alt={monitor.country.code} style={{ width: '24px', height: '18px', borderRadius: '2px', objectFit: 'cover' }} />
+                            <div className="absolute" style={{ bottom: 'calc(100% + 10px)', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#1B1B1B', color: 'white', padding: '6px 10px', borderRadius: '4px', fontSize: '11px', whiteSpace: 'nowrap', zIndex: 1000, opacity: 0, visibility: 'hidden', transition: 'all 0.2s', pointerEvents: 'none' }}>
                               Site: {monitor.country.site}
+                              <div className="absolute" style={{ top: '100%', left: '50%', transform: 'translateX(-50%)', border: '6px solid transparent', borderTopColor: '#1B1B1B' }}></div>
                             </div>
                           </div>
                         </td>
-                        <td className="px-4 py-4">
-                          <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-medium bg-[#EBFCF4] text-[#016853]">
+                        <td style={{ padding: '16px', borderBottom: isExpanded ? '1px solid #e5e7eb' : '1px solid #eaeaea', color: '#4A4A4A', fontSize: '14px', lineHeight: 1.5, background: isExpanded ? '#f9fafb' : 'white' }}>
+                          <span className="inline-flex items-center" style={{ padding: '4px 12px', borderRadius: '12px', fontSize: '12px', fontWeight: 500, backgroundColor: '#EBFCF4', color: '#016853' }}>
                             {monitor.interval}
                           </span>
                         </td>
-                        <td className="px-3 py-4">
+                        <td className="relative" style={{ padding: '16px', borderBottom: isExpanded ? '1px solid #e5e7eb' : '1px solid #eaeaea', color: '#4A4A4A', fontSize: '14px', lineHeight: 1.5, background: isExpanded ? '#f9fafb' : 'white', cursor: 'help' }}>
                           <div 
                             ref={getLastCheckRef(monitor.id)}
-                            className="relative text-xs cursor-help text-[#4A4A4A]"
                             onMouseEnter={() => setHoveredLastCheck(monitor.id)}
                             onMouseLeave={() => setHoveredLastCheck(null)}
                           >
@@ -1790,32 +1819,40 @@ export default function Monitors() {
                               targetRef={getLastCheckRef(monitor.id)}
                               position="top"
                             >
-                              <div className="px-4 py-3 bg-[#1B1B1B] text-white text-xs rounded-md whitespace-pre-line leading-relaxed min-w-[250px] max-w-[400px] shadow-lg">
+                              <div style={{ backgroundColor: '#1B1B1B', color: 'white', padding: '12px 16px', borderRadius: '6px', fontSize: '12px', whiteSpace: 'pre-line', zIndex: 1000, lineHeight: 1.4 }}>
                               {monitor.lastCheckTooltip}
-                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-[#1B1B1B]"></div>
+                                <div style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', borderWidth: '6px', borderStyle: 'solid', borderColor: '#1B1B1B transparent transparent transparent' }}></div>
                             </div>
                             </TooltipPortal>
                           </div>
                         </td>
-                         <td className="px-4 py-4 overflow-visible">
+                         <td className="overflow-visible" style={{ padding: '16px', borderBottom: isExpanded ? '1px solid #e5e7eb' : '1px solid #eaeaea', color: '#4A4A4A', fontSize: '14px', lineHeight: 1.5, background: isExpanded ? '#f9fafb' : 'white' }}>
                            <div 
                              ref={getFieldsRef(monitor.id)}
-                             className="flex items-center gap-1.5 max-w-[130px] relative"
+                             className="flex items-center relative"
+                             style={{ gap: '6px', flexWrap: 'nowrap', maxWidth: '130px', overflow: 'visible', cursor: 'pointer' }}
                              onMouseEnter={() => hiddenFieldsCount > 0 && setShowFieldsTooltip(monitor.id)}
                              onMouseLeave={() => setShowFieldsTooltip(null)}
                            >
                             {visibleFields.map((field) => (
-                              <span key={field} className="inline-flex items-center px-2 py-0.5 rounded-xl text-[11px] font-medium bg-[#f3f4f6] text-[#374151]">
+                              <span key={field} className="inline-flex items-center" style={{ padding: '2px 8px', borderRadius: '12px', fontSize: '11px', fontWeight: 500, backgroundColor: '#f3f4f6', color: '#374151' }}>
                                 {field}
                               </span>
                             ))}
                             {hiddenFieldsCount > 0 && (
                               <>
                                 <span 
-                                  className="inline-flex items-center px-2 py-0.5 rounded-xl text-[11px] font-medium bg-[#1D77BD] text-white hover:bg-[#1564cc] transition-colors cursor-pointer"
+                                  className="inline-flex items-center cursor-pointer transition-colors"
+                                  style={{ padding: '2px 8px', borderRadius: '12px', fontSize: '11px', fontWeight: 500, backgroundColor: '#1D77BD', color: 'white' }}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setShowFieldsTooltip(showFieldsTooltip === monitor.id ? null : monitor.id);
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#1564cc';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#1D77BD';
                                   }}
                                 >
                                   +{hiddenFieldsCount}
@@ -1825,55 +1862,67 @@ export default function Monitors() {
                                   targetRef={getFieldsRef(monitor.id)}
                                   position="top"
                                 >
-                                  <div className="px-4 py-4 bg-[#1B1B1B] text-white text-xs rounded-lg min-w-[250px] max-w-[400px] shadow-lg">
-                                    <div className="flex flex-col gap-2 items-start">
+                                  <div style={{ backgroundColor: '#1B1B1B', color: 'white', padding: '16px', borderRadius: '8px', fontSize: '12px', whiteSpace: 'normal', zIndex: 1000, minWidth: '200px', maxWidth: '300px', textAlign: 'left', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)' }}>
+                                    <div className="flex flex-col" style={{ gap: '8px', alignItems: 'flex-start' }}>
                                     {monitor.fields.map((field) => (
-                                        <span key={field} className="inline-flex items-center px-2 py-1 rounded-xl text-[11px] font-medium bg-[#f3f4f6] text-[#374151] w-full justify-start">
+                                        <span key={field} className="inline-flex items-center" style={{ padding: '2px 8px', borderRadius: '12px', fontSize: '11px', fontWeight: 500, backgroundColor: '#f3f4f6', color: '#374151', margin: 0, width: '100%', justifyContent: 'flex-start' }}>
                                         {field}
                                       </span>
                                     ))}
                                   </div>
-                                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-[#1B1B1B]"></div>
+                                    <div style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', borderWidth: '8px', borderStyle: 'solid', borderColor: '#1B1B1B transparent transparent transparent' }}></div>
                                 </div>
                                 </TooltipPortal>
                               </>
                             )}
                           </div>
                         </td>
-                         <td className="px-4 py-4 overflow-visible">
-                           <div className="flex items-center gap-2">
-                             <div className="relative flex-grow h-1.5 bg-[#e5e7eb] rounded-full min-w-[60px] group cursor-help">
+                         <td className="overflow-visible" style={{ padding: '16px', borderBottom: isExpanded ? '1px solid #e5e7eb' : '1px solid #eaeaea', color: '#4A4A4A', fontSize: '14px', lineHeight: 1.5, background: isExpanded ? '#f9fafb' : 'white' }}>
+                           <div className="flex items-center" style={{ gap: '8px' }}>
+                             <div className="relative cursor-help" style={{ flexGrow: 1, height: '6px', background: '#e5e7eb', borderRadius: '3px', minWidth: '60px' }}>
                               <div
-                                className="h-full bg-[#089E68] rounded-full transition-all"
-                                style={{ width: `${monitor.usage.percentage}%` }}
+                                className="h-full rounded-full transition-all"
+                                style={{ width: `${monitor.usage.percentage}%`, background: '#089E68', borderRadius: '3px' }}
                               />
-                              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-[#1B1B1B] text-white text-xs rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap pointer-events-none">
+                              <div style={{ position: 'absolute', bottom: 'calc(100% + 10px)', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#1B1B1B', color: 'white', padding: '8px 12px', borderRadius: '6px', fontSize: '12px', whiteSpace: 'nowrap', zIndex: 1000, opacity: 0, visibility: 'hidden', transition: 'opacity 0.2s, visibility 0.2s', pointerEvents: 'none' }}>
                                 {formatNumber(monitor.usage.used)}/{formatNumber(monitor.usage.total)} checks used
+                                <div style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', borderWidth: '6px', borderStyle: 'solid', borderColor: '#1B1B1B transparent transparent transparent' }}></div>
                               </div>
                             </div>
                           </div>
                         </td>
-                         <td className="px-4 py-4 overflow-visible">
-                           <div className="flex items-center gap-2">
+                         <td className="overflow-visible" style={{ padding: '16px', borderBottom: isExpanded ? '1px solid #e5e7eb' : '1px solid #eaeaea', color: '#4A4A4A', fontSize: '14px', lineHeight: 1.5, background: isExpanded ? '#f9fafb' : 'white' }}>
+                           <div className="flex items-center" style={{ gap: '8px' }}>
                              <div
                                onClick={() => handleToggleStatus(monitor.id)}
-                               className={`relative w-11 h-6 rounded-full cursor-pointer transition-colors ${
-                                 monitor.isActive ? 'bg-[#089E68]' : 'bg-[#d1d5db]'
-                               }`}
+                               className="relative cursor-pointer transition-colors"
+                               style={{
+                                 width: '44px',
+                                 height: '24px',
+                                 backgroundColor: monitor.isActive ? '#089E68' : '#d1d5db',
+                                 borderRadius: '12px'
+                               }}
                              >
                                <div
-                                 className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
-                                   monitor.isActive ? 'translate-x-5' : 'translate-x-0.5'
-                                 }`}
+                                 className="absolute rounded-full transition-transform"
+                                 style={{
+                                   top: '2px',
+                                   left: monitor.isActive ? '22px' : '2px',
+                                   width: '20px',
+                                   height: '20px',
+                                   backgroundColor: 'white',
+                                   borderRadius: '50%',
+                                   transition: 'transform 0.2s'
+                                 }}
                                />
                              </div>
                            </div>
                          </td>
-                         <td className="px-4 py-4 overflow-visible">
-                           <div className="flex items-center gap-1">
-                             {monitor.alerts.slice(0, 2).map((alert) => (
-                              <div key={alert} className="w-6 h-6 rounded bg-[#f3f4f6] flex items-center justify-center border-2 border-white -mr-1 relative group cursor-help">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-[#5F5F5F]">
+                         <td className="overflow-visible" style={{ padding: '16px', borderBottom: isExpanded ? '1px solid #e5e7eb' : '1px solid #eaeaea', color: '#4A4A4A', fontSize: '14px', lineHeight: 1.5, background: isExpanded ? '#f9fafb' : 'white' }}>
+                           <div className="flex items-center" style={{ gap: '4px' }}>
+                             {monitor.alerts.slice(0, 2).map((alert, index) => (
+                              <div key={alert} className="flex items-center justify-center relative" style={{ width: '24px', height: '24px', borderRadius: '4px', background: '#f3f4f6', marginRight: index === 0 ? '-4px' : '-4px', border: '2px solid white', cursor: 'help' }}>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px', color: '#5F5F5F' }}>
                                   {alert === 'Email' ? (
                                     <>
                                       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
@@ -1887,22 +1936,24 @@ export default function Monitors() {
                                     </>
                                   )}
                                 </svg>
-                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[#1B1B1B] text-white text-[11px] rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap pointer-events-none">
+                                <div style={{ position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#1B1B1B', color: 'white', padding: '6px 10px', borderRadius: '4px', fontSize: '11px', whiteSpace: 'nowrap', opacity: 0, visibility: 'hidden', transition: 'all 0.2s', zIndex: 10, pointerEvents: 'none' }}>
                                   {alert}
+                                  <div style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', border: '6px solid transparent', borderTopColor: '#1B1B1B' }}></div>
                                 </div>
                               </div>
                             ))}
                              {monitor.alerts.length > 2 && (
-                               <span className="inline-flex items-center px-1.5 py-0.5 rounded-[10px] text-[10px] font-semibold bg-[#1D77BD] text-white ml-1.5 relative group cursor-help">
+                               <span className="inline-flex items-center relative" style={{ padding: '2px 6px', borderRadius: '10px', fontSize: '10px', fontWeight: 600, backgroundColor: '#1D77BD', color: 'white', marginLeft: '6px', cursor: 'help' }}>
                                  +{monitor.alerts.length - 2}
-                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[#1B1B1B] text-white text-[11px] rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap pointer-events-none">
+                                <div style={{ position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#1B1B1B', color: 'white', padding: '6px 10px', borderRadius: '4px', fontSize: '11px', whiteSpace: 'nowrap', opacity: 0, visibility: 'hidden', transition: 'all 0.2s', zIndex: 10, pointerEvents: 'none' }}>
                                   {monitor.alerts.join(', ')}
+                                  <div style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', border: '6px solid transparent', borderTopColor: '#1B1B1B' }}></div>
                                 </div>
                               </span>
                             )}
                           </div>
                         </td>
-                         <td className="px-3 py-3">
+                         <td style={{ padding: '16px 16px 16px 0', borderBottom: isExpanded ? '1px solid #e5e7eb' : '1px solid #eaeaea', color: '#4A4A4A', fontSize: '14px', lineHeight: 1.5, background: isExpanded ? '#f9fafb' : 'white' }}>
                            <div className="relative">
                             <button
                               ref={getButtonRef(`options-${monitor.id}`)}
@@ -1910,15 +1961,26 @@ export default function Monitors() {
                                 e.stopPropagation();
                                 toggleDropdown(`options-${monitor.id}`);
                               }}
-                              className="w-9 h-9 flex items-center justify-center transition-all"
+                              className="flex items-center justify-center transition-all relative"
                               style={{
-                                backgroundColor: 'transparent'
+                                width: '32px',
+                                height: '32px',
+                                borderRadius: '6px',
+                                background: 'transparent',
+                                border: 'none',
+                                cursor: 'pointer'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = '#f9fafb';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = 'transparent';
                               }}
                             >
-                             <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5" style={{ color: '#4A4A4A' }}>
-                               <circle cx="5" cy="12" r="1.5"/>
-                               <circle cx="12" cy="12" r="1.5"/>
-                               <circle cx="19" cy="12" r="1.5"/>
+                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '18px', height: '18px', color: '#5F5F5F' }}>
+                               <circle cx="12" cy="12" r="1" />
+                               <circle cx="19" cy="12" r="1" />
+                               <circle cx="5" cy="12" r="1" />
                              </svg>
                             </button>
                           </div>
@@ -1927,95 +1989,128 @@ export default function Monitors() {
 
                       {/* Details Row */}
                       {isExpanded && (
-                        <tr className="bg-[#f9fafb] border-b border-[#e5e7eb] relative overflow-visible">
-                          <td colSpan={12} className="px-0 py-0 overflow-visible">
-                            <div className="mx-12 overflow-visible">
-                              <table className="w-full overflow-visible">
+                        <tr className="details-row visible" style={{ display: 'table-row' }}>
+                          <td colSpan={12} style={{ padding: 0 }}>
+                            <div className="details-content" style={{ padding: '16px', margin: '0 48px' }}>
+                              <table className="details-table" style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, background: 'white', tableLayout: 'auto' }}>
                                 <thead>
                                   <tr>
-                                    <th className="bg-[#f3f4f6] text-[#5F5F5F] text-left border-b border-[#e5e7eb] overflow-visible" style={{ fontSize: "11px", padding: "10px 12px" }}>Field</th>
-                                    <th className="bg-[#f3f4f6] text-[#5F5F5F] text-left border-b border-[#e5e7eb] overflow-visible" style={{ fontSize: "11px", padding: "10px 12px" }}>Type</th>
-                                    <th className="bg-[#f3f4f6] text-[#5F5F5F] text-left border-b border-[#e5e7eb] overflow-visible" style={{ fontSize: "11px", padding: "10px 12px" }}>Current Value</th>
-                                    <th className="bg-[#f3f4f6] text-[#5F5F5F] text-left border-b border-[#e5e7eb] overflow-visible" style={{ fontSize: "11px", padding: "10px 12px" }}>Previous</th>
-                                    <th className="bg-[#f3f4f6] text-[#5F5F5F] text-left border-b border-[#e5e7eb] overflow-visible" style={{ fontSize: "11px", padding: "10px 12px" }}>Magnitude</th>
-                                    <th className="bg-[#f3f4f6] text-[#5F5F5F] text-left border-b border-[#e5e7eb] overflow-visible" style={{ fontSize: "11px", padding: "10px 12px" }}>Modified</th>
-                                    <th className="bg-[#f3f4f6] text-[#5F5F5F] text-left border-b border-[#e5e7eb] overflow-visible" style={{ fontSize: "11px", padding: "10px 12px" }}>Unread</th>
-                                    <th className="bg-[#f3f4f6] text-[#5F5F5F] text-left border-b border-[#e5e7eb] overflow-visible" style={{ fontSize: "11px", padding: "10px 12px" }}>Actions</th>
+                                    <th className="text-left overflow-visible" style={{ backgroundColor: '#f3f4f6', fontSize: '11px', color: '#5F5F5F', padding: '10px 12px', borderBottom: '1px solid #e5e7eb', width: 'auto' }}>Field</th>
+                                    <th className="text-left overflow-visible" style={{ backgroundColor: '#f3f4f6', fontSize: '11px', color: '#5F5F5F', padding: '10px 12px', borderBottom: '1px solid #e5e7eb', width: 'auto' }}>Type</th>
+                                    <th className="text-left overflow-visible" style={{ backgroundColor: '#f3f4f6', fontSize: '11px', color: '#5F5F5F', padding: '10px 12px', borderBottom: '1px solid #e5e7eb', width: 'auto' }}>Current Value</th>
+                                    <th className="text-left overflow-visible" style={{ backgroundColor: '#f3f4f6', fontSize: '11px', color: '#5F5F5F', padding: '10px 12px', borderBottom: '1px solid #e5e7eb', width: 'auto' }}>Previous</th>
+                                    <th className="text-left overflow-visible" style={{ backgroundColor: '#f3f4f6', fontSize: '11px', color: '#5F5F5F', padding: '10px 12px', borderBottom: '1px solid #e5e7eb', width: 'auto' }}>Magnitude</th>
+                                    <th className="text-left overflow-visible" style={{ backgroundColor: '#f3f4f6', fontSize: '11px', color: '#5F5F5F', padding: '10px 12px', borderBottom: '1px solid #e5e7eb', width: 'auto' }}>Modified</th>
+                                    <th className="text-left overflow-visible" style={{ backgroundColor: '#f3f4f6', fontSize: '11px', color: '#5F5F5F', padding: '10px 12px', borderBottom: '1px solid #e5e7eb', width: 'auto' }}>Unread</th>
+                                    <th className="text-left overflow-visible" style={{ backgroundColor: '#f3f4f6', fontSize: '11px', color: '#5F5F5F', padding: '10px 12px', borderBottom: '1px solid #e5e7eb', width: 'auto' }}>Actions</th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                   {monitor.details.map((detail, idx) => (
-                                    <tr key={idx} style={{ borderBottom: idx === monitor.details.length - 1 ? 'none' : '1px solid #e5e7eb' }}>
-                                      <td className="bg-[#f9fafb] overflow-visible" style={{ padding: "12px", fontSize: "13px" }}>
-                                        <span className="inline-flex items-center bg-[#f3f4f6] text-[#464646] font-medium relative group cursor-help" style={{ padding: "4px 12px", borderRadius: "6px", fontSize: "12px", fontFamily: "monospace" }}>
+                                    <tr 
+                                      key={idx}
+                                      onMouseEnter={(e) => {
+                                        Array.from(e.currentTarget.querySelectorAll('td')).forEach(td => {
+                                          (td as HTMLElement).style.backgroundColor = '#f3f4f6';
+                                        });
+                                      }}
+                                      onMouseLeave={(e) => {
+                                        Array.from(e.currentTarget.querySelectorAll('td')).forEach(td => {
+                                          (td as HTMLElement).style.backgroundColor = '#f9fafb';
+                                        });
+                                      }}
+                                    >
+                                      <td className="overflow-visible" style={{ padding: '12px', fontSize: '13px', backgroundColor: '#f9fafb', borderBottom: idx === monitor.details.length - 1 ? 'none' : '1px solid #e5e7eb', width: 'auto' }}>
+                                        <span className="inline-flex items-center relative cursor-help" style={{ padding: '4px 12px', borderRadius: '6px', fontSize: '12px', fontFamily: 'monospace', backgroundColor: '#f3f4f6', color: '#464646', fontWeight: 500 }}>
                                           {detail.field}
-                                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-[#1B1B1B] text-white rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-pre-line pointer-events-none" style={{ fontSize: "11px" }}>
+                                          <div style={{ position: 'absolute', bottom: 'calc(100% + 10px)', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#1B1B1B', color: 'white', padding: '8px 12px', borderRadius: '6px', fontSize: '11px', whiteSpace: 'nowrap', zIndex: 1000, opacity: 0, visibility: 'hidden', transition: 'opacity 0.2s, visibility 0.2s', pointerEvents: 'none' }}>
                                             Triggers:{'\n'}
                                             {detail.triggers.join('\n')}
+                                            <div style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', borderWidth: '6px', borderStyle: 'solid', borderColor: '#1B1B1B transparent transparent transparent' }}></div>
                                           </div>
                                         </span>
                                       </td>
-                                      <td className="bg-[#f9fafb] overflow-visible" style={{ padding: "12px", fontSize: "13px" }}>
-                                        <div className="text-[#4A4A4A] max-w-[120px] truncate" style={{ fontSize: "12px" }}>{detail.type}</div>
+                                      <td className="overflow-visible" style={{ padding: '12px', fontSize: '13px', backgroundColor: '#f9fafb', borderBottom: idx === monitor.details.length - 1 ? 'none' : '1px solid #e5e7eb', width: 'auto' }}>
+                                        <div style={{ fontSize: '12px', color: '#4A4A4A', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{detail.type}</div>
                                       </td>
-                                      <td className="bg-[#f9fafb] overflow-visible" style={{ padding: "12px", fontSize: "13px" }}>
+                                      <td className="overflow-visible" style={{ padding: '12px', fontSize: '13px', backgroundColor: '#f9fafb', borderBottom: idx === monitor.details.length - 1 ? 'none' : '1px solid #e5e7eb', width: 'auto' }}>
                                         <span
                                           onClick={() => copyToClipboard(detail.currentValueFull)}
-                                          className="font-mono text-[#4A4A4A] cursor-pointer rounded hover:bg-[#f3f4f6] transition-colors max-w-[120px] truncate inline-block"
-                                          style={{ fontSize: "12px", padding: "4px 8px" }}
+                                          className="cursor-pointer transition-colors inline-block"
+                                          style={{ fontFamily: 'monospace', fontSize: '12px', color: '#4A4A4A', padding: '4px 8px', borderRadius: '4px', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                                           title={detail.currentValueFull}
+                                          onMouseEnter={(e) => {
+                                            e.currentTarget.style.backgroundColor = '#f3f4f6';
+                                          }}
+                                          onMouseLeave={(e) => {
+                                            e.currentTarget.style.backgroundColor = 'transparent';
+                                          }}
                                         >
                                           {detail.currentValue}
                                         </span>
                                       </td>
-                                      <td className="bg-[#f9fafb] overflow-visible" style={{ padding: "12px", fontSize: "13px" }}>
+                                      <td className="overflow-visible" style={{ padding: '12px', fontSize: '13px', backgroundColor: '#f9fafb', borderBottom: idx === monitor.details.length - 1 ? 'none' : '1px solid #e5e7eb', width: 'auto' }}>
                                         <span
                                           onClick={() => copyToClipboard(detail.previousValueFull)}
-                                          className="font-mono text-[#4A4A4A] cursor-pointer rounded hover:bg-[#f3f4f6] transition-colors max-w-[120px] truncate inline-block"
-                                          style={{ fontSize: "12px", padding: "4px 8px" }}
+                                          className="cursor-pointer transition-colors inline-block"
+                                          style={{ fontFamily: 'monospace', fontSize: '12px', color: '#4A4A4A', padding: '4px 8px', borderRadius: '4px', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                                           title={detail.previousValueFull}
+                                          onMouseEnter={(e) => {
+                                            e.currentTarget.style.backgroundColor = '#f3f4f6';
+                                          }}
+                                          onMouseLeave={(e) => {
+                                            e.currentTarget.style.backgroundColor = 'transparent';
+                                          }}
                                         >
                                           {detail.previousValue}
                                         </span>
                                       </td>
-                                      <td className="bg-[#f9fafb] overflow-visible" style={{ padding: "12px", fontSize: "13px" }}>
-                                        <div className="flex items-center gap-2 min-w-[80px]">
-                                          <div className="flex-grow h-1.5 bg-[#e5e7eb] rounded-full overflow-hidden min-w-[40px]">
+                                      <td className="overflow-visible" style={{ padding: '12px', fontSize: '13px', backgroundColor: '#f9fafb', borderBottom: idx === monitor.details.length - 1 ? 'none' : '1px solid #e5e7eb', width: 'auto' }}>
+                                        <div className="flex items-center" style={{ gap: '8px', minWidth: '80px' }}>
+                                          <div className="flex-grow overflow-hidden" style={{ height: '6px', background: '#e5e7eb', borderRadius: '3px', minWidth: '40px' }}>
                                             <div
-                                              className="h-full bg-[#089E68] rounded-full transition-all"
-                                              style={{ width: `${detail.magnitude}%` }}
+                                              className="h-full rounded-full transition-all"
+                                              style={{ width: `${detail.magnitude}%`, background: '#089E68', borderRadius: '3px' }}
                                             />
                                           </div>
-                                          <span className="text-[#5F5F5F] whitespace-nowrap" style={{ fontSize: "11px" }}>{detail.magnitude}%</span>
+                                          <span className="whitespace-nowrap" style={{ fontSize: '11px', color: '#5F5F5F' }}>{detail.magnitude}%</span>
                                         </div>
                                       </td>
-                                      <td className="bg-[#f9fafb] overflow-visible" style={{ padding: "12px", fontSize: "13px" }}>
-                                        <div className="flex items-center gap-1 text-[#5F5F5F]" style={{ fontSize: "12px" }}>
-                                          <svg viewBox="0 0 20 20" fill="currentColor" style={{ width: "12px", height: "12px" }}>
+                                      <td className="overflow-visible" style={{ padding: '12px', fontSize: '13px', backgroundColor: '#f9fafb', borderBottom: idx === monitor.details.length - 1 ? 'none' : '1px solid #e5e7eb', width: 'auto' }}>
+                                        <div className="flex items-center" style={{ gap: '4px', color: '#5F5F5F', fontSize: '12px' }}>
+                                          <svg viewBox="0 0 20 20" fill="currentColor" style={{ width: '12px', height: '12px' }}>
                                             <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12zm1-6a1 1 0 10-2 0v3a1 1 0 002 0V8zm-1-4a1 1 0 100 2 1 1 0 000-2z" />
                                           </svg>
                                           {detail.modified}
                                         </div>
                                       </td>
-                                      <td className="bg-[#f9fafb] px-3 py-3 overflow-visible">
+                                      <td className="overflow-visible" style={{ padding: '12px', fontSize: '13px', backgroundColor: '#f9fafb', borderBottom: idx === monitor.details.length - 1 ? 'none' : '1px solid #e5e7eb', width: 'auto' }}>
                                         <div className="flex items-center justify-center">
-                                          <div className="inline-flex items-center justify-center min-w-[24px] h-6 bg-[#1D77BD] text-white rounded-full text-xs font-semibold px-1.5 hover:bg-[#1564cc] hover:scale-105 transition-all">
+                                          <div className="inline-flex items-center justify-center" style={{ minWidth: '24px', height: '24px', backgroundColor: '#1D77BD', color: 'white', borderRadius: '50%', fontSize: '12px', fontWeight: 600, padding: '0 6px' }}>
                                             {detail.unreadCount}
                                           </div>
                                         </div>
                                       </td>
-                                      <td className="bg-[#f9fafb] overflow-visible" style={{ padding: "12px", fontSize: "13px" }}>
-                                        <div className="flex items-center" style={{ gap: "8px" }}>
+                                      <td className="overflow-visible" style={{ padding: '12px', fontSize: '13px', backgroundColor: '#f9fafb', borderBottom: idx === monitor.details.length - 1 ? 'none' : '1px solid #e5e7eb', width: 'auto' }}>
+                                        <div className="flex items-center" style={{ gap: '8px' }}>
                                           <div 
-                                            className="rounded-full bg-[#EBFCF4] flex items-center justify-center cursor-pointer hover:-translate-y-0.5 hover:bg-[#D7F7E9] transition-all relative group"
-                                            style={{ width: "28px", height: "28px" }}
+                                            className="flex items-center justify-center cursor-pointer transition-all relative"
+                                            style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#EBFCF4', position: 'relative' }}
                                             onClick={(e) => {
                                               e.stopPropagation();
                                               setSelectedFieldHistory({ monitorId: monitor.id, fieldName: detail.field });
                                               setFieldHistoryModalOpen(true);
                                             }}
+                                            onMouseEnter={(e) => {
+                                              e.currentTarget.style.transform = 'translateY(-2px)';
+                                              e.currentTarget.style.backgroundColor = '#D7F7E9';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                              e.currentTarget.style.transform = 'translateY(0)';
+                                              e.currentTarget.style.backgroundColor = '#EBFCF4';
+                                            }}
                                           >
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="text-[#016853]" style={{ width: "14px", height: "14px" }}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style={{ width: '14px', height: '14px', color: '#016853' }}>
                                               <path
                                                 fill="currentColor"
                                                 d="M17.1282 5.53408C15.6009 4.20127 13.6364 3.47739 11.6095 3.50054C9.58258 3.52369 7.63513 4.29225 6.1387 5.6596C4.64227 7.02694 3.70161 8.89735 3.4962 10.914C3.45422 11.326 3.08614 11.6261 2.67405 11.5841C2.26197 11.5421 1.96194 11.174 2.00392 10.762C2.24668 8.37868 3.35837 6.1682 5.12688 4.55225C6.89539 2.9363 9.19692 2.028 11.5924 2.00064C13.9878 1.97328 16.3095 2.82877 18.1145 4.40391C19.9194 5.97904 21.0813 8.16356 21.3784 10.5407C21.6756 12.9178 21.0872 15.3211 19.7255 17.292C18.3638 19.263 16.3241 20.6637 13.9956 21.2268C11.6672 21.7899 9.21286 21.4761 7.101 20.3452C5.62665 19.5557 4.39125 18.4065 3.50006 17.019V19.838C3.50006 20.2522 3.16427 20.588 2.75006 20.588C2.33584 20.588 2.00006 20.2522 2.00006 19.838V14.838C2.00006 14.4237 2.33584 14.088 2.75006 14.088H3.23256C3.24421 14.0877 3.25584 14.0877 3.26743 14.088H7.75006C8.16427 14.088 8.50006 14.4237 8.50006 14.838C8.50006 15.2522 8.16427 15.588 7.75006 15.588H4.40079C5.1641 17.0404 6.34792 18.2404 7.80911 19.0229C9.59607 19.9798 11.6728 20.2453 13.643 19.7688C15.6133 19.2923 17.3392 18.1072 18.4914 16.4394C19.6436 14.7717 20.1414 12.7381 19.89 10.7267C19.6386 8.71532 18.6555 6.86688 17.1282 5.53408ZM11.7003 7.08789C12.1145 7.08789 12.4503 7.42368 12.4503 7.83789V11.5272L14.2306 13.3076C14.5235 13.6005 14.5235 14.0753 14.2306 14.3682C13.9377 14.6611 13.4628 14.6611 13.1699 14.3682L11.1699 12.3682C11.0293 12.2276 10.9503 12.0368 10.9503 11.8379V7.83789C10.9503 7.42368 11.286 7.08789 11.7003 7.08789Z"
@@ -2023,17 +2118,19 @@ export default function Monitors() {
                                                 fillRule="evenodd"
                                               />
                                             </svg>
-                                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-[#1B1B1B] text-white rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap pointer-events-none z-10" style={{ fontSize: "11px" }}>
+                                            <div style={{ position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#1B1B1B', color: 'white', padding: '6px 10px', borderRadius: '4px', fontSize: '11px', whiteSpace: 'nowrap', opacity: 0, visibility: 'hidden', transition: 'all 0.2s', zIndex: 10, pointerEvents: 'none' }}>
                                               View History
+                                              <div style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', border: '6px solid transparent', borderTopColor: '#1B1B1B' }}></div>
                                             </div>
                                           </div>
-                                          <div className="rounded-full bg-[#EBFCF4] flex items-center justify-center cursor-pointer hover:-translate-y-0.5 hover:bg-[#D7F7E9] transition-all relative group" style={{ width: "28px", height: "28px" }}>
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#016853]" style={{ width: "14px", height: "14px" }}>
+                                          <div className="flex items-center justify-center cursor-pointer transition-all relative" style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#EBFCF4' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.backgroundColor = '#D7F7E9'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.backgroundColor = '#EBFCF4'; }}>
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px', color: '#016853' }}>
                                               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                                               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                                             </svg>
-                                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-[#1B1B1B] text-white rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap pointer-events-none z-10" style={{ fontSize: "11px" }}>
+                                            <div style={{ position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#1B1B1B', color: 'white', padding: '6px 10px', borderRadius: '4px', fontSize: '11px', whiteSpace: 'nowrap', opacity: 0, visibility: 'hidden', transition: 'all 0.2s', zIndex: 10, pointerEvents: 'none' }}>
                                               Modify/Edit
+                                              <div style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', border: '6px solid transparent', borderTopColor: '#1B1B1B' }}></div>
                                             </div>
                                           </div>
                                         </div>
@@ -2083,142 +2180,134 @@ export default function Monitors() {
           isOpen={openDropdown === `options-${monitor.id}`}
           buttonRef={getButtonRef(`options-${monitor.id}`)}
         >
-          {/* View History */}
+
+          {/* View Page History */}
           <div
-            className="flex items-center px-3.5 py-2.5 rounded-lg cursor-pointer transition-all"
-            style={{ color: 'var(--text-default)' }}
+            className="flex items-center cursor-pointer transition-colors"
+            style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }}
             onClick={(e) => {
               e.stopPropagation();
-              setSelectedFieldHistory({ monitorId: monitor.id, fieldName: monitor.name });
-              setFieldHistoryModalOpen(true);
+              setSelectedPageHistory({ monitorId: monitor.id });
+              setPageHistoryModalOpen(true);
               toggleDropdown(`options-${monitor.id}`);
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#F5F6F8';
+              e.currentTarget.style.backgroundColor = '#f9fafb';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';
             }}
           >
-            <div className="w-[18px] h-[18px] mr-3 flex items-center justify-center" style={{ color: 'var(--subtle-text)' }}>
-              <svg fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" className="w-full h-full">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </div>
-            <span className="text-sm font-medium flex-grow" style={{ color: 'var(--text-default)' }}>View History</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px', color: '#5F5F5F' }}>
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            <span>View Page History</span>
           </div>
 
-          {/* Edit Monitor */}
+          {/* Edit */}
           <div
-            className="flex items-center px-3.5 py-2.5 rounded-lg cursor-pointer transition-all"
-            style={{ color: 'var(--text-default)' }}
+            className="flex items-center cursor-pointer transition-colors"
+            style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }}
             onClick={(e) => {
               e.stopPropagation();
               // TODO: Open edit monitor modal
               toggleDropdown(`options-${monitor.id}`);
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#F5F6F8';
+              e.currentTarget.style.backgroundColor = '#f9fafb';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';
             }}
           >
-            <div className="w-[18px] h-[18px] mr-3 flex items-center justify-center" style={{ color: 'var(--subtle-text)' }}>
-              <svg fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" className="w-full h-full">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px', color: '#5F5F5F' }}>
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
             </svg>
-            </div>
-            <span className="text-sm font-medium flex-grow" style={{ color: 'var(--text-default)' }}>Edit Monitor</span>
+            <span>Edit</span>
           </div>
 
-          {/* Pause/Resume Monitor */}
+          {/* Pause/Resume */}
           <div
-            className="flex items-center px-3.5 py-2.5 rounded-lg cursor-pointer transition-all"
-            style={{ color: 'var(--text-default)' }}
+            className="flex items-center cursor-pointer transition-colors"
+            style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }}
             onClick={(e) => {
               e.stopPropagation();
               handleToggleStatus(monitor.id);
               toggleDropdown(`options-${monitor.id}`);
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#F5F6F8';
+              e.currentTarget.style.backgroundColor = '#f9fafb';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';
             }}
           >
-            <div className="w-[18px] h-[18px] mr-3 flex items-center justify-center" style={{ color: 'var(--subtle-text)' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
-              <rect x="6" y="4" width="4" height="16" />
-              <rect x="14" y="4" width="4" height="16" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px', color: '#5F5F5F' }}>
+              {monitor.isActive ? (
+                <>
+                  <rect x="6" y="4" width="4" height="16" />
+                  <rect x="14" y="4" width="4" height="16" />
+                </>
+              ) : (
+                <polygon points="5 3 19 12 5 21 5 3" />
+              )}
             </svg>
-            </div>
-            <span className="text-sm font-medium flex-grow" style={{ color: 'var(--text-default)' }}>{monitor.isActive ? 'Pause Monitor' : 'Resume Monitor'}</span>
+            <span>{monitor.isActive ? 'Pause' : 'Resume'}</span>
           </div>
+
+          
 
           {/* Export */}
           <div
-            className="flex items-center px-3.5 py-2.5 rounded-lg cursor-pointer transition-all"
-            style={{ color: 'var(--text-default)' }}
+            className="flex items-center cursor-pointer transition-colors"
+            style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }}
             onClick={(e) => {
               e.stopPropagation();
               // TODO: Export monitor
               toggleDropdown(`options-${monitor.id}`);
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#F5F6F8';
+              e.currentTarget.style.backgroundColor = '#f9fafb';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';
             }}
           >
-            <div className="w-[18px] h-[18px] mr-3 flex items-center justify-center" style={{ color: 'var(--subtle-text)' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px', color: '#5F5F5F' }}>
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
-            </div>
-            <span className="text-sm font-medium flex-grow" style={{ color: 'var(--text-default)' }}>Export</span>
+            <span>Export</span>
           </div>
 
-          {/* Divider */}
-          <div className="h-px my-1.5 mx-2" style={{ backgroundColor: '#E1E7EE' }} />
+          <hr style={{ border: '1px solid #eaeaea'}} />
 
           {/* Delete */}
           <div
-            className="flex items-center px-3.5 py-2.5 rounded-lg cursor-pointer transition-all"
-            style={{ color: 'var(--text-default)' }}
+            className="flex items-center cursor-pointer transition-colors"
+            style={{ gap: '10px', padding: '10px 12px', fontSize: '14px', color: '#4A4A4A', textDecoration: 'none', borderRadius: '6px' }}
             onClick={(e) => {
               e.stopPropagation();
               handleDeleteMonitor(monitor.id);
               toggleDropdown(`options-${monitor.id}`);
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#FFF1F0';
-              const icon = e.currentTarget.querySelector('div');
-              const text = e.currentTarget.querySelector('span');
-              if (icon) icon.style.color = '#CF1322';
-              if (text) text.style.color = '#CF1322';
+              e.currentTarget.style.backgroundColor = '#ff4d4f';
+              e.currentTarget.style.color = 'white';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';
-              const icon = e.currentTarget.querySelector('div');
-              const text = e.currentTarget.querySelector('span');
-              if (icon) icon.style.color = 'var(--subtle-text)';
-              if (text) text.style.color = 'var(--text-default)';
+              e.currentTarget.style.color = '#4A4A4A';
             }}
           >
-            <div className="w-[18px] h-[18px] mr-3 flex items-center justify-center" style={{ color: 'var(--subtle-text)' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
               <polyline points="3 6 5 6 21 6" />
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
             </svg>
-            </div>
-            <span className="text-sm font-medium flex-grow" style={{ color: 'var(--text-default)' }}>Delete</span>
+            <span>Delete</span>
           </div>
         </DropdownPortal>
       ))}
@@ -2229,50 +2318,44 @@ export default function Monitors() {
         onClose={() => setIsNewMonitorModalOpen(false)}
       />
 
-      {/* Field History Modal */}
-      {selectedFieldHistory && (() => {
-        const monitor = monitors.find(m => m.id === selectedFieldHistory.monitorId);
-        const isPageHistory = selectedFieldHistory.fieldName === monitor?.name;
-        
-        if (isPageHistory && monitor) {
-          return (
-            <PageHistoryModal
-              isOpen={fieldHistoryModalOpen}
-              onClose={() => {
-                setFieldHistoryModalOpen(false);
-                setSelectedFieldHistory(null);
-              }}
-              monitorId={selectedFieldHistory.monitorId}
-              itemImage={monitor.item.image}
-              itemTitle={monitor.item.title}
-            />
-          );
-        }
-        
+      {/* Page History Modal */}
+      {selectedPageHistory && (() => {
+        const monitor = monitors.find(m => m.id === selectedPageHistory.monitorId);
+        if (!monitor) return null;
         return (
-          <FieldHistoryModal
-            isOpen={fieldHistoryModalOpen}
+          <PageHistoryModal
+            isOpen={pageHistoryModalOpen}
             onClose={() => {
-              setFieldHistoryModalOpen(false);
-              setSelectedFieldHistory(null);
+              setPageHistoryModalOpen(false);
+              setSelectedPageHistory(null);
             }}
-            fieldName={selectedFieldHistory.fieldName}
-            monitorId={selectedFieldHistory.monitorId}
-            monitorName={monitor?.name}
-            onViewMonitorHistory={() => {
-              // Close field history modal and open monitor history (using same modal for monitor)
-              setFieldHistoryModalOpen(false);
-              // Open monitor history - reuse FieldHistoryModal but for the entire monitor
-              const monitor = monitors.find(m => m.id === selectedFieldHistory.monitorId);
-              setSelectedFieldHistory({ 
-                monitorId: selectedFieldHistory.monitorId, 
-                fieldName: monitor?.name || 'Monitor' // Use monitor name for full monitor history
-              });
-              setFieldHistoryModalOpen(true);
-            }}
+            monitorId={selectedPageHistory.monitorId}
+            itemImage={monitor.item.image}
+            itemTitle={monitor.item.title}
           />
         );
       })()}
+
+      {/* Field History Modal */}
+      {selectedFieldHistory && (
+        <FieldHistoryModal
+          isOpen={fieldHistoryModalOpen}
+          onClose={() => {
+            setFieldHistoryModalOpen(false);
+            setSelectedFieldHistory(null);
+          }}
+          fieldName={selectedFieldHistory.fieldName}
+          monitorId={selectedFieldHistory.monitorId}
+          monitorName={monitors.find(m => m.id === selectedFieldHistory.monitorId)?.name}
+          onViewMonitorHistory={() => {
+            // Close field history modal and open page history modal
+            setFieldHistoryModalOpen(false);
+            setSelectedFieldHistory(null);
+            setSelectedPageHistory({ monitorId: selectedFieldHistory.monitorId });
+            setPageHistoryModalOpen(true);
+          }}
+        />
+      )}
     </div>
   );
 }

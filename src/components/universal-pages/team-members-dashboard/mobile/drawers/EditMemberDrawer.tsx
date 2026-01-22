@@ -180,9 +180,9 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
         </div>
         <div className="flex items-center gap-2.5 mb-4">
           <div className="relative flex-shrink-0">
-            <input
-              type="checkbox"
-              id="editAdminCheckbox"
+          <input
+            type="checkbox"
+            id="editAdminCheckbox"
               className="appearance-none h-5 w-5 border-2 border-gray-300 rounded focus:outline-none"
               style={{
                 backgroundColor: isAdmin ? '#0B6333' : 'white',
@@ -233,15 +233,15 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
           {listings.map((listing) => {
             const isChecked = selectedListingIds.includes(listing.id);
             return (
-              <label
+            <label
                 className="flex items-center gap-3 py-3 border-b border-gray-200 last:border-b-0 cursor-pointer"
-                htmlFor={`editListing${listing.id}`}
-                key={listing.id}
-              >
+              htmlFor={`editListing${listing.id}`}
+              key={listing.id}
+            >
                 <div className="relative flex-shrink-0">
-                  <input
-                    type="checkbox"
-                    id={`editListing${listing.id}`}
+              <input
+                type="checkbox"
+                id={`editListing${listing.id}`}
                     className="appearance-none h-5 w-5 border-2 border-gray-300 rounded focus:outline-none"
                     style={{
                       backgroundColor: isChecked ? '#0B6333' : 'white',
@@ -264,11 +264,11 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
                     </svg>
                   )}
                 </div>
-                <img
-                  src={listing.image}
-                  alt={listing.name}
-                  className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-                />
+              <img
+                src={listing.image}
+                alt={listing.name}
+                className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+              />
                 <span 
                   className="flex-1 truncate"
                   style={{
@@ -277,9 +277,9 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
                     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
                   }}
                 >
-                  {listing.name}
-                </span>
-              </label>
+                {listing.name}
+              </span>
+            </label>
             );
           })}
         </div>

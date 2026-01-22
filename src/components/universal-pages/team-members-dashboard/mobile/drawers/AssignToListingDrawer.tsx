@@ -11,22 +11,22 @@ interface AssignToListingDrawerProps {
 }
 
 const allListings = [
-  {
-    id: 1,
-    name: "Harvard University",
-    image: "https://i.ibb.co/fGKH7fDq/product2.png",
-  },
-  {
-    id: 2,
-    name: "Stanford University",
-    image: "https://i.ibb.co/fGKH7fDq/product2.png",
-  },
-  {
-    id: 3,
-    name: "Massachusetts Institute of Technology",
-    image: "https://i.ibb.co/63Y8x85/product3.jpg",
-  },
-];
+    {
+      id: 1,
+      name: "Harvard University",
+      image: "https://i.ibb.co/fGKH7fDq/product2.png",
+    },
+    {
+      id: 2,
+      name: "Stanford University",
+      image: "https://i.ibb.co/fGKH7fDq/product2.png",
+    },
+    {
+      id: 3,
+      name: "Massachusetts Institute of Technology",
+      image: "https://i.ibb.co/63Y8x85/product3.jpg",
+    },
+  ];
 
 export const AssignToListingDrawer: React.FC<AssignToListingDrawerProps> = ({
   isOpen,
@@ -108,15 +108,15 @@ export const AssignToListingDrawer: React.FC<AssignToListingDrawerProps> = ({
         {allListings.map((listing) => {
           const isChecked = selectedListingIds.includes(listing.id);
           return (
-            <label
+          <label
               className="flex items-center gap-3 py-3 border-b border-gray-200 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-colors relative"
-              htmlFor={`assignListing${listing.id}`}
-              key={listing.id}
-            >
+            htmlFor={`assignListing${listing.id}`}
+            key={listing.id}
+          >
               <div className="relative flex-shrink-0">
-                <input
-                  type="checkbox"
-                  id={`assignListing${listing.id}`}
+            <input
+              type="checkbox"
+              id={`assignListing${listing.id}`}
                   className="appearance-none h-5 w-5 border-2 border-gray-300 rounded focus:outline-none"
                   style={{
                     backgroundColor: isChecked ? '#0B6333' : 'white',
@@ -139,11 +139,11 @@ export const AssignToListingDrawer: React.FC<AssignToListingDrawerProps> = ({
                   </svg>
                 )}
               </div>
-              <img
-                src={listing.image}
-                alt={listing.name}
-                className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-              />
+            <img
+              src={listing.image}
+              alt={listing.name}
+              className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+            />
               <span
                 className="flex-1 truncate"
                 style={{
@@ -152,9 +152,9 @@ export const AssignToListingDrawer: React.FC<AssignToListingDrawerProps> = ({
                   fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
                 }}
               >
-                {listing.name}
-              </span>
-            </label>
+              {listing.name}
+            </span>
+          </label>
           );
         })}
       </form>

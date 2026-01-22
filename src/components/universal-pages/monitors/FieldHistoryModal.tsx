@@ -443,11 +443,11 @@ export default function FieldHistoryModal({
                             </div>
                           </td>
                           <td className="px-4 py-4">
-                            <span className="font-mono text-sm" style={{ color: 'var(--subtle-text)' }}>{change.id}</span>
+                            <span className="text-sm" style={{ color: 'var(--subtle-text)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif" }}>{change.id}</span>
                           </td>
                           <td
                             className="px-4 py-4 cursor-pointer relative group"
-                            style={{ color: 'var(--text-default)' }}
+                            style={{ color: 'var(--text-default)', fontSize: '14px' }}
                             onClick={() => change.fullDate && copyToClipboard(change.fullDate)}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.color = 'var(--link-text)';
@@ -474,19 +474,21 @@ export default function FieldHistoryModal({
                               e.currentTarget.style.color = 'var(--text-default)';
                             }}
                           >
-                            <span className="font-mono text-sm inline-block max-w-[150px] truncate" style={{ color: 'var(--subtle-text)' }}>{change.prev}</span>
+                            <span className="text-sm inline-block max-w-[150px] truncate" style={{ color: 'var(--text-default)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif" }}>{change.prev}</span>
                           </td>
                           <td
                             className="px-4 py-4 cursor-pointer"
                             onClick={() => copyToClipboard(change.new)}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.color = 'var(--link-text)';
+                              const span = e.currentTarget.querySelector('span');
+                              if (span) span.style.color = 'var(--link-text)';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.color = 'var(--text-default)';
+                              const span = e.currentTarget.querySelector('span');
+                              if (span) span.style.color = 'var(--text-default)';
                             }}
                           >
-                            <span className="font-mono text-sm inline-block max-w-[150px] truncate" style={{ color: 'var(--subtle-text)' }}>{change.new}</span>
+                            <span className="text-sm inline-block max-w-[150px] truncate" style={{ color: 'var(--text-default)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif" }}>{change.new}</span>
                           </td>
                           <td className="px-4 py-4 relative group">
                             <span

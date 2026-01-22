@@ -38,18 +38,18 @@ export const Drawer: React.FC<DrawerProps> = ({
             >
               {title}
             </h2>
-            <button
+          <button
               className="w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 active:bg-gray-100 transition-colors"
-              onClick={onClose}
-              aria-label="Close Drawer"
+            onClick={onClose}
+            aria-label="Close Drawer"
               style={{
                 fontSize: '24px',
                 lineHeight: 1,
               }}
             >
               ×
-            </button>
-          </div>
+          </button>
+        </div>
         )}
         <div 
           className="overflow-y-auto flex-grow"

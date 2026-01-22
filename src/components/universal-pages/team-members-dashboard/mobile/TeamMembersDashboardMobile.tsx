@@ -292,27 +292,27 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
     } catch (error) {
       console.error("Error adding member:", error);
       // Still add to local state even if there's an error
-      const nextId =
-        members.length > 0 ? Math.max(...members.map((m) => m.id)) + 1 : 1;
+    const nextId =
+      members.length > 0 ? Math.max(...members.map((m) => m.id)) + 1 : 1;
 
       const selectedListings = data.listingIds 
         ? allListings.filter((l) => data.listingIds!.includes(l.id))
         : [];
 
-      const newMember: TeamMember = {
-        id: nextId,
-        firstName: data.firstName || data.email.split("@")[0] || "Member",
-        lastName: data.lastName || "",
-        email: data.email,
-        avatar: "https://via.placeholder.com/80",
-        status: "pending",
-        lastActive: "",
-        isAdmin: data.isAdmin,
+    const newMember: TeamMember = {
+      id: nextId,
+      firstName: data.firstName || data.email.split("@")[0] || "Member",
+      lastName: data.lastName || "",
+      email: data.email,
+      avatar: "https://via.placeholder.com/80",
+      status: "pending",
+      lastActive: "",
+      isAdmin: data.isAdmin,
         listings: selectedListings,
-      };
+    };
 
-      setMembers((prev) => [newMember, ...prev]);
-      setIsAddMemberDrawerOpen(false);
+    setMembers((prev) => [newMember, ...prev]);
+    setIsAddMemberDrawerOpen(false);
     }
   };
 
@@ -538,8 +538,8 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
               }
 
               // Update local state
-              setMembers((prev) => prev.filter((m) => m.id !== currentMemberId));
-              closeDrawer();
+            setMembers((prev) => prev.filter((m) => m.id !== currentMemberId));
+            closeDrawer();
             } catch (err) {
               setSaveError(err instanceof Error ? err.message : "Failed to delete member");
             } finally {

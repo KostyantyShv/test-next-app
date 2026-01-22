@@ -164,7 +164,7 @@ export default function PageHistoryModal({
                 className="rounded-md object-cover"
                 style={{ width: '80px', height: '40px' }}
               />
-              <h1 className="text-2xl font-semibold" style={{ color: 'var(--bold-text)' }}>{itemTitle}</h1>
+              <h1 className="text-2xl font-medium" style={{ color: 'var(--text-default)' }}>{itemTitle}</h1>
             </div>
             <button
               className="w-8 h-8 rounded-md flex items-center justify-center transition-colors"
@@ -253,7 +253,7 @@ export default function PageHistoryModal({
                     placeholder="Search values, change IDs..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm focus:outline-none"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm font-medium focus:outline-none"
                     style={{
                       borderColor: 'var(--border-color)',
                       color: 'var(--text-default)',
@@ -463,11 +463,11 @@ export default function PageHistoryModal({
                             </div>
                           </td>
                           <td className="px-4 py-4">
-                            <span className="text-sm" style={{ color: 'var(--subtle-text)', fontFamily: 'Inter, sans-serif' }}>{change.id}</span>
+                            <span className="text-sm" style={{ color: 'var(--subtle-text)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif" }}>{change.id}</span>
                           </td>
                           <td
                             className="px-4 py-4 cursor-pointer relative group"
-                            style={{ color: 'var(--text-default)' }}
+                            style={{ color: 'var(--text-default)', fontSize: '14px' }}
                             onClick={() => change.fullDate && copyToClipboard(change.fullDate)}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.color = 'var(--link-text)';
@@ -485,7 +485,7 @@ export default function PageHistoryModal({
                             )}
                           </td>
                           <td className="px-4 py-4">
-                            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium" style={{ backgroundColor: 'var(--gray-100)', color: 'var(--bold-text)', fontFamily: 'Inter, sans-serif' }}>
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium" style={{ backgroundColor: 'var(--gray-100)', color: 'var(--bold-text)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif" }}>
                               {change.field}
                             </span>
                           </td>
@@ -501,7 +501,7 @@ export default function PageHistoryModal({
                               if (span) span.style.color = 'var(--text-default)';
                             }}
                           >
-                            <span className="text-sm inline-block max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: 'var(--text-default)', fontFamily: 'Inter, sans-serif', verticalAlign: 'middle' }}>
+                            <span className="text-sm inline-block max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: 'var(--text-default)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif", verticalAlign: 'middle' }}>
                               {change.prev}
                             </span>
                           </td>
@@ -517,7 +517,7 @@ export default function PageHistoryModal({
                               if (span) span.style.color = 'var(--text-default)';
                             }}
                           >
-                            <span className="text-sm inline-block max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: 'var(--text-default)', fontFamily: 'Inter, sans-serif', verticalAlign: 'middle' }}>
+                            <span className="text-sm inline-block max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: 'var(--text-default)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif", verticalAlign: 'middle' }}>
                               {change.new}
                             </span>
                           </td>

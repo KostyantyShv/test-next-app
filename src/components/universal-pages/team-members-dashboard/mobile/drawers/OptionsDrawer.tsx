@@ -66,13 +66,13 @@ export const OptionsDrawer: React.FC<OptionsDrawerProps> = ({
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = 'transparent';
               }}
-            >
+        >
               {option.label}
             </div>
           ))}
         </div>
-      </div>
-      <div
+        </div>
+        <div
         style={{
           padding: '8px 0',
         }}
@@ -105,10 +105,10 @@ export const OptionsDrawer: React.FC<OptionsDrawerProps> = ({
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';
             }}
-          >
+        >
             List View
-          </div>
-          <div
+        </div>
+        <div
             className="cursor-pointer transition-colors"
             style={{
               padding: '12px 16px',
@@ -124,9 +124,9 @@ export const OptionsDrawer: React.FC<OptionsDrawerProps> = ({
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';
             }}
-          >
+        >
             Grid View
-          </div>
+        </div>
         </div>
       </div>
     </Drawer>
