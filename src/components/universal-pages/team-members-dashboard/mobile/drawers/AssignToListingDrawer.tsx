@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Drawer } from "./Drawer";
 import { TeamMember } from "../../types";
 
@@ -40,12 +40,19 @@ export const AssignToListingDrawer: React.FC<AssignToListingDrawerProps> = ({
 
   const [selectedListingIds, setSelectedListingIds] = useState<number[]>([]);
 
+  // Create a stable string for comparison to track changes in member.listings
+  const memberListingIdsString = useMemo(() => {
+    if (!currentMember) return '';
+    return currentMember.listings.map((l) => l.id).sort((a, b) => a - b).join(',');
+  }, [currentMember?.listings.length, currentMember?.listings.map((l) => l.id).sort((a, b) => a - b).join(',')]);
+
+  // Update selectedListingIds when drawer opens or member.listings changes
   useEffect(() => {
     if (isOpen && currentMember) {
       const listingIds = currentMember.listings.map((l) => l.id);
       setSelectedListingIds(listingIds);
     }
-  }, [isOpen, currentMemberId, currentMember]);
+  }, [isOpen, currentMemberId, currentMember?.id, memberListingIdsString]);
 
   const handleCheckboxChange = (listingId: number) => {
     setSelectedListingIds((prev) => {
@@ -102,7 +109,7 @@ export const AssignToListingDrawer: React.FC<AssignToListingDrawerProps> = ({
           const isChecked = selectedListingIds.includes(listing.id);
           return (
             <label
-              className="flex items-center gap-3 p-3 border-b border-gray-200 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-3 py-3 border-b border-gray-200 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-colors relative"
               htmlFor={`assignListing${listing.id}`}
               key={listing.id}
             >

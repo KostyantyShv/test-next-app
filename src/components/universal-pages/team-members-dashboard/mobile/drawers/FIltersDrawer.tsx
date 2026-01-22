@@ -66,24 +66,43 @@ export const FiltersDrawer: React.FC<FiltersDrawerProps> = ({
           </h3>
           <div className="flex flex-col gap-3">
             {statusOptions.map((option) => (
-              <div className="flex items-center" key={option.value}>
+              <div className="flex items-center relative" key={option.value} style={{ padding: '8px 0' }}>
                 <input
                   type="radio"
                   id={`filterStatus${option.value}`}
                   name="filterStatus"
                   value={option.value}
-                  className="appearance-none h-5 w-5 border-2 border-gray-300 rounded-full checked:bg-[#0B6333] checked:border-[#0B6333] focus:outline-none"
+                  className="appearance-none absolute opacity-0"
                   defaultChecked={option.value === statusFilter}
                 />
                 <label
                   htmlFor={`filterStatus${option.value}`}
-                  className="pl-3 cursor-pointer"
+                  className="cursor-pointer relative"
                   style={{
                     fontSize: '15px',
                     color: '#4A4A4A',
-                    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+                    paddingLeft: '36px',
+                    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: '100%',
+                    minHeight: '24px',
                   }}
                 >
+                  <span
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-5 border-2 rounded-full transition-colors"
+                    style={{
+                      backgroundColor: option.value === statusFilter ? 'transparent' : 'white',
+                      borderColor: option.value === statusFilter ? '#0B6333' : '#D1D5DB',
+                    }}
+                  >
+                    {option.value === statusFilter && (
+                      <span
+                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full"
+                        style={{ backgroundColor: '#0B6333' }}
+                      />
+                    )}
+                  </span>
                   {option.label}
                 </label>
               </div>
@@ -104,24 +123,43 @@ export const FiltersDrawer: React.FC<FiltersDrawerProps> = ({
           </h3>
           <div className="flex flex-col gap-3">
             {sortOptions.map((option) => (
-              <div className="flex items-center" key={option.value}>
+              <div className="flex items-center relative" key={option.value} style={{ padding: '8px 0' }}>
                 <input
                   type="radio"
                   id={`filterSort${option.value}`}
                   name="filterSort"
                   value={option.value}
-                  className="appearance-none h-5 w-5 border-2 border-gray-300 rounded-full checked:bg-[#0B6333] checked:border-[#0B6333] focus:outline-none"
+                  className="appearance-none absolute opacity-0"
                   defaultChecked={option.value === sortFilter}
                 />
                 <label
                   htmlFor={`filterSort${option.value}`}
-                  className="pl-3 cursor-pointer"
+                  className="cursor-pointer relative"
                   style={{
                     fontSize: '15px',
                     color: '#4A4A4A',
-                    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+                    paddingLeft: '36px',
+                    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: '100%',
+                    minHeight: '24px',
                   }}
                 >
+                  <span
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-5 border-2 rounded-full transition-colors"
+                    style={{
+                      backgroundColor: option.value === sortFilter ? 'transparent' : 'white',
+                      borderColor: option.value === sortFilter ? '#0B6333' : '#D1D5DB',
+                    }}
+                  >
+                    {option.value === sortFilter && (
+                      <span
+                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full"
+                        style={{ backgroundColor: '#0B6333' }}
+                      />
+                    )}
+                  </span>
                   {option.label.replace("Sort by: ", "")}
                 </label>
               </div>

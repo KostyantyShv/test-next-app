@@ -60,7 +60,7 @@ export const ActivityLogDrawer: React.FC<ActivityLogDrawerProps> = ({
         </label>
         <div className="flex items-center gap-1">
           <button
-            className="w-9 h-9 flex items-center justify-center rounded-full text-gray-600 hover:bg-gray-100"
+            className="w-9 h-9 flex items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 active:bg-gray-100 border-none bg-none"
             aria-label="Mark all as read"
           >
             <svg
@@ -81,7 +81,7 @@ export const ActivityLogDrawer: React.FC<ActivityLogDrawerProps> = ({
             </svg>
           </button>
           <button
-            className="w-9 h-9 flex items-center justify-center rounded-full text-gray-600 hover:bg-gray-100"
+            className="w-9 h-9 flex items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 active:bg-gray-100 border-none bg-none"
             aria-label="Settings"
           >
             <svg
@@ -102,7 +102,7 @@ export const ActivityLogDrawer: React.FC<ActivityLogDrawerProps> = ({
       <div className="relative mb-4">
         <input
           type="search"
-          className="w-full p-3 pl-10 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-[#0B6333] focus:bg-white focus:ring-2 focus:ring-[#0B6333]/20"
+          className="w-full p-3 pl-10 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-[#0B6333] focus:bg-white focus:shadow-[0_0_0_2px_rgba(11,99,51,0.1)]"
           placeholder="Search activities..."
           value={activitySearchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
@@ -134,7 +134,7 @@ export const ActivityLogDrawer: React.FC<ActivityLogDrawerProps> = ({
           activityLogsToDisplay.map((log) => (
             <div
               key={log.id}
-              className="flex gap-3 p-3 border-b border-gray-200 last:border-b-0"
+              className="flex gap-3 py-3 border-b border-gray-200 last:border-b-0 relative"
               data-id={log.id}
             >
               <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
@@ -187,12 +187,12 @@ export const ActivityLogDrawer: React.FC<ActivityLogDrawerProps> = ({
                   <span>{log.timeAgo}</span>
                 </div>
               </div>
-              <div className="absolute top-3 right-0 flex items-center gap-1">
+              <div className="absolute top-3 right-0 flex items-center gap-1" style={{ right: '0' }}>
                 {!log.isRead && (
                   <div className="w-2 h-2 rounded-full bg-blue-600 flex-shrink-0" />
                 )}
                 <button
-                  className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                  className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 active:bg-gray-100 active:text-gray-600 border-none bg-none"
                   aria-label="Mark as read"
                 >
                   <svg
@@ -208,7 +208,7 @@ export const ActivityLogDrawer: React.FC<ActivityLogDrawerProps> = ({
                   </svg>
                 </button>
                 <button
-                  className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                  className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 active:bg-gray-100 active:text-gray-600 border-none bg-none"
                   aria-label="Dismiss notification"
                 >
                   <svg

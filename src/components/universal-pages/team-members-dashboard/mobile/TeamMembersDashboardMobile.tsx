@@ -4,6 +4,7 @@ import { activityLogs } from "../data/activityLogs";
 // import { teamMembers } from "../data/teamMembers";
 import { usePagination } from "../hooks/usePagination";
 import { TeamMember } from "../types";
+import { createClient } from "@/lib/supabase_utils/client";
 import { ActivityLogDrawer } from "./drawers/ActivityLogDrawer";
 import { AddMemberDrawer } from "./drawers/AddMemberDrawer";
 import { AssignToListingDrawer } from "./drawers/AssignToListingDrawer";
@@ -16,7 +17,7 @@ import { MemberList } from "./MemberList";
 import { Pagination } from "./Pagination";
 import { SearchBar } from "./SearchBar";
 import { ActionsDrawer } from "./drawers/ActionsDrawer";
-// import { FiltersDrawer } from "./drawers/FiltersDrawer";
+import { FiltersDrawer } from "./drawers/FIltersDrawer";
 
 const allListings = [
   {
@@ -70,6 +71,7 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
   const [hideRead, setHideRead] = useState<boolean>(false);
   const [activitySearchTerm, setActivitySearchTerm] = useState<string>("");
   const [isSavingMember, setIsSavingMember] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // Filter and sort members
   const filterMembers = (): TeamMember[] => {
@@ -228,29 +230,90 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
 
   const activityLogsToDisplay = renderActivityLogs();
 
-  const handleAddMember = (data: {
+  const handleAddMember = async (data: {
     firstName: string;
     lastName: string;
     email: string;
     isAdmin: boolean;
+    listingIds?: number[];
   }) => {
-    const nextId =
-      members.length > 0 ? Math.max(...members.map((m) => m.id)) + 1 : 1;
+    try {
+      const supabase = createClient();
+      const fullName = `${data.firstName} ${data.lastName}`.trim();
+      const selectedListings = data.listingIds 
+        ? allListings.filter((l) => data.listingIds!.includes(l.id))
+        : [];
 
-    const newMember: TeamMember = {
-      id: nextId,
-      firstName: data.firstName || data.email.split("@")[0] || "Member",
-      lastName: data.lastName || "",
-      email: data.email,
-      avatar: "https://via.placeholder.com/80",
-      status: "pending",
-      lastActive: "",
-      isAdmin: data.isAdmin,
-      listings: [],
-    };
+      const { data: inserted, error } = await supabase
+        .from("team_members")
+        .insert({
+          email: data.email,
+          team_owner_id: ownerId,
+          role: data.isAdmin ? "admin" : "member",
+          name: fullName || data.email.split("@")[0] || "Member",
+          status: "pending",
+          permissions: selectedListings,
+        })
+        .select("*")
+        .single();
 
-    setMembers((prev) => [newMember, ...prev]);
-    setIsAddMemberDrawerOpen(false);
+      if (error) {
+        console.error("Failed to add member to database:", error.message);
+        // Still add to local state even if DB save fails
+      }
+
+      const nextId =
+        members.length > 0 ? Math.max(...members.map((m) => m.id)) + 1 : 1;
+
+      const rawDate = inserted?.updated_at || inserted?.created_at;
+      const formattedLastActive =
+        rawDate && !isNaN(new Date(rawDate).getTime())
+          ? new Date(rawDate).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })
+          : "";
+
+      const newMember: TeamMember = {
+        id: nextId,
+        firstName: data.firstName || data.email.split("@")[0] || "Member",
+        lastName: data.lastName || "",
+        email: data.email,
+        avatar: "https://via.placeholder.com/80",
+        status: "pending",
+        lastActive: formattedLastActive,
+        isAdmin: data.isAdmin,
+        listings: selectedListings,
+      };
+
+      setMembers((prev) => [newMember, ...prev]);
+      setIsAddMemberDrawerOpen(false);
+    } catch (error) {
+      console.error("Error adding member:", error);
+      // Still add to local state even if there's an error
+      const nextId =
+        members.length > 0 ? Math.max(...members.map((m) => m.id)) + 1 : 1;
+
+      const selectedListings = data.listingIds 
+        ? allListings.filter((l) => data.listingIds!.includes(l.id))
+        : [];
+
+      const newMember: TeamMember = {
+        id: nextId,
+        firstName: data.firstName || data.email.split("@")[0] || "Member",
+        lastName: data.lastName || "",
+        email: data.email,
+        avatar: "https://via.placeholder.com/80",
+        status: "pending",
+        lastActive: "",
+        isAdmin: data.isAdmin,
+        listings: selectedListings,
+      };
+
+      setMembers((prev) => [newMember, ...prev]);
+      setIsAddMemberDrawerOpen(false);
+    }
   };
 
   return (
@@ -295,14 +358,14 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
         onClose={closeDrawer}
         onTeamTypeChange={handleTeamTypeChange}
       />
-      {/* <FiltersDrawer
+      <FiltersDrawer
         isOpen={isFiltersDrawerOpen}
         statusFilter={statusFilter}
         sortFilter={sortFilter}
         onClose={closeDrawer}
         onApplyFilters={handleApplyFilters}
         onResetFilters={handleResetFilters}
-      /> */}
+      />
       <ActionsDrawer
         isOpen={isActionsDrawerOpen}
         currentMemberId={currentMemberId}
@@ -345,9 +408,52 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
       />
       <EditMemberDrawer
         isOpen={isEditMemberDrawerOpen}
+        member={currentMemberId ? members.find((m) => m.id === currentMemberId) || null : null}
         onClose={closeDrawer}
-        onSaveChanges={() => {
-          closeDrawer(); /* Placeholder */
+        onSaveChanges={async (data) => {
+          if (currentMemberId) {
+            const existing = members.find((m) => m.id === currentMemberId);
+            if (!existing) {
+              closeDrawer();
+              return;
+            }
+
+            try {
+              const supabase = createClient();
+              const fullName = `${existing.firstName} ${existing.lastName}`.trim();
+              const selectedListings = data.listingIds 
+                ? allListings.filter((l) => data.listingIds!.includes(l.id))
+                : [];
+
+              const { error } = await supabase
+                .from("team_members")
+                .update({
+                  role: data.isAdmin ? "admin" : "member",
+                  name: fullName || existing.email.split("@")[0] || "Member",
+                  permissions: selectedListings,
+                })
+                .eq("team_owner_id", ownerId)
+                .eq("email", existing.email);
+
+              if (error) {
+                console.error("Failed to update member in database:", error.message);
+              }
+            } catch (error) {
+              console.error("Error updating member:", error);
+            }
+
+            const selectedListings = data.listingIds 
+              ? allListings.filter((l) => data.listingIds!.includes(l.id))
+              : [];
+            setMembers((prev) =>
+              prev.map((member) =>
+                member.id === currentMemberId
+                  ? { ...member, listings: selectedListings, isAdmin: data.isAdmin }
+                  : member
+              )
+            );
+          }
+          closeDrawer();
         }}
       />
       <AssignToListingDrawer
@@ -355,7 +461,13 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
         currentMemberId={currentMemberId}
         members={members}
         onClose={closeDrawer}
-        onSave={(memberId, selectedListingIds) => {
+        onSave={async (memberId, selectedListingIds) => {
+          const existing = members.find((m) => m.id === memberId);
+          if (!existing) {
+            closeDrawer();
+            return;
+          }
+
           const selectedListings = allListings
             .filter((listing) => selectedListingIds.includes(listing.id))
             .map((listing) => ({
@@ -363,6 +475,27 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
               name: listing.name,
               image: listing.image,
             }));
+
+          try {
+            const supabase = createClient();
+            const fullName = `${existing.firstName} ${existing.lastName}`.trim();
+
+            const { error } = await supabase
+              .from("team_members")
+              .update({
+                permissions: selectedListings,
+              })
+              .eq("team_owner_id", ownerId)
+              .eq("email", existing.email);
+
+            if (error) {
+              setSaveError(error.message);
+              return;
+            }
+          } catch (err) {
+            setSaveError(err instanceof Error ? err.message : "Failed to update listings");
+            return;
+          }
           
           setMembers((prev) => {
             const updated = prev.map((member) => {
@@ -382,10 +515,36 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
       <DeleteConfirmationDrawer
         isOpen={isDeleteConfirmationDrawerOpen}
         onClose={closeDrawer}
-        onDelete={() => {
+        onDelete={async () => {
           if (currentMemberId) {
-            setMembers((prev) => prev.filter((m) => m.id !== currentMemberId));
-            closeDrawer();
+            const memberToDelete = members.find((m) => m.id === currentMemberId);
+            if (!memberToDelete) return;
+
+            try {
+              setIsSavingMember(true);
+              setSaveError(null);
+
+              // Delete from database
+              const supabase = createClient();
+              const { error } = await supabase
+                .from("team_members")
+                .delete()
+                .eq("team_owner_id", ownerId)
+                .eq("email", memberToDelete.email);
+
+              if (error) {
+                setSaveError(error.message);
+                return;
+              }
+
+              // Update local state
+              setMembers((prev) => prev.filter((m) => m.id !== currentMemberId));
+              closeDrawer();
+            } catch (err) {
+              setSaveError(err instanceof Error ? err.message : "Failed to delete member");
+            } finally {
+              setIsSavingMember(false);
+            }
           }
         }}
       />

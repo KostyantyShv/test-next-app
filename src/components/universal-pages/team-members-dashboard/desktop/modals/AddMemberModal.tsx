@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface AddMemberModalProps {
   onClose: () => void;
@@ -7,10 +7,29 @@ interface AddMemberModalProps {
     lastName: string;
     email: string;
     isAdmin: boolean;
+    listingIds?: number[];
   }) => void;
   isSubmitting?: boolean;
   error?: string | null;
 }
+
+const AVAILABLE_LISTINGS = [
+  {
+    id: 1,
+    name: "Harvard University",
+    image: "https://i.ibb.co/fGKH7fDq/product2.png",
+  },
+  {
+    id: 2,
+    name: "Stanford University",
+    image: "https://i.ibb.co/fGKH7fDq/product2.png",
+  },
+  {
+    id: 3,
+    name: "Massachusetts Institute of Technology",
+    image: "https://i.ibb.co/63Y8x85/product3.jpg",
+  },
+];
 
 const AddMemberModal: React.FC<AddMemberModalProps> = ({
   onClose,
@@ -22,10 +41,31 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [selectedListingIds, setSelectedListingIds] = useState<number[]>([]);
+
+  const handleToggleListing = (listingId: number) => {
+    setSelectedListingIds((prev) =>
+      prev.includes(listingId)
+        ? prev.filter((id) => id !== listingId)
+        : [...prev, listingId]
+    );
+  };
+
+  useEffect(() => {
+    if (isAdmin) {
+      setSelectedListingIds([]);
+    }
+  }, [isAdmin]);
 
   const handleSubmit = () => {
     if (!email.trim()) return;
-    onSubmit({ firstName, lastName, email, isAdmin });
+    onSubmit({ 
+      firstName, 
+      lastName, 
+      email, 
+      isAdmin,
+      listingIds: isAdmin ? [] : selectedListingIds
+    });
   };
 
   return (
@@ -111,13 +151,30 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
             <span
               className="checkmark relative h-4 w-4 bg-white border-2 border-gray-300 rounded transition-all
               peer-checked:bg-[#0B6333] peer-checked:border-[#0B6333]"
-            ></span>
+            >
+              {isAdmin && (
+                <svg
+                  className="absolute inset-0 m-auto w-3 h-3 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="3"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              )}
+            </span>
           </label>
           <label
             htmlFor="adminCheckbox"
-            className="text-sm text-[#464646] cursor-pointer"
+            className="text-sm text-[#464646] cursor-pointer flex items-center gap-1"
           >
             Admin access
+            
           </label>
         </div>
         {!isAdmin && (
@@ -125,66 +182,56 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
             <div className="listing-section-title text-sm font-medium text-[#464646] mb-4">
               Assign to Listings
             </div>
-            <label className="listing-item-checkbox flex items-center gap-4 py-3 border-b border-gray-200 cursor-pointer">
-              <span className="checkbox-wrapper inline-flex items-center justify-center">
-                <input
-                  type="checkbox"
-                  className="peer absolute opacity-0 h-0 w-0 !bg-white"
-                />
-                <span
-                  className="checkmark relative h-4 w-4 bg-white border-2 border-gray-300 rounded transition-all
-                  peer-checked:bg-[#0B6333] peer-checked:border-[#0B6333]"
-                ></span>
-              </span>
-              <img
-                src="https://i.ibb.co/fGKH7fDq/product2.png"
-                alt="Harvard University"
-                className="listing-thumbnail w-8 h-8 rounded object-cover"
-              />
-              <span className="listing-title text-sm text-[#464646]">
-                Harvard University
-              </span>
-            </label>
-            <label className="listing-item-checkbox flex items-center gap-4 py-3 border-b border-gray-200 cursor-pointer">
-              <span className="checkbox-wrapper inline-flex items-center justify-center">
-                <input
-                  type="checkbox"
-                  className="peer absolute opacity-0 h-0 w-0 !bg-white"
-                />
-                <span
-                  className="checkmark relative h-4 w-4 bg-white border-2 border-gray-300 rounded transition-all
-                  peer-checked:bg-[#0B6333] peer-checked:border-[#0B6333]"
-                ></span>
-              </span>
-              <img
-                src="https://i.ibb.co/fGKH7fDq/product2.png"
-                alt="Stanford University"
-                className="listing-thumbnail w-8 h-8 rounded object-cover"
-              />
-              <span className="listing-title text-sm text-[#464646]">
-                Stanford University
-              </span>
-            </label>
-            <label className="listing-item-checkbox flex items-center gap-4 py-3 cursor-pointer">
-              <span className="checkbox-wrapper inline-flex items-center justify-center">
-                <input
-                  type="checkbox"
-                  className="peer absolute opacity-0 h-0 w-0 !bg-white"
-                />
-                <span
-                  className="checkmark relative h-4 w-4 bg-white border-2 border-gray-300 rounded transition-all
-                  peer-checked:bg-[#0B6333] peer-checked:border-[#0B6333]"
-                ></span>
-              </span>
-              <img
-                src="https://i.ibb.co/63Y8x85/product3.jpg"
-                alt="MIT"
-                className="listing-thumbnail w-8 h-8 rounded object-cover"
-              />
-              <span className="listing-title text-sm text-[#464646]">
-                Massachusetts Institute of Technology
-              </span>
-            </label>
+            {AVAILABLE_LISTINGS.map((listing, index) => {
+              const isSelected = selectedListingIds.includes(listing.id);
+              const isLast = index === AVAILABLE_LISTINGS.length - 1;
+              return (
+                <label
+                  key={listing.id}
+                  className={`listing-item-checkbox flex items-center gap-4 py-3 ${isLast ? '' : 'border-b border-gray-200'} cursor-pointer`}
+                >
+                  <span className="checkbox-wrapper inline-flex items-center justify-center">
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={() => handleToggleListing(listing.id)}
+                      className="peer absolute opacity-0 h-0 w-0 !bg-white"
+                    />
+                    <span
+                      className={`checkmark relative h-4 w-4 border-2 rounded transition-all
+                        ${isSelected 
+                          ? 'bg-[#0B6333] border-[#0B6333]' 
+                          : 'bg-white border-gray-300'
+                        }`}
+                    >
+                      {isSelected && (
+                        <svg
+                          className="absolute inset-0 m-auto w-3 h-3 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="3"
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      )}
+                    </span>
+                  </span>
+                  <img
+                    src={listing.image}
+                    alt={listing.name}
+                    className="listing-thumbnail w-8 h-8 rounded object-cover"
+                  />
+                  <span className="listing-title text-sm text-[#464646]">
+                    {listing.name}
+                  </span>
+                </label>
+              );
+            })}
           </div>
         )}
         {error && (

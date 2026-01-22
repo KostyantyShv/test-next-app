@@ -136,23 +136,76 @@ const TeamMembersDashboardDesktop: React.FC<
     setIsDropdownOpen((prev) => (prev === memberId ? null : memberId));
   };
 
-  const handleDelete = (memberId: number) => {
-    setMembers((prev) => prev.filter((member) => member.id !== memberId));
-    setSelectedMemberIds((prev) => prev.filter((id) => id !== memberId));
-    closeModal();
+  const handleDelete = async (memberId: number) => {
+    const memberToDelete = members.find((m) => m.id === memberId);
+    if (!memberToDelete) return;
+
+    try {
+      setIsSavingMember(true);
+      setSaveError(null);
+
+      // Delete from database
+      const { error } = await supabase
+        .from("team_members")
+        .delete()
+        .eq("team_owner_id", ownerId)
+        .eq("email", memberToDelete.email);
+
+      if (error) {
+        setSaveError(error.message);
+        return;
+      }
+
+      // Update local state
+      setMembers((prev) => prev.filter((member) => member.id !== memberId));
+      setSelectedMemberIds((prev) => prev.filter((id) => id !== memberId));
+      closeModal();
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : "Failed to delete member");
+    } finally {
+      setIsSavingMember(false);
+    }
   };
 
-  const handleBulkAction = (action: string) => {
+  const handleBulkAction = async (action: string) => {
     if (action === "delete" && selectedMemberIds.length > 0) {
       if (
         window.confirm(
           `Are you sure you want to delete ${selectedMemberIds.length} member(s)?`
         )
       ) {
-        setMembers((prev) =>
-          prev.filter((member) => !selectedMemberIds.includes(member.id))
-        );
-        setSelectedMemberIds([]);
+        try {
+          setIsSavingMember(true);
+          setSaveError(null);
+
+          // Get members to delete
+          const membersToDelete = members.filter((m) =>
+            selectedMemberIds.includes(m.id)
+          );
+
+          // Delete from database
+          const emailsToDelete = membersToDelete.map((m) => m.email);
+          const { error } = await supabase
+            .from("team_members")
+            .delete()
+            .eq("team_owner_id", ownerId)
+            .in("email", emailsToDelete);
+
+          if (error) {
+            setSaveError(error.message);
+            return;
+          }
+
+          // Update local state
+          setMembers((prev) =>
+            prev.filter((member) => !selectedMemberIds.includes(member.id))
+          );
+          setSelectedMemberIds([]);
+        } catch (err) {
+          setSaveError(err instanceof Error ? err.message : "Failed to delete members");
+        } finally {
+          setIsSavingMember(false);
+        }
       }
     }
   };
@@ -196,12 +249,16 @@ const TeamMembersDashboardDesktop: React.FC<
     lastName: string;
     email: string;
     isAdmin: boolean;
+    listingIds?: number[];
   }) => {
     try {
       setIsSavingMember(true);
       setSaveError(null);
 
-      const fullName = `${data.firstName} ${data.lastName}`.trim();
+      const inputFullName = `${data.firstName} ${data.lastName}`.trim();
+      const selectedListings = data.listingIds 
+        ? AVAILABLE_LISTINGS.filter((l) => data.listingIds!.includes(l.id))
+        : [];
 
       const { data: inserted, error } = await supabase
         .from("team_members")
@@ -209,8 +266,9 @@ const TeamMembersDashboardDesktop: React.FC<
           email: data.email,
           team_owner_id: ownerId,
           role: data.isAdmin ? "admin" : "member",
-          name: fullName || data.email.split("@")[0] || "Member",
+          name: inputFullName || data.email.split("@")[0] || "Member",
           status: "pending",
+          permissions: selectedListings,
         })
         .select("*")
         .single();
@@ -235,18 +293,16 @@ const TeamMembersDashboardDesktop: React.FC<
             })
           : "";
 
+      // Parse name consistently with server-side logic
+      const dbFullName = inserted.name || inputFullName || data.email.split("@")[0] || "Member";
+      const nameParts = dbFullName.trim().split(/\s+/).filter(Boolean);
+      const parsedFirstName = (data.firstName || nameParts[0] || "Member").trim();
+      const parsedLastName = (data.lastName || nameParts.slice(1).join(" ")).trim();
+
       const newMember: TeamMember = {
         id: nextId,
-        firstName:
-          data.firstName ||
-          inserted.name?.split(" ")[0] ||
-          inserted.email.split("@")[0] ||
-          "Member",
-        lastName:
-          data.lastName ||
-          (inserted.name
-            ? inserted.name.split(" ").slice(1).join(" ")
-            : ""),
+        firstName: parsedFirstName,
+        lastName: parsedLastName,
         email: inserted.email,
         avatar: "https://via.placeholder.com/80",
         status:
@@ -257,7 +313,9 @@ const TeamMembersDashboardDesktop: React.FC<
             : "pending",
         lastActive: formattedLastActive,
         isAdmin: data.isAdmin,
-        listings: [],
+        listings: data.listingIds 
+          ? AVAILABLE_LISTINGS.filter((l) => data.listingIds!.includes(l.id))
+          : [],
       };
 
       setMembers((prev) => [newMember, ...prev]);
@@ -304,10 +362,14 @@ const TeamMembersDashboardDesktop: React.FC<
         return;
       }
 
+      // Normalize names consistently
+      const normalizedFirstName = (data.firstName || existing.firstName || "").trim();
+      const normalizedLastName = (data.lastName || existing.lastName || "").trim();
+
       const updated: TeamMember = {
         ...existing,
-        firstName: data.firstName || existing.firstName,
-        lastName: data.lastName || existing.lastName,
+        firstName: normalizedFirstName,
+        lastName: normalizedLastName,
         email: data.email,
         isAdmin: data.isAdmin,
         listings: data.isAdmin ? [] : selectedListings,
@@ -382,11 +444,17 @@ const TeamMembersDashboardDesktop: React.FC<
         return;
       }
 
+      // Update local state
       setMembers((prev) =>
         prev.map((m) =>
           m.id === memberId ? { ...m, listings: selectedListings } : m
         )
       );
+      
+      // Close dropdown after successful update
+      setIsDropdownOpen(null);
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : "Failed to update listings");
     } finally {
       setIsSavingMember(false);
     }
@@ -484,14 +552,31 @@ const TeamMembersDashboardDesktop: React.FC<
       </table>
 
       {/* Footer with pagination */}
-      <div className="footer flex justify-between items-center p-4 mt-6">
-        <div className="footer-left flex items-center gap-6">
-          <div className="footer-text text-sm text-gray-500">
+      <div 
+        className="footer flex justify-between items-center mt-6"
+        style={{
+          padding: '1rem 0.5rem',
+        }}
+      >
+        <div 
+          className="footer-left flex items-center"
+          style={{
+            gap: '1.5rem',
+          }}
+        >
+          <div 
+            className="footer-text"
+            style={{
+              fontSize: '0.875rem',
+              color: '#6B7280',
+              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+            }}
+          >
             Showing{" "}
-            <strong>
+            <strong style={{ color: '#464646' }}>
               {startIndex + 1}-{Math.min(endIndex, filteredMembers.length)}
             </strong>{" "}
-            of <strong>{filteredMembers.length}</strong> users
+            of <strong style={{ color: '#464646' }}>{filteredMembers.length}</strong> users
           </div>
 
           <ItemsPerPageDropdown

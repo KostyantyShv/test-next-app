@@ -35,7 +35,8 @@ const EditMemberModal: React.FC<EditMemberModalProps> = ({
   // Update selected listings when member changes
   useEffect(() => {
     setSelectedListingIds(member.listings.map((l) => l.id));
-  }, [member.listings, member.id]);
+    setIsAdmin(member.isAdmin);
+  }, [member.id, member.listings.length, member.isAdmin]);
 
   // Clear listings when isAdmin is toggled to true
   useEffect(() => {

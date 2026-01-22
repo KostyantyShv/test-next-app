@@ -17,13 +17,23 @@ const formatLastActive = (value: string | null): string => {
 };
 
 const splitName = (fullName: string | null, emailFallback: string) => {
-  const base = (fullName && fullName.trim().length > 0)
-    ? fullName
-    : emailFallback.split("@")[0] || "Member";
-  const parts = base.trim().split(" ");
-  const firstName = parts[0] || "Member";
-  const lastName = parts.slice(1).join(" ");
-  return { firstName, lastName };
+  // Normalize input: handle null, undefined, and empty strings
+  const normalizedInput = fullName ? String(fullName).trim() : "";
+  const base = normalizedInput.length > 0
+    ? normalizedInput
+    : (emailFallback ? String(emailFallback).split("@")[0] : "").trim() || "Member";
+  
+  // Split by whitespace and filter out empty strings
+  const parts = base.split(/\s+/).filter(Boolean);
+  
+  // Extract firstName and lastName, ensuring they're trimmed
+  const firstName = (parts[0] || "Member").trim();
+  const lastName = parts.slice(1).join(" ").trim();
+  
+  return { 
+    firstName: firstName || "Member", 
+    lastName: lastName || "" 
+  };
 };
 
 const page = async () => {
@@ -63,10 +73,14 @@ const page = async () => {
           }))
         : [];
 
+      // Ensure firstName and lastName are normalized (no extra whitespace)
+      const normalizedFirstName = firstName.trim();
+      const normalizedLastName = lastName.trim();
+
       return {
         id: index + 1,
-        firstName,
-        lastName,
+        firstName: normalizedFirstName,
+        lastName: normalizedLastName,
         email: member.email,
         avatar: "https://via.placeholder.com/80",
         status:

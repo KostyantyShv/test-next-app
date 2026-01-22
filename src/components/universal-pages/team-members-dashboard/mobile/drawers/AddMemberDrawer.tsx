@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Drawer } from "./Drawer";
 
 interface AddMemberDrawerProps {
@@ -9,6 +9,7 @@ interface AddMemberDrawerProps {
     lastName: string;
     email: string;
     isAdmin: boolean;
+    listingIds?: number[];
   }) => void;
 }
 
@@ -21,10 +22,31 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [selectedListingIds, setSelectedListingIds] = useState<number[]>([]);
+
+  const handleToggleListing = (listingId: number) => {
+    setSelectedListingIds((prev) =>
+      prev.includes(listingId)
+        ? prev.filter((id) => id !== listingId)
+        : [...prev, listingId]
+    );
+  };
+
+  useEffect(() => {
+    if (isAdmin) {
+      setSelectedListingIds([]);
+    }
+  }, [isAdmin]);
 
   const handleSubmit = () => {
     if (!email.trim()) return;
-    onSendInvitation({ firstName, lastName, email, isAdmin });
+    onSendInvitation({ 
+      firstName, 
+      lastName, 
+      email, 
+      isAdmin,
+      listingIds: isAdmin ? [] : selectedListingIds
+    });
   };
   const listings = [
     {
@@ -95,7 +117,7 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
           <input
             type="text"
             id="firstName"
-            className="w-full p-3 border border-gray-300 rounded-lg !bg-white focus:outline-none focus:border-[#0B6333] focus:ring-2 focus:ring-[#0B6333]/20"
+            className="w-full p-3 border border-gray-300 rounded-lg !bg-white focus:outline-none focus:border-[#0B6333] focus:shadow-[0_0_0_2px_rgba(11,99,51,0.1)]"
             required
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
@@ -122,7 +144,7 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
           <input
             type="text"
             id="lastName"
-            className="w-full p-3 border border-gray-300 rounded-lg !bg-white focus:outline-none focus:border-[#0B6333] focus:ring-2 focus:ring-[#0B6333]/20"
+            className="w-full p-3 border border-gray-300 rounded-lg !bg-white focus:outline-none focus:border-[#0B6333] focus:shadow-[0_0_0_2px_rgba(11,99,51,0.1)]"
             required
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
@@ -149,7 +171,7 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
           <input
             type="email"
             id="email"
-            className="w-full p-3 border border-gray-300 rounded-lg !bg-white focus:outline-none focus:border-[#0B6333] focus:ring-2 focus:ring-[#0B6333]/20"
+            className="w-full p-3 border border-gray-300 rounded-lg !bg-white focus:outline-none focus:border-[#0B6333] focus:shadow-[0_0_0_2px_rgba(11,99,51,0.1)]"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -161,13 +183,32 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
           />
         </div>
         <div className="flex items-center gap-2.5 mb-4">
-          <input
-            type="checkbox"
-            id="adminCheckbox"
-            className="appearance-none h-5 w-5 border-2 border-gray-300 rounded !bg-white checked:bg-[#0B6333] checked:border-[#0B6333] focus:outline-none"
-            checked={isAdmin}
-            onChange={(e) => setIsAdmin(e.target.checked)}
-          />
+          <div className="relative flex-shrink-0">
+            <input
+              type="checkbox"
+              id="adminCheckbox"
+              className="appearance-none h-5 w-5 border-2 border-gray-300 rounded focus:outline-none"
+              style={{
+                backgroundColor: isAdmin ? '#0B6333' : 'white',
+                borderColor: isAdmin ? '#0B6333' : '#D1D5DB',
+              }}
+              checked={isAdmin}
+              onChange={(e) => setIsAdmin(e.target.checked)}
+            />
+            {isAdmin && (
+              <svg
+                className="absolute top-0 left-0 pointer-events-none"
+                viewBox="0 0 20 20"
+                fill="none"
+                style={{ width: '20px', height: '20px' }}
+              >
+                <path
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  fill="white"
+                />
+              </svg>
+            )}
+          </div>
           <label
             htmlFor="adminCheckbox"
             className="cursor-pointer"
@@ -193,35 +234,58 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
           >
             Assign to Listings
           </h3>
-          {listings.map((listing) => (
-            <label
-              className="flex items-center gap-3 p-3 border-b border-gray-200 last:border-b-0 cursor-pointer"
-              htmlFor={`listing${listing.id}`}
-              key={listing.id}
-            >
-              <input
-                type="checkbox"
-                id={`listing${listing.id}`}
-                className="appearance-none h-5 w-5 border-2 border-gray-300 rounded !bg-white checked:bg-[#0B6333] checked:border-[#0B6333] focus:outline-none"
-                value={listing.id}
-              />
-              <img
-                src={listing.image}
-                alt={listing.name}
-                className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-              />
-              <span 
-                className="flex-1 truncate"
-                style={{
-                  fontSize: '15px',
-                  color: '#4A4A4A',
-                  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
-                }}
+          {listings.map((listing) => {
+            const isChecked = selectedListingIds.includes(listing.id);
+            return (
+              <label
+                className="flex items-center gap-3 py-3 border-b border-gray-200 last:border-b-0 cursor-pointer"
+                htmlFor={`listing${listing.id}`}
+                key={listing.id}
               >
-                {listing.name}
-              </span>
-            </label>
-          ))}
+                <div className="relative flex-shrink-0">
+                  <input
+                    type="checkbox"
+                    id={`listing${listing.id}`}
+                    className="appearance-none h-5 w-5 border-2 border-gray-300 rounded focus:outline-none"
+                    style={{
+                      backgroundColor: isChecked ? '#0B6333' : 'white',
+                      borderColor: isChecked ? '#0B6333' : '#D1D5DB',
+                    }}
+                    checked={isChecked}
+                    onChange={() => handleToggleListing(listing.id)}
+                  />
+                  {isChecked && (
+                    <svg
+                      className="absolute top-0 left-0 pointer-events-none"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      style={{ width: '20px', height: '20px' }}
+                    >
+                      <path
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        fill="white"
+                      />
+                    </svg>
+                  )}
+                </div>
+                <img
+                  src={listing.image}
+                  alt={listing.name}
+                  className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+                />
+                <span 
+                  className="flex-1 truncate"
+                  style={{
+                    fontSize: '15px',
+                    color: '#4A4A4A',
+                    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+                  }}
+                >
+                  {listing.name}
+                </span>
+              </label>
+            );
+          })}
         </div>
       </form>
     </Drawer>

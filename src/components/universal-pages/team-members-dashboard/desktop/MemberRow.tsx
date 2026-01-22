@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Checkbox } from "../Checkbox";
 import { TeamMember } from "../types";
 import { StatusBadge } from "../StatusBadge";
@@ -27,13 +27,28 @@ export const MemberRow: React.FC<MemberRowProps> = ({
   onResendInvitation,
   onUpdateListings,
 }) => {
-  const [selectedListingIds, setSelectedListingIds] = useState<number[]>(
-    member.listings.map((l) => l.id)
-  );
+  // Get current listing IDs from member - create a stable string for comparison
+  const memberListingIdsString = useMemo(() => {
+    return member.listings.map((l) => l.id).sort((a, b) => a - b).join(',');
+  }, [member.listings.length, member.listings.map((l) => l.id).sort((a, b) => a - b).join(',')]);
 
+  const [selectedListingIds, setSelectedListingIds] = useState<number[]>(() => {
+    return member.listings.map((l) => l.id);
+  });
+
+  // Update selectedListingIds when member.listings changes
   useEffect(() => {
-    setSelectedListingIds(member.listings.map((l) => l.id));
-  }, [member.listings, member.id]);
+    const newIds = member.listings.map((l) => l.id);
+    setSelectedListingIds(newIds);
+  }, [memberListingIdsString]);
+
+  // Also update when dropdown opens to ensure sync with latest data
+  useEffect(() => {
+    if (isDropdownOpen === member.id) {
+      const newIds = member.listings.map((l) => l.id);
+      setSelectedListingIds(newIds);
+    }
+  }, [isDropdownOpen, member.id, memberListingIdsString]);
 
   const toggleListing = (id: number) => {
     setSelectedListingIds((prev) =>
@@ -55,6 +70,17 @@ export const MemberRow: React.FC<MemberRowProps> = ({
       ? `${listingBadgeLabel}...`
       : listingBadgeLabel;
 
+  // Normalize name consistently with server-side logic using useMemo for stability
+  const { fullDisplayName, altText } = useMemo(() => {
+    const normalizedFirstName = (member.firstName || "").trim();
+    const normalizedLastName = (member.lastName || "").trim();
+    const displayName = `${normalizedFirstName} ${normalizedLastName}`.trim() || member.email;
+    return {
+      fullDisplayName: displayName,
+      altText: displayName,
+    };
+  }, [member.firstName, member.lastName, member.email]);
+
   return (
     <tr key={member.id}>
       <td className="p-4 border-b border-gray-200">
@@ -70,13 +96,13 @@ export const MemberRow: React.FC<MemberRowProps> = ({
               width={720}
               height={720}
               src={member.avatar}
-              alt={`${member.firstName} ${member.lastName}`}
+              alt={altText}
               className="w-full h-full rounded-full object-cover"
             />
           </div>
           <div className="member-details flex flex-col gap-1">
             <div className="name-section flex items-center gap-3">
-              <span className="member-name text-base font-semibold text-[#464646]">{`${member.firstName} ${member.lastName}`}</span>
+              <span className="member-name text-base font-semibold text-[#464646]">{fullDisplayName}</span>
               {member.isAdmin ? (
                 <span className="badge badge-admin max-w-[160px] truncate inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#dbeafe] text-[#142E53]">
                   Admin
@@ -150,7 +176,7 @@ export const MemberRow: React.FC<MemberRowProps> = ({
                 <div className="dropdown-item-with-arrow relative px-0 w-full group" style={{ display: 'flex', alignItems: 'center', paddingRight: '15px' }}>
                   <button
                     type="button"
-                    className="flex-grow flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-100 transition-colors text-left"
+                    className="flex-grow flex items-center pl-4 pr-2.5 py-2.5 text-sm text-gray-600 hover:bg-gray-100 transition-colors text-left"
                     style={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}
                   >
                     Assign to Listing
