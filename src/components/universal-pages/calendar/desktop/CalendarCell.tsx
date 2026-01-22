@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Event } from "../types/event";
 import Image from "next/image";
 
@@ -10,6 +10,10 @@ interface CalendarCellProps {
   isToday?: boolean;
   onDateClick?: (date: number) => void;
   onEventClick?: (eventId: string) => void;
+  expandedEventId?: string | null;
+  onEventExpand?: (eventId: string | null, cellIndex: number) => void;
+  cellIndex?: number;
+  onMoreEventsToggle?: (cellIndex: number) => void;
 }
 
 export const CalendarCell: React.FC<CalendarCellProps> = ({
@@ -20,16 +24,21 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
   isToday,
   onDateClick,
   onEventClick,
+  expandedEventId,
+  onEventExpand,
+  cellIndex,
+  onMoreEventsToggle,
 }) => {
-  const [expandedEvent, setExpandedEvent] = useState<string | null>(null);
   const [showMore, setShowMore] = useState(false);
-
-  const toggleEvent = (title: string) => {
-    setExpandedEvent(expandedEvent === title ? null : title);
-  };
+  const cellRef = useRef<HTMLDivElement>(null);
 
   const toggleMoreEvents = () => {
     setShowMore(!showMore);
+    if (onMoreEventsToggle && cellIndex !== undefined) {
+      setTimeout(() => {
+        onMoreEventsToggle(cellIndex);
+      }, 0);
+    }
   };
 
   const handleDateClick = () => {
@@ -38,17 +47,48 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
     }
   };
 
-  const handleEventClick = (eventId: string | undefined) => {
-    if (eventId && onEventClick) {
+  const handleEventClick = (eventId: string | undefined, eventTitle: string, e: React.MouseEvent) => {
+    // Check if it's a double click - open modal for editing
+    if (e.detail === 2 && eventId && onEventClick) {
       onEventClick(eventId);
+      return;
+    }
+    
+    // Single click - expand/collapse event
+    if (onEventExpand && cellIndex !== undefined) {
+      let eventIdentifier: string;
+      
+      if (eventId) {
+        // For DB events, use the event ID
+        eventIdentifier = eventId;
+      } else {
+        // For mock events (without id), use cellIndex-title combination
+        eventIdentifier = `${cellIndex}-${eventTitle}`;
+      }
+      
+      const newExpandedId = expandedEventId === eventIdentifier ? null : eventIdentifier;
+      onEventExpand(newExpandedId, cellIndex);
     }
   };
 
+  // Expose cell ref for row height synchronization
+  useEffect(() => {
+    if (cellRef.current && cellIndex !== undefined) {
+      // Store ref in a way that parent can access it
+      (cellRef.current as any).__cellIndex = cellIndex;
+    }
+  }, [cellIndex]);
+
+  const hasMoreEvents = events && events.length > 3;
+  const needsPaddingForButton = hasMoreEvents;
+  
   return (
     <div
+      ref={cellRef}
       className={`calendar-cell flex flex-col min-h-[120px] p-2 gap-0.5 relative ${
         isNextMonth ? "bg-[#E0E0E0]" : "bg-white"
       } ${isToday ? "border-2 border-[#A0ABBC]" : ""}`}
+      style={needsPaddingForButton ? { paddingBottom: '32px' } : undefined}
     >
       <div
         onClick={handleDateClick}
@@ -62,11 +102,18 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
       >
         {date}
       </div>
-      {events?.slice(0, showMore ? events.length : 3).map((event, index) => (
+      {events?.slice(0, showMore ? events.length : 3).map((event, index) => {
+        // Determine event identifier: use id for DB events, or cellIndex-title for mock events
+        const eventIdentifier = event.id 
+          ? event.id 
+          : (cellIndex !== undefined ? `${cellIndex}-${event.title}` : null);
+        const isExpanded = expandedEventId === eventIdentifier;
+        
+        return (
         <div
           key={index}
-          className={`px-2 py-0.5 rounded cursor-pointer transition-all duration-200 mb-0.5 relative ${
-            expandedEvent === event.title ? "p-2 bg-[#F8F9FA]" : ""
+          className={`event rounded cursor-pointer transition-all duration-200 mb-0.5 relative ${
+            isExpanded ? "expanded p-2 bg-[#F8F9FA]" : "px-2 py-0.5"
           } ${
             event.type === "zoom-meeting" || event.type === "zoom-webinar"
               ? "border-l-[3px] border-l-[#15B7C3]"
@@ -82,11 +129,7 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
           }`}
           onClick={(e) => {
             e.stopPropagation();
-            if (event.id) {
-              handleEventClick(event.id);
-            } else {
-              toggleEvent(event.title);
-            }
+            handleEventClick(event.id, event.title, e);
           }}
         >
           <div className="event-header flex items-center gap-1">
@@ -198,9 +241,9 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
             </div>
             {event.time}
           </div>
-          {expandedEvent === event.title && (
+          {isExpanded && (
             <div className="event-attendees flex items-center gap-1 mt-2">
-              <div className="avatar-group flex mr-1">
+              <div className="avatar-group flex" style={{ marginRight: '4px' }}>
                 <Image
                   height={24}
                   width={24}
@@ -216,31 +259,34 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
                   alt="Attendee 2"
                 />
               </div>
-              <span className="attendee-count text-xs text-[#5F6368] px-1.5 py-0.5 bg-[#F1F3F4] rounded-xl">
+              <span className="attendee-count text-xs text-[#5F6368] bg-[#F1F3F4] rounded-xl" style={{ padding: '2px 6px' }}>
                 {event.attendees > 2 ? `${event.attendees}+` : event.attendees}
               </span>
             </div>
           )}
         </div>
-      ))}
+        );
+      })}
       {events && events.length > 3 && !showMore && (
         <button
-          className="more-events absolute bottom-2 left-2 px-2 py-0.5 bg-[#F8F9FA] border border-[#E0E0E0] rounded text-xs text-[#5F6368] cursor-pointer mt-1 hover:bg-[#F1F3F4]"
+          className="more-events absolute bottom-2 left-2 px-2 py-0.5 bg-[#F8F9FA] border border-[#E0E0E0] rounded text-xs text-[#5F6368] cursor-pointer hover:bg-[#F1F3F4] z-10"
           onClick={(e) => {
             e.stopPropagation();
             toggleMoreEvents();
           }}
+          style={{ marginTop: '4px' }}
         >
           {events.length - 3} More
         </button>
       )}
       {events && events.length > 3 && showMore && (
         <button
-          className="more-events absolute bottom-2 left-2 px-2 py-0.5 bg-[#F8F9FA] border border-[#E0E0E0] rounded text-xs text-[#5F6368] cursor-pointer mt-1 hover:bg-[#F1F3F4]"
+          className="more-events absolute bottom-2 left-2 px-2 py-0.5 bg-[#F8F9FA] border border-[#E0E0E0] rounded text-xs text-[#5F6368] cursor-pointer hover:bg-[#F1F3F4] z-10"
           onClick={(e) => {
             e.stopPropagation();
             toggleMoreEvents();
           }}
+          style={{ marginTop: '4px' }}
         >
           Show Less
         </button>
