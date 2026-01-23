@@ -1,5 +1,6 @@
 "use client";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { saveVendorProfileScrollAndFocus } from "../utils/navPreserve";
 
 export default function NavTabs() {
   const searchParams = useSearchParams();
@@ -119,13 +120,16 @@ export default function NavTabs() {
       {tabs.map((tab) => (
         <div
           key={tab.id}
+          data-vp-focus={`tab:${tab.id}`}
+          tabIndex={-1}
           className={`flex items-center gap-2 px-3 md:px-1 py-2 md:py-3 text-sm md:text-base text-[#5F5F5F] font-medium cursor-pointer border-b-2 transition-all whitespace-nowrap ${
             activeTab === tab.id
               ? "text-[#016853] border-[#016853]"
               : "border-transparent"
           }`}
           onClick={() => {
-            router.push(`${pathname}?tab=${tab.id}`);
+            saveVendorProfileScrollAndFocus(`tab:${tab.id}`);
+            router.push(`${pathname}?tab=${tab.id}`, { scroll: false });
           }}
         >
           <span className="w-[18px] h-[18px] md:w-5 md:h-5">{tab.icon}</span>

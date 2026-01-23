@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { saveVendorProfileScrollAndFocus } from "../utils/navPreserve";
 
 export default function ProfileSidebar() {
   const router = useRouter();
@@ -245,9 +246,14 @@ With a strong commitment to community engagement, Lincoln University actively pa
             </div>
             <a
               href="#"
+              data-vp-focus="sidebar:followers"
+              tabIndex={-1}
               onClick={(e) => {
                 e.preventDefault();
-                router.push(`${pathname}?tab=connections`);
+                saveVendorProfileScrollAndFocus("sidebar:followers");
+                router.push(`${pathname}?tab=connections&view=followers`, {
+                  scroll: false,
+                });
               }}
               className="text-xs text-[#346DC2] font-medium hover:underline cursor-pointer"
             >
@@ -285,9 +291,14 @@ With a strong commitment to community engagement, Lincoln University actively pa
             </div>
             <a
               href="#"
+              data-vp-focus="sidebar:following"
+              tabIndex={-1}
               onClick={(e) => {
                 e.preventDefault();
-                router.push(`${pathname}?tab=connections`);
+                saveVendorProfileScrollAndFocus("sidebar:following");
+                router.push(`${pathname}?tab=connections&view=following`, {
+                  scroll: false,
+                });
               }}
               className="text-xs text-[#346DC2] font-medium hover:underline cursor-pointer"
             >

@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Inter } from "next/font/google";
+import { saveVendorProfileScrollAndFocus } from "../utils/navPreserve";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -76,6 +77,7 @@ const PRO_BADGE_SVG = (
 export default function MembersGrid() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname();
   const sortParam = searchParams.get("sort") as "trending" | "followers" | null;
   const [sortType, setSortType] = useState<"trending" | "followers">(
     sortParam || "trending"
@@ -100,9 +102,11 @@ export default function MembersGrid() {
 
   const handleSortChange = (type: "trending" | "followers") => {
     setSortType(type);
-    const url = new URL(window.location.href);
-    url.searchParams.set("sort", type);
-    router.push(url.toString());
+    saveVendorProfileScrollAndFocus(`members:sort:${type}`);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", "members");
+    params.set("sort", type);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   const truncateName = (name: string, maxLength: number = 12) => {
@@ -117,6 +121,8 @@ export default function MembersGrid() {
         <div className="text-[13px] md:text-sm text-[#6F767E]">
           Sort:{" "}
           <span
+            data-vp-focus="members:sort:trending"
+            tabIndex={-1}
             className={`cursor-pointer hover:underline ${
               sortType === "trending"
                 ? "text-[#464646] font-medium"
@@ -128,6 +134,8 @@ export default function MembersGrid() {
           </span>{" "}
           •{" "}
           <span
+            data-vp-focus="members:sort:followers"
+            tabIndex={-1}
             className={`cursor-pointer hover:underline ${
               sortType === "followers"
                 ? "text-[#464646] font-medium"

@@ -2,6 +2,7 @@
 import { Inter } from "next/font/google";
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { saveVendorProfileScrollAndFocus } from "../utils/navPreserve";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -153,9 +154,11 @@ const ConnectionsGrid: React.FC = () => {
 
   const handleViewChange = (type: "followers" | "following") => {
     setViewType(type);
-    const url = new URL(window.location.href);
-    url.searchParams.set("view", type);
-    router.push(url.toString());
+    saveVendorProfileScrollAndFocus(`connections:view:${type}`);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", "connections");
+    params.set("view", type);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   const headerTitle =
@@ -170,6 +173,8 @@ const ConnectionsGrid: React.FC = () => {
         <div className="text-sm text-[#6F767E]">
           View:{" "}
           <span
+            data-vp-focus="connections:view:followers"
+            tabIndex={-1}
             className={`cursor-pointer ${
               viewType === "followers"
                 ? "text-[#016853] font-medium"
@@ -181,6 +186,8 @@ const ConnectionsGrid: React.FC = () => {
           </span>{" "}
           •{" "}
           <span
+            data-vp-focus="connections:view:following"
+            tabIndex={-1}
             className={`cursor-pointer ${
               viewType === "following"
                 ? "text-[#016853] font-medium"

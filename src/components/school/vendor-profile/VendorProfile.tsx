@@ -11,6 +11,7 @@ import ReviewsGrid from "./components/ReviewsGrid";
 import ConnectionsGrid from "./components/ConnectionsGrid";
 import MembersGrid from "./components/MembersGrid";
 import { useEffect } from "react";
+import { restoreVendorProfileScrollAndFocus } from "./utils/navPreserve";
 
 type TabType =
   | "listings"
@@ -25,6 +26,7 @@ export default function VendorProfile() {
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
   const activeTab = (tabParam || "listings") as TabType;
+  const searchKey = searchParams.toString();
 
   useEffect(() => {
     if (!tabParam) {
@@ -33,6 +35,17 @@ export default function VendorProfile() {
       window.history.replaceState({}, "", url.toString());
     }
   }, [tabParam]);
+
+  // Preserve scroll position + focus when navigating between tabs / view / sort (query param changes).
+  useEffect(() => {
+    // Run after the new UI has rendered.
+    const raf = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        restoreVendorProfileScrollAndFocus();
+      });
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [searchKey]);
 
   const renderTabContent = () => {
     switch (activeTab) {
