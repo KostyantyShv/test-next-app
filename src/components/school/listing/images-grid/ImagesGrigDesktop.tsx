@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import PhotoGalleryDesktop from "../photo-gallery/PhotoGalleryDesktop";
 
 interface SchoolInfo {
@@ -46,8 +47,43 @@ const schoolInfo: SchoolInfo = {
   },
 };
 
+type SchoolType = "k12" | "college" | "grad";
+
 const ImagesGrigDesktop = ({ images }: { images: Array<string> }) => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  
+  // Get active tab from URL - check for k12, grad, or college query params
+  // Default to "college" if no param or if "college" param exists
+  const getActiveTab = (): SchoolType => {
+    if (searchParams.has("k12")) return "k12";
+    if (searchParams.has("grad")) return "grad";
+    if (searchParams.has("college")) return "college";
+    return "college"; // default
+  };
+  
+  const activeTab = getActiveTab();
+
+  const handleTabClick = (type: SchoolType) => {
+    // Update URL with query parameter format: ?k12, ?grad, or ?college
+    const paramMap: Record<SchoolType, string> = {
+      k12: "k12",
+      grad: "grad",
+      college: "college",
+    };
+    
+    // Create URL with just the type parameter (no value)
+    const newUrl = `${pathname}?${paramMap[type]}`;
+    router.push(newUrl, { scroll: false });
+  };
+
+  const tabs: { id: SchoolType; label: string }[] = [
+    { id: "k12", label: "K-12" },
+    { id: "college", label: "COLLEGE" },
+    { id: "grad", label: "GRAD SCHOOL" },
+  ];
 
   return (
     <div className="flex gap-[2px] w-full max-w-[1077px]">
@@ -58,11 +94,21 @@ const ImagesGrigDesktop = ({ images }: { images: Array<string> }) => {
           fill
           className="object-cover"
         />
-        <div className="absolute bottom-0 left-[10px] bg-white px-2 py-1 font-bold text-sm">
-          COLLEGE
-        </div>
-        <div className="absolute bottom-0 left-[98px] bg-[#eee] px-2 py-1 font-bold text-sm text-[#5F5F5F]">
-          GRAD SCHOOL
+        <div className="absolute bottom-0 left-[10px] flex gap-2">
+          {tabs.map((tab, index) => (
+            <button
+              key={tab.id}
+              onClick={() => handleTabClick(tab.id)}
+              className={`px-2 py-1 font-bold text-sm transition-colors ${
+                activeTab === tab.id
+                  ? "bg-white text-black"
+                  : "bg-[#eee] text-[#5F5F5F] hover:bg-gray-200"
+              }`}
+              style={{ marginLeft: index > 0 ? "0" : "0" }}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </div>
       <div className="flex flex-col gap-[2px] flex-[0_0_325px]">

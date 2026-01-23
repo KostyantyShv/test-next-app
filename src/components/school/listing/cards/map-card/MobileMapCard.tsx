@@ -158,7 +158,11 @@ export default function MobileMapCard({ id }: { id: string }) {
   };
 
   return (
-    <div id={id} className="block md:hidden">
+    <div 
+      id={id} 
+      className="block md:hidden"
+      style={{ scrollMarginTop: "80px" }}
+    >
       <div className="w-full bg-white">
         {/* Header */}
         <div className="px-4 py-4 border-b border-black/8 bg-white sticky top-0 z-10">

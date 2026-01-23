@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import Header from "./header/Header";
 import SchoolInfo from "./school-info/SchoolInfo";
 import SchoolInfoDesktop from "./school-info/SchoolInfoDesktop";
@@ -9,6 +10,8 @@ import ImagesGrigDesktop from "./images-grid/ImagesGrigDesktop";
 import PhotoGallery from "./photo-gallery/PhotoGalleryDesktop";
 import FooterMobile from "./footer-mobile/FooterMobile";
 import { SchoolInfoInterface } from "@/types/school-listings";
+
+type SchoolType = "k12" | "college" | "grad";
 
 interface ListingProps {
   schoolInfo?: SchoolInfoInterface;
@@ -28,6 +31,17 @@ const Listing: React.FC<ListingProps> = ({
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
   const schoolInfoRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+  
+  // Get active school type from URL
+  const getSchoolType = (): SchoolType => {
+    if (searchParams.has("k12")) return "k12";
+    if (searchParams.has("grad")) return "grad";
+    if (searchParams.has("college")) return "college";
+    return "college"; // default
+  };
+  
+  const schoolType = getSchoolType();
 
   const defaultSchoolInfo: SchoolInfoInterface = {
     name: "Lincoln Academy",
@@ -110,7 +124,7 @@ const Listing: React.FC<ListingProps> = ({
       />
       
       {/* Main Content */}
-      <Content />
+      <Content schoolType={schoolType} />
       
       {/* Mobile Footer - Only visible on mobile */}
       <div className="block md:hidden">

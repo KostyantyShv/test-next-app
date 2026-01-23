@@ -71,27 +71,49 @@ const Header = ({
     
     // Special handling for Map section which might load asynchronously
     const scrollToElement = (attempts = 0) => {
-      const element = document.getElementById(tabId);
-      if (element && element.offsetParent !== null) {
-        // Element exists and is visible
-        const elementTop = element.offsetTop;
+      // Try multiple methods to find the element
+      let element = document.getElementById(tabId);
+      if (!element) {
+        // Try querySelector with escaped id
+        element = document.querySelector(`[id="${tabId}"]`) as HTMLElement;
+      }
+      if (!element) {
+        // Try querySelectorAll and find first match
+        const allElements = document.querySelectorAll(`[id]`);
+        element = Array.from(allElements).find(
+          (el) => el.getAttribute('id') === tabId
+        ) as HTMLElement;
+      }
+      
+      // For Map, check if element exists (don't check offsetParent as it might be null due to hidden md:flex)
+      const isMap = tabId.includes("Map");
+      if (element && (isMap || element.offsetParent !== null)) {
+        // Element exists and is visible (or is Map which might be hidden initially)
+        // Use getBoundingClientRect for more accurate positioning
+        const rect = element.getBoundingClientRect();
+        const elementTop = rect.top + window.scrollY;
         const scrollPosition = elementTop - headerOffset;
 
         window.scrollTo({
           top: Math.max(0, scrollPosition),
           behavior: "smooth",
         });
-      } else if (attempts < 15) {
+      } else if (attempts < 50) {
         // Retry for async-loaded content (like Map) - more attempts for dynamic imports
-        setTimeout(() => scrollToElement(attempts + 1), 200);
+        // Increased attempts and delay for Map specifically
+        const delay = tabId.includes("Map") ? 200 : 150;
+        setTimeout(() => scrollToElement(attempts + 1), delay);
       } else {
         // Final fallback: try scrollIntoView
-        const element = document.getElementById(tabId);
+        let element = document.getElementById(tabId);
+        if (!element) {
+          element = document.querySelector(`[id="${tabId}"]`) as HTMLElement;
+        }
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "start" });
           // Adjust for header after scroll
           setTimeout(() => {
-            const rect = element.getBoundingClientRect();
+            const rect = element!.getBoundingClientRect();
             if (rect.top < headerOffset) {
               window.scrollBy({
                 top: rect.top - headerOffset,
@@ -99,12 +121,23 @@ const Header = ({
               });
             }
           }, 500);
+        } else {
+          console.warn(`Element with id "${tabId}" not found after ${attempts} attempts`);
         }
       }
     };
     
-    // Initial attempt with delay for dynamic imports
-    setTimeout(() => scrollToElement(), 100);
+    // Use requestAnimationFrame for better timing with dynamic imports
+    if (tabId.includes("Map")) {
+      // For Map, wait a bit longer and use requestAnimationFrame
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setTimeout(() => scrollToElement(), 200);
+        });
+      });
+    } else {
+      setTimeout(() => scrollToElement(), 100);
+    }
   };
 
   // Don't render header when at top of page
@@ -118,7 +151,7 @@ const Header = ({
         className={`fixed -top-3 z-[1001] transition-all duration-300 min-h-[5.8rem] bg-white border-b shadow-[0_2px_8px_rgba(0,0,0,0.06)] ${classes || ""}`}
         style={{ 
           borderColor: "rgba(223, 221, 219, 0.4)",
-          top: "63px",
+          top: "0px", // Changed from 63px to 0px - sticky header replaces default header
           width: "calc(100% - 255px)",
           left: "255px",
         }}

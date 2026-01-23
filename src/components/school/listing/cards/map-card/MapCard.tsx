@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Script from "next/script";
 import MapHeader from "./MapHeader";
 import MapContainer from "./MapContainer";
@@ -12,6 +12,14 @@ export default function MapCard({ id }: { id: string }) {
   const [showTerrain, setShowTerrain] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
   const mapContainerRef = useRef<{ exitStreetView: () => void } | null>(null);
+  const desktopMapRef = useRef<HTMLDivElement>(null);
+
+  // Ensure id is set after component mounts (for dynamic imports)
+  useEffect(() => {
+    if (desktopMapRef.current && id) {
+      desktopMapRef.current.id = id;
+    }
+  }, [id]);
 
   const handleMapTypeChange = (type: "roadmap" | "satellite") => {
     if (mapContainerRef.current) {
@@ -24,13 +32,14 @@ export default function MapCard({ id }: { id: string }) {
       {/* Mobile Map Card */}
       <MobileMapCard id={id} />
 
-      {/* Desktop Map Card */}
+      {/* Desktop Map Card - Always render outer div with id (like other components) */}
       <div 
+        ref={desktopMapRef}
         id={id} 
-        className="hidden md:flex justify-center my-cardMargin"
+        className="flex justify-center my-cardMargin"
         style={{ scrollMarginTop: "176px" }}
       >
-        <div className="w-full max-w-[875px] bg-white rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.05)] overflow-hidden border border-black/10">
+        <div className="hidden md:block w-full max-w-[875px] bg-white rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.05)] overflow-hidden border border-black/10">
           <MapHeader />
           <div className="relative h-[500px]">
             <MapControls 

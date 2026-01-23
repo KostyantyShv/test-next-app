@@ -144,7 +144,7 @@ export function ReviewsModalContent({ onClose }: ReviewsModalContentProps) {
                 </div>
               )}
               <div className="flex gap-6 mb-4">
-                <button className="flex items-center gap-2 text-[#5F5F5F] hover:text-[#346DC2] transition-colors cursor-pointer">
+                <button className="flex items-center gap-2 text-[#5F5F5F] hover:text-[#346DC2] hover:bg-[rgba(52,109,194,0.08)] transition-all cursor-pointer py-1.5 px-2.5 rounded-md -ml-2.5">
                   <svg
                     width="16"
                     height="16"
@@ -157,7 +157,7 @@ export function ReviewsModalContent({ onClose }: ReviewsModalContentProps) {
                   </svg>
                   <span className="font-medium text-sm">Helpful</span>
                 </button>
-                <button className="flex items-center gap-2 text-[#5F5F5F] hover:text-[#346DC2] transition-colors cursor-pointer">
+                <button className="flex items-center gap-2 text-[#5F5F5F] hover:text-[#346DC2] hover:bg-[rgba(52,109,194,0.08)] transition-all cursor-pointer py-1.5 px-2.5 rounded-md -ml-2.5">
                   <svg
                     width="16"
                     height="16"

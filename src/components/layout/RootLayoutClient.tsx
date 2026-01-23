@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { LeftSidebar } from "@/components/layout/Sidebar/Left";
@@ -22,6 +22,7 @@ export const RootLayoutClient = ({
   children: React.ReactNode;
 }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isListingPageScrolled, setIsListingPageScrolled] = useState(false);
   const { isPlayerVisible, isPlaylistVisible } = useAudioPlayer();
   const pathname = usePathname();
   
@@ -30,6 +31,26 @@ export const RootLayoutClient = ({
   
   // Check if current route is team-members-dashboard (hide header on mobile)
   const isTeamMembersPage = pathname?.startsWith("/team-members-dashboard");
+  
+  // Check if current route is listing page
+  const isListingPage = pathname?.startsWith("/listing");
+  
+  // Hide default header on listing page when scrolled (sticky header replaces it)
+  useEffect(() => {
+    if (!isListingPage) {
+      setIsListingPageScrolled(false);
+      return;
+    }
+    
+    const handleScroll = () => {
+      setIsListingPageScrolled(window.scrollY > 100);
+    };
+    
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Check initial state
+    
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isListingPage]);
 
   // If auth route, render children without layout
   if (isAuthRoute) {
@@ -55,7 +76,8 @@ export const RootLayoutClient = ({
 
         <div className="flex-1 flex flex-col">
           {/* Header with mobile menu button - hide on mobile for team-members-dashboard */}
-          {!(isTeamMembersPage) && (
+          {/* Hide default header on listing page when scrolled (sticky header replaces it) */}
+          {!(isTeamMembersPage) && !(isListingPage && isListingPageScrolled) && (
             <>
               <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} />
               {/* Spacer to maintain gap under sticky header */}

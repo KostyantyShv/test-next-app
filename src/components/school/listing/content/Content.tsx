@@ -3,17 +3,23 @@ import React from "react";
 import ContentDesktop from "./ContentDesktop";
 import ContentMobile from "./ContentMobile";
 
-const Content: React.FC = () => {
+type SchoolType = "k12" | "college" | "grad";
+
+interface ContentProps {
+  schoolType?: SchoolType;
+}
+
+const Content: React.FC<ContentProps> = ({ schoolType = "college" }) => {
   return (
     <>
       {/* Mobile Content */}
       <div className="block md:hidden">
-        <ContentMobile />
+        <ContentMobile schoolType={schoolType} />
       </div>
       
       {/* Desktop Content */}
       <div className="hidden md:block">
-        <ContentDesktop />
+        <ContentDesktop schoolType={schoolType} />
       </div>
     </>
   );
