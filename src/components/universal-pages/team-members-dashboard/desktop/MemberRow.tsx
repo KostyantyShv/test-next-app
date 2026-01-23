@@ -142,7 +142,7 @@ export const MemberRow: React.FC<MemberRowProps> = ({
         <div className="manage-wrapper relative">
           <button
             onClick={() => onManageClick(member.id)}
-            className="manage-btn px-4 py-2 border border-gray-200 bg-white rounded-md text-sm text-gray-600 font-medium hover:bg-gray-50 hover:border-gray-300 transition-all"
+            className="manage-btn pl-4 pr-2 py-2 border border-gray-200 bg-white rounded-md text-sm text-gray-600 font-medium hover:bg-gray-50 hover:border-gray-300 transition-all"
           >
             Manage ▾
           </button>

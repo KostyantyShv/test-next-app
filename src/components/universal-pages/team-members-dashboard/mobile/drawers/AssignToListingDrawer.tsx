@@ -8,25 +8,8 @@ interface AssignToListingDrawerProps {
   members: TeamMember[];
   onClose: () => void;
   onSave: (memberId: number, selectedListingIds: number[]) => void;
+  availableListings?: TeamMember["listings"];
 }
-
-const allListings = [
-    {
-      id: 1,
-      name: "Harvard University",
-      image: "https://i.ibb.co/fGKH7fDq/product2.png",
-    },
-    {
-      id: 2,
-      name: "Stanford University",
-      image: "https://i.ibb.co/fGKH7fDq/product2.png",
-    },
-    {
-      id: 3,
-      name: "Massachusetts Institute of Technology",
-      image: "https://i.ibb.co/63Y8x85/product3.jpg",
-    },
-  ];
 
 export const AssignToListingDrawer: React.FC<AssignToListingDrawerProps> = ({
   isOpen,
@@ -34,34 +17,43 @@ export const AssignToListingDrawer: React.FC<AssignToListingDrawerProps> = ({
   members,
   onClose,
   onSave,
+  availableListings = [],
 }) => {
   const currentMember = members.find((m) => m.id === currentMemberId);
-  const currentListingIds = currentMember?.listings.map((l) => l.id) || [];
 
-  const [selectedListingIds, setSelectedListingIds] = useState<number[]>([]);
+  // Initialize state exactly like desktop version (MemberRow.tsx)
+  const [selectedListingIds, setSelectedListingIds] = useState<number[]>(() => {
+    if (!currentMember) return [];
+    return currentMember.listings.map((l) => l.id);
+  });
 
-  // Create a stable string for comparison to track changes in member.listings
+  // Create a stable string representation of listing IDs for dependency tracking - exactly like desktop
   const memberListingIdsString = useMemo(() => {
     if (!currentMember) return '';
     return currentMember.listings.map((l) => l.id).sort((a, b) => a - b).join(',');
   }, [currentMember?.listings.length, currentMember?.listings.map((l) => l.id).sort((a, b) => a - b).join(',')]);
 
-  // Update selectedListingIds when drawer opens or member.listings changes
+  // Update selectedListingIds when member.listings changes - exactly like desktop
+  useEffect(() => {
+    if (currentMember) {
+      const newIds = currentMember.listings.map((l) => l.id);
+      setSelectedListingIds(newIds);
+    }
+  }, [memberListingIdsString]);
+
+  // Also update when drawer opens to ensure sync with latest data - exactly like desktop
   useEffect(() => {
     if (isOpen && currentMember) {
-      const listingIds = currentMember.listings.map((l) => l.id);
-      setSelectedListingIds(listingIds);
+      const newIds = currentMember.listings.map((l) => l.id);
+      setSelectedListingIds(newIds);
     }
-  }, [isOpen, currentMemberId, currentMember?.id, memberListingIdsString]);
+  }, [isOpen, currentMemberId, memberListingIdsString]);
 
+  // Toggle listing - exactly like desktop
   const handleCheckboxChange = (listingId: number) => {
-    setSelectedListingIds((prev) => {
-      if (prev.includes(listingId)) {
-        return prev.filter((id) => id !== listingId);
-      } else {
-        return [...prev, listingId];
-      }
-    });
+    setSelectedListingIds((prev) =>
+      prev.includes(listingId) ? prev.filter((x) => x !== listingId) : [...prev, listingId]
+    );
   };
 
   const handleSave = () => {
@@ -105,7 +97,7 @@ export const AssignToListingDrawer: React.FC<AssignToListingDrawerProps> = ({
       }
     >
       <form id="assignListingsForm">
-        {allListings.map((listing) => {
+        {availableListings.map((listing) => {
           const isChecked = selectedListingIds.includes(listing.id);
           return (
           <label

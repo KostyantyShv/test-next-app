@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Drawer } from "./Drawer";
 import { TeamMember } from "../../types";
 
@@ -7,9 +7,13 @@ interface EditMemberDrawerProps {
   member: TeamMember | null;
   onClose: () => void;
   onSaveChanges: (data: {
+    firstName: string;
+    lastName: string;
+    email: string;
     listingIds: number[];
     isAdmin: boolean;
   }) => void;
+  availableListings?: TeamMember["listings"];
 }
 
 export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
@@ -17,28 +21,49 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
   member,
   onClose,
   onSaveChanges,
+  availableListings = [],
 }) => {
-  const [selectedListingIds, setSelectedListingIds] = useState<number[]>([]);
-  const [isAdmin, setIsAdmin] = useState(false);
+  // Initialize state exactly like desktop version
+  const [firstName, setFirstName] = useState(() => {
+    if (!member) return '';
+    return member.firstName;
+  });
+  const [lastName, setLastName] = useState(() => {
+    if (!member) return '';
+    return member.lastName;
+  });
+  const [email, setEmail] = useState(() => {
+    if (!member) return '';
+    return member.email;
+  });
+  const [selectedListingIds, setSelectedListingIds] = useState<number[]>(() => {
+    if (!member) return [];
+    return member.listings.map((l) => l.id);
+  });
+  const [isAdmin, setIsAdmin] = useState(() => {
+    if (!member) return false;
+    return member.isAdmin;
+  });
 
-  const memberListingIds = useMemo(() => {
-    return member?.listings.map((l) => l.id).join(',') || '';
-  }, [member?.listings]);
-
+  // Update selected listings when member changes - exactly like desktop
   useEffect(() => {
-    if (isOpen && member) {
-      const listingIds = member.listings.map((l) => l.id);
-      setSelectedListingIds(listingIds);
+    if (member) {
+      setFirstName(member.firstName);
+      setLastName(member.lastName);
+      setEmail(member.email);
+      setSelectedListingIds(member.listings.map((l) => l.id));
       setIsAdmin(member.isAdmin);
     }
-  }, [isOpen, member?.id, memberListingIds, member?.isAdmin]);
+  }, [member?.id, member?.listings?.length, member?.isAdmin]);
 
+  // Clear listings when isAdmin is toggled to true - exactly like desktop
   useEffect(() => {
     if (isAdmin) {
       setSelectedListingIds([]);
     }
   }, [isAdmin]);
 
+  // Toggle listing - exactly like desktop
   const handleToggleListing = (listingId: number) => {
     setSelectedListingIds((prev) =>
       prev.includes(listingId)
@@ -46,23 +71,6 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
         : [...prev, listingId]
     );
   };
-  const listings = [
-    {
-      id: 1,
-      name: "Harvard University",
-      image: "https://i.ibb.co/fGKH7fDq/product2.png",
-    },
-    {
-      id: 2,
-      name: "Stanford University",
-      image: "https://i.ibb.co/fGKH7fDq/product2.png",
-    },
-    {
-      id: 3,
-      name: "Massachusetts Institute of Technology",
-      image: "https://i.ibb.co/63Y8x85/product3.jpg",
-    },
-  ];
 
   return (
     <Drawer
@@ -86,11 +94,16 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
           <button
             className="px-5 py-3 rounded-lg text-white bg-[#1B1B1B] hover:bg-black"
             onClick={() => {
+              if (!email.trim()) return;
               onSaveChanges({
+                firstName,
+                lastName,
+                email,
                 listingIds: isAdmin ? [] : selectedListingIds,
                 isAdmin,
               });
             }}
+            disabled={!email.trim()}
             style={{
               fontSize: '15px',
               fontWeight: 500,
@@ -119,6 +132,8 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
           <input
             type="text"
             id="editFirstName"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-lg !bg-white focus:outline-none focus:border-[#0B6333] focus:shadow-[0_0_0_2px_rgba(11,99,51,0.1)]"
             required
             style={{
@@ -144,6 +159,8 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
           <input
             type="text"
             id="editLastName"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-lg !bg-white focus:outline-none focus:border-[#0B6333] focus:shadow-[0_0_0_2px_rgba(11,99,51,0.1)]"
             required
             style={{
@@ -169,6 +186,8 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
           <input
             type="email"
             id="editEmail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-lg !bg-white focus:outline-none focus:border-[#0B6333] focus:shadow-[0_0_0_2px_rgba(11,99,51,0.1)]"
             required
             style={{
@@ -217,20 +236,22 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
             Admin access
           </label>
         </div>
-        <div className="h-px bg-gray-200 my-5" />
-        <div>
-          <h3 
-            className="mb-4"
-            style={{
-              fontSize: '16px',
-              fontWeight: 500,
-              color: '#464646',
-              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
-            }}
-          >
-            Assign to Listings
-          </h3>
-          {listings.map((listing) => {
+        {!isAdmin && (
+          <>
+            <div className="h-px bg-gray-200 my-5" />
+            <div>
+              <h3 
+                className="mb-4"
+                style={{
+                  fontSize: '16px',
+                  fontWeight: 500,
+                  color: '#464646',
+                  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+                }}
+              >
+                Assign to Listings
+              </h3>
+              {availableListings.map((listing) => {
             const isChecked = selectedListingIds.includes(listing.id);
             return (
             <label
@@ -282,7 +303,9 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
             </label>
             );
           })}
-        </div>
+            </div>
+          </>
+        )}
       </form>
     </Drawer>
   );

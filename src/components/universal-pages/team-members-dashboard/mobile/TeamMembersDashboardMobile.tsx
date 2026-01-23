@@ -410,6 +410,7 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
         isOpen={isEditMemberDrawerOpen}
         member={currentMemberId ? members.find((m) => m.id === currentMemberId) || null : null}
         onClose={closeDrawer}
+        availableListings={allListings}
         onSaveChanges={async (data) => {
           if (currentMemberId) {
             const existing = members.find((m) => m.id === currentMemberId);
@@ -420,7 +421,7 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
 
             try {
               const supabase = createClient();
-              const fullName = `${existing.firstName} ${existing.lastName}`.trim();
+              const fullName = `${data.firstName} ${data.lastName}`.trim();
               const selectedListings = data.listingIds 
                 ? allListings.filter((l) => data.listingIds!.includes(l.id))
                 : [];
@@ -429,7 +430,7 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
                 .from("team_members")
                 .update({
                   role: data.isAdmin ? "admin" : "member",
-                  name: fullName || existing.email.split("@")[0] || "Member",
+                  name: fullName || data.email.split("@")[0] || "Member",
                   permissions: selectedListings,
                 })
                 .eq("team_owner_id", ownerId)
@@ -448,7 +449,14 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
             setMembers((prev) =>
               prev.map((member) =>
                 member.id === currentMemberId
-                  ? { ...member, listings: selectedListings, isAdmin: data.isAdmin }
+                  ? { 
+                      ...member, 
+                      firstName: data.firstName,
+                      lastName: data.lastName,
+                      email: data.email,
+                      listings: selectedListings, 
+                      isAdmin: data.isAdmin 
+                    }
                   : member
               )
             );
@@ -461,6 +469,7 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
         currentMemberId={currentMemberId}
         members={members}
         onClose={closeDrawer}
+        availableListings={allListings}
         onSave={async (memberId, selectedListingIds) => {
           const existing = members.find((m) => m.id === memberId);
           if (!existing) {

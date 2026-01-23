@@ -41,34 +41,27 @@ export const Pagination: React.FC<PaginationProps> = ({
           <path d="M15 18l-6-6 6-6"></path>
         </svg>
       </button>
-      {getPageNumbers().map((page) => (
-        <button
-          key={page}
-          onClick={() => onPageChange(page)}
-          className={`page-button border rounded-md transition-all cursor-pointer ${
-            page === currentPage
-              ? "bg-[#0B6333] text-white border-[#0B6333]"
-              : "border-gray-200 bg-white text-gray-600"
-          }`}
-          style={{
-            padding: '0.25rem 0.55rem',
-            minWidth: '34px',
-            fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
-          }}
-          onMouseEnter={(e) => {
-            if (page !== currentPage) {
-              e.currentTarget.style.backgroundColor = '#F3F4F6';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (page !== currentPage) {
-              e.currentTarget.style.backgroundColor = 'white';
-            }
-          }}
-        >
-          {page}
-        </button>
-      ))}
+      {getPageNumbers().map((page) => {
+        const isActive = page === currentPage;
+        return (
+          <button
+            key={page}
+            onClick={() => onPageChange(page)}
+            className={`page-button border rounded-md transition-all cursor-pointer ${
+              isActive
+                ? "bg-[#0B6333] text-white border-[#0B6333]"
+                : "border-gray-200 bg-white text-gray-600 hover:bg-gray-100"
+            }`}
+            style={{
+              padding: '0.25rem 0.55rem',
+              minWidth: '34px',
+              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+            }}
+          >
+            {page}
+          </button>
+        );
+      })}
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages}
