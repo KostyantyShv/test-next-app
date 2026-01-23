@@ -320,32 +320,6 @@ export const NotificationsPanelMobile: React.FC<NotificationsPanelMobileProps> =
   const [notifications, setNotifications] = useState(mockNotifications);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const handleClickOutside = useCallback((event: MouseEvent) => {
-    const target = event.target as Node;
-    if (panelRef.current && !panelRef.current.contains(target)) {
-      const backdrop = document.querySelector('[data-backdrop="notifications-mobile"]');
-      if (backdrop && backdrop.contains(target)) {
-        onClose();
-      }
-    }
-  }, [onClose]);
-
-  useEffect(() => {
-    if (isOpen && panelRef.current) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      try {
-        if (document) {
-          document.removeEventListener('mousedown', handleClickOutside);
-        }
-      } catch (error) {
-        console.warn('Error removing event listener:', error);
-      }
-    };
-  }, [isOpen, handleClickOutside]);
-
   const filteredNotifications = notifications.filter(notification => {
     const matchesCategory = notification.category === activeCategory;
     const searchWords = searchTerm.toLowerCase().split(/\s+/).filter(word => word.length > 0);
@@ -398,45 +372,71 @@ export const NotificationsPanelMobile: React.FC<NotificationsPanelMobileProps> =
 
   return (
     <Portal containerId="notifications-panel-portal">
-      <div className="fixed inset-0 z-[1001] md:hidden pointer-events-none">
+      <>
         {/* Backdrop */}
         <div 
-          className="fixed inset-0 cursor-pointer pointer-events-auto" 
+          className="fixed inset-0 z-[1001] md:hidden bg-black bg-opacity-25 transition-opacity duration-300" 
           onClick={onClose}
           data-backdrop="notifications-mobile"
         />
         
         {/* Mobile Panel - Side Panel */}
         <div 
-          ref={panelRef}
-          className={cn(
-            "fixed top-0 right-0 w-full max-w-[400px] bg-white shadow-2xl flex flex-col pointer-events-auto",
-            "transform transition-transform duration-300 ease-in-out",
-            "border-l border-[var(--gray-300)]",
-            isOpen ? "translate-x-0" : "translate-x-full"
-          )}
-          style={{
-            backgroundColor: 'white',
-            boxShadow: '-4px 0 12px rgba(0, 0, 0, 0.1)',
-            top: '0',
-            height: '100vh',
-            minHeight: '100vh',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-          }}
-          onClick={(e) => e.stopPropagation()}
-        >
+        ref={panelRef}
+        className={cn(
+          "fixed top-0 right-0 w-full max-w-[400px] bg-white shadow-2xl flex flex-col md:hidden",
+          "transform transition-transform duration-300 ease-in-out",
+          "border-l border-[var(--gray-300)] z-[1002]",
+          isOpen ? "translate-x-0" : "translate-x-full"
+        )}
+        style={{
+          backgroundColor: 'white',
+          boxShadow: '-4px 0 12px rgba(0, 0, 0, 0.1)',
+          top: '0',
+          height: '100vh',
+          minHeight: '100vh',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        onMouseDown={(e) => {
+          e.stopPropagation();
+        }}
+        onTouchStart={(e) => {
+          e.stopPropagation();
+        }}
+      >
           {/* Header */}
-          <div className="px-4 pt-6 pb-4 border-b border-[var(--gray-300)]">
+          <div 
+            className="px-4 pt-6 pb-4 border-b border-[var(--gray-300)]"
+            onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
             <div className="flex justify-between items-center mb-5">
               <h1 className="text-[var(--bold-text)]" style={{ fontSize: '1.5rem', fontWeight: 600, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>Notifications</h1>
               <div className="flex items-center gap-2 h-6">
-                <label className="flex items-center gap-3 text-[var(--subtle-text)]" style={{ fontSize: '0.7rem', fontWeight: 500, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+                <label 
+                  className="flex items-center gap-3 text-[var(--subtle-text)]" 
+                  style={{ fontSize: '0.7rem', fontWeight: 500, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
+                  onClick={(e) => e.stopPropagation()}
+                  onMouseDown={(e) => e.stopPropagation()}
+                >
                   Hide Read
-                  <label className="relative w-9 h-5 cursor-pointer">
+                  <label 
+                    className="relative w-9 h-5 cursor-pointer"
+                    onClick={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                  >
                     <input
                       type="checkbox"
                       checked={hideRead}
-                      onChange={(e) => setHideRead(e.target.checked)}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        setHideRead(e.target.checked);
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                      onMouseDown={(e) => e.stopPropagation()}
                       className="sr-only"
                     />
                     <div className={cn(
@@ -453,7 +453,10 @@ export const NotificationsPanelMobile: React.FC<NotificationsPanelMobileProps> =
                 </label>
                 
                 <button
-                  onClick={markAllAsRead}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    markAllAsRead();
+                  }}
                   className="p-2 rounded-md hover:bg-[var(--hover-bg)] transition-colors text-[var(--subtle-text)] hover:text-[var(--text-default)] flex items-center justify-center"
                   style={{ padding: '0.5rem' }}
                 >
@@ -494,7 +497,10 @@ export const NotificationsPanelMobile: React.FC<NotificationsPanelMobileProps> =
                   return (
                     <button
                       key={category.id}
-                      onClick={() => setActiveCategory(category.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveCategory(category.id);
+                      }}
                       className={cn(
                         "px-3 py-2 rounded-[20px] flex items-center gap-2 transition-all duration-200 whitespace-nowrap",
                         activeCategory === category.id
@@ -532,13 +538,20 @@ export const NotificationsPanelMobile: React.FC<NotificationsPanelMobileProps> =
               type="text"
               placeholder="Filter messages"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                e.stopPropagation();
+                setSearchTerm(e.target.value);
+              }}
+              onClick={(e) => e.stopPropagation()}
               className="w-full pl-10 pr-10 py-3 rounded-lg border-2 border-transparent bg-[var(--gray-100)] focus:border-[var(--active-green)] focus:bg-white focus:outline-none transition-all duration-200 text-[var(--text-default)] placeholder:text-[var(--gray-400)]"
               style={{ fontSize: '0.875rem', paddingLeft: '2.5rem', paddingRight: '2.5rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
             />
             {searchTerm && (
               <button
-                onClick={() => setSearchTerm('')}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSearchTerm('');
+                }}
                 className="absolute right-8 top-1/2 transform -translate-y-1/2 p-1 rounded-full hover:bg-[var(--gray-300)] transition-colors flex items-center justify-center"
                 style={{ display: 'flex' }}
               >
@@ -600,7 +613,10 @@ export const NotificationsPanelMobile: React.FC<NotificationsPanelMobileProps> =
                     <div className="w-2 h-2 rounded-full bg-[var(--verification-blue)]" style={{ width: '8px', height: '8px' }} />
                   )}
                   <button
-                    onClick={() => markAsRead(notification.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      markAsRead(notification.id);
+                    }}
                     className="p-1 rounded-full hover:bg-[var(--hover-bg)] transition-colors text-[var(--gray-400)] hover:text-[var(--text-default)] flex items-center justify-center"
                   >
                     <svg className="w-4 h-4" viewBox="0 0 256 256" fill="currentColor">
@@ -608,7 +624,10 @@ export const NotificationsPanelMobile: React.FC<NotificationsPanelMobileProps> =
                     </svg>
                   </button>
                   <button
-                    onClick={() => dismissNotification(notification.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      dismissNotification(notification.id);
+                    }}
                     className="p-1 rounded-full hover:bg-[var(--hover-bg)] transition-colors text-[var(--gray-400)] hover:text-[var(--text-default)] flex items-center justify-center"
                   >
                     <svg className="w-4 h-4" viewBox="0 0 15 15" fill="none">
@@ -620,7 +639,7 @@ export const NotificationsPanelMobile: React.FC<NotificationsPanelMobileProps> =
             ))}
           </div>
         </div>
-      </div>
+      </>
     </Portal>
   );
 };

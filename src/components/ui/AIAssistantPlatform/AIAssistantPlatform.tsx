@@ -68,10 +68,95 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
   const chatInputRef = useRef<HTMLTextAreaElement>(null);
   const chatMessagesRef = useRef<HTMLDivElement>(null);
 
-  const historyData = [
-    { id: 1, title: 'AI Applications in Science...', preview: "Hello! How can I assist you today? I'm here to help...", meta: '2 minutes ago • www.google.com', current: true },
-    { id: 2, title: 'Welcome back', preview: "I've generated the mind map for the LLM Training Process...", meta: '20 hours ago • www.google.com' }
-  ];
+  // Icon renderer function matching CodePen icons
+  const renderIcon = (iconName: string, className: string = "w-3.5 h-3.5") => {
+    switch (iconName) {
+      case 'write':
+        return (
+          <svg className={className} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M13.2929 4.29291C15.0641 2.52167 17.9359 2.52167 19.7071 4.2929C21.4784 6.06414 21.4784 8.93588 19.7071 10.7071L18.7073 11.7069L11.6135 18.8007C10.8766 19.5376 9.92793 20.0258 8.89999 20.1971L4.16441 20.9864C3.84585 21.0395 3.52127 20.9355 3.29291 20.7071C3.06454 20.4788 2.96053 20.1542 3.01362 19.8356L3.80288 15.1C3.9742 14.0721 4.46243 13.1234 5.19932 12.3865L13.2929 4.29291ZM13 7.41422L6.61353 13.8007C6.1714 14.2428 5.87846 14.8121 5.77567 15.4288L5.21656 18.7835L8.57119 18.2244C9.18795 18.1216 9.75719 17.8286 10.1993 17.3865L16.5858 11L13 7.41422ZM18 9.5858L14.4142 6.00001L14.7071 5.70712C15.6973 4.71693 17.3027 4.71693 18.2929 5.70712C19.2831 6.69731 19.2831 8.30272 18.2929 9.29291L18 9.5858Z" clipRule="evenodd" fillRule="evenodd" />
+          </svg>
+        );
+      case 'translate':
+        return (
+          <svg className={className} color="currentColor" viewBox="0 0 24 24" fill="none">
+            <path fillRule="evenodd" clipRule="evenodd" d="M7.5 13.5C7.5 12.2574 8.50736 11.25 9.75 11.25H20.25C21.4926 11.25 22.5 12.2574 22.5 13.5V20.25C22.5 21.4926 21.4926 22.5 20.25 22.5H9.75C8.50736 22.5 7.5 21.4926 7.5 20.25V13.5ZM9.75 12.75C9.33579 12.75 9 13.0858 9 13.5V20.25C9 20.6642 9.33579 21 9.75 21H20.25C20.6642 21 21 20.6642 21 20.25V13.5C21 13.0858 20.6642 12.75 20.25 12.75H9.75Z" fill="currentColor" />
+            <path fillRule="evenodd" clipRule="evenodd" d="M1.5 3.75C1.5 2.50736 2.50736 1.5 3.75 1.5H14.25C15.4926 1.5 16.5 2.50736 16.5 3.75V8.98125C16.5 9.39546 16.1642 9.73125 15.75 9.73125C15.3358 9.73125 15 9.39546 15 8.98125V3.75C15 3.33579 14.6642 3 14.25 3H3.75C3.33579 3 3 3.33579 3 3.75V10.5C3 10.9142 3.33579 11.25 3.75 11.25H5.25C5.66421 11.25 6 11.5858 6 12C6 12.4142 5.66421 12.75 5.25 12.75H3.75C2.50736 12.75 1.5 11.7426 1.5 10.5V3.75Z" fill="currentColor" />
+            <path d="M11.9524 9.23985C12.0473 9.48556 11.866 9.75 11.6026 9.75H10.9772C10.8203 9.75 10.6799 9.65224 10.6255 9.505L10.2471 8.48109H7.70762L7.33713 9.50283C7.28334 9.6512 7.14241 9.75 6.98459 9.75H6.39488C6.13188 9.75 5.95058 9.48631 6.04474 9.24075L8.05773 3.99075C8.11333 3.84573 8.25257 3.75 8.40787 3.75H9.57409C9.72904 3.75 9.86804 3.84531 9.92389 3.98985L11.9524 9.23985ZM8.48627 6.31303L8.07925 7.43067H9.85776L9.44189 6.31303C9.28262 5.87605 9.12335 5.42227 8.98178 4.93487H8.94639C8.79596 5.39706 8.63669 5.87605 8.48627 6.31303Z" fill="currentColor" />
+            <path d="M14.25 15L12.375 15C12.1679 15 12 15.1679 12 15.375L12 16.125C12 16.3321 12.1679 16.5 12.375 16.5H14.2408C14.1972 17.196 14.0001 17.7265 13.6992 18.0848C13.4245 18.4117 13.0088 18.6607 12.3743 18.7304C12.1684 18.753 12 18.9179 12 19.125V19.875C12 20.0821 12.1683 20.2517 12.3748 20.2362C13.4141 20.1584 14.2581 19.7516 14.8477 19.0496C14.9011 18.986 14.9518 18.9207 15 18.8538C15.0482 18.9207 15.0989 18.986 15.1523 19.0496C15.7419 19.7516 16.5859 20.1584 17.6252 20.2362C17.8317 20.2517 18 20.0821 18 19.875V19.125C18 18.9179 17.8316 18.753 17.6257 18.7304C16.9912 18.6607 16.5755 18.4117 16.3008 18.0848C15.9999 17.7265 15.8028 17.196 15.7592 16.5H17.625C17.8321 16.5 18 16.3321 18 16.125L18 15.375C18 15.1679 17.8321 15 17.625 15L15.75 15V13.875C15.75 13.6679 15.5821 13.5 15.375 13.5H14.625C14.4179 13.5 14.25 13.6679 14.25 13.875V15Z" fill="currentColor" />
+          </svg>
+        );
+      case 'calendar':
+        return (
+          <svg className={className} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M16.0402 2.26367V6.58367M7.40021 2.26367V6.58367M2.00021 9.82367H21.4402M19.28 4.42367H4.16C2.9666 4.42367 2 5.39027 2 6.58367V20.6237C2 21.8171 2.9666 22.7837 4.16 22.7837H19.28C20.4734 22.7837 21.44 21.8171 21.44 20.6237V6.58367C21.44 5.39027 20.4734 4.42367 19.28 4.42367Z" />
+            <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M11.5389 13.5337C11.3899 13.5337 11.2689 13.6546 11.27 13.8037C11.27 13.9527 11.391 14.0737 11.54 14.0737C11.689 14.0737 11.81 13.9527 11.81 13.8037C11.81 13.6546 11.689 13.5337 11.5389 13.5337" />
+            <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M17.5389 13.5337C17.3899 13.5337 17.2689 13.6546 17.27 13.8037C17.27 13.9527 17.391 14.0737 17.54 14.0737C17.689 14.0737 17.81 13.9527 17.81 13.8037C17.81 13.6546 17.689 13.5337 17.5389 13.5337" />
+            <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M6.53892 17.5337C6.38988 17.5337 6.26892 17.6546 6.27 17.8037C6.27 17.9527 6.39096 18.0737 6.54 18.0737C6.68904 18.0737 6.81 17.9527 6.81 17.8037C6.81 17.6546 6.68904 17.5337 6.53892 17.5337" />
+            <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M6.53892 13.5337C6.38988 13.5337 6.26892 13.6546 6.27 13.8037C6.27 13.9527 6.39096 14.0737 6.54 14.0737C6.68904 14.0737 6.81 13.9527 6.81 13.8037C6.81 13.6546 6.68904 13.5337 6.53892 13.5337" />
+            <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M11.5389 17.5337C11.3899 17.5337 11.2689 17.6546 11.27 17.8037C11.27 17.9527 11.391 18.0737 11.54 18.0737C11.689 18.0737 11.81 17.9527 11.81 17.8037C11.81 17.6546 11.689 17.5337 11.5389 17.5337" />
+          </svg>
+        );
+      case 'all':
+        return (
+          <svg className={className} strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+            <path d="M4 4h6v6h-6z" />
+            <path d="M14 4h6v6h-6z" />
+            <path d="M4 14h6v6h-6z" />
+            <path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+          </svg>
+        );
+      case 'summarize':
+        return (
+          <svg className={className} fill="currentColor" viewBox="0 -960 960 960">
+            <path d="M280-520v-80H520v80H280Zm0,160v-80H840v80H280Zm0,160v-80H840v80H280ZM160-520q-17,0-28.5-11.5T120-560t11.5-28.5T160-600t28.5,11.5T200-560t-11.5,28.5T160-520Zm0,160q-17,0-28.5-11.5T120-400t11.5-28.5T160-440t28.5,11.5T200-400t-11.5,28.5T160-360Zm0,160q-17,0-28.5-11.5T120-240t11.5-28.5T160-280t28.5,11.5T200-240t-11.5,28.5T160-200ZM700-480q0-92 64-156t156-64q-92,0-156-64T700-920q0,92-64,156T480-700q92,0 156,64t64,156Z" />
+          </svg>
+        );
+      case 'analyze':
+        return (
+          <svg className={className} fill="none" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M3.71863 3.71841C4.25138 3.18562 4.97399 2.88635 5.72738 2.88635H18.2728C19.0262 2.88635 19.7488 3.18561 20.2816 3.71841C20.8145 4.25117 21.1137 4.97382 21.1137 5.72726V18.2727C21.1137 19.0261 20.8145 19.7487 20.2817 20.2815C20.2817 20.2815 20.2817 20.2815 20.2816 20.2815C20.2816 20.2815 20.2816 20.2816 20.2816 20.2816C19.7488 20.8144 19.0262 21.1136 18.2728 21.1136H5.72738C4.97394 21.1136 4.25129 20.8143 3.71853 20.2815C3.18574 19.7487 2.88647 19.0261 2.88647 18.2727V5.72726C2.88647 4.97387 3.18574 4.25126 3.71853 3.71851C3.71856 3.71848 3.7186 3.71844 3.71863 3.71841ZM5.72738 4.38635C5.37173 4.38635 5.03068 4.52763 4.77929 4.77907L4.77919 4.77917C4.52776 5.03056 4.38647 5.37161 4.38647 5.72726V18.2727C4.38647 18.6284 4.52776 18.9694 4.77919 19.2208L4.77929 19.2209C5.03068 19.4723 5.37173 19.6136 5.72738 19.6136H18.2728C18.6285 19.6136 18.9695 19.4723 19.2209 19.2209L19.221 19.2208C19.4725 18.9694 19.6137 18.6284 19.6137 18.2727V5.72726C19.6137 5.37161 19.4725 5.03056 19.221 4.77917L19.2209 4.77907C18.9695 4.52764 18.6285 4.38635 18.2728 4.38635H5.72738ZM16.1819 7.06817C16.5961 7.06817 16.9319 7.40396 16.9319 7.81817V16.1818C16.9319 16.596 16.5961 16.9318 16.1819 16.9318C15.7677 16.9318 15.4319 16.596 15.4319 16.1818V7.81817C15.4319 7.40396 15.7677 7.06817 16.1819 7.06817ZM12.0001 10.2045C12.4143 10.2045 12.7501 10.5403 12.7501 10.9545V16.1818C12.7501 16.596 12.4143 16.9318 12.0001 16.9318C11.5859 16.9318 11.2501 16.596 11.2501 16.1818V10.9545C11.2501 10.5403 11.5859 10.2045 12.0001 10.2045ZM7.81829 13.3409C8.23251 13.3409 8.56829 13.6767 8.56829 14.0909V16.1818C8.56829 16.596 8.23251 16.9318 7.81829 16.9318C7.40408 16.9318 7.06829 16.596 7.06829 16.1818V14.0909C7.06829 13.6767 7.40408 13.3409 7.81829 13.3409Z" clipRule="evenodd" fillRule="evenodd" />
+          </svg>
+        );
+      case 'files':
+        return (
+          <svg className={className} fill="none" viewBox="0 0 24 24">
+            <g>
+              <path fillRule="evenodd" clipRule="evenodd" d="M3.09998 5.0001C3.09998 2.84619 4.84607 1.1001 6.99998 1.1001H17C19.1539 1.1001 20.9 2.84619 20.9 5.0001V8.0001C20.9 8.49715 20.497 8.9001 20 8.9001C19.5029 8.9001 19.1 8.49715 19.1 8.0001V5.0001C19.1 3.8403 18.1598 2.9001 17 2.9001H6.99998C5.84018 2.9001 4.89998 3.8403 4.89998 5.0001V19.0001C4.89998 20.1599 5.84018 21.1001 6.99998 21.1001H11C11.497 21.1001 11.9 21.503 11.9 22.0001C11.9 22.4972 11.497 22.9001 11 22.9001H6.99998C4.84606 22.9001 3.09998 21.154 3.09998 19.0001V5.0001ZM6.90002 7.53367C6.90002 7.03661 7.30297 6.63367 7.80002 6.63367H16.2684C16.7654 6.63367 17.1684 7.03661 17.1684 7.53367C17.1684 8.03072 16.7654 8.43367 16.2684 8.43367H7.80002C7.30297 8.43367 6.90002 8.03072 6.90002 7.53367ZM19.5 12.9001C19.1686 12.9001 18.9 13.1687 18.9 13.5001V19.0001C18.9 19.4972 18.497 19.9001 18 19.9001C17.5029 19.9001 17.1 19.4972 17.1 19.0001V13.5001C17.1 12.1746 18.1745 11.1001 19.5 11.1001C20.8255 11.1001 21.9 12.1746 21.9 13.5001V19.0001C21.9 21.154 20.1539 22.9001 18 22.9001C15.8461 22.9001 14.1 21.154 14.1 19.0001V15.0001C14.1 14.503 14.5029 14.1001 15 14.1001C15.497 14.1001 15.9 14.503 15.9 15.0001V19.0001C15.9 20.1599 16.8402 21.1001 18 21.1001C19.1598 21.1001 20.1 20.1599 20.1 19.0001V13.5001C20.1 13.1687 19.8313 12.9001 19.5 12.9001ZM6.90002 12.0325C6.90002 11.5354 7.30297 11.1325 7.80002 11.1325H12.2684C12.7654 11.1325 13.1684 11.5354 13.1684 12.0325C13.1684 12.5295 12.7654 12.9325 12.2684 12.9325H7.80002C7.30297 12.9325 6.90002 12.5295 6.90002 12.0325Z" fill="currentColor" />
+            </g>
+          </svg>
+        );
+      case 'delete':
+        return (
+          <svg className={className} viewBox="0 0 16 16">
+            <g>
+              <path fillRule="evenodd" clipRule="evenodd" d="M7.44306 0.733399H8.55693C8.91018 0.733389 9.21096 0.733381 9.45792 0.753558C9.71736 0.774755 9.96975 0.821177 10.211 0.94412C10.5748 1.12948 10.8706 1.42524 11.0559 1.78902C11.1789 2.03031 11.2253 2.2827 11.2465 2.54214C11.2659 2.779 11.2666 3.06538 11.2667 3.40007H14C14.3314 3.40007 14.6 3.6687 14.6 4.00007C14.6 4.33144 14.3314 4.60007 14 4.60007H13.2667V11.4919C13.2667 12.0306 13.2667 12.4711 13.2374 12.8292C13.2071 13.1998 13.1426 13.5345 12.9833 13.8471C12.734 14.3363 12.3363 14.7341 11.847 14.9833C11.5344 15.1426 11.1997 15.2072 10.8291 15.2375C10.4711 15.2667 10.0305 15.2667 9.4918 15.2667H6.50819C5.96949 15.2667 5.52892 15.2667 5.17087 15.2375C4.80026 15.2072 4.46554 15.1426 4.15295 14.9833C3.66373 14.7341 3.26598 14.3363 3.01671 13.8471C2.85744 13.5345 2.79285 13.1998 2.76257 12.8292C2.73331 12.4711 2.73332 12.0306 2.73333 11.4919L2.73333 4.60007H1.99999C1.66862 4.60007 1.39999 4.33144 1.39999 4.00007C1.39999 3.6687 1.66862 3.40007 1.99999 3.40007H4.73333C4.73335 3.06538 4.73413 2.779 4.75349 2.54214C4.77468 2.2827 4.82111 2.03031 4.94405 1.78902C5.1294 1.42524 5.42517 1.12948 5.78895 0.94412C6.03023 0.821177 6.28263 0.774755 6.54207 0.753558C6.78903 0.733381 7.08981 0.733389 7.44306 0.733399ZM3.93333 4.60007V11.4667C3.93333 12.0367 3.93379 12.4281 3.95858 12.7315C3.9828 13.0279 4.0272 13.1871 4.08592 13.3023C4.22014 13.5657 4.43431 13.7799 4.69774 13.9141C4.81297 13.9729 4.97219 14.0173 5.26859 14.0415C5.57199 14.0663 5.96337 14.0667 6.53333 14.0667H9.46666C10.0366 14.0667 10.428 14.0663 10.7314 14.0415C11.0278 14.0173 11.187 13.9729 11.3022 13.9141C11.5657 13.7799 11.7798 13.5657 11.9141 13.3023C11.9728 13.1871 12.0172 13.0279 12.0414 12.7315C12.0662 12.4281 12.0667 12.0367 12.0667 11.4667V4.60007H3.93333ZM10.0667 3.40007H5.93334C5.93344 3.05392 5.93472 2.82072 5.9495 2.63986C5.96463 2.45463 5.99087 2.37773 6.01326 2.33381C6.08356 2.19582 6.19575 2.08363 6.33373 2.01333C6.37766 1.99095 6.45456 1.96471 6.63979 1.94957C6.83203 1.93387 7.08339 1.9334 7.46666 1.9334H8.53333C8.9166 1.9334 9.16796 1.93387 9.3602 1.94957C9.54543 1.96471 9.62233 1.99095 9.66625 2.01333C9.80424 2.08363 9.91642 2.19582 9.98673 2.33381C10.0091 2.37773 10.0354 2.45463 10.0505 2.63986C10.0653 2.82072 10.0666 3.05392 10.0667 3.40007Z" fill="currentColor" />
+            </g>
+          </svg>
+        );
+      case 'favorite':
+        return (
+          <svg className={className} fill="none" viewBox="0 0 24 24">
+            <g>
+              <path fillRule="evenodd" clipRule="evenodd" d="M11.3975 1.86603C11.7786 1.68431 12.2214 1.68431 12.6025 1.86603C12.9281 2.02124 13.11 2.29196 13.2061 2.44885C13.3051 2.61057 13.4074 2.81788 13.5098 3.02548L15.6878 7.43793L20.5597 8.15003C20.7887 8.18346 21.0174 8.21685 21.2017 8.26117C21.3806 8.30418 21.6941 8.39381 21.9421 8.65556C22.2325 8.96203 22.369 9.38316 22.3137 9.8017C22.2665 10.1592 22.0652 10.4157 21.9457 10.5555C21.8224 10.6995 21.6568 10.8608 21.491 11.0222L17.9671 14.4545L18.7986 19.3026C18.8378 19.5308 18.8769 19.7587 18.8918 19.9478C18.9064 20.1312 18.9183 20.4572 18.7461 20.7742C18.5446 21.1452 18.1863 21.4055 17.7711 21.4825C17.4164 21.5482 17.11 21.4361 16.9401 21.3656C16.7649 21.2929 16.5603 21.1852 16.3554 21.0774L12 18.787L7.64464 21.0774C7.4397 21.1852 7.23506 21.2929 7.05988 21.3656C6.88995 21.4361 6.58358 21.5482 6.22891 21.4825C5.8137 21.4055 5.45541 21.1452 5.25385 20.7742C5.08169 20.4572 5.09363 20.1312 5.10815 19.9478C5.12312 19.7587 5.16225 19.5308 5.20143 19.3026L6.03293 14.4545L2.53258 11.0452C2.5247 11.0375 2.51682 11.0299 2.50894 11.0222C2.34315 10.8608 2.17757 10.6995 2.05434 10.5555C1.93475 10.4157 1.73346 10.1592 1.68626 9.8017C1.63098 9.38316 1.76753 8.96203 2.05788 8.65556C2.30586 8.39381 2.6194 8.30418 2.79825 8.26117C2.98256 8.21685 3.21125 8.18346 3.44023 8.15003C3.4511 8.14844 3.46198 8.14686 3.47286 8.14527L8.31216 7.43793L10.4756 3.05505C10.4805 3.0452 10.4853 3.03534 10.4902 3.02548C10.5926 2.81788 10.6949 2.61057 10.7939 2.44885C10.89 2.29196 11.0719 2.02124 11.3975 1.86603ZM12 4.03344L9.90299 8.28174C9.8989 8.29003 9.89436 8.29941 9.88935 8.30975C9.84084 8.40991 9.74883 8.59986 9.60351 8.75627C9.48024 8.88894 9.33241 8.99643 9.1682 9.0728C8.97461 9.16282 8.76554 9.19179 8.65531 9.20706C8.64393 9.20864 8.63361 9.21007 8.62446 9.21141L3.93357 9.89705L7.32653 13.2018C7.33316 13.2083 7.34069 13.2155 7.34899 13.2234C7.42941 13.3006 7.58192 13.447 7.68592 13.6337C7.77413 13.7922 7.83073 13.9662 7.85256 14.1463C7.87829 14.3585 7.84101 14.5666 7.82135 14.6763C7.81932 14.6876 7.81748 14.6979 7.81592 14.707L7.01536 19.3746L11.2087 17.1694C11.2169 17.1651 11.2261 17.1601 11.2363 17.1547C11.3345 17.1021 11.5208 17.0023 11.7306 16.9612C11.9085 16.9263 12.0915 16.9263 12.2694 16.9612C12.4792 17.0023 12.6655 17.1021 12.7637 17.1547C12.7739 17.1601 12.7831 17.1651 12.7913 17.1694L16.9846 19.3746L16.1841 14.707C16.1825 14.6979 16.1807 14.6876 16.1786 14.6763C16.159 14.5666 16.1217 14.3585 16.1474 14.1463C16.1693 13.9662 16.2259 13.7922 16.3141 13.6337C16.4181 13.4469 16.5706 13.3006 16.651 13.2234C16.6593 13.2155 16.6668 13.2083 16.6735 13.2018L20.0664 9.89705L15.3755 9.21141C15.3664 9.21007 15.3561 9.20864 15.3447 9.20707C15.2345 9.19179 15.0254 9.16282 14.8318 9.0728C14.6676 8.99643 14.5198 8.88894 14.3965 8.75627C14.2512 8.59986 14.1592 8.4099 14.1106 8.30975C14.1056 8.29941 14.1011 8.29003 14.097 8.28174L12 4.03344Z" fill="currentColor" />
+            </g>
+          </svg>
+        );
+      case 'edit':
+        return (
+          <svg className={className} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M13.2929 4.29291C15.0641 2.52167 17.9359 2.52167 19.7071 4.2929C21.4784 6.06414 21.4784 8.93588 19.7071 10.7071L18.7073 11.7069L11.6135 18.8007C10.8766 19.5376 9.92793 20.0258 8.89999 20.1971L4.16441 20.9864C3.84585 21.0395 3.52127 20.9355 3.29291 20.7071C3.06454 20.4788 2.96053 20.1542 3.01362 19.8356L3.80288 15.1C3.9742 14.0721 4.46243 13.1234 5.19932 12.3865L13.2929 4.29291ZM13 7.41422L6.61353 13.8007C6.1714 14.2428 5.87846 14.8121 5.77567 15.4288L5.21656 18.7835L8.57119 18.2244C9.18795 18.1216 9.75719 17.8286 10.1993 17.3865L16.5858 11L13 7.41422ZM18 9.5858L14.4142 6.00001L14.7071 5.70712C15.6973 4.71693 17.3027 4.71693 18.2929 5.70712C19.2831 6.69731 19.2831 8.30272 18.2929 9.29291L18 9.5858Z" clipRule="evenodd" fillRule="evenodd" />
+          </svg>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const [historyData, setHistoryData] = useState([
+    { id: 1, title: 'AI Applications in Science...', preview: "Hello! How can I assist you today? I'm here to help...", meta: '2 minutes ago • www.google.com', current: true, favorite: false },
+    { id: 2, title: 'Welcome back', preview: "I've generated the mind map for the LLM Training Process...", meta: '20 hours ago • www.google.com', current: false, favorite: false }
+  ]);
 
   const panelActionsData = [
     { id: 'chatBtn', title: 'Chat', icon: 'chat', active: true },
@@ -141,18 +226,25 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
 
   const handleClickOutside = useCallback((event: MouseEvent) => {
     const target = event.target as HTMLElement;
+    
+    // Не закриваємо панель, якщо відкрита будь-яка модалка або chat history
+    if (showContextModal || showCollectionsModal || showCreatePromptModal || showChatHistory) {
+      return;
+    }
+    
     // Перевіряємо, чи клік не на панелі, не на header, і не на модалках
     if (
       panelRef.current && 
       !panelRef.current.contains(target as Node) && 
       !target.closest('header') &&
       !target.closest('#ai-context-modal-portal') &&
-      !target.closest('#ai-collections-modal-portal')
+      !target.closest('#ai-collections-modal-portal') &&
+      !target.closest('#ai-create-prompt-modal-portal')
     ) {
       // Закриваємо панель при кліку поза нею
       onClose();
     }
-  }, [onClose]);
+  }, [onClose, showContextModal, showCollectionsModal, showCreatePromptModal, showChatHistory]);
 
   useEffect(() => {
     if (isOpen) {
@@ -177,20 +269,50 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
   }, [isOpen]);
 
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        onClose();
+    const handleKeydown = (e: KeyboardEvent) => {
+      // Escape to close modals and panels
+      if (e.key === 'Escape') {
+        if (showContextModal) {
+          setShowContextModal(false);
+          setContextCollectionView(null);
+          setSelectedContexts([]);
+        } else if (showCollectionsModal) {
+          setShowCollectionsModal(false);
+          setCollectionsItemsView(null);
+          setSelectedCollectionItems([]);
+        } else if (showCreatePromptModal) {
+          setShowCreatePromptModal(false);
+          setPromptForm({ name: '', text: '', model: 'GPT-4o mini', access: 'Accessible to everyone' });
+        } else if (isOpen) {
+          onClose();
+        } else if (showChatHistory) {
+          setShowChatHistory(false);
+        } else {
+          setShowPromptsInline(false);
+          setShowCollectionsInline(false);
+          setShowAllPromptsInline(false);
+        }
+      }
+      
+      // Cmd/Ctrl + K to open AI panel
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        if (!isOpen) {
+          // This would need to be handled by parent component
+          // For now, we'll just focus the input if panel is already open
+          if (isOpen && chatInputRef.current) {
+            chatInputRef.current.focus();
+          }
+        }
       }
     };
 
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-    }
+    document.addEventListener('keydown', handleKeydown);
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('keydown', handleKeydown);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, showContextModal, showCollectionsModal, showCreatePromptModal, showChatHistory]);
 
   useEffect(() => {
     if (chatMessagesRef.current) {
@@ -227,6 +349,13 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
     setShowAllPromptsInline(false);
   };
 
+  const adjustTextareaHeight = useCallback(() => {
+    if (chatInputRef.current) {
+      chatInputRef.current.style.height = 'auto';
+      chatInputRef.current.style.height = Math.min(chatInputRef.current.scrollHeight, 120) + 'px';
+    }
+  }, []);
+
   const handleChatInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     setChatInput(value);
@@ -241,7 +370,13 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
       setShowPromptsInline(false);
       setShowCollectionsInline(false);
     }
+    
+    adjustTextareaHeight();
   };
+
+  useEffect(() => {
+    adjustTextareaHeight();
+  }, [chatInput, adjustTextareaHeight]);
 
   const addContextPill = (name: string, type: string, id: string) => {
     setContextPills(prev => [...prev, { id, type, name }]);
@@ -288,6 +423,7 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                 overflow: 'hidden',
                 height: '100vh',
                 minHeight: '100vh',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -362,7 +498,7 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
             )}
 
             {/* Prompt Pills */}
-            <div className="px-4 py-3 border-b border-gray-200 relative">
+            <div className="pl-4 py-3 border-b border-gray-200 relative">
               <div className="flex gap-2 flex-wrap">
                 {promptPills.map((pill) => (
                   <button
@@ -373,8 +509,8 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                       activePrompt === pill.id && "bg-[var(--active-green)] text-white"
                     )}
                   >
-                    <span className="text-xs">
-                      {pill.icon === 'write' ? '✍️' : pill.icon === 'translate' ? '🌐' : pill.icon === 'calendar' ? '📅' : '📋'}
+                    <span className="flex items-center justify-center w-4 h-4">
+                      {renderIcon(pill.icon, "w-4 h-4")}
                     </span>
                     {pill.title}
                   </button>
@@ -422,8 +558,8 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                           <circle cx="14.6" cy="18.3" r="1.8" />
                         </svg>
                       </div>
-                      <div className="w-8 h-8 bg-[var(--apply-button-bg)] rounded flex items-center justify-center text-[var(--active-green)] text-xs">
-                        {prompt.icon === 'write' ? '✍️' : prompt.icon === 'translate' ? '🌐' : prompt.icon === 'summarize' ? '📝' : '📊'}
+                      <div className="w-8 h-8 bg-[var(--apply-button-bg)] rounded flex items-center justify-center text-[var(--active-green)] flex-shrink-0">
+                        {renderIcon(prompt.icon, 'w-4 h-4')}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="text-sm font-medium text-[var(--text-default)]">{prompt.title}</div>
@@ -450,8 +586,8 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                         chatInputRef.current?.focus();
                       }}
                     >
-                      <div className="w-6 h-6 bg-[var(--apply-button-bg)] rounded flex items-center justify-center text-[var(--active-green)] text-xs">
-                        {prompt.icon === 'write' ? '✍️' : prompt.icon === 'translate' ? '🌐' : prompt.icon === 'summarize' ? '📝' : '📊'}
+                      <div className="w-6 h-6 bg-[var(--apply-button-bg)] rounded flex items-center justify-center text-[var(--active-green)] flex-shrink-0">
+                        {renderIcon(prompt.icon, 'w-3.5 h-3.5')}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="text-sm font-medium text-[var(--text-default)]">{prompt.title}</div>
@@ -463,14 +599,27 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
               )}
               
               {showCollectionsInline && (
-                <div className="absolute bottom-full left-4 right-4 mb-2 bg-[var(--surface-color)] border border-[var(--border-color)] rounded-lg shadow-lg max-h-[200px] overflow-y-auto z-50">
-                  <div className="px-4 py-3 flex items-center gap-3 cursor-pointer hover:bg-gray-50">
-                    <div className="w-6 h-6 bg-[#EBFCF4] rounded flex items-center justify-center text-[#0B6333]">📚</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-[#4A4A4A]">Research Papers</div>
-                      <div className="text-xs text-[#5F5F5F]">25 items • Updated 1 week ago</div>
+                <div className="absolute bottom-full left-4 right-4 mb-2 bg-white border border-[var(--border-color)] rounded-lg shadow-lg max-h-[200px] overflow-y-auto z-50">
+                  {Object.entries(collectionsData).map(([id, collection]) => (
+                    <div
+                      key={id}
+                      className="px-4 py-3 flex items-center gap-3 cursor-pointer hover:bg-[#f8f9fa] border-b border-[#f5f5f5] last:border-b-0"
+                      onClick={() => {
+                        addContextPill(collection.name, 'collection', id);
+                        setShowCollectionsInline(false);
+                        setChatInput('');
+                        chatInputRef.current?.focus();
+                      }}
+                    >
+                      <div className="w-6 h-6 bg-[var(--apply-button-bg)] rounded flex items-center justify-center text-[var(--active-green)] text-xs flex-shrink-0">
+                        {collection.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-[var(--text-default)]">{collection.name}</div>
+                        <div className="text-xs text-[var(--subtle-text)]">{collection.count} items • Updated {collection.updated}</div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
               )}
 
@@ -519,6 +668,27 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                       </svg>
                     </button>
                     <button 
+                      onClick={() => {
+                        const fileInput = document.createElement('input');
+                        fileInput.type = 'file';
+                        fileInput.multiple = true;
+                        fileInput.accept = '*/*';
+                        
+                        fileInput.addEventListener('change', function(e) {
+                          const target = e.target as HTMLInputElement;
+                          const files = Array.from(target.files || []);
+                          if (files.length > 0) {
+                            const fileNames = files.map(f => f.name).join(', ');
+                            setMessages(prev => [...prev, { type: 'user', text: `Uploaded files: ${fileNames}` }]);
+                            
+                            setTimeout(() => {
+                              setMessages(prev => [...prev, { type: 'ai', text: 'Files uploaded successfully. How can I help you with these files?' }]);
+                            }, 1000);
+                          }
+                        });
+                        
+                        fileInput.click();
+                      }}
                       className="w-6 h-6 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[var(--subtle-text)] hover:bg-[rgba(29,119,189,0.1)] hover:text-[var(--verification-blue)]"
                       title="Upload File"
                     >
@@ -527,6 +697,24 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                       </svg>
                     </button>
                     <button 
+                      onClick={() => {
+                        if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+                          navigator.mediaDevices.getDisplayMedia({ video: true })
+                            .then(stream => {
+                              setMessages(prev => [...prev, { type: 'user', text: 'Screenshot captured successfully' }]);
+                              stream.getTracks().forEach(track => track.stop());
+                              
+                              setTimeout(() => {
+                                setMessages(prev => [...prev, { type: 'ai', text: 'I can see your screenshot. What would you like me to help you with?' }]);
+                              }, 1000);
+                            })
+                            .catch(err => {
+                              console.log('Screenshot cancelled or failed:', err);
+                            });
+                        } else {
+                          alert('Screenshot functionality not supported in this browser');
+                        }
+                      }}
                       className="w-6 h-6 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[var(--subtle-text)] hover:bg-[rgba(29,119,189,0.1)] hover:text-[var(--verification-blue)]"
                       title="Screenshot"
                     >
@@ -629,118 +817,169 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
       </div>
 
       {/* Chat History Panel */}
-      {showChatHistory && (
-        <div className={cn(
-          "fixed top-0 bottom-0 right-[450px] w-[400px] bg-[var(--surface-color)] shadow-[-4px_0_20px_rgba(0,0,0,0.1)] transition-transform duration-300 ease-in-out z-[998] flex flex-col",
-          isExpanded && "right-[580px]",
-          showChatHistory ? "translate-x-0" : "translate-x-full"
-        )}
-        style={{ height: '100vh' }}>
-          {/* Chat History Header */}
-          <div className="p-5 border-b border-[var(--border-color)] flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-[var(--bold-text)] font-inter">Chat History</h2>
-            <button
-              onClick={() => setShowChatHistory(false)}
-              className="bg-transparent border-none text-[var(--subtle-text)] cursor-pointer p-1 rounded transition-all hover:bg-[var(--gray-100)] hover:text-[var(--text-default)]"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 18 18">
-                <path fillRule="evenodd" clipRule="evenodd" d="M4.51025 3.51594C4.2386 3.23845 3.79343 3.23372 3.51594 3.50537C3.23845 3.77702 3.23372 4.22219 3.50537 4.49968L8.00075 9.09168L3.5155 13.4902C3.23825 13.7621 3.2339 14.2072 3.50579 14.4845C3.77769 14.7617 4.22286 14.7661 4.50012 14.4942L9 10.0814L13.4999 14.4942C13.7771 14.7661 14.2223 14.7617 14.4942 14.4845C14.7661 14.2072 14.7617 13.7621 14.4845 13.4902L9.99924 9.09168L14.4946 4.49968C14.7663 4.22219 14.7615 3.77702 14.4841 3.50537C14.2066 3.23372 13.7614 3.23845 13.4897 3.51594L9 8.10217L4.51025 3.51594Z" fill="currentColor"/>
-              </svg>
-            </button>
-          </div>
+      <div className={cn(
+        "fixed top-0 w-[450px] bg-white shadow-[-4px_0_20px_rgba(0,0,0,0.1)] z-[1002] flex flex-col pointer-events-auto",
+        "transition-all duration-300 ease-in-out",
+        showChatHistory ? "right-0" : "right-[-450px]"
+      )}
+      style={{ 
+        height: '100vh',
+        minHeight: '100vh',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+      }}>
+        {/* Chat History Header */}
+        <div className="px-5 py-5 border-b border-[var(--border-color)] flex items-center justify-between flex-shrink-0" style={{ padding: '20px' }}>
+          <h2 className="text-lg font-semibold text-[var(--bold-text)]" style={{ fontSize: '18px', fontWeight: 600, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>Chat History</h2>
+          <button
+            onClick={() => setShowChatHistory(false)}
+            className="bg-transparent border-none text-[var(--subtle-text)] cursor-pointer rounded transition-all hover:bg-[#f5f5f5] hover:text-[var(--text-default)] flex items-center justify-center"
+            style={{ padding: '4px', fontSize: '20px', lineHeight: 1, width: '28px', height: '28px' }}
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 18 18">
+              <path fillRule="evenodd" clipRule="evenodd" d="M4.51025 3.51594C4.2386 3.23845 3.79343 3.23372 3.51594 3.50537C3.23845 3.77702 3.23372 4.22219 3.50537 4.49968L8.00075 9.09168L3.5155 13.4902C3.23825 13.7621 3.2339 14.2072 3.50579 14.4845C3.77769 14.7617 4.22286 14.7661 4.50012 14.4942L9 10.0814L13.4999 14.4942C13.7771 14.7661 14.2223 14.7617 14.4942 14.4845C14.7661 14.2072 14.7617 13.7621 14.4845 13.4902L9.99924 9.09168L14.4946 4.49968C14.7663 4.22219 14.7615 3.77702 14.4841 3.50537C14.2066 3.23372 13.7614 3.23845 13.4897 3.51594L9 8.10217L4.51025 3.51594Z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
 
-          {/* History Search */}
-          <div className="p-5 border-b border-[var(--border-color)]">
-            <input
-              type="text"
-              placeholder="Search conversations..."
-              value={historySearch}
-              onChange={(e) => setHistorySearch(e.target.value)}
-              className="w-full px-3 py-2.5 border border-[var(--border-color)] rounded-md text-sm text-[var(--text-default)] bg-[var(--surface-color)] focus:outline-none focus:border-[var(--verification-blue)] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)] font-inter"
-            />
-          </div>
+        {/* History Search */}
+        <div className="px-5 py-4 border-b border-[var(--border-color)] flex-shrink-0" style={{ padding: '16px 20px' }}>
+          <input
+            type="text"
+            placeholder="Search conversations..."
+            value={historySearch}
+            onChange={(e) => setHistorySearch(e.target.value)}
+            className="w-full px-3 py-2.5 border border-[var(--border-color)] rounded-md text-sm text-[var(--text-default)] bg-white focus:outline-none focus:border-[var(--verification-blue)] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)]"
+            style={{ 
+              padding: '10px 12px',
+              fontSize: '14px',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+            }}
+          />
+        </div>
 
-          {/* History List */}
-          <div className="flex-1 overflow-y-auto p-0">
-            {historyData
-              .filter(item => 
-                historySearch === '' || 
-                item.title.toLowerCase().includes(historySearch.toLowerCase()) ||
-                item.preview.toLowerCase().includes(historySearch.toLowerCase())
-              )
-              .map((item) => (
-                <div
-                  key={item.id}
-                    className={cn(
-                    "px-5 py-3 cursor-pointer transition-all relative border-b border-[var(--gray-100)] hover:bg-[var(--surface-secondary)] group",
-                    item.current && "bg-[var(--apply-button-bg)] border-l-[3px] border-l-[var(--active-green)]"
-                  )}
-                >
-                  <div className="flex items-center gap-2.5 mb-1">
-                    <div className="text-sm font-medium text-[var(--text-default)] font-inter whitespace-nowrap overflow-hidden text-ellipsis flex-1 min-w-0">
-                      {item.title}
-                    </div>
+        {/* History List */}
+        <div className="flex-1 overflow-y-auto" style={{ padding: '16px 0' }}>
+          {historyData
+            .filter(item => 
+              historySearch === '' || 
+              item.title.toLowerCase().includes(historySearch.toLowerCase()) ||
+              item.preview.toLowerCase().includes(historySearch.toLowerCase())
+            )
+            .map((item) => (
+              <div
+                key={item.id}
+                className={cn(
+                  "px-5 py-3 cursor-pointer transition-all relative border-b border-[#f5f5f5] hover:bg-[#f8f9fa] group",
+                  item.current && "bg-[var(--apply-button-bg)] border-l-[3px] border-l-[var(--active-green)]"
+                )}
+                style={{ padding: '12px 20px' }}
+                onClick={() => {
+                  // Set as current conversation
+                  setHistoryData(prev => prev.map(h => ({ ...h, current: h.id === item.id })));
+                  // Load conversation
+                  setMessages([{ type: 'ai', text: `Loaded conversation: ${item.title}` }]);
+                }}
+              >
+                <div className="flex items-center gap-2.5 mb-1" style={{ gap: '10px', marginBottom: '4px' }}>
+                  <div className="text-sm font-medium text-[var(--text-default)] whitespace-nowrap overflow-hidden text-ellipsis flex-1 min-w-0" style={{ fontSize: '14px', fontWeight: 500, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+                    {item.title}
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const newTitle = prompt('Edit title:', item.title);
+                      if (newTitle && newTitle !== item.title) {
+                        setHistoryData(prev => prev.map(h => h.id === item.id ? { ...h, title: newTitle } : h));
+                      }
+                    }}
+                    className="w-5 h-5 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[var(--subtle-text)] opacity-0 group-hover:opacity-100 hover:bg-[var(--arrow-circle)] hover:text-[var(--text-default)] flex-shrink-0"
+                    style={{ width: '20px', height: '20px', borderRadius: '4px' }}
+                    title="Edit"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
+                      <path fill="currentColor" d="M13.2929 4.29291C15.0641 2.52167 17.9359 2.52167 19.7071 4.2929C21.4784 6.06414 21.4784 8.93588 19.7071 10.7071L18.7073 11.7069L11.6135 18.8007C10.8766 19.5376 9.92793 20.0258 8.89999 20.1971L4.16441 20.9864C3.84585 21.0395 3.52127 20.9355 3.29291 20.7071C3.06454 20.4788 2.96053 20.1542 3.01362 19.8356L3.80288 15.1C3.9742 14.0721 4.46243 13.1234 5.19932 12.3865L13.2929 4.29291ZM13 7.41422L6.61353 13.8007C6.1714 14.2428 5.87846 14.8121 5.77567 15.4288L5.21656 18.7835L8.57119 18.2244C9.18795 18.1216 9.75719 17.8286 10.1993 17.3865L16.5858 11L13 7.41422ZM18 9.5858L14.4142 6.00001L14.7071 5.70712C15.6973 4.71693 17.3027 4.71693 18.2929 5.70712C19.2831 6.69731 19.2831 8.30272 18.2929 9.29291L18 9.5858Z" clipRule="evenodd" fillRule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="text-xs text-[var(--subtle-text)] leading-[1.3] whitespace-nowrap overflow-hidden text-ellipsis mb-1" style={{ fontSize: '12px', lineHeight: 1.3, marginBottom: '4px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+                  {item.preview}
+                </div>
+                <div className="flex items-center justify-between gap-2.5" style={{ gap: '10px' }}>
+                  <div className="text-xs text-[var(--subtle-text)] whitespace-nowrap overflow-hidden text-ellipsis flex-1 min-w-0" style={{ fontSize: '11px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+                    {item.meta}
+                  </div>
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" style={{ gap: '4px' }}>
                     <button
-                      className="w-5 h-5 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[var(--subtle-text)] opacity-0 group-hover:opacity-100 hover:bg-[var(--gray-200)] hover:text-[var(--text-default)]"
-                      title="Edit"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        alert('View files functionality would open here');
+                      }}
+                      className="w-5 h-5 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[var(--subtle-text)] hover:bg-[var(--arrow-circle)] hover:text-[var(--text-default)]"
+                      style={{ width: '20px', height: '20px', borderRadius: '4px' }}
+                      title="View Files"
                     >
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M13.2929 4.29291C15.0641 2.52167 17.9359 2.52167 19.7071 4.2929C21.4784 6.06414 21.4784 8.93588 19.7071 10.7071L18.7073 11.7069L11.6135 18.8007C10.8766 19.5376 9.92793 20.0258 8.89999 20.1971L4.16441 20.9864C3.84585 21.0395 3.52127 20.9355 3.29291 20.7071C3.06454 20.4788 2.96053 20.1542 3.01362 19.8356L3.80288 15.1C3.9742 14.0721 4.46243 13.1234 5.19932 12.3865L13.2929 4.29291ZM13 7.41422L6.61353 13.8007C6.1714 14.2428 5.87846 14.8121 5.77567 15.4288L5.21656 18.7835L8.57119 18.2244C9.18795 18.1216 9.75719 17.8286 10.1993 17.3865L16.5858 11L13 7.41422ZM18 9.5858L14.4142 6.00001L14.7071 5.70712C15.6973 4.71693 17.3027 4.71693 18.2929 5.70712C19.2831 6.69731 19.2831 8.30272 18.2929 9.29291L18 9.5858Z" clipRule="evenodd" fillRule="evenodd" />
+                        <g>
+                          <path fillRule="evenodd" clipRule="evenodd" d="M3.09998 5.0001C3.09998 2.84619 4.84607 1.1001 6.99998 1.1001H17C19.1539 1.1001 20.9 2.84619 20.9 5.0001V8.0001C20.9 8.49715 20.497 8.9001 20 8.9001C19.5029 8.9001 19.1 8.49715 19.1 8.0001V5.0001C19.1 3.8403 18.1598 2.9001 17 2.9001H6.99998C5.84018 2.9001 4.89998 3.8403 4.89998 5.0001V19.0001C4.89998 20.1599 5.84018 21.1001 6.99998 21.1001H11C11.497 21.1001 11.9 21.503 11.9 22.0001C11.9 22.4972 11.497 22.9001 11 22.9001H6.99998C4.84606 22.9001 3.09998 21.154 3.09998 19.0001V5.0001ZM6.90002 7.53367C6.90002 7.03661 7.30297 6.63367 7.80002 6.63367H16.2684C16.7654 6.63367 17.1684 7.03661 17.1684 7.53367C17.1684 8.03072 16.7654 8.43367 16.2684 8.43367H7.80002C7.30297 8.43367 6.90002 8.03072 6.90002 7.53367ZM19.5 12.9001C19.1686 12.9001 18.9 13.1687 18.9 13.5001V19.0001C18.9 19.4972 18.497 19.9001 18 19.9001C17.5029 19.9001 17.1 19.4972 17.1 19.0001V13.5001C17.1 12.1746 18.1745 11.1001 19.5 11.1001C20.8255 11.1001 21.9 12.1746 21.9 13.5001V19.0001C21.9 21.154 20.1539 22.9001 18 22.9001C15.8461 22.9001 14.1 21.154 14.1 19.0001V15.0001C14.1 14.503 14.5029 14.1001 15 14.1001C15.497 14.1001 15.9 14.503 15.9 15.0001V19.0001C15.9 20.1599 16.8402 21.1001 18 21.1001C19.1598 21.1001 20.1 20.1599 20.1 19.0001V13.5001C20.1 13.1687 19.8313 12.9001 19.5 12.9001ZM6.90002 12.0325C6.90002 11.5354 7.30297 11.1325 7.80002 11.1325H12.2684C12.7654 11.1325 13.1684 11.5354 13.1684 12.0325C13.1684 12.5295 12.7654 12.9325 12.2684 12.9325H7.80002C7.30297 12.9325 6.90002 12.5295 6.90002 12.0325Z" fill="currentColor" />
+                        </g>
                       </svg>
                     </button>
-                  </div>
-                  <div className="text-xs text-[var(--subtle-text)] font-inter leading-[1.3] whitespace-nowrap overflow-hidden text-ellipsis mb-1">
-                    {item.preview}
-                  </div>
-                  <div className="flex items-center justify-between gap-2.5">
-                    <div className="text-xs text-[var(--subtle-text)] font-inter whitespace-nowrap overflow-hidden text-ellipsis flex-1 min-w-0">
-                      {item.meta}
-                    </div>
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
-                        className="w-5 h-5 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[var(--subtle-text)] hover:bg-[var(--gray-200)] hover:text-[var(--text-default)]"
-                        title="View Files"
-                      >
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
-                          <g>
-                            <path fillRule="evenodd" clipRule="evenodd" d="M3.09998 5.0001C3.09998 2.84619 4.84607 1.1001 6.99998 1.1001H17C19.1539 1.1001 20.9 2.84619 20.9 5.0001V8.0001C20.9 8.49715 20.497 8.9001 20 8.9001C19.5029 8.9001 19.1 8.49715 19.1 8.0001V5.0001C19.1 3.8403 18.1598 2.9001 17 2.9001H6.99998C5.84018 2.9001 4.89998 3.8403 4.89998 5.0001V19.0001C4.89998 20.1599 5.84018 21.1001 6.99998 21.1001H11C11.497 21.1001 11.9 21.503 11.9 22.0001C11.9 22.4972 11.497 22.9001 11 22.9001H6.99998C4.84606 22.9001 3.09998 21.154 3.09998 19.0001V5.0001ZM6.90002 7.53367C6.90002 7.03661 7.30297 6.63367 7.80002 6.63367H16.2684C16.7654 6.63367 17.1684 7.03661 17.1684 7.53367C17.1684 8.03072 16.7654 8.43367 16.2684 8.43367H7.80002C7.30297 8.43367 6.90002 8.03072 6.90002 7.53367ZM19.5 12.9001C19.1686 12.9001 18.9 13.1687 18.9 13.5001V19.0001C18.9 19.4972 18.497 19.9001 18 19.9001C17.5029 19.9001 17.1 19.4972 17.1 19.0001V13.5001C17.1 12.1746 18.1745 11.1001 19.5 11.1001C20.8255 11.1001 21.9 12.1746 21.9 13.5001V19.0001C21.9 21.154 20.1539 22.9001 18 22.9001C15.8461 22.9001 14.1 21.154 14.1 19.0001V15.0001C14.1 14.503 14.5029 14.1001 15 14.1001C15.497 14.1001 15.9 14.503 15.9 15.0001V19.0001C15.9 20.1599 16.8402 21.1001 18 21.1001C19.1598 21.1001 20.1 20.1599 20.1 19.0001V13.5001C20.1 13.1687 19.8313 12.9001 19.5 12.9001ZM6.90002 12.0325C6.90002 11.5354 7.30297 11.1325 7.80002 11.1325H12.2684C12.7654 11.1325 13.1684 11.5354 13.1684 12.0325C13.1684 12.5295 12.7654 12.9325 12.2684 12.9325H7.80002C7.30297 12.9325 6.90002 12.5295 6.90002 12.0325Z" fill="currentColor" />
-                          </g>
-                        </svg>
-                      </button>
-                      <button
-                        className="w-5 h-5 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[#5F5F5F] hover:bg-[#DFDDDB] hover:text-[#4A4A4A]"
-                        title="Delete"
-                      >
-                        <svg className="w-3.5 h-3.5" viewBox="0 0 16 16">
-                          <g>
-                            <path fillRule="evenodd" clipRule="evenodd" d="M7.44306 0.733399H8.55693C8.91018 0.733389 9.21096 0.733381 9.45792 0.753558C9.71736 0.774755 9.96975 0.821177 10.211 0.94412C10.5748 1.12948 10.8706 1.42524 11.0559 1.78902C11.1789 2.03031 11.2253 2.2827 11.2465 2.54214C11.2659 2.779 11.2666 3.06538 11.2667 3.40007H14C14.3314 3.40007 14.6 3.6687 14.6 4.00007C14.6 4.33144 14.3314 4.60007 14 4.60007H13.2667V11.4919C13.2667 12.0306 13.2667 12.4711 13.2374 12.8292C13.2071 13.1998 13.1426 13.5345 12.9833 13.8471C12.734 14.3363 12.3363 14.7341 11.847 14.9833C11.5344 15.1426 11.1997 15.2072 10.8291 15.2375C10.4711 15.2667 10.0305 15.2667 9.4918 15.2667H6.50819C5.96949 15.2667 5.52892 15.2667 5.17087 15.2375C4.80026 15.2072 4.46554 15.1426 4.15295 14.9833C3.66373 14.7341 3.26598 14.3363 3.01671 13.8471C2.85744 13.5345 2.79285 13.1998 2.76257 12.8292C2.73331 12.4711 2.73332 12.0306 2.73333 11.4919L2.73333 4.60007H1.99999C1.66862 4.60007 1.39999 4.33144 1.39999 4.00007C1.39999 3.6687 1.66862 3.40007 1.99999 3.40007H4.73333C4.73335 3.06538 4.73413 2.779 4.75349 2.54214C4.77468 2.2827 4.82111 2.03031 4.94405 1.78902C5.1294 1.42524 5.42517 1.12948 5.78895 0.94412C6.03023 0.821177 6.28263 0.774755 6.54207 0.753558C6.78903 0.733381 7.08981 0.733389 7.44306 0.733399ZM3.93333 4.60007V11.4667C3.93333 12.0367 3.93379 12.4281 3.95858 12.7315C3.9828 13.0279 4.0272 13.1871 4.08592 13.3023C4.22014 13.5657 4.43431 13.7799 4.69774 13.9141C4.81297 13.9729 4.97219 14.0173 5.26859 14.0415C5.57199 14.0663 5.96337 14.0667 6.53333 14.0667H9.46666C10.0366 14.0667 10.428 14.0663 10.7314 14.0415C11.0278 14.0173 11.187 13.9729 11.3022 13.9141C11.5657 13.7799 11.7798 13.5657 11.9141 13.3023C11.9728 13.1871 12.0172 13.0279 12.0414 12.7315C12.0662 12.4281 12.0667 12.0367 12.0667 11.4667V4.60007H3.93333ZM10.0667 3.40007H5.93334C5.93344 3.05392 5.93472 2.82072 5.9495 2.63986C5.96463 2.45463 5.99087 2.37773 6.01326 2.33381C6.08356 2.19582 6.19575 2.08363 6.33373 2.01333C6.37766 1.99095 6.45456 1.96471 6.63979 1.94957C6.83203 1.93387 7.08339 1.9334 7.46666 1.9334H8.53333C8.9166 1.9334 9.16796 1.93387 9.3602 1.94957C9.54543 1.96471 9.62233 1.99095 9.66625 2.01333C9.80424 2.08363 9.91642 2.19582 9.98673 2.33381C10.0091 2.37773 10.0354 2.45463 10.0505 2.63986C10.0653 2.82072 10.0666 3.05392 10.0667 3.40007Z" fill="currentColor" />
-                          </g>
-                        </svg>
-                      </button>
-                      <button
-                        className="w-5 h-5 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[#5F5F5F] hover:bg-[#DFDDDB] hover:text-[#4A4A4A]"
-                        title="Favorite"
-                      >
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
-                          <g>
-                            <path fillRule="evenodd" clipRule="evenodd" d="M11.3975 1.86603C11.7786 1.68431 12.2214 1.68431 12.6025 1.86603C12.9281 2.02124 13.11 2.29196 13.2061 2.44885C13.3051 2.61057 13.4074 2.81788 13.5098 3.02548L15.6878 7.43793L20.5597 8.15003C20.7887 8.18346 21.0174 8.21685 21.2017 8.26117C21.3806 8.30418 21.6941 8.39381 21.9421 8.65556C22.2325 8.96203 22.369 9.38316 22.3137 9.8017C22.2665 10.1592 22.0652 10.4157 21.9457 10.5555C21.8224 10.6995 21.6568 10.8608 21.491 11.0222L17.9671 14.4545L18.7986 19.3026C18.8378 19.5308 18.8769 19.7587 18.8918 19.9478C18.9064 20.1312 18.9183 20.4572 18.7461 20.7742C18.5446 21.1452 18.1863 21.4055 17.7711 21.4825C17.4164 21.5482 17.11 21.4361 16.9401 21.3656C16.7649 21.2929 16.5603 21.1852 16.3554 21.0774L12 18.787L7.64464 21.0774C7.4397 21.1852 7.23506 21.2929 7.05988 21.3656C6.88995 21.4361 6.58358 21.5482 6.22891 21.4825C5.8137 21.4055 5.45541 21.1452 5.25385 20.7742C5.08169 20.4572 5.09363 20.1312 5.10815 19.9478C5.12312 19.7587 5.16225 19.5308 5.20143 19.3026L6.03293 14.4545L2.53258 11.0452C2.5247 11.0375 2.51682 11.0299 2.50894 11.0222C2.34315 10.8608 2.17757 10.6995 2.05434 10.5555C1.93475 10.4157 1.73346 10.1592 1.68626 9.8017C1.63098 9.38316 1.76753 8.96203 2.05788 8.65556C2.30586 8.39381 2.6194 8.30418 2.79825 8.26117C2.98256 8.21685 3.21125 8.18346 3.44023 8.15003C3.4511 8.14844 3.46198 8.14686 3.47286 8.14527L8.31216 7.43793L10.4756 3.05505C10.4805 3.0452 10.4853 3.03534 10.4902 3.02548C10.5926 2.81788 10.6949 2.61057 10.7939 2.44885C10.89 2.29196 11.0719 2.02124 11.3975 1.86603ZM12 4.03344L9.90299 8.28174C9.8989 8.29003 9.89436 8.29941 9.88935 8.30975C9.84084 8.40991 9.74883 8.59986 9.60351 8.75627C9.48024 8.88894 9.33241 8.99643 9.1682 9.0728C8.97461 9.16282 8.76554 9.19179 8.65531 9.20706C8.64393 9.20864 8.63361 9.21007 8.62446 9.21141L3.93357 9.89705L7.32653 13.2018C7.33316 13.2083 7.34069 13.2155 7.34899 13.2234C7.42941 13.3006 7.58192 13.447 7.68592 13.6337C7.77413 13.7922 7.83073 13.9662 7.85256 14.1463C7.87829 14.3585 7.84101 14.5666 7.82135 14.6763C7.81932 14.6876 7.81748 14.6979 7.81592 14.707L7.01536 19.3746L11.2087 17.1694C11.2169 17.1651 11.2261 17.1601 11.2363 17.1547C11.3345 17.1021 11.5208 17.0023 11.7306 16.9612C11.9085 16.9263 12.0915 16.9263 12.2694 16.9612C12.4792 17.0023 12.6655 17.1021 12.7637 17.1547C12.7739 17.1601 12.7831 17.1651 12.7913 17.1694L16.9846 19.3746L16.1841 14.707C16.1825 14.6979 16.1807 14.6876 16.1786 14.6763C16.159 14.5666 16.1217 14.3585 16.1474 14.1463C16.1693 13.9662 16.2259 13.7922 16.3141 13.6337C16.4181 13.4469 16.5706 13.3006 16.651 13.2234C16.6593 13.2155 16.6668 13.2083 16.6735 13.2018L20.0664 9.89705L15.3755 9.21141C15.3664 9.21007 15.3561 9.20864 15.3447 9.20707C15.2345 9.19179 15.0254 9.16282 14.8318 9.0728C14.6676 8.99643 14.5198 8.88894 14.3965 8.75627C14.2512 8.59986 14.1592 8.4099 14.1106 8.30975C14.1056 8.29941 14.1011 8.29003 14.097 8.28174L12 4.03344Z" fill="currentColor" />
-                          </g>
-                        </svg>
-                      </button>
-                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (confirm('Are you sure you want to delete this conversation?')) {
+                          setHistoryData(prev => prev.filter(h => h.id !== item.id));
+                        }
+                      }}
+                      className="w-5 h-5 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all text-[var(--subtle-text)] hover:bg-[var(--arrow-circle)] hover:text-[var(--text-default)]"
+                      style={{ width: '20px', height: '20px', borderRadius: '4px' }}
+                      title="Delete"
+                    >
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 16 16">
+                        <g>
+                          <path fillRule="evenodd" clipRule="evenodd" d="M7.44306 0.733399H8.55693C8.91018 0.733389 9.21096 0.733381 9.45792 0.753558C9.71736 0.774755 9.96975 0.821177 10.211 0.94412C10.5748 1.12948 10.8706 1.42524 11.0559 1.78902C11.1789 2.03031 11.2253 2.2827 11.2465 2.54214C11.2659 2.779 11.2666 3.06538 11.2667 3.40007H14C14.3314 3.40007 14.6 3.6687 14.6 4.00007C14.6 4.33144 14.3314 4.60007 14 4.60007H13.2667V11.4919C13.2667 12.0306 13.2667 12.4711 13.2374 12.8292C13.2071 13.1998 13.1426 13.5345 12.9833 13.8471C12.734 14.3363 12.3363 14.7341 11.847 14.9833C11.5344 15.1426 11.1997 15.2072 10.8291 15.2375C10.4711 15.2667 10.0305 15.2667 9.4918 15.2667H6.50819C5.96949 15.2667 5.52892 15.2667 5.17087 15.2375C4.80026 15.2072 4.46554 15.1426 4.15295 14.9833C3.66373 14.7341 3.26598 14.3363 3.01671 13.8471C2.85744 13.5345 2.79285 13.1998 2.76257 12.8292C2.73331 12.4711 2.73332 12.0306 2.73333 11.4919L2.73333 4.60007H1.99999C1.66862 4.60007 1.39999 4.33144 1.39999 4.00007C1.39999 3.6687 1.66862 3.40007 1.99999 3.40007H4.73333C4.73335 3.06538 4.73413 2.779 4.75349 2.54214C4.77468 2.2827 4.82111 2.03031 4.94405 1.78902C5.1294 1.42524 5.42517 1.12948 5.78895 0.94412C6.03023 0.821177 6.28263 0.774755 6.54207 0.753558C6.78903 0.733381 7.08981 0.733389 7.44306 0.733399ZM3.93333 4.60007V11.4667C3.93333 12.0367 3.93379 12.4281 3.95858 12.7315C3.9828 13.0279 4.0272 13.1871 4.08592 13.3023C4.22014 13.5657 4.43431 13.7799 4.69774 13.9141C4.81297 13.9729 4.97219 14.0173 5.26859 14.0415C5.57199 14.0663 5.96337 14.0667 6.53333 14.0667H9.46666C10.0366 14.0667 10.428 14.0663 10.7314 14.0415C11.0278 14.0173 11.187 13.9729 11.3022 13.9141C11.5657 13.7799 11.7798 13.5657 11.9141 13.3023C11.9728 13.1871 12.0172 13.0279 12.0414 12.7315C12.0662 12.4281 12.0667 12.0367 12.0667 11.4667V4.60007H3.93333ZM10.0667 3.40007H5.93334C5.93344 3.05392 5.93472 2.82072 5.9495 2.63986C5.96463 2.45463 5.99087 2.37773 6.01326 2.33381C6.08356 2.19582 6.19575 2.08363 6.33373 2.01333C6.37766 1.99095 6.45456 1.96471 6.63979 1.94957C6.83203 1.93387 7.08339 1.9334 7.46666 1.9334H8.53333C8.9166 1.9334 9.16796 1.93387 9.3602 1.94957C9.54543 1.96471 9.62233 1.99095 9.66625 2.01333C9.80424 2.08363 9.91642 2.19582 9.98673 2.33381C10.0091 2.37773 10.0354 2.45463 10.0505 2.63986C10.0653 2.82072 10.0666 3.05392 10.0667 3.40007Z" fill="currentColor" />
+                        </g>
+                      </svg>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setHistoryData(prev => prev.map(h => 
+                          h.id === item.id ? { ...h, favorite: !h.favorite } : h
+                        ));
+                      }}
+                      className="w-5 h-5 bg-transparent border-none rounded flex items-center justify-center cursor-pointer transition-all hover:bg-[var(--arrow-circle)] hover:text-[var(--text-default)]"
+                      style={{ 
+                        width: '20px', 
+                        height: '20px', 
+                        borderRadius: '4px',
+                        color: item.favorite ? 'gold' : 'var(--subtle-text)'
+                      }}
+                      title="Favorite"
+                    >
+                      {renderIcon('favorite', 'w-3.5 h-3.5')}
+                    </button>
                   </div>
                 </div>
-              ))}
-          </div>
+              </div>
+            ))}
         </div>
-      )}
+      </div>
 
       {/* Context Modal */}
       {showContextModal && (
         <Portal containerId="ai-context-modal-portal">
           <div 
-            className="fixed inset-0 flex items-center justify-center z-[1500] pointer-events-none"
-            onClick={() => setShowContextModal(false)}
+            className="fixed inset-0 flex items-center justify-center z-[1500] pointer-events-auto"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setShowContextModal(false);
+                setContextCollectionView(null);
+                setSelectedContexts([]);
+              }
+            }}
           >
             <div 
               className="bg-[var(--surface-color)] rounded-xl w-full max-w-[400px] max-h-[80vh] overflow-hidden flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.15)] pointer-events-auto"
@@ -969,12 +1208,14 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
       {showCollectionsModal && (
         <Portal containerId="ai-collections-modal-portal">
           <div 
-            className="fixed inset-0 flex items-center justify-center z-[1500] pointer-events-none"
+            className="fixed inset-0 flex items-center justify-center z-[1500] pointer-events-auto"
             style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
-            onClick={() => {
-              setShowCollectionsModal(false);
-              setCollectionsItemsView(null);
-              setSelectedCollectionItems([]);
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setShowCollectionsModal(false);
+                setCollectionsItemsView(null);
+                setSelectedCollectionItems([]);
+              }
             }}
           >
             <div 
@@ -1128,11 +1369,13 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
       {showCreatePromptModal && (
         <Portal containerId="ai-create-prompt-modal-portal">
           <div 
-            className="fixed inset-0 flex items-center justify-center z-[1500] pointer-events-none"
+            className="fixed inset-0 flex items-center justify-center z-[1500] pointer-events-auto"
             style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
-            onClick={() => {
-              setShowCreatePromptModal(false);
-              setPromptForm({ name: '', text: '', model: 'GPT-4o mini', access: 'Accessible to everyone' });
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setShowCreatePromptModal(false);
+                setPromptForm({ name: '', text: '', model: 'GPT-4o mini', access: 'Accessible to everyone' });
+              }
             }}
           >
             <div 

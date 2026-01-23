@@ -251,11 +251,11 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
         <button
           onClick={onClose}
           className="absolute top-2 right-6 w-8 h-8 bg-white border-none rounded-full flex items-center justify-center cursor-pointer z-[10003] shadow-[0_2px_8px_rgba(0,0,0,0.1)] transition-all duration-200 hover:bg-[#f3f4f6]"
-        >
+            >
           <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-[#1B1B1B]">
-            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
 
         {/* Overlay Content */}
         <div className="pt-[25px] bg-white flex-1 flex flex-col overflow-hidden">
@@ -266,7 +266,7 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
               
               {/* Layout Toggle */}
               <div className="inline-flex bg-[#E1E7EE] rounded-md p-[3px] gap-[3px]">
-                <button
+              <button 
                   onClick={() => setCurrentLayout('grid')}
                   className={cn(
                     "flex items-center justify-center w-7 h-7 border-none bg-transparent rounded-[5px] cursor-pointer transition-all duration-200 relative",
@@ -274,15 +274,15 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
                       ? "bg-[#262B3D] text-white shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
                       : "text-[#5F5F5F] hover:bg-[rgba(38,43,61,0.08)] hover:text-[#464646]"
                   )}
-                >
+              >
                   <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 flex-shrink-0">
                     <path d="M5.5 4h4c.83 0 1.5.67 1.5 1.5v4c0 .83-.67 1.5-1.5 1.5h-4A1.5 1.5 0 0 1 4 9.5v-4C4 4.67 4.67 4 5.5 4zm9 0h4c.83 0 1.5.67 1.5 1.5v4c0 .83-.67 1.5-1.5 1.5h-4A1.5 1.5 0 0 1 13 9.5v-4c0-.83.67-1.5 1.5-1.5zm0 9h4c.83 0 1.5.67 1.5 1.5v4c0 .83-.67 1.5-1.5 1.5h-4a1.5 1.5 0 0 1-1.5-1.5v-4c0-.83.67-1.5 1.5-1.5zm-9 0h4c.83 0 1.5.67 1.5 1.5v4c0 .83-.67 1.5-1.5 1.5h-4A1.5 1.5 0 0 1 4 18.5v-4c0-.83.67-1.5 1.5-1.5z" fill="currentColor"/>
-                  </svg>
+                </svg>
                   <span className="absolute bottom-[-28px] left-1/2 transform -translate-x-1/2 bg-[#333] text-white px-2 py-1 rounded text-[10px] whitespace-nowrap opacity-0 invisible transition-all duration-200 pointer-events-none group-hover:opacity-100 group-hover:visible">
                     Grid View
                   </span>
-                </button>
-                <button
+              </button>
+              <button 
                   onClick={() => setCurrentLayout('list')}
                   className={cn(
                     "flex items-center justify-center w-7 h-7 border-none bg-transparent rounded-[5px] cursor-pointer transition-all duration-200 relative",
@@ -290,18 +290,18 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
                       ? "bg-[#262B3D] text-white shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
                       : "text-[#5F5F5F] hover:bg-[rgba(38,43,61,0.08)] hover:text-[#464646]"
                   )}
-                >
+              >
                   <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 flex-shrink-0">
                     <path d="M11.75 5.25h7.5a.75.75 0 1 1 0 1.5h-7.5a.75.75 0 1 1 0-1.5zm0 6h7.5a.75.75 0 1 1 0 1.5h-7.5a.75.75 0 1 1 0-1.5zm0 6h7.5a.75.75 0 1 1 0 1.5h-7.5a.75.75 0 1 1 0-1.5zM6 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" fillRule="evenodd" fill="currentColor"/>
-                  </svg>
+                </svg>
                   <span className="absolute bottom-[-28px] left-1/2 transform -translate-x-1/2 bg-[#333] text-white px-2 py-1 rounded text-[10px] whitespace-nowrap opacity-0 invisible transition-all duration-200 pointer-events-none group-hover:opacity-100 group-hover:visible">
                     List View
                   </span>
-                </button>
+              </button>
               </div>
             </div>
           </div>
-
+          
           {/* Comparison Body */}
           <div className="flex-1 overflow-hidden flex flex-col min-h-0">
             {/* Grid View */}
@@ -316,7 +316,7 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
                   >
                     <div className="flex-[0_0_120px] min-w-[120px] p-4 bg-[rgba(255,255,255,0.95)] backdrop-blur-sm border-r border-[#eaeaea] flex items-center justify-center text-[11px] font-semibold text-[#5F5F5F] uppercase tracking-wider sticky left-0 z-[5]">
                       Schools
-                    </div>
+          </div>
                     {schools.map((school, index) => (
                       <div key={school.id} className="flex-[0_0_180px] min-w-[180px] p-4 border-r border-[#eaeaea] bg-[rgba(255,255,255,0.95)] backdrop-blur-sm relative">
                         <button
@@ -332,22 +332,22 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
                         <div className="flex items-center gap-1 mb-1.5">
                           <svg className="text-[#00DF8B] w-[11px] h-[11px]" viewBox="0 0 24 24">
                             <path fill="currentColor" d={ICONS.star} />
-                          </svg>
+                    </svg>
                           <span className="font-semibold text-[#464646] text-[11px]">{school.rating}</span>
                           <span className="text-[#5F5F5F] text-[10px]">({school.reviewCount.toLocaleString()})</span>
-                        </div>
+                  </div>
                         <div className="flex flex-wrap gap-[3px] mb-2 min-h-[18px]">
                           {school.tags.slice(0, 2).map((tag, tagIndex) => (
                             <span key={tagIndex} className="bg-[rgba(0,0,0,0.05)] px-[5px] py-[2px] rounded-lg text-[9px] text-[#5F5F5F] whitespace-nowrap flex-shrink-0">
-                              {tag}
-                            </span>
-                          ))}
+                        {tag}
+                      </span>
+                    ))}
                           {school.moreTags > 0 && (
                             <span className="bg-[rgba(0,0,0,0.08)] px-[5px] py-[2px] rounded-lg text-[9px] text-[#5F5F5F] font-medium">
                               +{school.moreTags}
-                            </span>
-                          )}
-                        </div>
+                      </span>
+                    )}
+                  </div>
                         <div className="text-[10px] leading-[1.3] text-[#4A4A4A] mb-1 overflow-hidden line-clamp-2 min-h-[26px]">
                           {school.description}
                         </div>
@@ -397,10 +397,10 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
                               <svg className="w-3 h-3 text-[#5F5F5F] cursor-help ml-1 flex-shrink-0" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: ICONS.help }} />
                               <span className="invisible absolute bottom-[125%] left-1/2 transform -translate-x-1/2 bg-[#333] text-white text-center py-1 px-2 rounded w-[120px] text-[9px] font-normal opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 z-[100]">
                                 {feature.tooltip}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
+                  </span>
+                </div>
+              </div>
+            </div>
                       ))}
                     </div>
 
@@ -410,20 +410,20 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
                         <div key={school.id} className="flex-[0_0_180px] min-w-[180px] border-r border-[#eaeaea] bg-white flex flex-col">
                           {features.map((feature) => (
                             <div key={feature.key} className="px-2 py-2.5 border-b border-[#F3F4F6] flex items-center justify-center text-center font-medium text-[#464646] text-[11px] leading-tight h-11 min-h-[44px] max-h-[44px] bg-white flex-shrink-0">
-                              {feature.key.includes('Rank') ? (
+                    {feature.key.includes('Rank') ? (
                                 <span className={cn("inline-flex items-center justify-center min-w-[28px] h-5 px-1.5 py-0.5 rounded font-semibold text-[10px] text-white", getGradeClass(feature.values[schoolIndex]))}>
                                   {feature.values[schoolIndex]}
-                                </span>
-                              ) : (
+                      </span>
+                    ) : (
                                 feature.values[schoolIndex]
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      ))}
-                    </div>
+                    )}
                   </div>
+                          ))}
                 </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
                 {/* Footer Container */}
                 <div className="relative overflow-hidden flex-shrink-0 bg-[#f8f9fa] border-t border-[#eaeaea]">
@@ -436,10 +436,10 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
                     {schools.map((school) => (
                       <div key={school.id} className="flex-[0_0_180px] min-w-[180px] p-3 border-r border-[#eaeaea] flex flex-col gap-2 bg-[#f8f9fa]">
                         <button className="text-[#016853] font-semibold text-[11px] bg-none border-none cursor-pointer p-0 text-center">
-                          Apply Now
-                        </button>
+              Apply Now
+            </button>
                         <div className="flex items-center justify-center gap-1 text-[#346DC2] font-medium text-[11px] cursor-pointer">
-                          Learn More
+              Learn More
                           <svg width="12" height="12" viewBox="0 0 16 16" dangerouslySetInnerHTML={{ __html: ICONS.chevronRight }} />
                         </div>
                       </div>
@@ -668,12 +668,12 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
                       <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4">
                         <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
-                    </button>
-                  </div>
-                </div>
+            </button>
+          </div>
+        </div>
               </div>
             )}
-          </div>
+        </div>
         </div>
       </div>
     </Portal>
