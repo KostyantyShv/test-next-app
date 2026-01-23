@@ -443,7 +443,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
             <div 
               ref={panelRef}
               className={cn(
-                "fixed top-0 right-0 w-[480px] bg-white shadow-2xl flex flex-col pointer-events-auto",
+                "fixed right-0 w-[480px] bg-white shadow-2xl flex flex-col pointer-events-auto",
                 "transform transition-transform duration-300 ease-in-out",
                 "border-l border-[var(--gray-300)]",
                 styles.notificationsPanel,
@@ -453,8 +453,9 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
               style={{
                 backgroundColor: 'white',
                 boxShadow: '-4px 0 12px rgba(0, 0, 0, 0.1)',
-                height: '100vh',
-                minHeight: '100vh',
+                top: '63px',
+                height: 'calc(100vh - 63px)',
+                minHeight: 'calc(100vh - 63px)',
                 fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
               }}
               onClick={(e) => e.stopPropagation()}
