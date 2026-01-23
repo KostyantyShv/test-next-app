@@ -1135,3 +1135,10 @@ body {
   scrollbar-width: none;
 }
 
+/* Request Type Badge Icon Sizing */
+.request-type-icon svg {
+  width: 10px !important;
+  height: 10px !important;
+  flex-shrink: 0;
+}
+

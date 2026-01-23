@@ -696,7 +696,7 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
                 {hasMatchingResults && (
                   <div className="flex items-start gap-3 mb-5">
                     <div
-                      className={`w-4.5 h-4.5 border-2 rounded cursor-pointer flex items-center justify-center transition-all ${
+                      className={`w-[18px] h-[18px] border-2 rounded cursor-pointer flex items-center justify-center transition-all flex-shrink-0 ${
                         isCheckboxChecked 
                           ? 'bg-[var(--verification-blue)] border-[var(--verification-blue)]' 
                           : 'border-[var(--border-color)] hover:border-[var(--gray-300)]'
@@ -718,7 +718,10 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
                         </svg>
                       )}
                     </div>
-                    <label className="text-sm text-[var(--text-default)] cursor-pointer leading-relaxed font-inter">
+                    <label 
+                      className="text-sm text-[var(--text-default)] cursor-pointer leading-relaxed font-inter flex-1"
+                      onClick={() => setIsCheckboxChecked(!isCheckboxChecked)}
+                    >
                       I confirm my request is not in the list above
                     </label>
                   </div>
@@ -932,9 +935,11 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
                         </div>
                         <div className="text-xs text-[#5F5F5F] flex items-center gap-2 font-inter">
                           <span>{request.author}</span>
-                          <div className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-[#EBFCF4] text-[#089E68] rounded text-xs font-medium">
-                            <span className="w-2.5 h-2.5">{contentTypes.find(t => t.id === request.type)?.icon}</span>
-                            <span>{contentTypes.find(t => t.id === request.type)?.name}</span>
+                          <div className="inline-flex items-center bg-[#EBFCF4] text-[#089E68] rounded font-medium flex-shrink-0 request-type-badge" style={{ fontSize: '10px', gap: '4px', padding: '2px 6px' }}>
+                            <span className="inline-flex items-center justify-center flex-shrink-0 request-type-icon" style={{ width: '10px', height: '10px', color: '#089E68' }}>
+                              {contentTypes.find(t => t.id === request.type)?.icon}
+                            </span>
+                            <span className="flex-shrink-0">{contentTypes.find(t => t.id === request.type)?.name}</span>
                           </div>
                         </div>
                       </div>

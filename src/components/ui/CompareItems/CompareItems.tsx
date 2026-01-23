@@ -34,6 +34,7 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
   const [currentScrollPosition, setCurrentScrollPosition] = useState(0);
   const [maxScrollPosition, setMaxScrollPosition] = useState(0);
   const [layout, setLayout] = useState<'grid' | 'list'>('list');
+  const [listColumnStart, setListColumnStart] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
 
   const [schools, setSchools] = useState<School[]>([
@@ -241,6 +242,18 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  const listPrev = () => {
+    if (listColumnStart > 0) {
+      setListColumnStart(Math.max(0, listColumnStart - columnsPerViewList));
+    }
+  };
+
+  const listNext = () => {
+    if (listColumnStart < maxListStart) {
+      setListColumnStart(Math.min(maxListStart, listColumnStart + columnsPerViewList));
+    }
+  };
+
   const toggleDescription = (schoolId: string) => {
     setSchools(prevSchools => 
       prevSchools.map(school => 
@@ -255,12 +268,44 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
     setSchools(prevSchools => prevSchools.filter(school => school.id !== schoolId));
   };
 
+  const getGradeClass = (grade: string) => {
+    const gradeMap: Record<string, string> = {
+      'A+': 'bg-[#00DF8B]',
+      'A': 'bg-[#089E68]',
+      'A-': 'bg-[#1ad598]',
+      'B+': 'bg-[#4CAF50]',
+      'B': 'bg-[#346DC2]',
+      'B-': 'bg-[#8BC34A]',
+      'C+': 'bg-[#FFA500]',
+      'C': 'bg-[#FF8C00]',
+      'C-': 'bg-[#FF7F00]'
+    };
+    return gradeMap[grade] || 'bg-[#FF8C00]';
+  };
+
   const handlePaginationClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const clickPosition = (e.clientX - rect.left) / rect.width;
-    const targetPosition = Math.round(clickPosition * maxScrollPosition);
-    setCurrentScrollPosition(Math.max(0, Math.min(maxScrollPosition, targetPosition)));
+
+    if (layout === 'grid') {
+      const targetPosition = Math.round(clickPosition * maxScrollPosition);
+      setCurrentScrollPosition(Math.max(0, Math.min(maxScrollPosition, targetPosition)));
+    } else {
+      const targetPosition = Math.round(clickPosition * maxListStart);
+      setListColumnStart(Math.max(0, Math.min(maxListStart, targetPosition)));
+    }
   };
+
+  // List view pagination constants
+  const columnsPerViewList = 6;
+  const totalFeatureColumns = features.length;
+  const maxListStart = Math.max(0, totalFeatureColumns - columnsPerViewList);
+  const listStartIndex = listColumnStart + 1;
+  const listEndIndex = Math.min(listColumnStart + columnsPerViewList, totalFeatureColumns);
+  const listProgressWidth =
+    totalFeatureColumns > columnsPerViewList
+      ? ((listColumnStart + columnsPerViewList) / totalFeatureColumns) * 100
+      : 100;
 
   const scrollDistance = currentScrollPosition * 260;
   const totalPages = maxScrollPosition + 1;
@@ -336,8 +381,8 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
               </div>
               <div className="flex items-center gap-3">
                 <button 
-                  onClick={scrollPrev}
-                  disabled={currentScrollPosition <= 0}
+                  onClick={layout === 'grid' ? scrollPrev : listPrev}
+                  disabled={layout === 'grid' ? currentScrollPosition <= 0 : listColumnStart <= 0}
                   className="w-9 h-9 rounded-[18px] border border-[var(--border-color)] bg-[var(--surface-color)] text-[var(--subtle-text)] cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--link-text)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -350,13 +395,21 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
                 >
                   <div 
                     className="absolute left-0 top-0 h-full bg-[var(--header-green)] rounded-[2px] transition-[width] duration-300"
-                    style={{ width: `${progressWidth}%` }}
+                    style={{ width: `${layout === 'grid' ? progressWidth : Math.min(listProgressWidth, 100)}%` }}
                   ></div>
                 </div>
-                <div className="text-sm text-[var(--subtle-text)] min-w-[60px] text-center font-inter">{currentPage}/{totalPages}</div>
+                <div className="text-sm text-[var(--subtle-text)] min-w-[60px] text-center font-inter">
+                  {layout === 'grid'
+                    ? `${currentPage}/${totalPages}`
+                    : `${listStartIndex}-${listEndIndex}/${totalFeatureColumns}`}
+                </div>
                 <button 
-                  onClick={scrollNext}
-                  disabled={currentScrollPosition >= maxScrollPosition}
+                  onClick={layout === 'grid' ? scrollNext : listNext}
+                  disabled={
+                    layout === 'grid'
+                      ? currentScrollPosition >= maxScrollPosition
+                      : listColumnStart >= maxListStart
+                  }
                   className="w-9 h-9 rounded-[18px] border border-[var(--border-color)] bg-[var(--surface-color)] text-[var(--subtle-text)] cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--link-text)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -368,128 +421,130 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
             
             {/* Comparison Wrapper */}
             <div className="relative border border-[var(--border-color)] rounded-xl bg-[var(--surface-color)] overflow-hidden">
-              <div className="table w-full border-collapse border-spacing-0">
-                <div className="table-row bg-[var(--surface-secondary)]">
-                  <div className="table-cell w-[200px] min-w-[200px] p-0 bg-[var(--surface-secondary)] border-r border-[var(--border-color)] sticky left-0 z-10"></div>
-                  <div className="table-cell overflow-x-auto w-[1075px] relative">
-                    <div 
-                      className="flex w-max min-w-[1075px]"
-                      style={{ transform: `translateX(-${scrollDistance}px)` }}
-                    >
-                      {schools.map((school, index) => (
-                        <div key={school.id} className="min-w-[260px] flex-[0_0_260px] p-5 border-r border-[var(--border-color)] border-b border-[var(--border-color)] bg-[var(--surface-color)] relative last:border-r-0">
-                          <button 
-                            onClick={() => removeSchool(school.id)}
-                            className="absolute top-3 right-3 w-6 h-6 rounded-full bg-[var(--gray-100)] border-none flex items-center justify-center cursor-pointer transition-all duration-200 hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444]"
-                          >
-                            <svg viewBox="0 0 24 24" fill="none" className="w-3 h-3 text-[var(--subtle-text)]">
-                              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          </button>
-                          
-                          <img src={school.image} alt={school.name} className="w-12 h-12 rounded-lg object-cover mb-3" />
-                          <h3 className="text-base font-semibold text-[var(--bold-text)] mb-2 leading-[1.3] font-inter">{school.name}</h3>
-                          
-                          <div className="flex items-center gap-1.5 mb-2">
-                            <svg className="text-[var(--grade-badge)] w-3.5 h-3.5" viewBox="0 0 24 24">
-                              <path fill="currentColor" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                            </svg>
-                            <span className="font-semibold text-[var(--bold-text)] text-sm font-inter">{school.rating}</span>
-                            <span className="text-[var(--subtle-text)] text-xs font-inter">({school.reviewCount.toLocaleString()})</span>
-                          </div>
-                          
-                          <div className="text-[var(--subtle-text)] text-xs mb-2 font-inter">{school.location}</div>
-                          
-                          <div className="flex flex-wrap gap-1 mb-3 items-center min-h-6 overflow-hidden">
-                            {school.tags.slice(0, 2).map((tag, tagIndex) => (
-                              <span key={tagIndex} className="bg-[var(--gray-100)] px-2 py-1 rounded-xl text-xs text-[var(--subtle-text)] whitespace-nowrap overflow-hidden text-ellipsis max-w-[80px] flex-shrink-0 font-inter">
-                                {tag}
-                              </span>
-                            ))}
-                            {school.tags.length > 2 && (
-                              <span className="bg-[var(--gray-200)] px-2 py-1 rounded-xl text-xs text-[var(--subtle-text)] font-medium whitespace-nowrap flex-shrink-0 ml-auto font-inter">
-                                +{school.tags.length - 2}
-                              </span>
-                            )}
-                          </div>
-                          
-                          <div className={`text-sm leading-[1.4] text-[var(--text-default)] mb-2 overflow-hidden font-inter ${school.expanded ? '' : 'line-clamp-2'}`}>
-                            {school.description}
-                          </div>
-                          <span 
-                            className="text-[var(--link-text)] text-xs font-medium cursor-pointer mb-3 inline-block font-inter"
-                            onClick={() => toggleDescription(school.id)}
-                          >
-                            {school.expanded ? 'Less' : 'More'}
-                          </span>
-                          
-                          <div className="flex justify-between items-center pt-3 border-t border-[var(--border-color)]">
-                            <button className="text-[var(--header-green)] font-semibold text-xs bg-none border-none cursor-pointer p-0 font-inter">Apply Now</button>
-                            <div className="flex items-center gap-1 text-[var(--link-text)] font-medium text-xs cursor-pointer font-inter">
-                              Learn More
-                              <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                                <path d="M8 3.33334L7.06 4.27334L10.78 8.00001L7.06 11.7267L8 12.6667L12.6667 8.00001L8 3.33334Z" fill="currentColor"/>
+              {layout === 'grid' ? (
+                /* Grid View */
+                <div className="table w-full border-collapse border-spacing-0">
+                  <div className="table-row bg-[var(--surface-secondary)]">
+                    <div className="table-cell w-[200px] min-w-[200px] p-0 bg-[var(--surface-secondary)] border-r border-[var(--border-color)] sticky left-0 z-10"></div>
+                    <div className="table-cell overflow-x-auto w-[1075px] relative">
+                      <div 
+                        className="flex w-max min-w-[1075px]"
+                        style={{ transform: `translateX(-${scrollDistance}px)` }}
+                      >
+                        {schools.map((school, index) => (
+                          <div key={school.id} className="min-w-[260px] flex-[0_0_260px] p-5 border-r border-[var(--border-color)] border-b border-[var(--border-color)] bg-[var(--surface-color)] relative last:border-r-0">
+                            <button 
+                              onClick={() => removeSchool(school.id)}
+                              className="absolute top-3 right-3 w-6 h-6 rounded-full bg-[var(--gray-100)] border-none flex items-center justify-center cursor-pointer transition-all duration-200 hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444]"
+                            >
+                              <svg viewBox="0 0 24 24" fill="none" className="w-3 h-3 text-[var(--subtle-text)]">
+                                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                               </svg>
+                            </button>
+                            
+                            <img src={school.image} alt={school.name} className="w-12 h-12 rounded-lg object-cover mb-3" />
+                            <h3 className="text-base font-semibold text-[var(--bold-text)] mb-2 leading-[1.3] font-inter">{school.name}</h3>
+                            
+                            <div className="flex items-center gap-1.5 mb-2">
+                              <svg className="text-[var(--grade-badge)] w-3.5 h-3.5" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                              </svg>
+                              <span className="font-semibold text-[var(--bold-text)] text-sm font-inter">{school.rating}</span>
+                              <span className="text-[var(--subtle-text)] text-xs font-inter">({school.reviewCount.toLocaleString()})</span>
                             </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="table-row-group">
-                  {features.map((feature, featureIndex) => (
-                    <div key={feature.key} className={`table-row ${featureIndex % 2 === 1 ? 'bg-[var(--gray-100)]' : ''}`}>
-                      <div className="table-cell w-[200px] min-w-[200px] p-4 bg-inherit border-r border-[var(--border-color)] sticky left-0 z-[5]">
-                        <div className="flex items-center gap-2 text-[var(--bold-text)] text-sm font-semibold font-inter">
-                          <div 
-                            className="w-4 h-4 text-[var(--success-green)] flex-shrink-0"
-                            dangerouslySetInnerHTML={{ __html: icons[feature.icon as keyof typeof icons] }}
-                          />
-                          {feature.label}
-                          <div className="relative inline-block">
-                            <div 
-                              className="w-3.5 h-3.5 text-[var(--subtle-text)] cursor-help flex-shrink-0"
-                              dangerouslySetInnerHTML={{ __html: icons.help }}
-                            />
-                            <span className="invisible absolute z-10 bottom-[125%] left-1/2 transform -translate-x-1/2 w-[200px] bg-[var(--tooltip-bg)] text-[var(--tooltip-text)] text-center py-2 px-3 rounded-md text-xs opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100 font-inter">
-                              {feature.tooltip}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="table-cell overflow-x-auto relative">
-                        <div 
-                          className="flex w-max min-w-[1075px]"
-                          style={{ transform: `translateX(-${scrollDistance}px)` }}
-                        >
-                          {feature.values.map((value, valueIndex) => (
-                            <div key={valueIndex} className="min-w-[260px] flex-[0_0_260px] p-4 border-r border-[var(--border-color)] flex items-center justify-center text-center font-medium text-[var(--bold-text)] text-sm last:border-r-0 font-inter">
-                              {feature.key.includes('Rank') ? (
-                                <span className="bg-[var(--grade-badge)] text-white px-2 py-1 rounded font-semibold text-[13px] font-inter">
-                                  {value}
+                            
+                            <div className="text-[var(--subtle-text)] text-xs mb-2 font-inter">{school.location}</div>
+                            
+                            <div className="flex flex-wrap gap-1 mb-3 items-center min-h-6 overflow-hidden">
+                              {school.tags.slice(0, 2).map((tag, tagIndex) => (
+                                <span key={tagIndex} className="bg-[var(--gray-100)] px-2 py-1 rounded-xl text-xs text-[var(--subtle-text)] whitespace-nowrap overflow-hidden text-ellipsis max-w-[80px] flex-shrink-0 font-inter">
+                                  {tag}
                                 </span>
-                              ) : (
-                                value
+                              ))}
+                              {school.tags.length > 2 && (
+                                <span className="bg-[var(--gray-200)] px-2 py-1 rounded-xl text-xs text-[var(--subtle-text)] font-medium whitespace-nowrap flex-shrink-0 ml-auto font-inter">
+                                  +{school.tags.length - 2}
+                                </span>
                               )}
                             </div>
-                          ))}
-                        </div>
+                            
+                            <div className={`text-sm leading-[1.4] text-[var(--text-default)] mb-2 overflow-hidden font-inter ${school.expanded ? '' : 'line-clamp-2'}`}>
+                              {school.description}
+                            </div>
+                            <span 
+                              className="text-[var(--link-text)] text-xs font-medium cursor-pointer mb-3 inline-block font-inter"
+                              onClick={() => toggleDescription(school.id)}
+                            >
+                              {school.expanded ? 'Less' : 'More'}
+                            </span>
+                            
+                            <div className="flex justify-between items-center pt-3 border-t border-[var(--border-color)]">
+                              <button className="text-[var(--header-green)] font-semibold text-xs bg-none border-none cursor-pointer p-0 font-inter">Apply Now</button>
+                              <div className="flex items-center gap-1 text-[var(--link-text)] font-medium text-xs cursor-pointer font-inter">
+                                Learn More
+                                <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                                  <path d="M8 3.33334L7.06 4.27334L10.78 8.00001L7.06 11.7267L8 12.6667L12.6667 8.00001L8 3.33334Z" fill="currentColor"/>
+                                </svg>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
 
-                <div className="table-row border-t border-[var(--border-color)]">
-                  <div className="table-cell w-[200px] min-w-[200px] bg-[var(--surface-secondary)] border-r border-[var(--border-color)]"></div>
-                  <div className="table-cell overflow-x-auto relative">
-                    <div 
-                      className="flex w-max min-w-[1075px]"
-                      style={{ transform: `translateX(-${scrollDistance}px)` }}
-                    >
-                      {schools.map((school, index) => (
-                        <div key={school.id} className="min-w-[260px] flex-[0_0_260px] p-5 border-r border-[var(--border-color)] flex justify-between items-center bg-[var(--surface-secondary)] last:border-r-0">
+                  <div className="table-row-group">
+                    {features.map((feature, featureIndex) => (
+                      <div key={feature.key} className={`table-row ${featureIndex % 2 === 1 ? 'bg-[var(--gray-100)]' : ''}`}>
+                        <div className="table-cell w-[200px] min-w-[200px] p-4 bg-inherit border-r border-[var(--border-color)] sticky left-0 z-[5]">
+                          <div className="flex items-center gap-2 text-[var(--bold-text)] text-sm font-semibold font-inter">
+                            <div 
+                              className="w-4 h-4 text-[var(--success-green)] flex-shrink-0"
+                              dangerouslySetInnerHTML={{ __html: icons[feature.icon as keyof typeof icons] }}
+                            />
+                            {feature.label}
+                            <div className="relative inline-block">
+                              <div 
+                                className="w-3.5 h-3.5 text-[var(--subtle-text)] cursor-help flex-shrink-0"
+                                dangerouslySetInnerHTML={{ __html: icons.help }}
+                              />
+                              <span className="invisible absolute z-10 bottom-[125%] left-1/2 transform -translate-x-1/2 w-[200px] bg-[var(--tooltip-bg)] text-[var(--tooltip-text)] text-center py-2 px-3 rounded-md text-xs opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100 font-inter">
+                                {feature.tooltip}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="table-cell overflow-x-auto relative">
+                          <div 
+                            className="flex w-max min-w-[1075px]"
+                            style={{ transform: `translateX(-${scrollDistance}px)` }}
+                          >
+                            {feature.values.map((value, valueIndex) => (
+                              <div key={valueIndex} className="min-w-[260px] flex-[0_0_260px] p-4 border-r border-[var(--border-color)] flex items-center justify-center text-center font-medium text-[var(--bold-text)] text-sm last:border-r-0 font-inter">
+                                {feature.key.includes('Rank') ? (
+                                  <span className="bg-[var(--grade-badge)] text-white px-2 py-1 rounded font-semibold text-[13px] font-inter">
+                                    {value}
+                                  </span>
+                                ) : (
+                                  value
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="table-row border-t border-[var(--border-color)]">
+                    <div className="table-cell w-[200px] min-w-[200px] bg-[var(--surface-secondary)] border-r border-[var(--border-color)]"></div>
+                    <div className="table-cell overflow-x-auto relative">
+                      <div 
+                        className="flex w-max min-w-[1075px]"
+                        style={{ transform: `translateX(-${scrollDistance}px)` }}
+                      >
+                        {schools.map((school, index) => (
+                          <div key={school.id} className="min-w-[260px] flex-[0_0_260px] p-5 border-r border-[var(--border-color)] flex justify-between items-center bg-[var(--surface-secondary)] last:border-r-0">
                           <button className="text-[var(--header-green)] font-semibold text-xs bg-none border-none cursor-pointer p-0 font-inter">Apply Now</button>
                           <div className="flex items-center gap-1 text-[var(--link-text)] font-medium text-xs cursor-pointer font-inter">
                             Learn More
@@ -498,19 +553,150 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
                             </svg>
                           </div>
                         </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                /* List View - Table */
+                <div className="w-full overflow-x-auto bg-[var(--surface-color)]">
+                  <table className="w-full border-collapse table-fixed">
+                    <thead>
+                      <tr>
+                        <th className="align-top text-left bg-[#f8f9fa] px-3 py-4 border-b border-r border-[rgba(0,0,0,0.08)] w-[280px] min-w-[280px] sticky left-0 z-10">
+                          <span className="text-[14px] font-semibold text-[#016853] font-inter">School</span>
+                        </th>
+                        {features
+                          .slice(listColumnStart, listColumnStart + columnsPerViewList)
+                          .map((feature) => (
+                            <th
+                              key={feature.key}
+                              className="align-top bg-[#f8f9fa] px-3 py-4 border-b border-l border-[rgba(0,0,0,0.08)] min-w-[140px] text-center"
+                            >
+                              <div className="flex flex-col items-center gap-1.5">
+                                <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#016853] font-inter">
+                                  <div
+                                    className="w-[14px] h-[14px] text-[#089E68] flex-shrink-0"
+                                    dangerouslySetInnerHTML={{ __html: icons[feature.icon as keyof typeof icons] }}
+                                  />
+                                  <span>{feature.label}</span>
+                                  <div className="relative inline-flex items-center group">
+                                    <div
+                                      className="w-3 h-3 text-[#5F5F5F] cursor-help flex-shrink-0 mt-0.5"
+                                      dangerouslySetInnerHTML={{ __html: icons.help }}
+                                    />
+                                    <span className="invisible absolute z-10 bottom-[125%] left-1/2 transform -translate-x-1/2 w-[200px] bg-[#333] text-white text-center py-2 px-3 rounded-md text-[12px] opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100 font-inter">
+                                      {feature.tooltip}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </th>
+                          ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {schools.map((school, schoolIndex) => (
+                        <tr
+                          key={school.id}
+                          className="odd:bg-[var(--surface-color)] even:bg-[rgba(0,0,0,0.02)] hover:bg-[rgba(1,104,83,0.02)]"
+                        >
+                          {/* School column */}
+                          <td className="align-top px-3 py-4 border-b border-r border-[rgba(0,0,0,0.08)] w-[280px] min-w-[280px] sticky left-0 z-[5] bg-inherit">
+                            <div className="flex items-start gap-3 relative">
+                              <button
+                                onClick={() => removeSchool(school.id)}
+                                className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[rgba(0,0,0,0.05)] border-none flex items-center justify-center cursor-pointer transition-all duration-200 hover:bg-[rgba(239,68,68,0.1)] z-[5]"
+                              >
+                                <svg viewBox="0 0 24 24" fill="none" className="w-3 h-3 text-[var(--subtle-text)]">
+                                  <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                              </button>
+                              <img src={school.image} alt={school.name} className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-1.5 mb-2">
+                                  <div className="text-[14px] font-semibold text-[#464646] leading-[1.3] font-inter">{school.name}</div>
+                                  <div className="relative inline-flex items-center group">
+                                    <div className="w-4 h-4 bg-[rgba(0,0,0,0.1)] rounded-full flex items-center justify-center cursor-help flex-shrink-0">
+                                      <svg viewBox="0 0 24 24" fill="none" className="w-2.5 h-2.5 text-[var(--subtle-text)]">
+                                        <path d="M12 16V12M12 8H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                      </svg>
+                                    </div>
+                                    <div className="invisible absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full mb-2 bg-[#333] text-white py-2 px-3 rounded-md text-[12px] leading-[1.4] w-[250px] opacity-0 transition-all duration-200 z-[1000] text-left group-hover:visible group-hover:opacity-100 font-inter">
+                                      {school.description}
+                                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-6 border-transparent border-t-[#333]"></div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-1.5 mb-2">
+                                  <svg className="text-[#00DF8B] w-3.5 h-3.5" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                  </svg>
+                                  <span className="font-semibold text-[#464646] text-[14px] font-inter">{school.rating}</span>
+                                  <span className="text-[var(--subtle-text)] text-[12px] font-inter">({school.reviewCount.toLocaleString()})</span>
+                                </div>
+                                <div className="flex flex-wrap gap-1 items-center min-h-6">
+                                  {school.tags.slice(0, 2).map((tag, tagIndex) => (
+                                    <span key={tagIndex} className="bg-[rgba(0,0,0,0.05)] px-2 py-1 rounded-xl text-[11px] text-[var(--subtle-text)] whitespace-nowrap overflow-hidden text-ellipsis max-w-[80px] flex-shrink-0 font-inter">
+                                      {tag}
+                                    </span>
+                                  ))}
+                                  {school.tags.length > 2 && (
+                                    <span className="bg-[rgba(0,0,0,0.08)] px-2 py-1 rounded-xl text-[11px] text-[var(--subtle-text)] font-medium whitespace-nowrap flex-shrink-0 font-inter">
+                                      +{school.tags.length - 2}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* Data columns */}
+                          {features
+                            .slice(listColumnStart, listColumnStart + columnsPerViewList)
+                            .map((feature) => {
+                              const value = feature.values[schoolIndex];
+                              return (
+                                <td
+                                  key={feature.key}
+                                  className="align-middle px-3 py-4 border-b border-l border-[rgba(0,0,0,0.08)] text-center min-w-[140px]"
+                                >
+                                  {feature.key.includes('Rank') ? (
+                                    <span className={`inline-flex items-center justify-center min-w-[40px] h-7 px-2 py-1 rounded-md font-semibold text-[13px] text-white font-inter ${getGradeClass(value)}`}>
+                                      {value}
+                                    </span>
+                                  ) : feature.key === 'website' ? (
+                                    <a
+                                      href={`https://${value.replace(/^https?:\/\//, '')}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="text-[var(--link-text)] font-medium text-[14px] hover:underline font-inter"
+                                    >
+                                      {value.replace('https://www.', '').replace('https://', '')}
+                                    </a>
+                                  ) : (
+                                    <span className="text-[14px] font-medium text-[#464646] font-inter">
+                                      {value}
+                                    </span>
+                                  )}
+                                </td>
+                              );
+                            })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
 
             {/* Pagination Wrapper */}
             <div className="w-full max-w-[1200px] mx-auto mt-8 relative">
               <div className="flex justify-center items-center gap-4 w-full">
                 <button 
-                  onClick={scrollPrev}
-                  disabled={currentScrollPosition <= 0}
+                  onClick={layout === 'grid' ? scrollPrev : listPrev}
+                  disabled={layout === 'grid' ? currentScrollPosition <= 0 : listColumnStart <= 0}
                   className="w-9 h-9 rounded-[18px] border border-[var(--border-color)] bg-[var(--surface-color)] text-[var(--subtle-text)] cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--link-text)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -523,13 +709,21 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
                 >
                   <div 
                     className="absolute left-0 top-0 h-full bg-[var(--header-green)] rounded-[2px] transition-[width] duration-300"
-                    style={{ width: `${progressWidth}%` }}
+                    style={{ width: `${layout === 'grid' ? progressWidth : Math.min(listProgressWidth, 100)}%` }}
                   ></div>
                 </div>
-                <div className="text-sm text-[var(--subtle-text)] min-w-[60px] text-center font-inter">{currentPage}/{totalPages}</div>
+                <div className="text-sm text-[var(--subtle-text)] min-w-[60px] text-center font-inter">
+                  {layout === 'grid'
+                    ? `${currentPage}/${totalPages}`
+                    : `${listStartIndex}-${listEndIndex}/${totalFeatureColumns}`}
+                </div>
                 <button 
-                  onClick={scrollNext}
-                  disabled={currentScrollPosition >= maxScrollPosition}
+                  onClick={layout === 'grid' ? scrollNext : listNext}
+                  disabled={
+                    layout === 'grid'
+                      ? currentScrollPosition >= maxScrollPosition
+                      : listColumnStart >= maxListStart
+                  }
                   className="w-9 h-9 rounded-[18px] border border-[var(--border-color)] bg-[var(--surface-color)] text-[var(--subtle-text)] cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--link-text)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
