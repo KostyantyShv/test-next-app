@@ -3,7 +3,7 @@ import { Monitor } from '@/hooks/useMonitors.hook';
 export const mockMonitors: Monitor[] = [
   {
     id: '1',
-    name: 'price',
+    name: 'Price Tracker Pro',
     item: {
       title: 'The Complete Guide to Machine Learning',
       id: 'ITM-A7B9C3',

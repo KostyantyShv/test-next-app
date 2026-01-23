@@ -26,6 +26,12 @@ export default function MePage() {
   useEffect(() => {
     const loadUser = async () => {
       try {
+        // Check if desktop - redirect to home
+        if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+          router.push('/');
+          return;
+        }
+
         const { data: { user: authUser } } = await supabase.auth.getUser();
         if (!authUser) {
           router.push('/login');
@@ -60,6 +66,19 @@ export default function MePage() {
     };
 
     loadUser();
+
+    // Also check on resize
+    const handleResize = () => {
+      if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+        router.push('/');
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, [router, supabase]);
 
   const handleLogout = async () => {

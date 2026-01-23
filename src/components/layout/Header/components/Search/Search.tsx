@@ -125,7 +125,7 @@ export const Search: FC = () => {
 
       {/* Search Suggestions */}
       {showSuggestions && (
-        <div className="absolute top-[calc(100%+12px)] left-0 right-0 bg-white border border-[#065f46] rounded-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] opacity-100 visible transform translate-y-0 transition-all duration-300 z-[1000] max-h-[600px] overflow-y-auto p-4">
+        <div className="absolute top-[calc(100%+12px)] left-0 right-0 bg-white rounded-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] opacity-100 visible transform translate-y-0 transition-all duration-300 z-[1000] max-h-[600px] overflow-y-auto p-4">
           {/* Trending Section */}
           <div className="mb-6">
             <h3 className="text-sm text-[#5F5F5F] mb-1 font-semibold tracking-[-0.01em]">Trending now</h3>

@@ -1126,3 +1126,12 @@ body {
   }
 }
 
+/* Compare Mobile Scrollbar Hiding */
+.compare-mobile-scroll::-webkit-scrollbar {
+  display: none;
+}
+.compare-mobile-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
