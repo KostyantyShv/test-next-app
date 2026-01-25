@@ -44,7 +44,7 @@ const SchoolInfoMobile: React.FC<SchoolInfoProps> = ({ images }) => {
     <>
       <div
         ref={schoolInfoRef}
-        className="bg-white rounded-b-lg overflow-hidden p-4"
+        className="bg-white rounded-b-lg overflow-hidden p-4 max-w-[390px] mx-auto"
       >
         <div className="flex items-center gap-2 mb-2">
           <h1 className="text-2xl font-bold text-[#464646]">Lincoln Academy</h1>

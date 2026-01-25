@@ -222,7 +222,7 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
                     key={index}
                     className="relative bg-gradient-to-b from-[rgba(1,104,83,0.03)] to-transparent rounded-xl p-4 md:p-6 flex flex-row md:flex-col md:items-center max-md:gap-4 md:text-center hover:-translate-y-[2px] hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all duration-200 ease-in-out"
                   >
-                    <div className="w-12 md:w-[60px] h-12 md:h-[60px] bg-[#ecf9f4] border-2 border-[#00c87c] rounded-full flex items-center justify-center mb-4 md:mb-5">
+                    <div className="w-12 md:w-[60px] h-12 md:h-[60px] bg-[#ecf9f4] border-2 border-[#00c87c] rounded-full flex items-center justify-center mb-4 md:mb-5 flex-shrink-0 aspect-square">
                       <span className="text-[#00a96c] text-base md:text-xl font-bold">
                         {item.number}
                       </span>
@@ -267,23 +267,25 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
                 ].map((item, index) => (
                   <div
                     key={index}
-                    className="relative bg-gradient-to-b from-[rgba(1,104,83,0.03)] to-transparent rounded-xl p-4 md:p-6 flex flex-col items-center text-center hover:-translate-y-[2px] hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all duration-200 ease-in-out"
+                    className="relative bg-gradient-to-b from-[rgba(1,104,83,0.03)] to-transparent rounded-xl p-4 md:p-6 flex flex-row md:flex-col md:items-center max-md:gap-4 md:text-center hover:-translate-y-[2px] hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all duration-200 ease-in-out"
                   >
-                    <div className="w-12 md:w-[60px] h-12 md:h-[60px] bg-[#ecf9f4] border-2 border-[#00c87c] rounded-full flex items-center justify-center mb-4 md:mb-5">
+                    <div className="w-12 md:w-[60px] h-12 md:h-[60px] bg-[#ecf9f4] border-2 border-[#00c87c] rounded-full flex items-center justify-center mb-4 md:mb-5 flex-shrink-0 aspect-square">
                       <span className="text-[#00a96c] text-base md:text-xl font-bold">
                         {item.number}
                       </span>
                     </div>
-                    <h2 className="text-sm md:text-[15px] text-[#346DC2] font-semibold leading-[1.4] mb-3">
-                      {item.title}
-                    </h2>
-                    <div className="flex items-baseline gap-1 justify-center">
-                      <span className="text-[#016853] text-base md:text-xl font-bold">
-                        {item.number}
-                      </span>
-                      <span className="text-[#5F5F5F] text-sm md:text-base">
-                        of {item.total}
-                      </span>
+                    <div>
+                      <h2 className="text-sm md:text-[15px] text-[#346DC2] font-semibold leading-[1.4] md:mb-3">
+                        {item.title}
+                      </h2>
+                      <div className="flex items-baseline gap-1 md:justify-center">
+                        <span className="text-[#016853] text-base md:text-xl font-bold">
+                          {item.number}
+                        </span>
+                        <span className="text-[#5F5F5F] text-sm md:text-base">
+                          of {item.total}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 ))}

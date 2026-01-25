@@ -5,7 +5,6 @@ import { School } from "./types";
 interface MapContainerProps {
   schools: School[];
   mapType: "roadmap" | "satellite";
-  showTerrain: boolean;
   showLabels: boolean;
 }
 
@@ -25,7 +24,7 @@ const getMarkerColor = (grade: string): string => {
 };
 
 const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
-  ({ schools, mapType, showTerrain, showLabels }, ref) => {
+  ({ schools, mapType, showLabels }, ref) => {
     const mapRef = useRef<HTMLDivElement>(null);
     const mapInstanceRef = useRef<google.maps.Map | null>(null);
     const markersRef = useRef<google.maps.Marker[]>([]);
@@ -175,7 +174,7 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
         (map as any).setStreetView(null);
       }
 
-      // Set map type
+      // Set map type and labels (matching CodePen logic)
       if (mapType === "satellite") {
         // Use HYBRID for satellite with labels, SATELLITE for satellite without labels
         if (showLabels) {
@@ -184,19 +183,43 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
           map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
         }
       } else {
-        // Use TERRAIN for terrain view, ROADMAP for regular map
-        if (showTerrain) {
-          map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
-        } else {
-          map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+        // For roadmap, use styles to hide labels if needed
+        map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+        const baseStyles = [
+          {
+            featureType: "all",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#464646" }],
+          },
+          {
+            featureType: "landscape",
+            elementType: "all",
+            stylers: [{ color: "#f2f2f2" }],
+          },
+          {
+            featureType: "water",
+            elementType: "all",
+            stylers: [{ color: "#d1e6ea" }],
+          },
+        ];
+        
+        // Hide labels if showLabels is false
+        if (!showLabels) {
+          baseStyles.push({
+            featureType: "all",
+            elementType: "labels",
+            stylers: [{ visibility: "off" } as any],
+          });
         }
+        
+        (map as any).setOptions({ styles: baseStyles });
       }
 
       // Show markers
       markersRef.current.forEach((marker) => {
         (marker as any).setMap(map);
       });
-    }, [mapType, showTerrain, showLabels]);
+    }, [mapType, showLabels]);
 
     return <div ref={mapRef} id="schoolMap" className="w-full h-full" />;
   }

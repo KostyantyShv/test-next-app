@@ -28,7 +28,7 @@ export const Header: FC<HeaderProps> = ({ className, onOpenSidebar }) => {
 
   return (
     <>
-      <header className={cn('bg-white sticky top-0 z-[1000] transition-all duration-300 ', className)}>
+      <header className={cn('bg-white md:sticky fixed top-0 left-0 right-0 md:relative z-[1000] transition-all duration-300 ', className)}>
         {/* Desktop Header */}
         <div className="hidden md:block">
           <div className="max-w-[1400px] h-[63px] px-6 flex items-center justify-center h-18 gap-6 mx-auto">

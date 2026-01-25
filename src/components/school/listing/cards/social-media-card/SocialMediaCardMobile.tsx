@@ -53,7 +53,7 @@ const SocialMediaCardMobile: React.FC<{ id: string }> = ({ id }) => {
   return (
     <div
       id={id}
-      className="w-full max-w-[400px] mx-auto h-auto min-h-[400px] bg-[#E1E7EE] rounded-2xl overflow-hidden flex flex-col md:max-w-lg lg:max-w-xl"
+      className="w-full max-w-[390px] mx-auto h-auto min-h-[400px] bg-[#E1E7EE] rounded-2xl overflow-hidden flex flex-col md:max-w-lg lg:max-w-xl"
     >
       <div className="flex-1 p-4 sm:p-5">
         <h2 className="text-xl sm:text-2xl font-bold text-[#1B1B1B] mb-4 sm:mb-5">

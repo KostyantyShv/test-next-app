@@ -238,19 +238,19 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
         </div>
         {!isAdmin && (
           <>
-            <div className="h-px bg-gray-200 my-5" />
-            <div>
-              <h3 
-                className="mb-4"
-                style={{
-                  fontSize: '16px',
-                  fontWeight: 500,
-                  color: '#464646',
-                  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
-                }}
-              >
-                Assign to Listings
-              </h3>
+        <div className="h-px bg-gray-200 my-5" />
+        <div>
+          <h3 
+            className="mb-4"
+            style={{
+              fontSize: '16px',
+              fontWeight: 500,
+              color: '#464646',
+              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+            }}
+          >
+            Assign to Listings
+          </h3>
               {availableListings.map((listing) => {
             const isChecked = selectedListingIds.includes(listing.id);
             return (
@@ -303,7 +303,7 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
             </label>
             );
           })}
-            </div>
+        </div>
           </>
         )}
       </form>

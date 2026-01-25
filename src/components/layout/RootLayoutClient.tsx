@@ -75,15 +75,22 @@ export const RootLayoutClient = ({
         </div>
 
         <div className="flex-1 flex flex-col">
-          {/* Header with mobile menu button - hide on mobile for team-members-dashboard */}
-          {/* Hide default header on listing page when scrolled (sticky header replaces it) */}
-          {!(isTeamMembersPage) && !(isListingPage && isListingPageScrolled) && (
-            <>
+          {/* Mobile Header - always show on mobile, including listing page */}
+          {!(isTeamMembersPage) && (
+            <div className="md:hidden">
               <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} />
-              {/* Spacer to maintain gap under sticky header */}
               <div className="h-[12px] flex-shrink-0" />
-            </>
+            </div>
           )}
+          
+          {/* Desktop Header - hide on listing page when scrolled (sticky header replaces it) */}
+          {!(isTeamMembersPage) && !(isListingPage && isListingPageScrolled) && (
+            <div className="hidden md:block">
+              <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} />
+              <div className="h-[12px] flex-shrink-0" />
+            </div>
+          )}
+          
           {/* Show header on desktop even for team-members-dashboard */}
           {isTeamMembersPage && (
             <div className="hidden md:block">

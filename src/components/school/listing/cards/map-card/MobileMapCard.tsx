@@ -4,6 +4,7 @@ import Script from "next/script";
 import Image from "next/image";
 import { schools } from "./mock";
 import { School } from "./types";
+import MapHeader from "./MapHeader";
 
 const getMarkerColor = (grade: string): string => {
   const colors: Record<string, string> = {
@@ -18,6 +19,7 @@ const getMarkerColor = (grade: string): string => {
 
 export default function MobileMapCard({ id }: { id: string }) {
   const [mapType, setMapType] = useState<"roadmap" | "satellite">("roadmap");
+  const [showLabels, setShowLabels] = useState(true);
   const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
@@ -111,18 +113,53 @@ export default function MobileMapCard({ id }: { id: string }) {
     }
   }, []);
 
-  // Handle map type changes
+  // Handle map type and labels changes
   useEffect(() => {
     if (!mapInstanceRef.current || typeof google === "undefined") return;
 
     const map = mapInstanceRef.current;
 
+    // Set map type and labels (matching desktop logic)
     if (mapType === "satellite") {
-      map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+      // Use HYBRID for satellite with labels, SATELLITE for satellite without labels
+      if (showLabels) {
+        map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+      } else {
+        map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+      }
     } else {
+      // For roadmap, use styles to hide labels if needed
       map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+      const baseStyles = [
+        {
+          featureType: "all",
+          elementType: "labels.text.fill",
+          stylers: [{ color: "#464646" }],
+        },
+        {
+          featureType: "landscape",
+          elementType: "all",
+          stylers: [{ color: "#f2f2f2" }],
+        },
+        {
+          featureType: "water",
+          elementType: "all",
+          stylers: [{ color: "#d1e6ea" }],
+        },
+      ];
+      
+      // Hide labels if showLabels is false
+      if (!showLabels) {
+        baseStyles.push({
+          featureType: "all",
+          elementType: "labels",
+          stylers: [{ visibility: "off" } as any],
+        });
+      }
+      
+      (map as any).setOptions({ styles: baseStyles });
     }
-  }, [mapType]);
+  }, [mapType, showLabels]);
 
   const handleFullscreen = () => {
     const mapContent = document.getElementById(`map-content-${id}`);
@@ -157,47 +194,31 @@ export default function MobileMapCard({ id }: { id: string }) {
     }
   };
 
+  const handleMapTypeChange = (type: "roadmap" | "satellite") => {
+    setMapType(type);
+  };
+
   return (
     <div 
       id={id} 
-      className="block md:hidden"
+      className="block md:hidden max-w-[390px] mx-auto"
       style={{ scrollMarginTop: "80px" }}
     >
-      <div className="w-full bg-white">
-        {/* Header */}
-        <div className="px-4 py-4 border-b border-black/8 bg-white sticky top-0 z-10">
-          <h2 className="text-[#464646] text-xl font-semibold m-0">Map</h2>
-        </div>
+      <div className="w-full bg-white rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.05)] overflow-hidden border border-black/10">
+        {/* Header with controls */}
+        <MapHeader 
+          mapType={mapType}
+          setMapType={setMapType}
+          onMapTypeChange={handleMapTypeChange}
+          showLabels={showLabels}
+          setShowLabels={setShowLabels}
+        />
 
         {/* Map Content */}
         <div
           id={`map-content-${id}`}
-          className="relative h-[400px]"
+          className="relative h-[500px]"
         >
-          {/* Map Type Controls */}
-          <div className="absolute top-2.5 left-2.5 z-[5] flex rounded overflow-hidden shadow-[0_2px_4px_rgba(0,0,0,0.1)]">
-            <button
-              onClick={() => setMapType("roadmap")}
-              className={`px-3 py-2 text-sm border-none cursor-pointer ${
-                mapType === "roadmap"
-                  ? "bg-[#f1f1f1] text-[#464646] font-medium"
-                  : "bg-white"
-              }`}
-            >
-              Map
-            </button>
-            <button
-              onClick={() => setMapType("satellite")}
-              className={`px-3 py-2 text-sm border-none cursor-pointer border-l border-black/8 ${
-                mapType === "satellite"
-                  ? "bg-[#f1f1f1] text-[#464646] font-medium"
-                  : "bg-white"
-              }`}
-            >
-              Satellite
-            </button>
-          </div>
-
           {/* Fullscreen Button */}
           <button
             onClick={handleFullscreen}

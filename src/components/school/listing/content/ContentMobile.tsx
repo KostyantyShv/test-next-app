@@ -51,7 +51,7 @@ const ContentMobile: React.FC<ContentMobileProps> = ({ schoolType = "college" })
     switch (schoolType) {
       case "k12":
         return (
-          <div className="p-4 h-fit w-full pb-32">
+          <div className="p-4 h-fit w-full max-w-[390px] mx-auto pb-32">
             {/* K-12 specific content - placeholder for now */}
             <div className="p-8 text-center text-gray-500">
               <h2 className="text-2xl font-semibold mb-4">K-12 Content</h2>
@@ -61,7 +61,7 @@ const ContentMobile: React.FC<ContentMobileProps> = ({ schoolType = "college" })
         );
       case "grad":
         return (
-          <div className="p-4 h-fit w-full pb-32">
+          <div className="p-4 h-fit w-full max-w-[390px] mx-auto pb-32">
             {/* Grad School specific content - placeholder for now */}
             <div className="p-8 text-center text-gray-500">
               <h2 className="text-2xl font-semibold mb-4">Graduate School Content</h2>
@@ -73,7 +73,7 @@ const ContentMobile: React.FC<ContentMobileProps> = ({ schoolType = "college" })
       default:
         // Existing college content
         return (
-          <div className="p-4 h-fit w-full pb-32">
+          <div className="p-4 h-fit w-full max-w-[390px] mx-auto pb-32">
             <Announcements id={SIDE_TABS_MOBILE.MONTHLY_UPDATE_MOBILE} />
             <ReportCard id={SIDE_TABS_MOBILE.REPORT_CARD_MOBILE} />
             <AboutSection id={SIDE_TABS_MOBILE.ABOUT_MOBILE} />

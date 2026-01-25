@@ -12,7 +12,7 @@ const ImagesGridMobile: React.FC<SchoolPhotosProps> = ({ images }) => {
 
   return (
     <>
-      <div className="relative w-full">
+      <div className="relative w-full max-w-[390px] mx-auto">
         <div className="relative w-full h-[200px]">
           <img
             src={images[0]}
