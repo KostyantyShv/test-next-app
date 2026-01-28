@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MapContainer from "./MapContainer";
 import SchoolCard from "../SchoolCard";
 import { School } from "../types";
@@ -15,6 +15,12 @@ const ContentArea: React.FC<ContentAreaProps> = ({
   schools,
 }) => {
   const [isMapExpanded, setIsMapExpanded] = useState(false);
+
+  useEffect(() => {
+    if (!isMapActive) setIsMapExpanded(false);
+  }, [isMapActive]);
+
+  // При повноекранній мапі (isMapExpanded) картки ховаються; при виході — знову показуються.
   const cardCounts = {
     grid: 6,
     list: 4,
@@ -45,8 +51,11 @@ const ContentArea: React.FC<ContentAreaProps> = ({
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-[400px]">
-      <div className={`flex-1 p-6 transition-all duration-300 ${isMapExpanded ? 'hidden' : ''}`}>
+    <div className="flex flex-col md:flex-row min-h-[400px] min-w-0">
+      <div
+        className={`flex-1 min-w-0 p-6 transition-all duration-300 ${isMapExpanded ? "hidden" : ""}`}
+        aria-hidden={isMapExpanded}
+      >
         {/* Mobile Layouts */}
         <div className="md:hidden">
           {layout === "grid" && (
@@ -72,19 +81,19 @@ const ContentArea: React.FC<ContentAreaProps> = ({
         </div>
 
         {/* Desktop Layouts */}
-        <div className="hidden md:block">
+        <div className="hidden md:block min-w-0">
           {layout === "grid" || layout === "hybrid" || layout === "classic" ? (
-            <div className={`grid gap-6 ${getGridCols()}`}>
+            <div className={`grid gap-6 min-w-0 ${getGridCols()}`}>
               {renderCards()}
             </div>
           ) : (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 min-w-0">
               {renderCards()}
             </div>
           )}
         </div>
       </div>
-      <MapContainer isMapActive={isMapActive} schools={schools} onExpandedChange={setIsMapExpanded} />
+      <MapContainer isMapActive={isMapActive} schools={schools} layout={layout} onExpandedChange={setIsMapExpanded} />
     </div>
   );
 };

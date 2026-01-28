@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { School } from "./types";
+import React, { useRef, useState } from "react";
 import Image from "next/image";
+import { School } from "./types";
+import { SchoolCardIcons } from './SchoolCardIcons';
+import { OptionsDrawer } from './OptionsDrawer';
 import OptionsButton from "./OptionsButton";
 import { useSchoolsExplore } from "@/store/use-schools-explore";
 
@@ -28,50 +30,39 @@ const getGradeClass = (grade: string): string => {
 
 const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
   const { establishment } = useSchoolsExplore((state) => state);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const isListLayout = layout === "list";
   const isGridLayout = layout === "grid";
   const isHybridLayout = layout === "hybrid";
   const isClassicLayout = layout === "classic";
   const showHoverOverlay = layout === "grid" || layout === "classic";
-  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
   // Specialty Label Component for Grid Layout
   const SpecialtyLabel = () =>
     school.specialty && isGridLayout && (
       <div
-        className={`specialty-label absolute top-2 left-0 h-7 bg-white rounded-r-[14px] flex items-center px-2.5 text-[11px] font-medium shadow-[0_2px_4px_rgba(0,0,0,0.1)] z-[2] md:top-3 md:h-8 md:px-3 md:text-xs md:rounded-r-2xl ${
-          school.specialty === "hot"
-            ? "text-[#FF4D4D]"
-            : school.specialty === "instant-book"
+        className={`specialty-label absolute top-2 left-0 h-7 bg-white rounded-r-[14px] flex items-center px-2.5 text-[11px] font-medium shadow-[0_2px_4px_rgba(0,0,0,0.1)] z-[2] md:top-3 md:h-8 md:px-3 md:text-xs md:rounded-r-2xl ${school.specialty === "hot"
+          ? "text-[#FF4D4D]"
+          : school.specialty === "instant-book"
             ? "text-[#1D77BD]"
             : "text-[#FF9900]"
-        }`}
+          }`}
       >
         {school.specialty === "hot" ? (
           <>
-            <svg width="14" height="14" viewBox="0 0 24 24" className="mr-1">
-              <path
-                d="M11.315 14.4652C11.0856 13.994 11.0112 13.5601 10.974 13.1075C10.9492 12.8162 10.8748 12.5434 10.5463 12.4566C10.1805 12.3636 9.94493 12.562 9.78994 12.8658C9.2072 13.994 9.11421 15.2091 9.12041 16.4552C9.12661 17.7446 9.87673 18.6684 10.5649 19.6293C10.8376 20.0136 11.0422 20.429 11.2716 20.8381C11.5754 21.3775 11.1848 21.8858 10.6145 21.9168C9.62256 21.9726 8.67406 21.83 7.76275 21.3713C5.68597 20.3174 4.29731 18.6436 3.41081 16.5482C2.79087 15.0851 2.90866 13.5911 3.5224 12.1404C3.70218 11.7127 3.91915 11.2911 4.13613 10.882C4.26632 10.634 4.4647 10.4294 4.71267 10.2744C5.26441 9.93346 5.80376 10.1504 5.90295 10.789C5.99594 11.3717 6.02693 11.9669 6.08893 12.5558C6.10753 12.7356 6.12612 12.9216 6.25631 13.1075C6.3555 11.9978 6.44229 10.913 6.56008 9.83427C6.72126 8.38362 7.03123 6.97637 7.87434 5.7427C8.01693 5.53192 8.18431 5.35214 8.41989 5.24055C8.92203 4.99258 9.2382 5.09796 9.47378 5.61251C9.75895 6.23245 9.98212 6.88958 10.5339 7.44132C10.5897 7.11275 10.6269 6.83378 10.6888 6.56101C11.0298 5.01737 11.6931 3.62252 12.6107 2.33925C12.7966 2.07888 13.0446 1.94249 13.3794 2.02308C13.6893 2.09748 13.8381 2.33305 13.8319 2.60582C13.8319 3.61632 14.3589 4.36024 15.0284 5.00497C16.4605 6.37503 17.1052 8.07985 17.285 10.0017C17.316 10.324 17.285 10.6526 17.285 11.1113C17.7065 10.572 17.9917 10.0884 18.2645 9.5925C18.4504 9.26393 18.6426 8.94776 19.1076 8.96016C19.4237 8.97256 19.6407 9.09035 19.7771 9.37552C20.676 11.3097 21.2712 13.3121 21.0604 15.4757C20.9302 16.8271 20.428 18.0298 19.4609 19.0031C18.562 19.9144 17.6817 20.8443 16.4976 21.3961C15.6731 21.7804 14.8238 22.0532 13.8939 21.9912C13.2306 21.9478 13.026 21.5758 13.2988 20.9745C13.5344 20.4538 13.9745 20.0818 14.2535 19.5921C15.4376 17.5463 15.6669 15.4447 14.7308 13.2315C14.3093 12.2272 13.9621 11.1919 13.5778 10.169C13.4476 9.82807 13.2678 9.5367 12.8338 9.61109C12.3999 9.69169 12.3503 10.0265 12.3379 10.3922C12.2883 12.097 11.9907 13.2935 11.315 14.4528V14.4652Z"
-                fill="currentColor"
-              />
-            </svg>
+            <SchoolCardIcons.Hot />
             High demand
           </>
         ) : school.specialty === "instant-book" ? (
           <>
-            <svg width="14" height="14" viewBox="0 0 24 24" className="mr-1">
-              <path
-                d="M9.71308 2.29834C9.47618 2.49338 9.28465 2.77245 9.15992 3.10434L6.159 11.1068C6.04437 11.4118 5.99014 11.7508 6.00147 12.0917C6.0128 12.4325 6.08931 12.7638 6.22373 13.0541C6.35815 13.3444 6.54601 13.584 6.76947 13.7502C6.99292 13.9164 7.24454 14.0037 7.50041 14.0037H10.5812L9.04588 19.5214C8.96429 19.9635 8.99825 20.4295 9.14216 20.8425C9.28608 21.2554 9.53133 21.5905 9.8374 21.7925C10.1435 21.9944 10.4921 22.0511 10.8256 21.9532C11.1591 21.8553 11.4575 21.6086 11.6717 21.2539L17.6735 11.2508C17.8497 10.9567 17.9601 10.6022 17.9919 10.2281C18.0238 9.85408 17.9758 9.47564 17.8536 9.13629C17.7313 8.79695 17.5398 8.51048 17.3009 8.3098C17.062 8.10912 16.7855 8.00238 16.5032 8.00184H13.0844L14.9247 4.63281C14.9998 4.33221 15.0202 4.01213 14.9844 3.69892C14.9486 3.38571 14.8575 3.08833 14.7186 2.83126C14.5797 2.57418 14.397 2.36476 14.1855 2.22024C13.9741 2.07573 13.7399 2.00024 13.5023 2H10.5013C10.2229 2.00001 9.94998 2.10331 9.71308 2.29834Z"
-                fill="currentColor"
-              />
-            </svg>
+            <SchoolCardIcons.InstantBook />
             Instant book
           </>
         ) : (
           <>
-            <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" className="mr-1">
-              <path d="m6.758 11.034.585 1.43a4.53 4.53 0 1 1 5.13-5.052l-1.419-.594a3.276 3.276 0 1 0-4.3 4.216h.004Zm-3.53 1.738a6.75 6.75 0 1 1 9.545-9.544A6.7 6.7 0 0 1 14.75 8c0 .121-.01.24-.018.36l1.218.51a8 8 0 1 0-7.177 7.093l-.5-1.225a6.722 6.722 0 0 1-5.046-1.966Zm9.623 7.141 1.2-2.874 2.021 2.011a.7.7 0 0 0 .99 0l1.885-1.87a.7.7 0 0 0 .007-.989l-1.994-2.038 2.5-1.024a.7.7 0 0 0 .431-.647L19.852 12 8.712 7.262a1.1 1.1 0 0 0-1.443 1.424l4.448 10.84a.7.7 0 0 0 .646.433l.488-.046Zm4.913-7.436L14.772 13.7l2.912 2.977-1.112 1.1-2.95-2.938-1.25 2.981-3.759-9.178 9.151 3.835Z" />
-            </svg>
+            <SchoolCardIcons.Sponsored />
             Sponsored
           </>
         )}
@@ -80,123 +71,124 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
   return (
     <div
-      className={`school-card group bg-white rounded-xl overflow-visible shadow-sm md:shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all duration-200 ease-in-out border border-[rgba(0,0,0,0.08)] ${
-        isListLayout
-          ? "flex"
+      className={`school-card group bg-white rounded-xl overflow-hidden shadow-sm md:shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all duration-200 ease-in-out border ${isGridLayout ? "border-[#E5E7EB]" : "border-[rgba(0,0,0,0.08)]"
+        } ${isListLayout
+          ? "flex min-w-0"
           : isHybridLayout
-          ? "flex p-4 border-[1px] border-[rgba(0,0,0,0.08)] active:scale-[0.98] active:border-[rgba(1,104,83,0.2)]"
-          : isClassicLayout
-          ? "flex flex-col relative justify-between"
-          : "flex flex-col justify-between"
-      } relative hover:-translate-y-1 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] ${
-        isHybridLayout ? "hover:border-[rgba(1,104,83,0.2)]" : isClassicLayout ? "hover:border-[rgba(1,104,83,0.2)]" : ""
-      }`}
+            ? "flex p-4 border-[1px] border-[rgba(0,0,0,0.08)] active:scale-[0.98] active:border-[rgba(1,104,83,0.2)]"
+            : isClassicLayout
+              ? "flex flex-col relative justify-between"
+              : "flex flex-col justify-between"
+        } relative hover:-translate-y-1 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] ${isHybridLayout ? "hover:border-[rgba(1,104,83,0.2)]" : isClassicLayout ? "hover:border-[rgba(1,104,83,0.2)]" : ""
+        }`}
     >
       {/* Grid Layout - Specialty Label (top left) */}
       {isGridLayout && <SpecialtyLabel />}
 
       {/* Image Section - Not for Hybrid Mobile or Classic */}
       {!isClassicLayout && !isHybridLayout && (
-      <div
-        className={`image-container relative ${
-          isListLayout
-              ? "w-[280px] flex-shrink-0 flex flex-col pr-6 pt-6"
-              : isGridLayout
+        <div
+          className={`image-container relative ${isListLayout
+            ? "w-[200px] flex-shrink-0 flex flex-col pr-4 pt-6"
+            : isGridLayout
               ? "w-full h-[140px] md:h-40 overflow-hidden"
-            : "w-full h-32 md:h-40 overflow-hidden"
-        }`}
-      >
+              : "w-full h-32 md:h-40 overflow-hidden"
+            }`}
+        >
 
-        {/* List Layout - Options Button */}
-        {isListLayout && (
-          <div className="absolute top-9 right-6 z-[2]">
-            <OptionsButton className="!w-8 !h-8 !rounded-full !bg-white !shadow-[0_1px_2px_rgba(0,0,0,0.1)] hover:!bg-[#F5F5F7]" />
-          </div>
-        )}
+          {/* List Layout - Options Button */}
+          {isListLayout && (
+            <div className="absolute top-[36px] right-6 z-[2]">
+              <div
+                className="w-8 h-8 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] transition-all z-[2] shadow-[0_1px_2px_rgba(0,0,0,0.1)] hover:bg-[#F5F5F7]"
+                onClick={() => setIsDrawerOpen(true)}
+              >
+                <SchoolCardIcons.MoreOptions />
+              </div>
+            </div>
+          )}
 
-        {/* List Layout - Specialty Label */}
-        {isListLayout && school.specialty && (
-          <div
-            className={`specialty-label absolute top-9 left-3 h-8 bg-white rounded-r-xl flex items-center px-2.5 text-xs font-medium shadow-[1px_2px_2px_rgba(0,0,0,0.1)] z-[2] ${
-              school.specialty === "hot"
+          {/* List Layout - Specialty Label */}
+          {isListLayout && school.specialty && (
+            <div
+              className={`specialty-label absolute top-9 left-3 h-8 bg-white rounded-r-xl flex items-center px-2.5 text-xs font-medium shadow-[1px_2px_2px_rgba(0,0,0,0.1)] z-[2] ${school.specialty === "hot"
                 ? "text-[#FF4D4D]"
                 : school.specialty === "instant-book"
-                ? "text-[#1D77BD]"
-                : "text-[#FF9900]"
-            }`}
-          >
-            {school.specialty === "hot" ? (
-              <>
-                <svg width="16" height="16" viewBox="0 0 24 24" className="mr-1">
-                  <path d="M11.315 14.4652C11.0856 13.994 11.0112 13.5601 10.974 13.1075C10.9492 12.8162 10.8748 12.5434 10.5463 12.4566C10.1805 12.3636 9.94493 12.562 9.78994 12.8658C9.2072 13.994 9.11421 15.2091 9.12041 16.4552C9.12661 17.7446 9.87673 18.6684 10.5649 19.6293C10.8376 20.0136 11.0422 20.429 11.2716 20.8381C11.5754 21.3775 11.1848 21.8858 10.6145 21.9168C9.62256 21.9726 8.67406 21.83 7.76275 21.3713C5.68597 20.3174 4.29731 18.6436 3.41081 16.5482C2.79087 15.0851 2.90866 13.5911 3.5224 12.1404C3.70218 11.7127 3.91915 11.2911 4.13613 10.882C4.26632 10.634 4.4647 10.4294 4.71267 10.2744C5.26441 9.93346 5.80376 10.1504 5.90295 10.789C5.99594 11.3717 6.02693 11.9669 6.08893 12.5558C6.10753 12.7356 6.12612 12.9216 6.25631 13.1075C6.3555 11.9978 6.44229 10.913 6.56008 9.83427C6.72126 8.38362 7.03123 6.97637 7.87434 5.7427C8.01693 5.53192 8.18431 5.35214 8.41989 5.24055C8.92203 4.99258 9.2382 5.09796 9.47378 5.61251C9.75895 6.23245 9.98212 6.88958 10.5339 7.44132C10.5897 7.11275 10.6269 6.83378 10.6888 6.56101C11.0298 5.01737 11.6931 3.62252 12.6107 2.33925C12.7966 2.07888 13.0446 1.94249 13.3794 2.02308C13.6893 2.09748 13.8381 2.33305 13.8319 2.60582C13.8319 3.61632 14.3589 4.36024 15.0284 5.00497C16.4605 6.37503 17.1052 8.07985 17.285 10.0017C17.316 10.324 17.285 10.6526 17.285 11.1113C17.7065 10.572 17.9917 10.0884 18.2645 9.5925C18.4504 9.26393 18.6426 8.94776 19.1076 8.96016C19.4237 8.97256 19.6407 9.09035 19.7771 9.37552C20.676 11.3097 21.2712 13.3121 21.0604 15.4757C20.9302 16.8271 20.428 18.0298 19.4609 19.0031C18.562 19.9144 17.6817 20.8443 16.4976 21.3961C15.6731 21.7804 14.8238 22.0532 13.8939 21.9912C13.2306 21.9478 13.026 21.5758 13.2988 20.9745C13.5344 20.4538 13.9745 20.0818 14.2535 19.5921C15.4376 17.5463 15.6669 15.4447 14.7308 13.2315C14.3093 12.2272 13.9621 11.1919 13.5778 10.169C13.4476 9.82807 13.2678 9.5367 12.8338 9.61109C12.3999 9.69169 12.3503 10.0265 12.3379 10.3922C12.2883 12.097 11.9907 13.2935 11.315 14.4528V14.4652Z" fill="currentColor"/>
-                </svg>
-                High demand
-              </>
-            ) : school.specialty === "instant-book" ? (
-              <>
-                <svg width="16" height="16" viewBox="0 0 24 24" className="mr-1">
-                  <path d="M9.71308 2.29834C9.47618 2.49338 9.28465 2.77245 9.15992 3.10434L6.159 11.1068C6.04437 11.4118 5.99014 11.7508 6.00147 12.0917C6.0128 12.4325 6.08931 12.7638 6.22373 13.0541C6.35815 13.3444 6.54601 13.584 6.76947 13.7502C6.99292 13.9164 7.24454 14.0037 7.50041 14.0037H10.5812L9.04588 19.5214C8.96429 19.9635 8.99825 20.4295 9.14216 20.8425C9.28608 21.2554 9.53133 21.5905 9.8374 21.7925C10.1435 21.9944 10.4921 22.0511 10.8256 21.9532C11.1591 21.8553 11.4575 21.6086 11.6717 21.2539L17.6735 11.2508C17.8497 10.9567 17.9601 10.6022 17.9919 10.2281C18.0238 9.85408 17.9758 9.47564 17.8536 9.13629C17.7313 8.79695 17.5398 8.51048 17.3009 8.3098C17.062 8.10912 16.7855 8.00238 16.5032 8.00184H13.0844L14.9247 4.63281C14.9998 4.33221 15.0202 4.01213 14.9844 3.69892C14.9486 3.38571 14.8575 3.08833 14.7186 2.83126C14.5797 2.57418 14.397 2.36476 14.1855 2.22024C13.9741 2.07573 13.7399 2.00024 13.5023 2H10.5013C10.2229 2.00001 9.94998 2.10331 9.71308 2.29834Z" fill="currentColor"/>
-                </svg>
-                Instant book
-              </>
-            ) : (
-              <>
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" className="mr-1">
-                  <path d="m6.758 11.034.585 1.43a4.53 4.53 0 1 1 5.13-5.052l-1.419-.594a3.276 3.276 0 1 0-4.3 4.216h.004Zm-3.53 1.738a6.75 6.75 0 1 1 9.545-9.544A6.7 6.7 0 0 1 14.75 8c0 .121-.01.24-.018.36l1.218.51a8 8 0 1 0-7.177 7.093l-.5-1.225a6.722 6.722 0 0 1-5.046-1.966Zm9.623 7.141 1.2-2.874 2.021 2.011a.7.7 0 0 0 .99 0l1.885-1.87a.7.7 0 0 0 .007-.989l-1.994-2.038 2.5-1.024a.7.7 0 0 0 .431-.647L19.852 12 8.712 7.262a1.1 1.1 0 0 0-1.443 1.424l4.448 10.84a.7.7 0 0 0 .646.433l.488-.046Zm4.913-7.436L14.772 13.7l2.912 2.977-1.112 1.1-2.95-2.938-1.25 2.981-3.759-9.178 9.151 3.835Z" />
-                </svg>
-                Sponsored
-              </>
-            )}
-          </div>
-        )}
+                  ? "text-[#1D77BD]"
+                  : "text-[#FF9900]"
+                }`}
+            >
+              {school.specialty === "hot" ? (
+                <>
+                  <SchoolCardIcons.Hot />
+                  High demand
+                </>
+              ) : school.specialty === "instant-book" ? (
+                <>
+                  <SchoolCardIcons.InstantBook />
+                  Instant book
+                </>
+              ) : (
+                <>
+                  <SchoolCardIcons.Sponsored />
+                  Sponsored
+                </>
+              )}
+            </div>
+          )}
 
-        <Image
-          height={720}
-          width={720}
-          src={school.image}
-          alt={school.name}
-          className={`school-image ${
-            isListLayout
+          <Image
+            height={720}
+            width={720}
+            src={school.image}
+            alt={school.name}
+            className={`school-image ${isListLayout
               ? "h-[9.25rem] w-full object-cover rounded-lg ml-3"
               : isGridLayout
-              ? "absolute top-0 left-0 w-full h-full object-cover"
-              : "absolute top-0 left-0 w-full h-full object-cover"
-          }`}
-        />
+                ? "absolute top-0 left-0 w-full h-full object-cover"
+                : "absolute top-0 left-0 w-full h-full object-cover"
+              }`}
+          />
 
-        {/* List Layout - Image Buttons */}
-        {isListLayout && (
-          <div className="image-buttons flex gap-2 py-3 ml-3">
-            <div className="school-type-full w-full px-4 py-2 text-center bg-[#F5F5F7] text-[#464646] text-[13px] font-medium rounded-lg">
+          {/* List Layout - Image Buttons */}
+          {isListLayout && (
+            <div className="image-buttons flex gap-2 py-3 ml-3">
+              <div className="school-type-full w-full px-4 py-2 text-center bg-[#F5F5F7] text-[#464646] text-[13px] font-medium rounded-lg">
+                {school.schoolType}
+              </div>
+            </div>
+          )}
+
+          {/* Grid Layout - Options Button (top right) - Mobile */}
+          {isGridLayout && (
+            <div
+              className="md:hidden options-button absolute top-2 right-2 w-7 h-7 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#4A4A4A] transition-all z-[2] shadow-[0_2px_4px_rgba(0,0,0,0.1)] hover:bg-[#f5f5f5]"
+              onClick={() => setIsDrawerOpen(true)}
+            >
+              <SchoolCardIcons.MoreOptions />
+            </div>
+          )}
+
+          {/* Grid Layout - Like Button (top right) - Desktop */}
+          {isGridLayout && (
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={(e) => { e.stopPropagation(); setIsLiked((v) => !v); }}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setIsLiked((v) => !v); } }}
+              className={`hidden md:flex like-button absolute top-3 right-3 w-8 h-8 rounded-full items-center justify-center cursor-pointer transition-all z-[2] ${isLiked ? "bg-[#E6F7F0] text-[#016853] hover:bg-[#D1F0E4]" : "bg-white text-[#4A4A4A] hover:bg-[#f5f5f7]"
+                }`}
+            >
+              <SchoolCardIcons.Heart />
+            </div>
+          )}
+
+          {/* Grid Layout - School Type Label (bottom left) */}
+          {isGridLayout && (
+            <div className="school-type-label absolute bottom-0 left-2.5 bg-white px-2 pt-1 text-[11px] font-semibold text-[#464646] tracking-[0.02em] rounded-t-md h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
               {school.schoolType}
             </div>
-          </div>
-        )}
-
-        {/* Grid Layout - Options Button (top right) - Mobile */}
-        {isGridLayout && (
-          <div className="md:hidden options-button absolute top-2 right-2 w-7 h-7 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#4A4A4A] transition-all z-[2] shadow-[0_2px_4px_rgba(0,0,0,0.1)] hover:bg-[#f5f5f5]">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-              <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-            </svg>
-          </div>
-        )}
-
-        {/* Grid Layout - Like Button (top right) - Desktop */}
-        {isGridLayout && (
-          <div className="hidden md:flex like-button absolute top-3 right-3 w-8 h-8 bg-white rounded-full items-center justify-center cursor-pointer text-[#4A4A4A] transition-all z-[2]">
-            <svg fill="none" viewBox="0 0 16 16" className="w-4 h-4">
-              <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M10.7408 2C13.0889 2 14.6667 4.235 14.6667 6.32C14.6667 10.5425 8.11856 14 8.00004 14C7.88152 14 1.33337 10.5425 1.33337 6.32C1.33337 4.235 2.91115 2 5.2593 2C6.60745 2 7.48893 2.6825 8.00004 3.2825C8.51115 2.6825 9.39263 2 10.7408 2Z"/>
-            </svg>
-          </div>
-        )}
-
-        {/* Grid Layout - School Type Label (bottom left) */}
-        {isGridLayout && (
-          <div className="school-type-label absolute bottom-0 left-2.5 bg-white px-2 pt-1 text-[11px] font-semibold text-[#464646] tracking-[0.02em] rounded-t-md h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
-            {school.schoolType}
-            </div>
-        )}
+          )}
 
         </div>
       )}
@@ -206,33 +198,26 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
         <>
           {school.specialty ? (
             <div
-              className={`specialty-badge absolute top-0 left-0 right-0 py-2 px-3 text-[13px] font-medium flex items-center justify-center gap-1.5 rounded-t-xl z-[2] ${
-              school.specialty === "hot"
-                  ? "bg-[rgba(255,77,77,0.1)] text-[#FF4D4D]"
+              className={`specialty-badge absolute top-0 left-0 right-0 py-2 px-3 text-[13px] font-medium flex items-center justify-center gap-1.5 rounded-t-xl z-[2] ${school.specialty === "hot"
+                ? "bg-[rgba(255,77,77,0.1)] text-[#FF4D4D]"
                 : school.specialty === "instant-book"
                   ? "bg-[rgba(29,119,189,0.1)] text-[#1D77BD]"
                   : "bg-[rgba(255,153,0,0.1)] text-[#FF9900]"
-            }`}
-          >
+                }`}
+            >
               {school.specialty === "hot" ? (
                 <>
-                  <svg width="14" height="14" viewBox="0 0 24 24">
-                  <path d="M11.315 14.4652C11.0856 13.994 11.0112 13.5601 10.974 13.1075C10.9492 12.8162 10.8748 12.5434 10.5463 12.4566C10.1805 12.3636 9.94493 12.562 9.78994 12.8658C9.2072 13.994 9.11421 15.2091 9.12041 16.4552C9.12661 17.7446 9.87673 18.6684 10.5649 19.6293C10.8376 20.0136 11.0422 20.429 11.2716 20.8381C11.5754 21.3775 11.1848 21.8858 10.6145 21.9168C9.62256 21.9726 8.67406 21.83 7.76275 21.3713C5.68597 20.3174 4.29731 18.6436 3.41081 16.5482C2.79087 15.0851 2.90866 13.5911 3.5224 12.1404C3.70218 11.7127 3.91915 11.2911 4.13613 10.882C4.26632 10.634 4.4647 10.4294 4.71267 10.2744C5.26441 9.93346 5.80376 10.1504 5.90295 10.789C5.99594 11.3717 6.02693 11.9669 6.08893 12.5558C6.10753 12.7356 6.12612 12.9216 6.25631 13.1075C6.3555 11.9978 6.44229 10.913 6.56008 9.83427C6.72126 8.38362 7.03123 6.97637 7.87434 5.7427C8.01693 5.53192 8.18431 5.35214 8.41989 5.24055C8.92203 4.99258 9.2382 5.09796 9.47378 5.61251C9.75895 6.23245 9.98212 6.88958 10.5339 7.44132C10.5897 7.11275 10.6269 6.83378 10.6888 6.56101C11.0298 5.01737 11.6931 3.62252 12.6107 2.33925C12.7966 2.07888 13.0446 1.94249 13.3794 2.02308C13.6893 2.09748 13.8381 2.33305 13.8319 2.60582C13.8319 3.61632 14.3589 4.36024 15.0284 5.00497C16.4605 6.37503 17.1052 8.07985 17.285 10.0017C17.316 10.324 17.285 10.6526 17.285 11.1113C17.7065 10.572 17.9917 10.0884 18.2645 9.5925C18.4504 9.26393 18.6426 8.94776 19.1076 8.96016C19.4237 8.97256 19.6407 9.09035 19.7771 9.37552C20.676 11.3097 21.2712 13.3121 21.0604 15.4757C20.9302 16.8271 20.428 18.0298 19.4609 19.0031C18.562 19.9144 17.6817 20.8443 16.4976 21.3961C15.6731 21.7804 14.8238 22.0532 13.8939 21.9912C13.2306 21.9478 13.026 21.5758 13.2988 20.9745C13.5344 20.4538 13.9745 20.0818 14.2535 19.5921C15.4376 17.5463 15.6669 15.4447 14.7308 13.2315C14.3093 12.2272 13.9621 11.1919 13.5778 10.169C13.4476 9.82807 13.2678 9.5367 12.8338 9.61109C12.3999 9.69169 12.3503 10.0265 12.3379 10.3922C12.2883 12.097 11.9907 13.2935 11.315 14.4528V14.4652Z" fill="currentColor"/>
-                </svg>
+                  <SchoolCardIcons.Hot />
                   High demand
                 </>
               ) : school.specialty === "instant-book" ? (
                 <>
-                  <svg width="14" height="14" viewBox="0 0 24 24">
-                  <path d="M9.71308 2.29834C9.47618 2.49338 9.28465 2.77245 9.15992 3.10434L6.159 11.1068C6.04437 11.4118 5.99014 11.7508 6.00147 12.0917C6.0128 12.4325 6.08931 12.7638 6.22373 13.0541C6.35815 13.3444 6.54601 13.584 6.76947 13.7502C6.99292 13.9164 7.24454 14.0037 7.50041 14.0037H10.5812L9.04588 19.5214C8.96429 19.9635 8.99825 20.4295 9.14216 20.8425C9.28608 21.2554 9.53133 21.5905 9.8374 21.7925C10.1435 21.9944 10.4921 22.0511 10.8256 21.9532C11.1591 21.8553 11.4575 21.6086 11.6717 21.2539L17.6735 11.2508C17.8497 10.9567 17.9601 10.6022 17.9919 10.2281C18.0238 9.85408 17.9758 9.47564 17.8536 9.13629C17.7313 8.79695 17.5398 8.51048 17.3009 8.3098C17.062 8.10912 16.7855 8.00238 16.5032 8.00184H13.0844L14.9247 4.63281C14.9998 4.33221 15.0202 4.01213 14.9844 3.69892C14.9486 3.38571 14.8575 3.08833 14.7186 2.83126C14.5797 2.57418 14.397 2.36476 14.1855 2.22024C13.9741 2.07573 13.7399 2.00024 13.5023 2H10.5013C10.2229 2.00001 9.94998 2.10331 9.71308 2.29834Z" fill="currentColor"/>
-                </svg>
+                  <SchoolCardIcons.InstantBook />
                   Instant book
                 </>
               ) : (
                 <>
-                  <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="m6.758 11.034.585 1.43a4.53 4.53 0 1 1 5.13-5.052l-1.419-.594a3.276 3.276 0 1 0-4.3 4.216h.004Zm-3.53 1.738a6.75 6.75 0 1 1 9.545-9.544A6.7 6.7 0 0 1 14.75 8c0 .121-.01.24-.018.36l1.218.51a8 8 0 1 0-7.177 7.093l-.5-1.225a6.722 6.722 0 0 1-5.046-1.966Zm9.623 7.141 1.2-2.874 2.021 2.011a.7.7 0 0 0 .99 0l1.885-1.87a.7.7 0 0 0 .007-.989l-1.994-2.038 2.5-1.024a.7.7 0 0 0 .431-.647L19.852 12 8.712 7.262a1.1 1.1 0 0 0-1.443 1.424l4.448 10.84a.7.7 0 0 0 .646.433l.488-.046Zm4.913-7.436L14.772 13.7l2.912 2.977-1.112 1.1-2.95-2.938-1.25 2.981-3.759-9.178 9.151 3.835Z" />
-                </svg>
+                  <SchoolCardIcons.Sponsored />
                   Sponsored
                 </>
               )}
@@ -249,18 +234,18 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           <div className={`grade-circle w-8 h-8 ${getGradeClass(school.grade)} rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0`}>
             {school.grade}
           </div>
-          <div className="school-info flex-1 w-[calc(100%-44px)] overflow-hidden">
-            <div className="school-name text-base font-semibold text-[#464646] mb-1 leading-[1.3] line-clamp-2">
+          <div className="school-info flex-1 min-w-0 w-[calc(100%-44px)] overflow-hidden">
+            <div className="school-name text-base font-semibold text-[#464646] mb-1 leading-[1.3] line-clamp-2 overflow-hidden">
               {school.name}
             </div>
             {school.ranking && (
-              <div className="ranking-text text-[#089E68] text-xs font-medium leading-[1.4] whitespace-nowrap overflow-hidden text-ellipsis max-w-[calc(100%-16px)] pr-2.5">
+              <div className="ranking-text text-[#089E68] text-xs font-medium leading-[1.4] whitespace-nowrap overflow-hidden text-ellipsis max-w-full min-w-0 pr-2.5">
                 {school.ranking}
               </div>
-              )}
-            </div>
+            )}
           </div>
-        )}
+        </div>
+      )}
 
       {/* Classic Layout - Image Container */}
       {isClassicLayout && (
@@ -276,34 +261,29 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           <div className="school-type-label absolute bottom-1 left-6 bg-white px-2 pt-1 text-[11px] font-semibold text-[#464646] tracking-[0.02em] rounded-t-md h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
             {school.schoolType}
           </div>
-          </div>
-        )}
+        </div>
+      )}
 
       {/* Content Section */}
       <div
-        className={`school-content ${
-          isListLayout
-            ? "flex-1 p-6 flex flex-col"
-            : isHybridLayout
-            ? "p-4 md:p-4 flex flex-col"
+        className={`school-content ${isListLayout
+          ? "flex-1 min-w-0 p-6 flex flex-col overflow-hidden"
+          : isHybridLayout
+            ? "p-4 md:p-4 flex flex-col min-w-0 overflow-hidden"
             : isGridLayout
-            ? "p-3 md:p-4 flex flex-col"
-            : isClassicLayout
-            ? "px-0 flex flex-col"
-            : "p-3 md:p-4 flex flex-col justify-between"
-        }`}
+              ? "p-4 flex-1 flex flex-col min-w-0 overflow-hidden"
+              : isClassicLayout
+                ? "px-0 flex flex-col min-w-0 overflow-hidden"
+                : "p-3 md:p-4 flex flex-col justify-between min-w-0 overflow-hidden"
+          }`}
       >
-        {/* Hybrid Layout - Mobile Version (matches HTML structure) */}
+        {/* Hybrid Layout - Mobile Version */}
         {isHybridLayout && (
           <div className="md:hidden">
-            {/* School Header with image and title */}
             <div className="school-header flex mb-3 relative">
-              {/* School Type Label */}
               <div className="school-type-label absolute top-0 left-[75px] bg-[rgba(1,104,83,0.1)] text-[#016853] px-2 py-1 rounded-md text-[10px] font-semibold tracking-[0.02em] uppercase z-[2]">
                 {school.schoolType}
               </div>
-              
-              {/* Image Container */}
               <div className={`image-container relative w-[60px] mr-4 flex-shrink-0 flex flex-col ${school.specialty ? 'has-specialty' : ''}`}>
                 <Image
                   height={60}
@@ -314,115 +294,91 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                 />
                 {school.specialty && (
                   <div
-                    className={`specialty-footer w-full text-[10px] font-semibold text-center py-0.5 rounded-b-lg flex items-center justify-center gap-1 ${
-                      school.specialty === "hot"
-                        ? "bg-[#FFEBEB] text-[#FF4D4D]"
-                        : school.specialty === "instant-book"
+                    className={`specialty-footer w-full text-[10px] font-semibold text-center py-0.5 rounded-b-lg flex items-center justify-center gap-1 ${school.specialty === "hot"
+                      ? "bg-[#FFEBEB] text-[#FF4D4D]"
+                      : school.specialty === "instant-book"
                         ? "bg-[#E6F1FA] text-[#1D77BD]"
                         : "bg-[#FFF4E5] text-[#FF9900]"
-                    }`}
+                      }`}
                   >
                     {school.specialty === "hot" ? (
-                      <svg width="12" height="12" viewBox="0 0 24 24" className="text-[#FF4D4D]">
-                        <path d="M11.315 14.4652C11.0856 13.994 11.0112 13.5601 10.974 13.1075C10.9492 12.8162 10.8748 12.5434 10.5463 12.4566C10.1805 12.3636 9.94493 12.562 9.78994 12.8658C9.2072 13.994 9.11421 15.2091 9.12041 16.4552C9.12661 17.7446 9.87673 18.6684 10.5649 19.6293C10.8376 20.0136 11.0422 20.429 11.2716 20.8381C11.5754 21.3775 11.1848 21.8858 10.6145 21.9168C9.62256 21.9726 8.67406 21.83 7.76275 21.3713C5.68597 20.3174 4.29731 18.6436 3.41081 16.5482C2.79087 15.0851 2.90866 13.5911 3.5224 12.1404C3.70218 11.7127 3.91915 11.2911 4.13613 10.882C4.26632 10.634 4.4647 10.4294 4.71267 10.2744C5.26441 9.93346 5.80376 10.1504 5.90295 10.789C5.99594 11.3717 6.02693 11.9669 6.08893 12.5558C6.10753 12.7356 6.12612 12.9216 6.25631 13.1075C6.3555 11.9978 6.44229 10.913 6.56008 9.83427C6.72126 8.38362 7.03123 6.97637 7.87434 5.7427C8.01693 5.53192 8.18431 5.35214 8.41989 5.24055C8.92203 4.99258 9.2382 5.09796 9.47378 5.61251C9.75895 6.23245 9.98212 6.88958 10.5339 7.44132C10.5897 7.11275 10.6269 6.83378 10.6888 6.56101C11.0298 5.01737 11.6931 3.62252 12.6107 2.33925C12.7966 2.07888 13.0446 1.94249 13.3794 2.02308C13.6893 2.09748 13.8381 2.33305 13.8319 2.60582C13.8319 3.61632 14.3589 4.36024 15.0284 5.00497C16.4605 6.37503 17.1052 8.07985 17.285 10.0017C17.316 10.324 17.285 10.6526 17.285 11.1113C17.7065 10.572 17.9917 10.0884 18.2645 9.5925C18.4504 9.26393 18.6426 8.94776 19.1076 8.96016C19.4237 8.97256 19.6407 9.09035 19.7771 9.37552C20.676 11.3097 21.2712 13.3121 21.0604 15.4757C20.9302 16.8271 20.428 18.0298 19.4609 19.0031C18.562 19.9144 17.6817 20.8443 16.4976 21.3961C15.6731 21.7804 14.8238 22.0532 13.8939 21.9912C13.2306 21.9478 13.026 21.5758 13.2988 20.9745C13.5344 20.4538 13.9745 20.0818 14.2535 19.5921C15.4376 17.5463 15.6669 15.4447 14.7308 13.2315C14.3093 12.2272 13.9621 11.1919 13.5778 10.169C13.4476 9.82807 13.2678 9.5367 12.8338 9.61109C12.3999 9.69169 12.3503 10.0265 12.3379 10.3922C12.2883 12.097 11.9907 13.2935 11.315 14.4528V14.4652Z" fill="currentColor"/>
-                      </svg>
+                      <SchoolCardIcons.Hot />
                     ) : school.specialty === "instant-book" ? (
-                      <svg width="12" height="12" viewBox="0 0 24 24" className="text-[#1D77BD]">
-                        <path d="M9.71308 2.29834C9.47618 2.49338 9.28465 2.77245 9.15992 3.10434L6.159 11.1068C6.04437 11.4118 5.99014 11.7508 6.00147 12.0917C6.0128 12.4325 6.08931 12.7638 6.22373 13.0541C6.35815 13.3444 6.54601 13.584 6.76947 13.7502C6.99292 13.9164 7.24454 14.0037 7.50041 14.0037H10.5812L9.04588 19.5214C8.96429 19.9635 8.99825 20.4295 9.14216 20.8425C9.28608 21.2554 9.53133 21.5905 9.8374 21.7925C10.1435 21.9944 10.4921 22.0511 10.8256 21.9532C11.1591 21.8553 11.4575 21.6086 11.6717 21.2539L17.6735 11.2508C17.8497 10.9567 17.9601 10.6022 17.9919 10.2281C18.0238 9.85408 17.9758 9.47564 17.8536 9.13629C17.7313 8.79695 17.5398 8.51048 17.3009 8.3098C17.062 8.10912 16.7855 8.00238 16.5032 8.00184H13.0844L14.9247 4.63281C14.9998 4.33221 15.0202 4.01213 14.9844 3.69892C14.9486 3.38571 14.8575 3.08833 14.7186 2.83126C14.5797 2.57418 14.397 2.36476 14.1855 2.22024C13.9741 2.07573 13.7399 2.00024 13.5023 2H10.5013C10.2229 2.00001 9.94998 2.10331 9.71308 2.29834Z" fill="currentColor"/>
-                      </svg>
+                      <SchoolCardIcons.InstantBook />
                     ) : (
-                      <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor" className="text-[#FF9900]">
-                        <path d="m6.758 11.034.585 1.43a4.53 4.53 0 1 1 5.13-5.052l-1.419-.594a3.276 3.276 0 1 0-4.3 4.216h.004Zm-3.53 1.738a6.75 6.75 0 1 1 9.545-9.544A6.7 6.7 0 0 1 14.75 8c0 .121-.01.24-.018.36l1.218.51a8 8 0 1 0-7.177 7.093l-.5-1.225a6.722 6.722 0 0 1-5.046-1.966Zm9.623 7.141 1.2-2.874 2.021 2.011a.7.7 0 0 0 .99 0l1.885-1.87a.7.7 0 0 0 .007-.989l-1.994-2.038 2.5-1.024a.7.7 0 0 0 .431-.647L19.852 12 8.712 7.262a1.1 1.1 0 0 0-1.443 1.424l4.448 10.84a.7.7 0 0 0 .646.433l.488-.046Zm4.913-7.436L14.772 13.7l2.912 2.977-1.112 1.1-2.95-2.938-1.25 2.981-3.759-9.178 9.151 3.835Z" />
-                      </svg>
+                      <SchoolCardIcons.Sponsored />
                     )}
                     {school.specialty === "hot" ? "Hot" : school.specialty === "instant-book" ? "Book" : "Ad"}
                   </div>
                 )}
               </div>
-              
+
               {/* School Title Container */}
-              <div className="school-title-container flex-1 flex flex-col justify-center pt-5">
+              <div className="school-title-container flex-1 min-w-0 flex flex-col">
                 {school.ranking && (
-                  <div className="ranking-text text-[#089E68] text-[12px] mb-1 font-medium whitespace-nowrap overflow-hidden text-ellipsis w-[190px] mt-0">
+                  <div className="ranking-text text-[#089E68] text-[13px] mb-2 font-medium whitespace-nowrap overflow-hidden text-ellipsis max-w-full min-w-0">
                     {school.ranking}
                   </div>
                 )}
-                <h3 className="school-name text-[15px] font-semibold text-[#464646] leading-[1.3] overflow-hidden line-clamp-3 pr-4">
+                <h3 className="school-name text-[15px] font-semibold text-[#464646] leading-[1.3] overflow-hidden line-clamp-3 pr-4 min-w-0">
                   {school.name}
                   {school.verified && (
                     <span className="verified-badge-title inline-flex items-center ml-1 flex-shrink-0 align-middle relative -top-[1px]">
-                      <svg viewBox="0 0 16 16" fill="none" className="w-[14px] h-[14px] text-[#1D77BD]">
-                        <path fill="#1D77BD" d="M8 0L9.95934 1.95934L12.5725 1.42462L13.1073 4.03778L15.7205 4.57246L15.1857 7.18566L17.1451 9.14505L15.1857 11.1044L15.7205 13.7176L13.1073 14.2523L12.5725 16.8655L9.95934 16.3308L8 18.2902L6.04066 16.3308L3.42746 16.8655L2.89274 14.2523L0.279539 13.7176L0.814259 11.1044L-1.14505 9.14505L0.814259 7.18566L0.279539 4.57246L2.89274 4.03778L3.42746 1.42462L6.04066 1.95934L8 0Z"/>
-                        <path fill="white" d="M7.1001 11.6335L4.47076 8.91081L5.40410 7.99414L7.1001 9.70081L10.5961 6.17747L11.5301 7.09414L7.1001 11.6335Z"/>
-                      </svg>
+                      <SchoolCardIcons.Verified />
                     </span>
                   )}
                 </h3>
               </div>
-              
+
               {/* More Options */}
-              <div className="more-options absolute top-[-4px] right-0 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer z-[3] text-[#464646] active:bg-[#F5F5F7]">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C18.4477 11 18 11.4477 18 12C18 12.5523 18.4477 13 19 13Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M5 13C5.55228 13 6 12.5523 6 12C6 11.4477 5.55228 11 5 11C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+              <div
+                className="more-options absolute top-[-4px] right-0 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer z-[3] text-[#464646] active:bg-[#F5F5F7]"
+                onClick={() => setIsDrawerOpen(true)}
+              >
+                <SchoolCardIcons.MoreOptions />
               </div>
             </div>
-            
             {/* School Stats */}
-            <div className="school-stats grig grid-cols-2 gap-3 mb-3">
+            <div className="school-stats flex flex-wrap gap-x-4 gap-y-2 mb-3 min-w-0">
 
-              <div className="stat flex items-center gap-1.5 text-xs text-[#5F5F5F] max-w-[100px]">
-                <svg fill="currentColor" viewBox="0 0 24 24" className="w-[14px] h-[14px] text-[#565656] flex-shrink-0">
-                  <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z" />
-                  <path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1C18.6,5.5,19.8,8.4,19.2,11.2z" />
-                </svg>
-                <span className="text-[#464646] font-medium">{school.location}</span>
+              <div className="stat flex items-center gap-1.5 text-xs text-[#5F5F5F] min-w-0 max-w-full overflow-hidden">
+                <SchoolCardIcons.Location />
+                <span className="text-[#464646] font-medium truncate">{school.location}</span>
               </div>
 
-              <div className="stat flex items-center gap-1.5 text-xs text-[#5F5F5F] max-w-[100px]">
-                <svg viewBox="0 0 20 20" fill="none" className="w-[14px] h-[14px] text-[#565656] flex-shrink-0">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M9.46497 2.65469L3.88834 5.94284C3.88112 5.9471 3.87383 5.95125 3.86648 5.95529C3.53431 6.13787 3.33341 6.48044 3.33341 6.8475V12.9174C3.33391 13.1 3.38341 13.2792 3.47675 13.4362C3.57021 13.5935 3.7042 13.7227 3.86471 13.8104C3.88028 13.8189 3.89558 13.8279 3.91059 13.8374L9.51062 17.3799C9.66161 17.4588 9.82953 17.5 10.0001 17.5C10.1706 17.5 10.3385 17.4588 10.4895 17.3799L16.0065 13.89C16.0242 13.8713 16.0454 13.8485 16.0692 13.8223C16.1476 13.7361 16.2503 13.6169 16.351 13.4827C16.4536 13.3459 16.542 13.2096 16.6016 13.0884C16.6598 12.9702 16.666 12.9159 16.6667 12.916C16.6667 12.916 16.6667 12.9168 16.6667 12.9183V6.84316C16.669 6.47367 16.4717 6.13196 16.1507 5.94942L16.1378 5.94193L10.5403 2.62526C10.421 2.55461 10.2347 2.51688 9.98782 2.53681C9.77125 2.55429 9.57557 2.61124 9.46497 2.65469ZM16.5351 14.5417L17.1194 15.1358C17.0772 15.1773 17.0307 15.2142 16.9806 15.2459L11.3556 18.8042C11.341 18.8134 11.3262 18.8222 11.3111 18.8305C10.9094 19.0511 10.4584 19.1667 10.0001 19.1667C9.54173 19.1667 9.0908 19.0511 8.68902 18.8305C8.67394 18.8222 8.65912 18.8134 8.64458 18.8042L3.04 15.2588C2.62874 15.0283 2.2852 14.6935 2.0441 14.2879C1.79804 13.874 1.66772 13.4015 1.66675 12.92L1.66675 12.9183V6.8475C1.66675 5.8708 2.19919 4.97552 3.05167 4.50135L8.66682 1.19049C8.6944 1.17423 8.72289 1.15957 8.75216 1.14659C9.01002 1.03219 9.40947 0.911399 9.85374 0.875543C10.2945 0.839973 10.8669 0.881526 11.3899 1.1914L16.8757 4.44191C16.981 4.48034 17.0764 4.53941 17.157 4.61423C17.8934 5.11464 18.3381 5.95164 18.3334 6.85072V12.9183C18.3334 13.2699 18.2128 13.5891 18.097 13.8244C17.9757 14.0708 17.8228 14.2982 17.6842 14.4829C17.5436 14.6702 17.4051 14.8305 17.3025 14.9434C17.2508 15.0003 17.2071 15.0463 17.1754 15.079C17.1701 15.0846 17.1651 15.0897 17.1604 15.0945C17.1512 15.1039 17.1435 15.1118 17.1372 15.1181L17.1256 15.1297L17.1218 15.1334L17.1204 15.1348L17.1194 15.1358C17.1193 15.1359 17.1194 15.1358 16.5351 14.5417Z" fill="currentColor"/>
-                  <path fillRule="evenodd" clipRule="evenodd" d="M7.64306 5.97631C8.26818 5.35119 9.11603 5 10.0001 5C10.8841 5 11.732 5.35119 12.3571 5.97631C12.9822 6.60143 13.3334 7.44928 13.3334 8.33333C13.3334 9.21739 12.9822 10.0652 12.3571 10.6904C11.732 11.3155 10.8841 11.6667 10.0001 11.6667C9.11603 11.6667 8.26818 11.3155 7.64306 10.6904C7.01794 10.0652 6.66675 9.21739 6.66675 8.33333C6.66675 7.44928 7.01794 6.60143 7.64306 5.97631ZM10.0001 6.66667C9.55805 6.66667 9.13413 6.84226 8.82157 7.15482C8.50901 7.46738 8.33341 7.89131 8.33341 8.33333C8.33341 8.77536 8.50901 9.19929 8.82157 9.51185C9.13413 9.82441 9.55805 10 10.0001 10C10.4421 10 10.866 9.82441 11.1786 9.51185C11.4912 9.19929 11.6667 8.77536 11.6667 8.33333C11.6667 7.89131 11.4912 7.46738 11.1786 7.15482C10.866 6.84226 10.4421 6.66667 10.0001 6.66667Z" fill="currentColor"/>
-                  <path fillRule="evenodd" clipRule="evenodd" d="M6.9273 14.5988L5.60407 15.9908C5.28698 16.3244 4.75951 16.3377 4.42594 16.0207C4.09237 15.7036 4.079 15.1761 4.39609 14.8425L5.77651 13.3904C5.81197 13.353 5.85082 13.3191 5.89255 13.289C6.60295 12.7758 7.45703 12.4998 8.33335 12.5M6.9273 14.5988C7.3415 14.3174 7.83122 14.1665 8.33308 14.1667L11.6667 14.1667C12.1682 14.1665 12.6578 14.3172 13.0718 14.5982L14.3962 15.9909C14.7133 16.3244 15.2408 16.3377 15.5743 16.0206C15.9078 15.7034 15.9211 15.1759 15.604 14.8424L14.2224 13.3895C14.1868 13.3521 14.1479 13.3182 14.1061 13.288C13.396 12.7755 12.5424 12.4998 11.6667 12.5C11.6666 12.5 11.6668 12.5 11.6667 12.5H8.33335" fill="currentColor"/>
-                </svg>
-                <span className="text-[#464646] font-medium"><span className="stat-prefix hidden">Ratio: </span>{school.ratio}</span>
+              <div className="stat flex items-center gap-1.5 text-xs text-[#5F5F5F] min-w-0 max-w-full overflow-hidden">
+                <SchoolCardIcons.Ratio />
+                <span className="text-[#464646] font-medium truncate"><span className="stat-prefix hidden">Ratio: </span>{school.ratio}</span>
               </div>
 
-              <div className="stat flex items-center gap-1.5 text-xs text-[#5F5F5F] max-w-[100px]">
-                <svg viewBox="0 0 20 20" fill="none" className="w-[14px] h-[14px] text-[#565656] flex-shrink-0">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M9.72154 3.47033C9.90035 3.39881 10.0998 3.39881 10.2786 3.47033L18.612 6.80366C18.8967 6.91756 19.0834 7.19334 19.0834 7.50002V12.5C19.0834 12.9142 18.7476 13.25 18.3334 13.25C17.9192 13.25 17.5834 12.9142 17.5834 12.5V8.6078L15.7501 9.34113V13.3334C15.7501 14.4243 14.9016 15.2566 13.871 15.7719C12.8053 16.3048 11.4126 16.5834 10.0001 16.5834C8.58758 16.5834 7.19484 16.3048 6.12914 15.7719C5.09852 15.2566 4.25008 14.4243 4.25008 13.3334V9.34113L1.38821 8.19638C1.10346 8.08248 0.916748 7.8067 0.916748 7.50002C0.916748 7.19334 1.10346 6.91756 1.38821 6.80366L9.72154 3.47033ZM5.29422 8.14324C5.2838 8.13879 5.27326 8.13457 5.2626 8.13059L3.68619 7.50002L10.0001 4.97446L16.314 7.50002L14.7376 8.13059C14.7269 8.13457 14.7164 8.13879 14.7059 8.14323L10.0001 10.0256L5.29422 8.14324ZM5.75008 9.94113V13.3334C5.75008 13.5685 5.95521 14.0079 6.79996 14.4303C7.60962 14.8351 8.76042 15.0834 10.0001 15.0834C11.2397 15.0834 12.3905 14.8351 13.2002 14.4303C14.0449 14.0079 14.2501 13.5685 14.2501 13.3334V9.94113L10.2786 11.5297C10.0998 11.6012 9.90035 11.6012 9.72154 11.5297L5.75008 9.94113Z" fill="currentColor"/>
-              </svg>
-              <span className="text-[#464646] font-medium"><span className="stat-prefix hidden">Students: </span>{school.students || '1,756'}</span>
+              <div className="stat flex items-center gap-1.5 text-xs text-[#5F5F5F] min-w-0 max-w-full overflow-hidden">
+                <SchoolCardIcons.Students />
+                <span className="text-[#464646] font-medium truncate"><span className="stat-prefix hidden">Students: </span>{school.students || '1,756'}</span>
               </div>
 
-              <div className="stat flex items-center gap-1.5 text-xs text-[#5F5F5F] max-w-[100px]">
-                <svg viewBox="0 0 20 20" fill="none" className="w-[14px] h-[14px] text-[#565656] flex-shrink-0">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M10.3031 4.71338C10.638 4.71338 10.9096 4.98493 10.9096 5.3199V5.62947C11.7726 5.74654 12.5494 6.11208 13.0363 6.67319C13.2559 6.92617 13.2288 7.30925 12.9758 7.52881C12.7229 7.74837 12.3398 7.72128 12.1202 7.4683C11.8892 7.20209 11.4627 6.96219 10.9096 6.85747V9.13097C11.5063 9.2117 12.0549 9.41056 12.4966 9.70499C13.0803 10.0941 13.5358 10.6984 13.5358 11.4478C13.5358 12.1973 13.0803 12.8015 12.4966 13.1907C12.0549 13.4851 11.5063 13.684 10.9096 13.7647V14.0741C10.9096 14.4091 10.638 14.6806 10.3031 14.6806C9.9681 14.6806 9.69656 14.4091 9.69656 14.0741V13.7645C8.83357 13.6474 8.0568 13.2819 7.5698 12.7208C7.35024 12.4678 7.37733 12.0847 7.63031 11.8652C7.88329 11.6456 8.26636 11.6727 8.48592 11.9257C8.71697 12.1919 9.14345 12.4318 9.69656 12.5365V10.263C9.09982 10.1823 8.55128 9.98342 8.10959 9.68899C7.52581 9.29985 7.07031 8.69563 7.07031 7.94614C7.07031 7.19665 7.52581 6.59244 8.10959 6.2033C8.55128 5.90886 9.09982 5.71 9.69656 5.62928V5.3199C9.69656 4.98493 9.9681 4.71338 10.3031 4.71338ZM9.69656 6.85766C9.33347 6.92644 9.02055 7.0539 8.78241 7.21264C8.4157 7.45709 8.28336 7.7283 8.28336 7.94614C8.28336 8.16399 8.4157 8.4352 8.78241 8.67964C9.02055 8.83839 9.33347 8.96585 9.69656 9.03463V6.85766ZM10.9096 10.3594V12.5363C11.2727 12.4675 11.5856 12.3401 11.8237 12.1813C12.1905 11.9369 12.3228 11.6657 12.3228 11.4478C12.3228 11.23 12.1905 10.9588 11.8237 10.7143C11.5856 10.5556 11.2727 10.4281 10.9096 10.3594Z" fill="currentColor"/>
-                  <path fillRule="evenodd" clipRule="evenodd" d="M10.3399 2.51392C6.38177 2.51392 3.1731 5.72259 3.1731 9.6807C3.1731 13.6388 6.38177 16.8475 10.3399 16.8475C14.298 16.8475 17.5067 13.6388 17.5067 9.6807C17.5067 5.72259 14.298 2.51392 10.3399 2.51392ZM1.9231 9.6807C1.9231 5.03224 5.69142 1.26392 10.3399 1.26392C14.9883 1.26392 18.7567 5.03224 18.7567 9.6807C18.7567 14.3292 14.9883 18.0975 10.3399 18.0975C5.69142 18.0975 1.9231 14.3292 1.9231 9.6807Z" fill="currentColor"/>
-                </svg>
-                <span className="text-[#464646] font-medium">{school.price}</span>
+              <div className="stat flex items-center gap-1.5 text-xs text-[#5F5F5F] min-w-0 max-w-full overflow-hidden">
+                <SchoolCardIcons.Tuition />
+                <span className="text-[#464646] font-medium truncate">{school.price}</span>
               </div>
 
             </div>
-            
+
             {/* School Description */}
-            <div className="school-description bg-[#F8F9FB] rounded-lg mb-3 p-3 text-[13px] leading-[1.4] text-[#5F5F5F] relative overflow-hidden border border-[#EAEDF2]">
-              <div className={`description-text ${isDescriptionExpanded ? 'expanded' : ''} overflow-hidden transition-all duration-300 relative`}>
+            <div className="school-description bg-[#F8F9FB] rounded-lg mb-3 p-3 text-[13px] leading-[1.4] text-[#5F5F5F] relative overflow-hidden border border-[#EAEDF2] min-w-0">
+              <div className={`description-text ${isDescriptionExpanded ? 'expanded' : 'line-clamp-2'} overflow-hidden transition-all duration-300 relative`}>
                 <span className="truncated-text">{school.description}</span>
                 <a href="#" className="review-link text-xs font-medium ml-1 text-[#346DC2] no-underline hover:underline whitespace-nowrap">
                   Read {school.reviews} reviews
                 </a>
               </div>
-              <div 
+              <div
                 className="view-more-description text-[#346DC2] font-medium cursor-pointer inline-block mt-1 text-xs"
                 onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
               >
                 {isDescriptionExpanded ? 'View Less' : 'View More'}
               </div>
             </div>
-            
+
             {/* School Footer */}
             <div className="school-footer flex items-center justify-between pt-3 border-t border-[rgba(0,0,0,0.06)]">
               <div className="metrics flex items-center gap-3">
@@ -433,136 +389,189 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                 </div>
                 <div className="reviews flex items-center gap-2 text-xs text-[#5F5F5F]">
                   <div className="star-rating flex items-center gap-0.5">
-                    <svg viewBox="0 0 24 24" fill="none" className="w-[14px] h-[14px] text-[#00DF8B]">
-                      <path fill="currentColor" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                    </svg>
+                    <SchoolCardIcons.Star />
                     <span className="rating-value font-medium text-[#464646]">{school.rating}</span>
                     <span className="review-count text-[#5F5F5F] cursor-pointer hover:text-[#346DC2] hover:underline">({school.reviews})</span>
                   </div>
                 </div>
               </div>
               <div className="btn-like flex items-center gap-1.5 bg-[#EBFCF4] text-[#016853] border border-[rgba(1,104,83,0.2)] rounded-md px-3 py-1.5 text-xs font-medium cursor-pointer hover:bg-[#D7F7E9] transition-colors">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                  <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M10.7408 2C13.0889 2 14.6667 4.235 14.6667 6.32C14.6667 10.5425 8.11856 14 8.00004 14C7.88152 14 1.33337 10.5425 1.33337 6.32C1.33337 4.235 2.91115 2 5.2593 2C6.60745 2 7.48893 2.6825 8.00004 3.2825C8.51115 2.6825 9.39263 2 10.7408 2Z"/>
-                </svg>
+                <SchoolCardIcons.Heart />
                 Like
               </div>
             </div>
           </div>
         )}
-        
-        {/* Hybrid Layout - Desktop Version (preserve existing structure) */}
+
+        {/* Hybrid Layout - Desktop Version */}
         {isHybridLayout && (
-          <div className="hidden md:flex md:flex-col">
-            {/* Desktop hybrid layout - preserve existing desktop structure */}
-            <div className="flex mb-3">
-              <div className="w-[60px] mr-4 flex-shrink-0 flex flex-col">
-                <Image
-                  height={60}
-                  width={60}
-                  src={school.image}
+          <div className="hidden md:flex md:flex-col relative pt-5 h-full">
+
+            <div className="flex mb-3 min-w-0">
+              {/* Image Container */}
+              <div className="relative w-[60px] mr-4 flex-shrink-0 flex flex-col">
+                <img
+                  src={school.image || '/placeholder.jpg'}
                   alt={school.name}
-                  className={`w-[60px] h-[60px] object-cover rounded-lg ${school.specialty ? 'rounded-b-none' : ''}`}
+                  className={`w-[60px] h-[60px] object-cover ${school.specialty ? 'rounded-t-lg' : 'rounded-lg'}`}
                 />
                 {school.specialty && (
                   <div
-                    className={`specialty-footer w-full text-[10px] font-semibold text-center py-0.5 rounded-b-lg flex items-center justify-center gap-1 ${
-                      school.specialty === "hot"
-                        ? "bg-[#FFEBEB] text-[#FF4D4D]"
-                        : school.specialty === "instant-book"
+                    className={`specialty-footer w-full text-[10px] font-bold uppercase tracking-tight text-center py-1 rounded-b-lg flex items-center justify-center gap-1 ${school.specialty === "hot"
+                      ? "bg-[#FFEBEB] text-[#FF4D4D]"
+                      : school.specialty === "instant-book"
                         ? "bg-[#E6F1FA] text-[#1D77BD]"
                         : "bg-[#FFF4E5] text-[#FF9900]"
-                    }`}
+                      }`}
                   >
+                    {school.specialty === "hot" && <SchoolCardIcons.Hot />}
+                    {school.specialty === "instant-book" && <SchoolCardIcons.InstantBook />}
                     {school.specialty === "hot" ? "Hot" : school.specialty === "instant-book" ? "Book" : "Ad"}
                   </div>
                 )}
               </div>
-              <div className="flex-1 flex flex-col">
+
+              {/* Content Container */}
+              <div className="flex-1 min-w-0 flex flex-col">
+
+                {/* 1. Label positioned relatively inside flow */}
+                <div className="w-fit bg-[rgba(1,104,83,0.1)] text-[#016853] px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide mb-1.5">
+                  {school.schoolType}
+                </div>
+
+                {/* 2. Ranking */}
                 {school.ranking && (
-                  <div className="ranking-text text-[#089E68] text-xs mb-1 font-medium">
+                  <div className="ranking-text text-[#089E68] text-[13px] mb-1 font-medium whitespace-nowrap overflow-hidden text-ellipsis w-full">
                     {school.ranking}
                   </div>
                 )}
-                <h3 className="school-name text-[15px] font-semibold text-[#464646] leading-[1.3] mb-3">
-                  {school.name}
-                  {school.verified && (
-                    <span className="verified-badge-title inline-flex items-center ml-1">
-                      <svg viewBox="0 0 16 16" fill="none" className="w-[14px] h-[14px] text-[#1D77BD]">
-                        <path fill="#1D77BD" d="M8 0L9.95934 1.95934L12.5725 1.42462L13.1073 4.03778L15.7205 4.57246L15.1857 7.18566L17.1451 9.14505L15.1857 11.1044L15.7205 13.7176L13.1073 14.2523L12.5725 16.8655L9.95934 16.3308L8 18.2902L6.04066 16.3308L3.42746 16.8655L2.89274 14.2523L0.279539 13.7176L0.814259 11.1044L-1.14505 9.14505L0.814259 7.18566L0.279539 4.57246L2.89274 4.03778L3.42746 1.42462L6.04066 1.95934L8 0Z"/>
-                        <path fill="white" d="M7.1001 11.6335L4.47076 8.91081L5.40410 7.99414L7.1001 9.70081L10.5961 6.17747L11.5301 7.09414L7.1001 11.6335Z"/>
-                      </svg>
-                    </span>
-                  )}
-                </h3>
-                <div className="school-stats grid grid-cols-2 gap-3 mb-3">
-                  <div className="stat flex items-center gap-1.5 text-xs text-[#5F5F5F]">
-                    <svg fill="currentColor" viewBox="0 0 24 24" className="w-[14px] h-[14px] text-[#565656] flex-shrink-0">
-                      <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z" />
-                      <path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1C18.6,5.5,19.8,8.4,19.2,11.2z" />
-                    </svg>
-                    <span className="text-[#464646] font-medium">{school.location}</span>
+
+                {/* 3. Header Name & Verified */}
+                <div className="school-header flex items-start justify-between mb-1">
+                  <div className="school-name-container flex items-start gap-1 max-w-[calc(100%-30px)]">
+                    <h3 className="school-name text-[16px] font-bold text-[#464646] leading-[1.3] cursor-pointer hover:text-[#016853] transition-colors line-clamp-2">
+                      {school.name}
+                    </h3>
+                    {school.verified && (
+                      <span className="verified-badge inline-flex items-center flex-shrink-0 mt-0.5 text-[#1D77BD]">
+                        <SchoolCardIcons.Verified className="w-4 h-4" />
+                      </span>
+                    )}
                   </div>
-                  <div className="stat flex items-center gap-1.5 text-xs text-[#5F5F5F]">
-                    <svg viewBox="0 0 20 20" fill="none" className="w-[14px] h-[14px] text-[#565656] flex-shrink-0">
-                      <path fillRule="evenodd" clipRule="evenodd" d="M9.46497 2.65469L3.88834 5.94284C3.88112 5.9471 3.87383 5.95125 3.86648 5.95529C3.53431 6.13787 3.33341 6.48044 3.33341 6.8475V12.9174C3.33391 13.1 3.38341 13.2792 3.47675 13.4362C3.57021 13.5935 3.7042 13.7227 3.86471 13.8104C3.88028 13.8189 3.89558 13.8279 3.91059 13.8374L9.51062 17.3799C9.66161 17.4588 9.82953 17.5 10.0001 17.5C10.1706 17.5 10.3385 17.4588 10.4895 17.3799L16.0065 13.89C16.0242 13.8713 16.0454 13.8485 16.0692 13.8223C16.1476 13.7361 16.2503 13.6169 16.351 13.4827C16.4536 13.3459 16.542 13.2096 16.6016 13.0884C16.6598 12.9702 16.666 12.9159 16.6667 12.916C16.6667 12.916 16.6667 12.9168 16.6667 12.9183V6.84316C16.669 6.47367 16.4717 6.13196 16.1507 5.94942L16.1378 5.94193L10.5403 2.62526C10.421 2.55461 10.2347 2.51688 9.98782 2.53681C9.77125 2.55429 9.57557 2.61124 9.46497 2.65469ZM16.5351 14.5417L17.1194 15.1358C17.0772 15.1773 17.0307 15.2142 16.9806 15.2459L11.3556 18.8042C11.341 18.8134 11.3262 18.8222 11.3111 18.8305C10.9094 19.0511 10.4584 19.1667 10.0001 19.1667C9.54173 19.1667 9.0908 19.0511 8.68902 18.8305C8.67394 18.8222 8.65912 18.8134 8.64458 18.8042L3.04 15.2588C2.62874 15.0283 2.2852 14.6935 2.0441 14.2879C1.79804 13.874 1.66772 13.4015 1.66675 12.92L1.66675 12.9183V6.8475C1.66675 5.8708 2.19919 4.97552 3.05167 4.50135L8.66682 1.19049C8.6944 1.17423 8.72289 1.15957 8.75216 1.14659C9.01002 1.03219 9.40947 0.911399 9.85374 0.875543C10.2945 0.839973 10.8669 0.881526 11.3899 1.1914L16.8757 4.44191C16.981 4.48034 17.0764 4.53941 17.157 4.61423C17.8934 5.11464 18.3381 5.95164 18.3334 6.85072V12.9183C18.3334 13.2699 18.2128 13.5891 18.097 13.8244C17.9757 14.0708 17.8228 14.2982 17.6842 14.4829C17.5436 14.6702 17.4051 14.8305 17.3025 14.9434C17.2508 15.0003 17.2071 15.0463 17.1754 15.079C17.1701 15.0846 17.1651 15.0897 17.1604 15.0945C17.1512 15.1039 17.1435 15.1118 17.1372 15.1181L17.1256 15.1297L17.1218 15.1334L17.1204 15.1348L17.1194 15.1358C17.1193 15.1359 17.1194 15.1358 16.5351 14.5417Z" fill="currentColor"/>
-                      <path fillRule="evenodd" clipRule="evenodd" d="M7.64306 5.97631C8.26818 5.35119 9.11603 5 10.0001 5C10.8841 5 11.732 5.35119 12.3571 5.97631C12.9822 6.60143 13.3334 7.44928 13.3334 8.33333C13.3334 9.21739 12.9822 10.0652 12.3571 10.6904C11.732 11.3155 10.8841 11.6667 10.0001 11.6667C9.11603 11.6667 8.26818 11.3155 7.64306 10.6904C7.01794 10.0652 6.66675 9.21739 6.66675 8.33333C6.66675 7.44928 7.01794 6.60143 7.64306 5.97631ZM10.0001 6.66667C9.55805 6.66667 9.13413 6.84226 8.82157 7.15482C8.50901 7.46738 8.33341 7.89131 8.33341 8.33333C8.33341 8.77536 8.50901 9.19929 8.82157 9.51185C9.13413 9.82441 9.55805 10 10.0001 10C10.4421 10 10.866 9.82441 11.1786 9.51185C11.4912 9.19929 11.6667 8.77536 11.6667 8.33333C11.6667 7.89131 11.4912 7.46738 11.1786 7.15482C10.866 6.84226 10.4421 6.66667 10.0001 6.66667Z" fill="currentColor"/>
-                      <path fillRule="evenodd" clipRule="evenodd" d="M6.9273 14.5988L5.60407 15.9908C5.28698 16.3244 4.75951 16.3377 4.42594 16.0207C4.09237 15.7036 4.079 15.1761 4.39609 14.8425L5.77651 13.3904C5.81197 13.353 5.85082 13.3191 5.89255 13.289C6.60295 12.7758 7.45703 12.4998 8.33335 12.5M6.9273 14.5988C7.3415 14.3174 7.83122 14.1665 8.33308 14.1667L11.6667 14.1667C12.1682 14.1665 12.6578 14.3172 13.0718 14.5982L14.3962 15.9909C14.7133 16.3244 15.2408 16.3377 15.5743 16.0206C15.9078 15.7034 15.9211 15.1759 15.604 14.8424L14.2224 13.3895C14.1868 13.3521 14.1479 13.3182 14.1061 13.288C13.396 12.7755 12.5424 12.4998 11.6667 12.5C11.6666 12.5 11.6668 12.5 11.6667 12.5H8.33335" fill="currentColor"/>
-                    </svg>
-                    <span className="text-[#464646] font-medium">{school.ratio}</span>
-                  </div>
-                  <div className="stat flex items-center gap-1.5 text-xs text-[#5F5F5F]">
-                    <svg viewBox="0 0 20 20" fill="none" className="w-[14px] h-[14px] text-[#565656] flex-shrink-0">
-                      <path fillRule="evenodd" clipRule="evenodd" d="M9.72154 3.47033C9.90035 3.39881 10.0998 3.39881 10.2786 3.47033L18.612 6.80366C18.8967 6.91756 19.0834 7.19334 19.0834 7.50002V12.5C19.0834 12.9142 18.7476 13.25 18.3334 13.25C17.9192 13.25 17.5834 12.9142 17.5834 12.5V8.6078L15.7501 9.34113V13.3334C15.7501 14.4243 14.9016 15.2566 13.871 15.7719C12.8053 16.3048 11.4126 16.5834 10.0001 16.5834C8.58758 16.5834 7.19484 16.3048 6.12914 15.7719C5.09852 15.2566 4.25008 14.4243 4.25008 13.3334V9.34113L1.38821 8.19638C1.10346 8.08248 0.916748 7.8067 0.916748 7.50002C0.916748 7.19334 1.10346 6.91756 1.38821 6.80366L9.72154 3.47033ZM5.29422 8.14324C5.2838 8.13879 5.27326 8.13457 5.2626 8.13059L3.68619 7.50002L10.0001 4.97446L16.314 7.50002L14.7376 8.13059C14.7269 8.13457 14.7164 8.13879 14.7059 8.14323L10.0001 10.0256L5.29422 8.14324ZM5.75008 9.94113V13.3334C5.75008 13.5685 5.95521 14.0079 6.79996 14.4303C7.60962 14.8351 8.76042 15.0834 10.0001 15.0834C11.2397 15.0834 12.3905 14.8351 13.2002 14.4303C14.0449 14.0079 14.2501 13.5685 14.2501 13.3334V9.94113L10.2786 11.5297C10.0998 11.6012 9.90035 11.6012 9.72154 11.5297L5.75008 9.94113Z" fill="currentColor"/>
-                    </svg>
-                    <span className="text-[#464646] font-medium">{school.students || '1,756'}</span>
-                  </div>
-                  <div className="stat flex items-center gap-1.5 text-xs text-[#5F5F5F]">
-                    <svg viewBox="0 0 20 20" fill="none" className="w-[14px] h-[14px] text-[#565656] flex-shrink-0">
-                      <path fillRule="evenodd" clipRule="evenodd" d="M10.3031 4.71338C10.638 4.71338 10.9096 4.98493 10.9096 5.3199V5.62947C11.7726 5.74654 12.5494 6.11208 13.0363 6.67319C13.2559 6.92617 13.2288 7.30925 12.9758 7.52881C12.7229 7.74837 12.3398 7.72128 12.1202 7.4683C11.8892 7.20209 11.4627 6.96219 10.9096 6.85747V9.13097C11.5063 9.2117 12.0549 9.41056 12.4966 9.70499C13.0803 10.0941 13.5358 10.6984 13.5358 11.4478C13.5358 12.1973 13.0803 12.8015 12.4966 13.1907C12.0549 13.4851 11.5063 13.684 10.9096 13.7647V14.0741C10.9096 14.4091 10.638 14.6806 10.3031 14.6806C9.9681 14.6806 9.69656 14.4091 9.69656 14.0741V13.7645C8.83357 13.6474 8.0568 13.2819 7.5698 12.7208C7.35024 12.4678 7.37733 12.0847 7.63031 11.8652C7.88329 11.6456 8.26636 11.6727 8.48592 11.9257C8.71697 12.1919 9.14345 12.4318 9.69656 12.5365V10.263C9.09982 10.1823 8.55128 9.98342 8.10959 9.68899C7.52581 9.29985 7.07031 8.69563 7.07031 7.94614C7.07031 7.19665 7.52581 6.59244 8.10959 6.2033C8.55128 5.90886 9.09982 5.71 9.69656 5.62928V5.3199C9.69656 4.98493 9.9681 4.71338 10.3031 4.71338ZM9.69656 6.85766C9.33347 6.92644 9.02055 7.0539 8.78241 7.21264C8.4157 7.45709 8.28336 7.7283 8.28336 7.94614C8.28336 8.16399 8.4157 8.4352 8.78241 8.67964C9.02055 8.83839 9.33347 8.96585 9.69656 9.03463V6.85766ZM10.9096 10.3594V12.5363C11.2727 12.4675 11.5856 12.3401 11.8237 12.1813C12.1905 11.9369 12.3228 11.6657 12.3228 11.4478C12.3228 11.23 12.1905 10.9588 11.8237 10.7143C11.5856 10.5556 11.2727 10.4281 10.9096 10.3594Z" fill="currentColor"/>
-                      <path fillRule="evenodd" clipRule="evenodd" d="M10.3399 2.51392C6.38177 2.51392 3.1731 5.72259 3.1731 9.6807C3.1731 13.6388 6.38177 16.8475 10.3399 16.8475C14.298 16.8475 17.5067 13.6388 17.5067 9.6807C17.5067 5.72259 14.298 2.51392 10.3399 2.51392ZM1.9231 9.6807C1.9231 5.03224 5.69142 1.26392 10.3399 1.26392C14.9883 1.26392 18.7567 5.03224 18.7567 9.6807C18.7567 14.3292 14.9883 18.0975 10.3399 18.0975C5.69142 18.0975 1.9231 14.3292 1.9231 9.6807Z" fill="currentColor"/>
-                    </svg>
-                    <span className="text-[#464646] font-medium">{school.price}</span>
+                  <div className="actions flex items-center -mt-1">
+                    <OptionsButton />
                   </div>
                 </div>
+
+                {/* 4. Stats Rows */}
+                <div className="school-stats flex flex-col gap-1.5 mb-3">
+
+                  {/* Row 1: Location | Ratio/Duration | Students | Price */}
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-[#5F5F5F] leading-none">
+                    {/* Location */}
+                    <div className="stat flex items-center gap-1.5">
+                      <SchoolCardIcons.Location />
+                      <span className="text-[#464646] font-medium">{school.location}</span>
+                    </div>
+
+                    {/* Ratio or Duration */}
+                    {(school.ratio || school.duration) && (
+                      <div className="stat flex items-center gap-1.5">
+                        {school.ratio ? <SchoolCardIcons.Ratio /> : <SchoolCardIcons.Duration />}
+                        <span className="text-[#464646] font-medium">{school.ratio || school.duration}</span>
+                      </div>
+                    )}
+
+                    {/* Students */}
+                    {school.students && (
+                      <div className="stat flex items-center gap-1.5">
+                        <SchoolCardIcons.Students />
+                        <span className="text-[#464646] font-medium">{school.students}</span>
+                      </div>
+                    )}
+
+                    {/* Price / Tuition (Show for both K12 and College if exists) */}
+                    {school.price && (
+                      <div className="stat flex items-center gap-1.5">
+                        <SchoolCardIcons.Tuition />
+                        <span className="text-[#464646] font-medium">{school.price}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Row 2: Grades OR SAT/Acceptance */}
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-[#5F5F5F] leading-none">
+                    {school.grades && (
+                      <div className="stat flex items-center gap-1.5">
+                        <SchoolCardIcons.Grades />
+                        <span className="text-[#464646] font-medium">Grades {school.grades}</span>
+                      </div>
+                    )}
+
+                    {school.sat && (
+                      <div className="stat flex items-center gap-1.5">
+                        <SchoolCardIcons.SAT />
+                        <span className="text-[#464646] font-medium">SAT: {school.sat}</span>
+                      </div>
+                    )}
+
+                    {school.acceptanceRate && (
+                      <div className="stat flex items-center gap-1.5">
+                        <SchoolCardIcons.Acceptance />
+                        <span className="text-[#464646] font-medium">Accpt: {school.acceptanceRate}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
               </div>
             </div>
-            <div className="school-description bg-[#F8F9FB] rounded-lg mb-3 p-3 text-[13px] leading-[1.4] text-[#5F5F5F] relative overflow-hidden border border-[#EAEDF2]">
-              <div className={`description-text ${isDescriptionExpanded ? 'expanded' : 'line-clamp-2'} overflow-hidden transition-all duration-300 relative`}>
-                <span className="truncated-content">{school.description}</span>
-                <a href="#" className="review-link text-xs font-medium ml-1 text-[#346DC2] no-underline hover:underline whitespace-nowrap">
-                  Read {school.reviews} reviews
+
+            {/* Description Box with Bold Logic */}
+            <div className="school-description bg-[#F8F9FB] rounded-lg mb-3 p-3 text-[13px] leading-[1.5] text-[#5F5F5F] relative border border-[#EAEDF2]">
+              <div className={`description-text ${isDescriptionExpanded ? '' : 'line-clamp-2'} overflow-hidden`}>
+                {(() => {
+                  // Check if description has a colon (e.g. "Parent: text") to bold the prefix
+                  const parts = school.description ? school.description.split(':') : [];
+                  if (parts.length > 1) {
+                    return (
+                      <span>
+                        <span className="font-bold text-[#464646]">{parts[0]}:</span>
+                        {parts.slice(1).join(':')}
+                      </span>
+                    );
+                  }
+                  return school.description;
+                })()}
+
+                {/* Inline Link */}
+                <a href="#" className="review-link text-xs font-semibold ml-1 text-[#346DC2] hover:underline whitespace-nowrap">
+                  View More
                 </a>
               </div>
-              <div 
-                className="view-more-description text-[#346DC2] font-medium cursor-pointer inline-block mt-1 text-xs"
-                onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-              >
-                {isDescriptionExpanded ? 'View Less' : 'View More'}
-              </div>
             </div>
-            <div className="school-footer flex items-center justify-between pt-3 border-t border-[rgba(0,0,0,0.06)]">
+
+            {/* Footer */}
+            <div className="school-footer flex items-center justify-between pt-3 border-t border-[rgba(0,0,0,0.06)] mt-auto">
               <div className="metrics flex items-center gap-3">
-                <div className="grade flex items-center gap-2">
-                  <div className={`grade-circle w-7 h-7 ${getGradeClass(school.grade)} rounded-full flex items-center justify-center text-white text-[13px] font-semibold`}>
-                    {school.grade}
-                  </div>
+                <div className={`grade-circle w-[26px] h-[26px] ${getGradeClass(school.grade)} rounded-full flex items-center justify-center text-white text-[12px] font-bold`}>
+                  {school.grade}
                 </div>
-                <div className="reviews flex items-center gap-2 text-xs text-[#5F5F5F]">
-                  <div className="star-rating flex items-center gap-0.5">
-                    <svg viewBox="0 0 24 24" fill="none" className="w-[14px] h-[14px] text-[#00DF8B]">
-                      <path fill="currentColor" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                    </svg>
-                    <span className="rating-value font-medium text-[#464646]">{school.rating}</span>
-                    <span className="review-count text-[#5F5F5F] cursor-pointer hover:text-[#346DC2] hover:underline">({school.reviews})</span>
-                  </div>
+                <div className="flex items-center gap-1 text-[13px]">
+                  <SchoolCardIcons.Star className="w-3.5 h-3.5 text-[#00DF8B]" />
+                  <span className="font-bold text-[#464646]">{school.rating}</span>
+                  <span className="text-[#9CA3AF]">({school.reviews})</span>
                 </div>
               </div>
-              <div className="btn-like flex items-center gap-1.5 bg-[#EBFCF4] text-[#016853] border border-[rgba(1,104,83,0.2)] rounded-md px-3 py-1.5 text-xs font-medium cursor-pointer hover:bg-[#D7F7E9] transition-colors">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                  <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M10.7408 2C13.0889 2 14.6667 4.235 14.6667 6.32C14.6667 10.5425 8.11856 14 8.00004 14C7.88152 14 1.33337 10.5425 1.33337 6.32C1.33337 4.235 2.91115 2 5.2593 2C6.60745 2 7.48893 2.6825 8.00004 3.2825C8.51115 2.6825 9.39263 2 10.7408 2Z"/>
-                </svg>
-                Like
+
+              <div className="footer-buttons flex items-center gap-2">
+                <button className="flex items-center justify-center px-3 py-1.5 rounded-md text-[13px] font-medium bg-white text-[#464646] border border-[#E5E7EB] hover:bg-[#F9FAFB] transition-colors">
+                  More Info
+                </button>
+                <button className="flex items-center gap-1.5 bg-[#EBFCF4] text-[#016853] border border-[rgba(1,104,83,0.2)] rounded-md px-3 py-1.5 text-[13px] font-medium hover:bg-[#D7F7E9] transition-colors">
+                  <SchoolCardIcons.Heart />
+                  Like
+                </button>
               </div>
             </div>
           </div>
@@ -598,90 +607,63 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           const secondStat = getSecondStat();
           const fourthStat = getFourthStat();
 
-          const ratioIcon = (
-            <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4">
-              <path fillRule="evenodd" clipRule="evenodd" d="M9.46497 2.65469L3.88834 5.94284C3.88112 5.9471 3.87383 5.95125 3.86648 5.95529C3.53431 6.13787 3.33341 6.48044 3.33341 6.8475V12.9174C3.33391 13.1 3.38341 13.2792 3.47675 13.4362C3.57021 13.5935 3.7042 13.7227 3.86471 13.8104C3.88028 13.8189 3.89558 13.8279 3.91059 13.8374L9.51062 17.3799C9.66161 17.4588 9.82953 17.5 10.0001 17.5C10.1706 17.5 10.3385 17.4588 10.4895 17.3799L16.0065 13.89C16.0242 13.8713 16.0454 13.8485 16.0692 13.8223C16.1476 13.7361 16.2503 13.6169 16.351 13.4827C16.4536 13.3459 16.542 13.2096 16.6016 13.0884C16.6598 12.9702 16.666 12.9159 16.6667 12.916C16.6667 12.916 16.6667 12.9168 16.6667 12.9183V6.84316C16.669 6.47367 16.4717 6.13196 16.1507 5.94942L16.1378 5.94193L10.5403 2.62526C10.421 2.55461 10.2347 2.51688 9.98782 2.53681C9.77125 2.55429 9.57557 2.61124 9.46497 2.65469ZM16.5351 14.5417L17.1194 15.1358C17.0772 15.1773 17.0307 15.2142 16.9806 15.2459L11.3556 18.8042C11.341 18.8134 11.3262 18.8222 11.3111 18.8305C10.9094 19.0511 10.4584 19.1667 10.0001 19.1667C9.54173 19.1667 9.0908 19.0511 8.68902 18.8305C8.67394 18.8222 8.65912 18.8134 8.64458 18.8042L3.04 15.2588C2.62874 15.0283 2.2852 14.6935 2.0441 14.2879C1.79804 13.874 1.66772 13.4015 1.66675 12.92L1.66675 12.9183V6.8475C1.66675 5.8708 2.19919 4.97552 3.05167 4.50135L8.66682 1.19049C8.6944 1.17423 8.72289 1.15957 8.75216 1.14659C9.01002 1.03219 9.40947 0.911399 9.85374 0.875543C10.2945 0.839973 10.8669 0.881526 11.3899 1.1914L16.8757 4.44191C16.981 4.48034 17.0764 4.53941 17.157 4.61423C17.8934 5.11464 18.3381 5.95164 18.3334 6.85072V12.9183C18.3334 13.2699 18.2128 13.5891 18.097 13.8244C17.9757 14.0708 17.8228 14.2982 17.6842 14.4829C17.5436 14.6702 17.4051 14.8305 17.3025 14.9434C17.2508 15.0003 17.2071 15.0463 17.1754 15.079C17.1701 15.0846 17.1651 15.0897 17.1604 15.0945C17.1512 15.1039 17.1435 15.1118 17.1372 15.1181L17.1256 15.1297L17.1218 15.1334L17.1204 15.1348L17.1194 15.1358C17.1193 15.1359 17.1194 15.1358 16.5351 14.5417Z" fill="currentColor"/>
-              <path fillRule="evenodd" clipRule="evenodd" d="M7.64306 5.97631C8.26818 5.35119 9.11603 5 10.0001 5C10.8841 5 11.732 5.35119 12.3571 5.97631C12.9822 6.60143 13.3334 7.44928 13.3334 8.33333C13.3334 9.21739 12.9822 10.0652 12.3571 10.6904C11.732 11.3155 10.8841 11.6667 10.0001 11.6667C9.11603 11.6667 8.26818 11.3155 7.64306 10.6904C7.01794 10.0652 6.66675 9.21739 6.66675 8.33333C6.66675 7.44928 7.01794 6.60143 7.64306 5.97631ZM10.0001 6.66667C9.55805 6.66667 9.13413 6.84226 8.82157 7.15482C8.50901 7.46738 8.33341 7.89131 8.33341 8.33333C8.33341 8.77536 8.50901 9.19929 8.82157 9.51185C9.13413 9.82441 9.55805 10 10.0001 10C10.4421 10 10.866 9.82441 11.1786 9.51185C11.4912 9.19929 11.6667 8.77536 11.6667 8.33333C11.6667 7.89131 11.4912 7.46738 11.1786 7.15482C10.866 6.84226 10.4421 6.66667 10.0001 6.66667Z" fill="currentColor"/>
-              <path fillRule="evenodd" clipRule="evenodd" d="M6.9273 14.5988L5.60407 15.9908C5.28698 16.3244 4.75951 16.3377 4.42594 16.0207C4.09237 15.7036 4.079 15.1761 4.39609 14.8425L5.77651 13.3904C5.81197 13.353 5.85082 13.3191 5.89255 13.289C6.60295 12.7758 7.45703 12.4998 8.33335 12.5M6.9273 14.5988C7.3415 14.3174 7.83122 14.1665 8.33308 14.1667L11.6667 14.1667C12.1682 14.1665 12.6578 14.3172 13.0718 14.5982L14.3962 15.9909C14.7133 16.3244 15.2408 16.3377 15.5743 16.0206C15.9078 15.7034 15.9211 15.1759 15.604 14.8424L14.2224 13.3895C14.1868 13.3521 14.1479 13.3182 14.1061 13.288C13.396 12.7755 12.5424 12.4998 11.6667 12.5C11.6666 12.5 11.6668 12.5 11.6667 12.5H8.33335" fill="currentColor"/>
-            </svg>
-          );
+          const ratioIcon = <SchoolCardIcons.Ratio />;
 
-          const durationIcon = (
-            <svg viewBox="0 0 32 32" fill="none" className="w-4 h-4">
-              <path fillRule="evenodd" clipRule="evenodd" d="M11.0251 3.98957C12.6023 3.33626 14.2928 3 16 3C17.7072 3 19.3977 3.33626 20.9749 3.98957C22.5521 4.64288 23.9852 5.60045 25.1924 6.80761C26.3995 8.01477 27.3571 9.44788 28.0104 11.0251C28.6637 12.6023 29 14.2928 29 16C29 17.7072 28.6637 19.3977 28.0104 20.9749C27.3571 22.5521 26.3995 23.9852 25.1924 25.1924C23.9852 26.3995 22.5521 27.3571 20.9749 28.0104C19.3977 28.6637 17.7072 29 16 29C14.2928 29 12.6023 28.6637 11.0251 28.0104C9.44788 27.3571 8.01477 26.3995 6.80761 25.1924C5.60045 23.9852 4.64288 22.5521 3.98957 20.9749C3.33625 19.3977 3 17.7072 3 16C3 14.2928 3.33625 12.6023 3.98957 11.0251C4.64288 9.44788 5.60045 8.01477 6.80761 6.80761C8.01477 5.60045 9.44788 4.64288 11.0251 3.98957ZM16 5C14.5555 5 13.1251 5.28452 11.7905 5.83733C10.4559 6.39013 9.24327 7.20038 8.22183 8.22183C7.20038 9.24327 6.39013 10.4559 5.83733 11.7905C5.28452 13.1251 5 14.5555 5 16C5 17.4445 5.28452 18.8749 5.83733 20.2095C6.39013 21.5441 7.20038 22.7567 8.22183 23.7782C9.24327 24.7996 10.4559 25.6099 11.7905 26.1627C13.1251 26.7155 14.5555 27 16 27C17.4445 27 18.8749 26.7155 20.2095 26.1627C21.5441 25.6099 22.7567 24.7996 23.7782 23.7782C24.7996 22.7567 25.6099 21.5441 26.1627 20.2095C26.7155 18.8749 27 17.4445 27 16C27 14.5555 26.7155 13.1251 26.1627 11.7905C25.6099 10.4559 24.7996 9.24327 23.7782 8.22183C22.7567 7.20038 21.5441 6.39013 20.2095 5.83733C18.8749 5.28452 17.4445 5 16 5ZM16 8.33333C16.5523 8.33333 17 8.78105 17 9.33333V15.4648L20.5547 17.8346C21.0142 18.141 21.1384 18.7618 20.8321 19.2214C20.5257 19.6809 19.9048 19.8051 19.4453 19.4987L15.4453 16.8321C15.1671 16.6466 15 16.3344 15 16V9.33333C15 8.78105 15.4477 8.33333 16 8.33333Z" fill="currentColor"/>
-            </svg>
-          );
+          const durationIcon = <SchoolCardIcons.Duration />;
 
-          const priceIcon = (
-            <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4">
-              <path fillRule="evenodd" clipRule="evenodd" d="M10.3031 4.71338C10.638 4.71338 10.9096 4.98493 10.9096 5.3199V5.62947C11.7726 5.74654 12.5494 6.11208 13.0363 6.67319C13.2559 6.92617 13.2288 7.30925 12.9758 7.52881C12.7229 7.74837 12.3398 7.72128 12.1202 7.4683C11.8892 7.20209 11.4627 6.96219 10.9096 6.85747V9.13097C11.5063 9.2117 12.0549 9.41056 12.4966 9.70499C13.0803 10.0941 13.5358 10.6984 13.5358 11.4478C13.5358 12.1973 13.0803 12.8015 12.4966 13.1907C12.0549 13.4851 11.5063 13.684 10.9096 13.7647V14.0741C10.9096 14.4091 10.638 14.6806 10.3031 14.6806C9.9681 14.6806 9.69656 14.4091 9.69656 14.0741V13.7645C8.83357 13.6474 8.0568 13.2819 7.5698 12.7208C7.35024 12.4678 7.37733 12.0847 7.63031 11.8652C7.88329 11.6456 8.26636 11.6727 8.48592 11.9257C8.71697 12.1919 9.14345 12.4318 9.69656 12.5365V10.263C9.09982 10.1823 8.55128 9.98342 8.10959 9.68899C7.52581 9.29985 7.07031 8.69563 7.07031 7.94614C7.07031 7.19665 7.52581 6.59244 8.10959 6.2033C8.55128 5.90886 9.09982 5.71 9.69656 5.62928V5.3199C9.69656 4.98493 9.9681 4.71338 10.3031 4.71338ZM9.69656 6.85766C9.33347 6.92644 9.02055 7.0539 8.78241 7.21264C8.4157 7.45709 8.28336 7.7283 8.28336 7.94614C8.28336 8.16399 8.4157 8.4352 8.78241 8.67964C9.02055 8.83839 9.33347 8.96585 9.69656 9.03463V6.85766ZM10.9096 10.3594V12.5363C11.2727 12.4675 11.5856 12.3401 11.8237 12.1813C12.1905 11.9369 12.3228 11.6657 12.3228 11.4478C12.3228 11.23 12.1905 10.9588 11.8237 10.7143C11.5856 10.5556 11.2727 10.4281 10.9096 10.3594Z" fill="currentColor"/>
-              <path fillRule="evenodd" clipRule="evenodd" d="M10.3399 2.51392C6.38177 2.51392 3.1731 5.72259 3.1731 9.6807C3.1731 13.6388 6.38177 16.8475 10.3399 16.8475C14.298 16.8475 17.5067 13.6388 17.5067 9.6807C17.5067 5.72259 14.298 2.51392 10.3399 2.51392ZM1.9231 9.6807C1.9231 5.03224 5.69142 1.26392 10.3399 1.26392C14.9883 1.26392 18.7567 5.03224 18.7567 9.6807C18.7567 14.3292 14.9883 18.0975 10.3399 18.0975C5.69142 18.0975 1.9231 14.3292 1.9231 9.6807Z" fill="currentColor"/>
-            </svg>
-          );
+          const priceIcon = <SchoolCardIcons.Tuition />;
 
-          const studentsIcon = (
-            <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4">
-              <path fillRule="evenodd" clipRule="evenodd" d="M9.72154 3.47033C9.90035 3.39881 10.0998 3.39881 10.2786 3.47033L18.612 6.80366C18.8967 6.91756 19.0834 7.19334 19.0834 7.50002V12.5C19.0834 12.9142 18.7476 13.25 18.3334 13.25C17.9192 13.25 17.5834 12.9142 17.5834 12.5V8.6078L15.7501 9.34113V13.3334C15.7501 14.4243 14.9016 15.2566 13.871 15.7719C12.8053 16.3048 11.4126 16.5834 10.0001 16.5834C8.58758 16.5834 7.19484 16.3048 6.12914 15.7719C5.09852 15.2566 4.25008 14.4243 4.25008 13.3334V9.34113L1.38821 8.19638C1.10346 8.08248 0.916748 7.8067 0.916748 7.50002C0.916748 7.19334 1.10346 6.91756 1.38821 6.80366L9.72154 3.47033ZM5.29422 8.14324C5.2838 8.13879 5.27326 8.13457 5.2626 8.13059L3.68619 7.50002L10.0001 4.97446L16.314 7.50002L14.7376 8.13059C14.7269 8.13457 14.7164 8.13879 14.7059 8.14323L10.0001 10.0256L5.29422 8.14324ZM5.75008 9.94113V13.3334C5.75008 13.5685 5.95521 14.0079 6.79996 14.4303C7.60962 14.8351 8.76042 15.0834 10.0001 15.0834C11.2397 15.0834 12.3905 14.8351 13.2002 14.4303C14.0449 14.0079 14.2501 13.5685 14.2501 13.3334V9.94113L10.2786 11.5297C10.0998 11.6012 9.90035 11.6012 9.72154 11.5297L5.75008 9.94113Z" fill="currentColor"/>
-            </svg>
-          );
+          const studentsIcon = <SchoolCardIcons.Students />;
 
-          const acceptanceIcon = (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-          );
+          const acceptanceIcon = <SchoolCardIcons.Acceptance />;
 
           return (
             <div className="stats-section grid grid-cols-2 gap-2.5 mb-4 px-4">
               {/* Location - Always first */}
-            <div className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
-              <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
-                  <svg fill="currentColor" viewBox="0 0 24 24" className="w-4 h-4">
-                  <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z" />
-                  <path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1C18.6,5.5,19.8,8.4,19.2,11.2z" />
-              </svg>
+              <div className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
+                <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
+                  <SchoolCardIcons.Location />
+                </div>
+                <div className="stat-content flex flex-col gap-1">
+                  <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">Location</div>
+                  <div className="stat-value text-[10px] text-[#464646] font-medium leading-[1.3]">{school.location}</div>
+                </div>
               </div>
-              <div className="stat-content flex flex-col gap-1">
-                <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">Location</div>
-                <div className="stat-value text-[10px] text-[#464646] font-medium leading-[1.3]">{school.location}</div>
-              </div>
-            </div>
 
               {/* Second stat */}
-            <div className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
-              <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
+              <div className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
+                <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
                   {secondStat.icon === "ratio" ? ratioIcon : durationIcon}
-              </div>
-              <div className="stat-content flex flex-col">
+                </div>
+                <div className="stat-content flex flex-col">
                   <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">{secondStat.label}</div>
                   <div className="stat-value text-[10px] text-[#464646] font-medium leading-[1.3]">{secondStat.value}</div>
+                </div>
               </div>
-            </div>
 
               {/* Tuition - Third stat (not for District) */}
               {establishment !== "District" && (
-            <div className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
-              <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
+                <div className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
+                  <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
                     {priceIcon}
-              </div>
-              <div className="stat-content flex flex-col">
+                  </div>
+                  <div className="stat-content flex flex-col">
                     <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">Tuition</div>
                     <div className="stat-value text-[10px] text-[#464646] font-medium leading-[1.3]">{school.price}</div>
-              </div>
-            </div>
+                  </div>
+                </div>
               )}
 
               {/* Fourth stat */}
               {establishment === "Colleges" ? (
-            <div className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
-              <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
+                <div className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
+                  <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
                     {acceptanceIcon}
-              </div>
-              <div className="flex flex-col gap-2">
+                  </div>
+                  <div className="flex flex-col gap-2">
                     <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">{fourthStat.label}</div>
                     <div className="stat-value text-[10px] text-[#464646] font-medium leading-[1.3]">{fourthStat.value}</div>
-              </div>
+                  </div>
                 </div>
               ) : (
                 <div className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
@@ -691,9 +673,9 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                   <div className="flex flex-col gap-1">
                     <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">{fourthStat.label}</div>
                     <div className="stat-value text-[10px] text-[#464646] font-medium leading-[1.3]">{fourthStat.value}</div>
-            </div>
-          </div>
-        )}
+                  </div>
+                </div>
+              )}
             </div>
           );
         })()}
@@ -704,9 +686,9 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
             {isGridLayout ? (
               <>
                 {school.ranking && (
-                <div className="ranking-text text-[#089E68] text-[13px] mb-2 font-medium whitespace-nowrap overflow-hidden text-ellipsis">
-                  {school.ranking}
-                </div>
+                  <div className="ranking-text text-[#089E68] text-[13px] mb-2 font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+                    {school.ranking}
+                  </div>
                 )}
                 <h3 className="school-name text-base font-semibold text-[#464646] mb-2 leading-[1.4] line-clamp-3">
                   {school.name}
@@ -722,121 +704,89 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                     {school.name}
                   </h3>
                   <div className="verified-badge w-6 h-6 bg-[rgba(29,119,189,0.1)] rounded-md flex items-center justify-center -mt-1.5">
-                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4 text-[#1D77BD]">
-                      <path fill="currentColor" d="M8 0L9.95934 1.95934L12.5725 1.42462L13.1073 4.03778L15.7205 4.57246L15.1857 7.18566L17.1451 9.14505L15.1857 11.1044L15.7205 13.7176L13.1073 14.2523L12.5725 16.8655L9.95934 16.3308L8 18.2902L6.04066 16.3308L3.42746 16.8655L2.89274 14.2523L0.279539 13.7176L0.814259 11.1044L-1.14505 9.14505L0.814259 7.18566L0.279539 4.57246L2.89274 4.03778L3.42746 1.42462L6.04066 1.95934L8 0Z"/>
-                      <path fill="white" d="M7.1001 11.6335L4.47076 8.91081L5.40410 7.99414L7.1001 9.70081L10.5961 6.17747L11.5301 7.09414L7.1001 11.6335Z"/>
-                    </svg>
+                    <SchoolCardIcons.Verified />
                   </div>
                 </div>
               </>
             ) : (
-          <>
-            <div className="ranking-text text-[#089E68] text-[11px] md:text-[13px] mb-1 md:mb-2 font-medium">
-          {school.ranking}
-        </div>
+              <>
+                <div className="ranking-text text-[#089E68] text-[11px] md:text-[13px] mb-1 md:mb-2 font-medium">
+                  {school.ranking}
+                </div>
                 <h3 className="school-name font-semibold text-[#464646] mb-1 md:mb-2 leading-[1.4] text-sm md:text-base">
-            {school.name}
-          </h3>
+                  {school.name}
+                </h3>
               </>
             )}
 
-        <div
-          className={`school-stats ${
-            isListLayout
-                  ? "flex gap-6 mb-4"
-                  : isGridLayout
-                  ? "flex flex-wrap gap-2 md:gap-3 mb-3 md:mb-4"
+            <div
+              className={`school-stats ${isListLayout
+                ? "flex flex-wrap gap-3 md:gap-6 mb-4 min-w-0"
+                : isGridLayout
+                  ? "flex flex-wrap gap-3 mb-4"
                   : "flex flex-wrap gap-2 md:gap-3 mb-3 md:mb-4"
-              }`}
-        >
-          {/* Grid Layout Mobile Stats */}
-          {isGridLayout ? (
-            <>
-              <div className="stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F] font-[450] tracking-[0.01em] md:gap-2 md:text-[11px] md:md:text-[13px]">
-                <svg fill="currentColor" viewBox="0 0 24 24" className="w-4 h-4 text-[#565656]">
-              <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z" />
-              <path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1C18.6,5.5,19.8,8.4,19.2,11.2z" />
-            </svg>
-            <span className="text-[#464646]">{school.location}</span>
-          </div>
-              {establishment === "K-12" || establishment === "District" ? (
-                <div className="stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F] font-[450] tracking-[0.01em] md:gap-2 md:text-[11px] md:md:text-[13px]">
-                  <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 text-[#565656]">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M9.46497 2.65469L3.88834 5.94284C3.88112 5.9471 3.87383 5.95125 3.86648 5.95529C3.53431 6.13787 3.33341 6.48044 3.33341 6.8475V12.9174C3.33391 13.1 3.38341 13.2792 3.47675 13.4362C3.57021 13.5935 3.7042 13.7227 3.86471 13.8104C3.88028 13.8189 3.89558 13.8279 3.91059 13.8374L9.51062 17.3799C9.66161 17.4588 9.82953 17.5 10.0001 17.5C10.1706 17.5 10.3385 17.4588 10.4895 17.3799L16.0065 13.89C16.0242 13.8713 16.0454 13.8485 16.0692 13.8223C16.1476 13.7361 16.2503 13.6169 16.351 13.4827C16.4536 13.3459 16.542 13.2096 16.6016 13.0884C16.6598 12.9702 16.666 12.9159 16.6667 12.916C16.6667 12.916 16.6667 12.9168 16.6667 12.9183V6.84316C16.669 6.47367 16.4717 6.13196 16.1507 5.94942L16.1378 5.94193L10.5403 2.62526C10.421 2.55461 10.2347 2.51688 9.98782 2.53681C9.77125 2.55429 9.57557 2.61124 9.46497 2.65469ZM16.5351 14.5417L17.1194 15.1358C17.0772 15.1773 17.0307 15.2142 16.9806 15.2459L11.3556 18.8042C11.341 18.8134 11.3262 18.8222 11.3111 18.8305C10.9094 19.0511 10.4584 19.1667 10.0001 19.1667C9.54173 19.1667 9.0908 19.0511 8.68902 18.8305C8.67394 18.8222 8.65912 18.8134 8.64458 18.8042L3.04 15.2588C2.62874 15.0283 2.2852 14.6935 2.0441 14.2879C1.79804 13.874 1.66772 13.4015 1.66675 12.92L1.66675 12.9183V6.8475C1.66675 5.8708 2.19919 4.97552 3.05167 4.50135L8.66682 1.19049C8.6944 1.17423 8.72289 1.15957 8.75216 1.14659C9.01002 1.03219 9.40947 0.911399 9.85374 0.875543C10.2945 0.839973 10.8669 0.881526 11.3899 1.1914L16.8757 4.44191C16.981 4.48034 17.0764 4.53941 17.157 4.61423C17.8934 5.11464 18.3381 5.95164 18.3334 6.85072V12.9183C18.3334 13.2699 18.2128 13.5891 18.097 13.8244C17.9757 14.0708 17.8228 14.2982 17.6842 14.4829C17.5436 14.6702 17.4051 14.8305 17.3025 14.9434C17.2508 15.0003 17.2071 15.0463 17.1754 15.079C17.1701 15.0846 17.1651 15.0897 17.1604 15.0945C17.1512 15.1039 17.1435 15.1118 17.1372 15.1181L17.1256 15.1297L17.1218 15.1334L17.1204 15.1348L17.1194 15.1358C17.1193 15.1359 17.1194 15.1358 16.5351 14.5417Z" fill="currentColor"/>
-                    <path fillRule="evenodd" clipRule="evenodd" d="M7.64306 5.97631C8.26818 5.35119 9.11603 5 10.0001 5C10.8841 5 11.732 5.35119 12.3571 5.97631C12.9822 6.60143 13.3334 7.44928 13.3334 8.33333C13.3334 9.21739 12.9822 10.0652 12.3571 10.6904C11.732 11.3155 10.8841 11.6667 10.0001 11.6667C9.11603 11.6667 8.26818 11.3155 7.64306 10.6904C7.01794 10.0652 6.66675 9.21739 6.66675 8.33333C6.66675 7.44928 7.01794 6.60143 7.64306 5.97631ZM10.0001 6.66667C9.55805 6.66667 9.13413 6.84226 8.82157 7.15482C8.50901 7.46738 8.33341 7.89131 8.33341 8.33333C8.33341 8.77536 8.50901 9.19929 8.82157 9.51185C9.13413 9.82441 9.55805 10 10.0001 10C10.4421 10 10.866 9.82441 11.1786 9.51185C11.4912 9.19929 11.6667 8.77536 11.6667 8.33333C11.6667 7.89131 11.4912 7.46738 11.1786 7.15482C10.866 6.84226 10.4421 6.66667 10.0001 6.66667Z" fill="currentColor"/>
-                    <path fillRule="evenodd" clipRule="evenodd" d="M6.9273 14.5988L5.60407 15.9908C5.28698 16.3244 4.75951 16.3377 4.42594 16.0207C4.09237 15.7036 4.079 15.1761 4.39609 14.8425L5.77651 13.3904C5.81197 13.353 5.85082 13.3191 5.89255 13.289C6.60295 12.7758 7.45703 12.4998 8.33335 12.5M6.9273 14.5988C7.3415 14.3174 7.83122 14.1665 8.33308 14.1667L11.6667 14.1667C12.1682 14.1665 12.6578 14.3172 13.0718 14.5982L14.3962 15.9909C14.7133 16.3244 15.2408 16.3377 15.5743 16.0206C15.9078 15.7034 15.9211 15.1759 15.604 14.8424L14.2224 13.3895C14.1868 13.3521 14.1479 13.3182 14.1061 13.288C13.396 12.7755 12.5424 12.4998 11.6667 12.5C11.6666 12.5 11.6668 12.5 11.6667 12.5H8.33335" fill="currentColor"/>
-                  </svg>
-                  <span className="text-[#464646]">{school.ratio}</span>
-                </div>
-              ) : (establishment === "Colleges" || establishment === "Graduates") ? (
-                <div className="stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F] font-[450] tracking-[0.01em] md:gap-2 md:text-[11px] md:md:text-[13px]">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-[#565656]">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                  <span className="text-[#464646]">{school.duration || school.ratio}</span>
-                </div>
-              ) : null}
-              <div className="stat rating-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F] font-[450] tracking-[0.01em] md:gap-2 md:text-[11px] md:md:text-[13px]">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="w-4 h-4 text-[#565656] relative -top-0.5">
-                  <path fill="currentColor" fillRule="evenodd" d="m12 16.6 4.644 3.105-1.166-5.519 4.255-3.89-5.71-.49L12 4.72 9.978 9.806l-5.71.49 4.254 3.89-1.166 5.519L12 16.599Zm-9.733-6.102c-.513-.527-.257-1.58.512-1.58l6.147-.528 2.306-5.797c.256-.79 1.28-.79 1.536 0l2.306 5.797 6.147.527c.769 0 1.025 1.054.512 1.581l-4.61 4.216 1.28 6.061c.257.79-.512 1.318-1.28 1.054L12 18.404l-5.123 3.425c-.768.527-1.537-.263-1.28-1.054l1.28-6.06z" clipRule="evenodd"/>
-                </svg>
-                <span className="text-[#464646]">
-                  <strong className="font-semibold text-[#444444]">{school.rating.split(' ')[0]}</strong> {school.rating.split(' ').slice(1).join(' ')}
-                </span>
-              </div>
-            </>
-          ) : isListLayout ? (
-            <>
-              <div className={`stat flex items-center gap-2 text-[14px] text-[#5F5F5F]`}>
-                <svg fill="currentColor" viewBox="0 0 24 24" className="w-4 h-4 text-[#565656]">
-                  <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z" />
-                  <path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1C18.6,5.5,19.8,8.4,19.2,11.2z" />
-                </svg>
-                <span className="text-[#464646] font-medium">{school.location}</span>
-              </div>
-                <div className="stat-group flex gap-6">
-                  <div className="stat flex items-center gap-2 text-[14px] text-[#5F5F5F]">
-                  <svg viewBox="0 0 32 32" fill="none" className="w-4 h-4 text-[#565656]">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M16 4C9.373 4 4 9.373 4 16s5.373 12 12 12 12-5.373 12-12S22.627 4 16 4zM8 16c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8-8-3.582-8-8z" fill="currentColor" />
-                    <path fillRule="evenodd" clipRule="evenodd" d="M16 8C11.582 8 8 11.582 8 16s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zM12 16c0-2.209 1.791-4 4-4s4 1.791 4 4-1.791 4-4 4-4-1.791-4-4z" fill="currentColor" />
-                    </svg>
-                    <span className="text-[#464646] font-medium">{school.ratio}</span>
+                }`}
+            >
+              {/* Grid Layout Mobile Stats */}
+              {isGridLayout ? (
+                <>
+                  <div className="stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F] font-[450] tracking-[0.01em] md:gap-2">
+                    <SchoolCardIcons.Location />
+                    <span className="text-[#464646]">{school.location}</span>
                   </div>
-                  <div className="stat flex items-center gap-2 text-[14px] text-[#5F5F5F]">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="w-4 h-4 text-[#565656]">
-                      <path fill="currentColor" fillRule="evenodd" d="m12 16.6 4.644 3.105-1.166-5.519 4.255-3.89-5.71-.49L12 4.72 9.978 9.806l-5.71.49 4.254 3.89-1.166 5.519L12 16.599Zm-9.733-6.102c-.513-.527-.257-1.58.512-1.58l6.147-.528 2.306-5.797c.256-.79 1.28-.79 1.536 0l2.306 5.797 6.147.527c.769 0 1.025 1.054.512 1.581l-4.61 4.216 1.28 6.061c.257.79-.512 1.318-1.28 1.054L12 18.404l-5.123 3.425c-.768.527-1.537-.263-1.28-1.054l1.28-6.06z" clipRule="evenodd"/>
-                    </svg>
-                    <span className="text-[#464646] font-medium">{school.rating}</span>
+                  {establishment === "K-12" || establishment === "District" ? (
+                    <div className="stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F] font-[450] tracking-[0.01em] md:gap-2">
+                      <SchoolCardIcons.Ratio />
+                      <span className="text-[#464646]">{school.ratio}</span>
+                    </div>
+                  ) : (establishment === "Colleges" || establishment === "Graduates") ? (
+                    <div className="stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F] font-[450] tracking-[0.01em] md:gap-2">
+                      <SchoolCardIcons.Grades />
+                      <span className="text-[#464646]">{school.duration || school.ratio}</span>
+                    </div>
+                  ) : null}
+                  <div className="stat rating-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F] font-[450] tracking-[0.01em] md:gap-2">
+                    <SchoolCardIcons.Grades />
+                    <span className="text-[#464646]">
+                      <strong className="font-semibold text-[#444444]">{school.rating.split(' ')[0]}</strong> {school.rating.split(' ').slice(1).join(' ')}
+                    </span>
                   </div>
-                </div>
-            </>
+                </>
+              ) : isListLayout ? (
+                <>
+                  <div className={`stat flex items-center gap-2 text-[14px] text-[#5F5F5F] min-w-0 overflow-hidden`}>
+                    <SchoolCardIcons.Location />
+                    <span className="text-[#464646] font-medium truncate">{school.location}</span>
+                  </div>
+                  <div className="stat-group flex flex-wrap gap-3 md:gap-6 min-w-0">
+                    <div className="stat flex items-center gap-2 text-[14px] text-[#5F5F5F]">
+                      <SchoolCardIcons.Duration />
+                      <span className="text-[#464646] font-medium">{school.ratio}</span>
+                    </div>
+                    <div className="stat flex items-center gap-2 text-[14px] text-[#5F5F5F]">
+                      <SchoolCardIcons.Grades />
+                      <span className="text-[#464646] font-medium">{school.rating}</span>
+                    </div>
+                  </div>
+                </>
               ) : (
                 <>
-              <div className="stat flex items-center gap-1 md:gap-1.5 text-[11px] md:text-[13px] text-[#5F5F5F] font-[450]">
-                <svg fill="currentColor" viewBox="0 0 24 24" className="w-3 h-3 md:w-4 md:h-4 text-[#565656]">
-                  <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z" />
-                  <path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1C18.6,5.5,19.8,8.4,19.2,11.2z" />
-                </svg>
-                <span className="text-[#464646]">{school.location}</span>
-              </div>
-              <div className="stat flex items-center gap-1 md:gap-1.5 text-[11px] md:text-[13px] text-[#5F5F5F] font-[450]">
-                <svg viewBox="0 0 32 32" fill="none" className="w-3 h-3 md:w-4 md:h-4 text-[#565656]">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M16 4C9.373 4 4 9.373 4 16s5.373 12 12 12 12-5.373 12-12S22.627 4 16 4zM8 16c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8-8-3.582-8-8z" fill="currentColor" />
-                  <path fillRule="evenodd" clipRule="evenodd" d="M16 8C11.582 8 8 11.582 8 16s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zM12 16c0-2.209 1.791-4 4-4s4 1.791 4 4-1.791 4-4 4-4-1.791-4-4z" fill="currentColor" />
-                </svg>
-                <span className="text-[#464646]">{school.ratio}</span>
-              </div>
-              <div className="stat flex items-center gap-1 md:gap-1.5 text-[11px] md:text-[13px] text-[#5F5F5F] font-[450]">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="w-3 h-3 md:w-4 md:h-4 text-[#565656]">
-                      <path fill="currentColor" fillRule="evenodd" d="m12 16.6 4.644 3.105-1.166-5.519 4.255-3.89-5.71-.49L12 4.72 9.978 9.806l-5.71.49 4.254 3.89-1.166 5.519L12 16.599Zm-9.733-6.102c-.513-.527-.257-1.58.512-1.58l6.147-.528 2.306-5.797c.256-.79 1.28-.79 1.536 0l2.306 5.797 6.147.527c.769 0 1.025 1.054.512 1.581l-4.61 4.216 1.28 6.061c.257.79-.512 1.318-1.28 1.054L12 18.404l-5.123 3.425c-.768.527-1.537-.263-1.28-1.054l1.28-6.06z" clipRule="evenodd"/>
-                </svg>
+                  <div className="stat flex items-center gap-1 md:gap-1.5 text-[11px] md:text-[13px] text-[#5F5F5F] font-[450]">
+                    <SchoolCardIcons.Location />
+                    <span className="text-[#464646]">{school.location}</span>
+                  </div>
+                  <div className="stat flex items-center gap-1 md:gap-1.5 text-[11px] md:text-[13px] text-[#5F5F5F] font-[450]">
+                    <SchoolCardIcons.Duration />
+                    <span className="text-[#464646]">{school.ratio}</span>
+                  </div>
+                  <div className="stat flex items-center gap-1 md:gap-1.5 text-[11px] md:text-[13px] text-[#5F5F5F] font-[450]">
+                    <SchoolCardIcons.Grades />
                     <span className="text-[#464646]"><strong className="font-semibold text-[#444444]">{school.rating.split(' ')[0]}</strong> {school.rating.split(' ').slice(1).join(' ')}</span>
-              </div>
+                  </div>
                 </>
               )}
-              </div>
-            </>
+            </div>
+          </>
 
         )}
 
@@ -849,8 +799,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
         {/* List Layout - Footer Section */}
         {isListLayout && (
-          <div className="footer-section mt-auto flex items-center justify-between">
-            <div className="metrics flex items-center gap-6">
+          <div className="footer-section mt-auto flex flex-wrap items-center justify-between gap-3 min-w-0">
+            <div className="metrics flex flex-wrap items-center gap-3 md:gap-6 min-w-0">
               <div className="grade flex items-center gap-2">
                 <div className={`grade-circle w-8 h-8 ${getGradeClass(school.grade)} rounded-full flex items-center justify-center text-white text-sm font-semibold cursor-pointer relative group`}>
                   {school.grade}
@@ -861,38 +811,29 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                 </div>
                 {/* <span className="grade-label font-semibold text-[#016853]">{school.grade}</span> */}
               </div>
-              <div className="students-count flex items-center gap-2 text-sm text-[#5F5F5F]">
-                <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 text-[#089E68]">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M9.72154 3.47033C9.90035 3.39881 10.0998 3.39881 10.2786 3.47033L18.612 6.80366C18.8967 6.91756 19.0834 7.19334 19.0834 7.50002V12.5C19.0834 12.9142 18.7476 13.25 18.3334 13.25C17.9192 13.25 17.5834 12.9142 17.5834 12.5V8.6078L15.7501 9.34113V13.3334C15.7501 14.4243 14.9016 15.2566 13.871 15.7719C12.8053 16.3048 11.4126 16.5834 10.0001 16.5834C8.58758 16.5834 7.19484 16.3048 6.12914 15.7719C5.09852 15.2566 4.25008 14.4243 4.25008 13.3334V9.34113L1.38821 8.19638C1.10346 8.08248 0.916748 7.8067 0.916748 7.50002C0.916748 7.19334 1.10346 6.91756 1.38821 6.80366L9.72154 3.47033ZM5.29422 8.14324C5.2838 8.13879 5.27326 8.13457 5.2626 8.13059L3.68619 7.50002L10.0001 4.97446L16.314 7.50002L14.7376 8.13059C14.7269 8.13457 14.7164 8.13879 14.7059 8.14323L10.0001 10.0256L5.29422 8.14324ZM5.75008 9.94113V13.3334C5.75008 13.5685 5.95521 14.0079 6.79996 14.4303C7.60962 14.8351 8.76042 15.0834 10.0001 15.0834C11.2397 15.0834 12.3905 14.8351 13.2002 14.4303C14.0449 14.0079 14.2501 13.5685 14.2501 13.3334V9.94113L10.2786 11.5297C10.0998 11.6012 9.90035 11.6012 9.72154 11.5297L5.75008 9.94113Z" fill="currentColor"/>
-                </svg>
-                <span className="text-[#464646] font-medium">Students: {school.students?.toLocaleString() || '1,756'}</span>
+              <div className="students-count flex items-center gap-2 text-sm text-[#5F5F5F] min-w-0 overflow-hidden">
+                <SchoolCardIcons.Tuition />
+                <span className="text-[#464646] font-medium truncate">Students: {school.students?.toLocaleString() || '1,756'}</span>
               </div>
               {school.price && (
-                <div className="tuition flex items-center gap-2 text-sm text-[#5F5F5F]">
-                  <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 text-[#089E68]">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M10.3031 4.71338C10.638 4.71338 10.9096 4.98493 10.9096 5.3199V5.62947C11.7726 5.74654 12.5494 6.11208 13.0363 6.67319C13.2559 6.92617 13.2288 7.30925 12.9758 7.52881C12.7229 7.74837 12.3398 7.72128 12.1202 7.4683C11.8892 7.20209 11.4627 6.96219 10.9096 6.85747V9.13097C11.5063 9.2117 12.0549 9.41056 12.4966 9.70499C13.0803 10.0941 13.5358 10.6984 13.5358 11.4478C13.5358 12.1973 13.0803 12.8015 12.4966 13.1907C12.0549 13.4851 11.5063 13.684 10.9096 13.7647V14.0741C10.9096 14.4091 10.638 14.6806 10.3031 14.6806C9.9681 14.6806 9.69656 14.4091 9.69656 14.0741V13.7645C8.83357 13.6474 8.0568 13.2819 7.5698 12.7208C7.35024 12.4678 7.37733 12.0847 7.63031 11.8652C7.88329 11.6456 8.26636 11.6727 8.48592 11.9257C8.71697 12.1919 9.14345 12.4318 9.69656 12.5365V10.263C9.09982 10.1823 8.55128 9.98342 8.10959 9.68899C7.52581 9.29985 7.07031 8.69563 7.07031 7.94614C7.07031 7.19665 7.52581 6.59244 8.10959 6.2033C8.55128 5.90886 9.09982 5.71 9.69656 5.62928V5.3199C9.69656 4.98493 9.9681 4.71338 10.3031 4.71338ZM9.69656 6.85766C9.33347 6.92644 9.02055 7.0539 8.78241 7.21264C8.4157 7.45709 8.28336 7.7283 8.28336 7.94614C8.28336 8.16399 8.4157 8.4352 8.78241 8.67964C9.02055 8.83839 9.33347 8.96585 9.69656 9.03463V6.85766ZM10.9096 10.3594V12.5363C11.2727 12.4675 11.5856 12.3401 11.8237 12.1813C12.1905 11.9369 12.3228 11.6657 12.3228 11.4478C12.3228 11.23 12.1905 10.9588 11.8237 10.7143C11.5856 10.5556 11.2727 10.4281 10.9096 10.3594Z" fill="currentColor"/>
-                    <path fillRule="evenodd" clipRule="evenodd" d="M10.3399 2.51392C6.38177 2.51392 3.1731 5.72259 3.1731 9.6807C3.1731 13.6388 6.38177 16.8475 10.3399 16.8475C14.298 16.8475 17.5067 13.6388 17.5067 9.6807C17.5067 5.72259 14.298 2.51392 10.3399 2.51392ZM1.9231 9.6807C1.9231 5.03224 5.69142 1.26392 10.3399 1.26392C14.9883 1.26392 18.7567 5.03224 18.7567 9.6807C18.7567 14.3292 14.9883 18.0975 10.3399 18.0975C5.69142 18.0975 1.9231 14.3292 1.9231 9.6807Z" fill="currentColor"/>
-                  </svg>
-                  <span className="text-[#464646] font-medium">{school.price}</span>
+                <div className="tuition flex items-center gap-2 text-sm text-[#5F5F5F] min-w-0 overflow-hidden">
+                  <SchoolCardIcons.Tuition />
+                  <span className="text-[#464646] font-medium truncate">{school.price}</span>
                 </div>
               )}
               {school.grades && (
-                <div className="grade-range flex items-center gap-2 text-sm text-[#5F5F5F]">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18" className="w-4 h-4 text-[#089E68]">
-                    <path d="m9.84 0 .001 7.243a1.948 1.948 0 1 1-1.64-.02V5.34a3.778 3.778 0 0 0 .824 7.462 3.776 3.776 0 0 0 3.207-5.77l1.358-.922A5.416 5.416 0 1 1 8.2 3.67V1.682a7.361 7.361 0 1 0 6.99 3.336l1.353-.918A8.908 8.908 0 0 1 18 9 9 9 0 1 1 8.202.035c.138-.012.276-.012.415-.008L9.84 0Z" fill="currentColor"/>
-                  </svg>
-                  <span className="text-[#464646] font-medium">{school.grades}</span>
+                <div className="grade-range flex items-center gap-2 text-sm text-[#5F5F5F] min-w-0 overflow-hidden">
+                  <SchoolCardIcons.Ratio />
+                  <span className="text-[#464646] font-medium truncate">{school.grades}</span>
                 </div>
               )}
             </div>
-            <div className="actions flex gap-2">
+            <div className="actions flex gap-2 flex-shrink-0">
               <div className="action-button info-button px-4 py-2 rounded-lg text-sm font-medium cursor-pointer bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors h-9 flex items-center">
                 More Info
               </div>
               <div className="action-button apply-button px-4 py-2 rounded-lg text-sm font-medium cursor-pointer bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9] transition-colors h-9 flex items-center gap-2">
-                <svg fill="none" viewBox="0 0 16 16" className="w-4 h-4">
-                  <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M10.7408 2C13.0889 2 14.6667 4.235 14.6667 6.32C14.6667 10.5425 8.11856 14 8.00004 14C7.88152 14 1.33337 10.5425 1.33337 6.32C1.33337 4.235 2.91115 2 5.2593 2C6.60745 2 7.48893 2.6825 8.00004 3.2825C8.51115 2.6825 9.39263 2 10.7408 2Z"/>
-                </svg>
+                <SchoolCardIcons.Heart />
                 <span>Like</span>
               </div>
             </div>
@@ -900,197 +841,166 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
         )}
 
 
-        {/* Grid Layout - Footer with Grade Circle */}
+        {/* Grid Layout - Footer with Grade Circle (CodePen: border rgba(1,104,83,0.1), padding 16px, no info icon) */}
         {isGridLayout && (
-          <div className="school-footer flex items-center justify-between py-[10px] px-3 md:py-4 md:px-4 border-t border-[#E5E7EB] bg-[#F4F6FA] md:bg-transparent rounded-b-xl md:rounded-none -mx-3 md:mx-0 -mb-3 md:mb-0">
+          <div className="school-footer flex items-center justify-between py-4 px-4 border-t border-[rgba(1,104,83,0.1)] mt-auto">
             <div className="grade flex items-center gap-2 font-semibold text-[#016853]">
-              <div className={`grade-circle w-7 h-7 md:w-8 md:h-8 ${getGradeClass(school.grade)} rounded-full flex items-center justify-center text-white text-xs md:text-sm font-semibold`}>
+              <div className={`grade-circle w-8 h-8 ${getGradeClass(school.grade)} rounded-full flex items-center justify-center text-white text-sm font-semibold`}>
                 {school.grade}
               </div>
             </div>
             <div className="flex items-center gap-2">
               {(establishment === "K-12" || establishment === "District" || establishment === "Graduates") ? (
-                <div className="students-score flex items-center gap-1.5 text-xs md:text-[13px] text-[#5F5F5F]">
-                <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 text-[#089E68]">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M9.72154 3.47033C9.90035 3.39881 10.0998 3.39881 10.2786 3.47033L18.612 6.80366C18.8967 6.91756 19.0834 7.19334 19.0834 7.50002V12.5C19.0834 12.9142 18.7476 13.25 18.3334 13.25C17.9192 13.25 17.5834 12.9142 17.5834 12.5V8.6078L15.7501 9.34113V13.3334C15.7501 14.4243 14.9016 15.2566 13.871 15.7719C12.8053 16.3048 11.4126 16.5834 10.0001 16.5834C8.58758 16.5834 7.19484 16.3048 6.12914 15.7719C5.09852 15.2566 4.25008 14.4243 4.25008 13.3334V9.34113L1.38821 8.19638C1.10346 8.08248 0.916748 7.8067 0.916748 7.50002C0.916748 7.19334 1.10346 6.91756 1.38821 6.80366L9.72154 3.47033ZM5.29422 8.14324C5.2838 8.13879 5.27326 8.13457 5.2626 8.13059L3.68619 7.50002L10.0001 4.97446L16.314 7.50002L14.7376 8.13059C14.7269 8.13457 14.7164 8.13879 14.7059 8.14323L10.0001 10.0256L5.29422 8.14324ZM5.75008 9.94113V13.3334C5.75008 13.5685 5.95521 14.0079 6.79996 14.4303C7.60962 14.8351 8.76042 15.0834 10.0001 15.0834C11.2397 15.0834 12.3905 14.8351 13.2002 14.4303C14.0449 14.0079 14.2501 13.5685 14.2501 13.3334V9.94113L10.2786 11.5297C10.0998 11.6012 9.90035 11.6012 9.72154 11.5297L5.75008 9.94113Z" fill="currentColor"/>
-                </svg>
-              <span>Students: {school.students}</span>
+                <div className="students-score flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                  <SchoolCardIcons.Tuition />
+                  <span>Students: {school.students}</span>
                 </div>
               ) : establishment === "Colleges" ? (
-                <div className="sat-score flex items-center gap-1.5 text-xs md:text-[13px] text-[#5F5F5F]">
-                  <svg viewBox="0 0 32 32" className="w-4 h-4 text-[#089E68]">
-                    <path fill="currentColor" d="M10.8571 26.2857C10.8571 27.2325 10.0896 28 9.14286 28H5.71429C4.76751 28 4 27.2325 4 26.2857V22C4 21.0532 4.76751 20.2857 5.71429 20.2857H9.14286C10.0896 20.2857 10.8571 21.0532 10.8571 22V26.2857ZM19.4286 26.2857V14.2857C19.4286 13.3389 18.6611 12.5714 17.7143 12.5714H14.2857C13.3389 12.5714 12.5714 13.3389 12.5714 14.2857V26.2857C12.5714 27.2325 13.3389 28 14.2857 28H17.7143C18.6611 28 19.4286 27.2325 19.4286 26.2857ZM21.1429 26.2857C21.1429 27.2325 21.9104 28 22.8571 28H26.2857C27.2325 28 28 27.2325 28 26.2857V5.71429C28 4.76751 27.2325 4 26.2857 4H22.8571C21.9104 4 21.1429 4.76751 21.1429 5.71429V26.2857ZM17.7143 14.2857H14.2857V26.2857H17.7143V14.2857ZM26.2857 5.71429H22.8571V26.2857H26.2857V5.71429Z" clipRule="evenodd" fillRule="evenodd"/>
-                  </svg>
+                <div className="sat-score flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                  <SchoolCardIcons.SAT />
                   <span>SAT: {school.sat || 'N/A'}</span>
-              </div>
+                </div>
               ) : null}
-              <div className="info-button w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] ml-2 hover:text-[#346DC2] transition-colors">
-                <svg fill="none" viewBox="0 0 20 20" width="18" height="18">
-                  <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 6V10"/>
-                  <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 13.1094H10.0067"/>
-                  <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z"/>
-                </svg>
-              </div>
-            </div>
-            </div>
-        )}
-      
-      {/* Classic Layout - Footer */}
-      {isClassicLayout && (
-        <div className="school-footer px-4 py-3 border-t border-[rgba(0,0,0,0.06)] mt-auto flex justify-between items-center">
-          {/* Mobile Footer */}
-          <div className="md:hidden footer-left flex items-center gap-3">
-            <div className="rating-text flex items-center gap-1 text-[12px] text-[#5F5F5F]">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 text-[#00DF8B]">
-                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-              </svg>
-              <span>
-                <span className="font-semibold text-[#464646]">{school.rating.split(' ')[0]}</span> {school.rating.split(' ').slice(1).join(' ')}
-              </span>
-            </div>
-            <div className="like-indicator w-6 h-6 flex items-center justify-center text-[#5F5F5F] cursor-pointer">
-              <svg fill="none" viewBox="0 0 16 16" className="w-4 h-4">
-                <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M10.7408 2C13.0889 2 14.6667 4.235 14.6667 6.32C14.6667 10.5425 8.11856 14 8.00004 14C7.88152 14 1.33337 10.5425 1.33337 6.32C1.33337 4.235 2.91115 2 5.2593 2C6.60745 2 7.48893 2.6825 8.00004 3.2825C8.51115 2.6825 9.39263 2 10.7408 2Z"/>
-              </svg>
             </div>
           </div>
-          <div className="md:hidden footer-right flex items-center gap-2">
-            <div className="options-button w-8 h-8 rounded-full bg-[#f5f5f7] flex items-center justify-center text-[#5F5F5F] cursor-pointer hover:text-[#346DC2] hover:bg-[#e8e8e8] transition-all">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-              </svg>
-            </div>
-            <div className="info-button w-8 h-8 rounded-full bg-[#f5f5f7] flex items-center justify-center text-[#5F5F5F] cursor-pointer hover:text-[#346DC2] hover:bg-[#e8e8e8] transition-all">
-              <svg fill="none" viewBox="0 0 20 20" width="18" height="18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M10 6V10"/>
-                <path d="M10 13.1094H10.0067"/>
-                <path d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z"/>
-              </svg>
-            </div>
-          </div>
-
-          {/* Desktop Footer */}
-          <div className="hidden md:flex footer-left items-center gap-2">
-            <div className="like-indicator w-7 h-7 flex items-center justify-center text-[#5F5F5F] cursor-pointer">
-              <svg fill="none" viewBox="0 0 16 16" className="w-[18px] h-[18px]">
-                <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M10.7408 2C13.0889 2 14.6667 4.235 14.6667 6.32C14.6667 10.5425 8.11856 14 8.00004 14C7.88152 14 1.33337 10.5425 1.33337 6.32C1.33337 4.235 2.91115 2 5.2593 2C6.60745 2 7.48893 2.6825 8.00004 3.2825C8.51115 2.6825 9.39263 2 10.7408 2Z"/>
-                </svg>
-            </div>
-              </div>
-          <div className="hidden md:flex footer-actions items-center gap-2">
-            <OptionsButton className="!w-7 !h-7 !rounded-full !bg-[#f5f5f7] hover:!text-[#346DC2] hover:!bg-[#e8e8e8]" />
-            </div>
-            </div>
         )}
 
-      {/* Hover Overlay for Grid Layout */}
-      {isGridLayout && (
-        <div className="hover-overlay absolute inset-0 bg-white bg-opacity-0 group-hover:bg-opacity-[0.98] transition-all duration-300 ease-in-out flex flex-col opacity-0 group-hover:opacity-100 invisible group-hover:visible z-10 p-6" style={{ pointerEvents: 'auto' }}>
-          <div className="hover-header flex justify-between items-start gap-3 mb-4">
-            <div className="hover-school-main flex gap-3">
+        {/* Classic Layout - Footer */}
+        {isClassicLayout && (
+          <div className="school-footer px-4 py-3 border-t border-[rgba(0,0,0,0.06)] mt-auto flex justify-between items-center">
+            {/* Mobile Footer */}
+            <div className="md:hidden footer-left flex items-center gap-3">
+              <div className="rating-text flex items-center gap-1 text-[12px] text-[#5F5F5F]">
+                <SchoolCardIcons.Star />
+                <span>
+                  <span className="font-semibold text-[#464646]">{school.rating.split(' ')[0]}</span> {school.rating.split(' ').slice(1).join(' ')}
+                </span>
+              </div>
+              <div className="like-indicator w-6 h-6 flex items-center justify-center text-[#5F5F5F] cursor-pointer">
+                <SchoolCardIcons.Heart />
+              </div>
+            </div>
+            <div className="md:hidden footer-right flex items-center gap-2">
+              <div className="options-button w-8 h-8 rounded-full bg-[#f5f5f7] flex items-center justify-center text-[#5F5F5F] cursor-pointer hover:text-[#346DC2] hover:bg-[#e8e8e8] transition-all">
+                <SchoolCardIcons.MoreOptions />
+              </div>
+              <div className="info-button w-8 h-8 rounded-full bg-[#f5f5f7] flex items-center justify-center text-[#5F5F5F] cursor-pointer hover:text-[#346DC2] hover:bg-[#e8e8e8] transition-all">
+                <SchoolCardIcons.Heart />
+              </div>
+            </div>
+
+            {/* Desktop Footer */}
+            <div className="hidden md:flex footer-left items-center gap-2">
+              <div className="like-indicator w-7 h-7 flex items-center justify-center text-[#5F5F5F] cursor-pointer">
+                <SchoolCardIcons.Heart />
+              </div>
+            </div>
+            <div className="hidden md:flex footer-actions items-center gap-2">
+              <OptionsButton className="!w-7 !h-7 !rounded-full !bg-[#f5f5f7] hover:!text-[#346DC2] hover:!bg-[#e8e8e8]" />
+            </div>
+          </div>
+        )}
+
+        {/* Hover Overlay for Grid Layout */}
+        {isGridLayout && (
+          <div className="hover-overlay absolute inset-0 bg-white bg-opacity-0 group-hover:bg-opacity-[0.98] transition-all duration-300 ease-in-out flex flex-col opacity-0 group-hover:opacity-100 invisible group-hover:visible z-10 p-6 pr-8" style={{ pointerEvents: 'auto' }}>
+            <div className="hover-header flex justify-between items-start gap-3 mb-4">
+              <div className="hover-school-main flex gap-3 flex-1 min-w-0">
+                <Image
+                  src={school.avatar}
+                  alt={school.name}
+                  width={40}
+                  height={40}
+                  className="school-avatar w-10 h-10 rounded-lg object-cover flex-shrink-0"
+                />
+                <div className="hover-school-name text-base font-semibold text-[#464646] cursor-pointer hover:text-[#346DC2] transition-colors flex-1 min-w-0">
+                  {school.name}
+                </div>
+              </div>
+              <div className="relative -translate-y-1 flex-shrink-0">
+                <OptionsButton className="!w-8 !h-8" />
+              </div>
+            </div>
+            <div className="hover-stats flex gap-3 mb-4">
+              <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                <SchoolCardIcons.Tuition />
+                <span className="text-[#464646]">{school.price}/yr</span>
+              </div>
+              <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                <SchoolCardIcons.SAT />
+                <span className="text-[#464646]">Grades: {school.grades}</span>
+              </div>
+            </div>
+            <div className="school-description text-sm leading-relaxed text-[#4A4A4A] mb-3 line-clamp-3">
+              {school.description}
+            </div>
+            <div className="review-count text-[13px] font-semibold text-[#1D77BD] mb-4 cursor-pointer hover:text-[#346DC2] hover:underline transition-colors">
+              Read {school.reviews} reviews
+            </div>
+            <div className="hover-buttons flex gap-3 mt-auto">
+              <div className="hover-button button-info flex-1 py-3 px-3 rounded-lg text-sm font-medium text-center cursor-pointer bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors">
+                More Info
+              </div>
+              <div className="hover-button button-like flex-1 py-3 px-3 rounded-lg text-sm font-medium text-center cursor-pointer bg-[#298541] text-white hover:bg-[#237436] transition-colors flex items-center justify-center gap-2">
+                <SchoolCardIcons.Heart />
+                Like
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Hover Overlay for Classic Layout */}
+        {isClassicLayout && (
+          <div className="hover-overlay absolute top-0 left-0 w-full h-[calc(100%-60px)] bg-[rgba(255,255,255,0.98)] p-6 pr-8 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out flex flex-col z-10 rounded-t-[12px]" style={{ pointerEvents: 'auto' }}>
+            <div className="hover-header flex gap-3 mb-3 min-w-0">
               <Image
                 src={school.avatar}
                 alt={school.name}
                 width={40}
                 height={40}
-                className="school-avatar w-10 h-10 rounded-lg object-cover"
+                className="school-avatar w-10 h-10 rounded-lg object-cover flex-shrink-0"
               />
-              <div className="hover-school-name text-base font-semibold text-[#464646] cursor-pointer hover:text-[#346DC2] transition-colors">
+              <div className="hover-school-name text-base font-semibold text-[#464646] line-clamp-2 leading-[1.3] flex-1 min-w-0">
                 {school.name}
               </div>
             </div>
-            <div className="relative -translate-y-1">
-              <OptionsButton className="!w-8 !h-8" />
+            <div className="hover-stats flex gap-3 mb-4">
+              <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                <SchoolCardIcons.Tuition />
+                <span className="text-[#464646]">{school.price}</span>
+              </div>
+              <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                <div className="stat-icon flex-shrink-0">
+                  <SchoolCardIcons.Ratio />
+                </div>
+                <span className="text-[#464646]">Grades {school.grades}</span>
+              </div>
+            </div>
+            <div className="school-description text-sm leading-[1.6] text-[#4A4A4A] line-clamp-5 mb-3">
+              {school.description}
+            </div>
+            <div className="review-count text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer hover:underline transition-colors">
+              Read {school.reviews} reviews
+            </div>
+            <div className="hover-buttons flex flex-col gap-2 mt-auto">
+              <div className="hover-button button-info w-full py-3 px-3 rounded-lg text-sm font-medium cursor-pointer bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors flex items-center justify-center gap-2">
+                More Info
+              </div>
+              <div className="hover-button button-like w-full py-3 px-3 rounded-lg text-sm font-medium cursor-pointer bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9] transition-colors flex items-center justify-center gap-2">
+                <SchoolCardIcons.Heart />
+                Like
+              </div>
             </div>
           </div>
-          <div className="hover-stats flex gap-3 mb-4">
-            <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-              <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 text-[#089E68]">
-                <path fillRule="evenodd" clipRule="evenodd" d="M10.3399 2.51392C6.38177 2.51392 3.1731 5.72259 3.1731 9.6807C3.1731 13.6388 6.38177 16.8475 10.3399 16.8475C14.298 16.8475 17.5067 13.6388 17.5067 9.6807C17.5067 5.72259 14.298 2.51392 10.3399 2.51392ZM1.9231 9.6807C1.9231 5.03224 5.69142 1.26392 10.3399 1.26392C14.9883 1.26392 18.7567 5.03224 18.7567 9.6807C18.7567 14.3292 14.9883 18.0975 10.3399 18.0975C5.69142 18.0975 1.9231 14.3292 1.9231 9.6807Z" fill="currentColor"/>
-                <path fillRule="evenodd" clipRule="evenodd" d="M10.3031 4.71338C10.638 4.71338 10.9096 4.98493 10.9096 5.3199V5.62947C11.7726 5.74654 12.5494 6.11208 13.0363 6.67319C13.2559 6.92617 13.2288 7.30925 12.9758 7.52881C12.7229 7.74837 12.3398 7.72128 12.1202 7.4683C11.8892 7.20209 11.4627 6.96219 10.9096 6.85747V9.13097C11.5063 9.2117 12.0549 9.41056 12.4966 9.70499C13.0803 10.0941 13.5358 10.6984 13.5358 11.4478C13.5358 12.1973 13.0803 12.8015 12.4966 13.1907C12.0549 13.4851 11.5063 13.684 10.9096 13.7647V14.0741C10.9096 14.4091 10.638 14.6806 10.3031 14.6806C9.9681 14.6806 9.69656 14.4091 9.69656 14.0741V13.7645C8.83357 13.6474 8.0568 13.2819 7.5698 12.7208C7.35024 12.4678 7.37733 12.0847 7.63031 11.8652C7.88329 11.6456 8.26636 11.6727 8.48592 11.9257C8.71697 12.1919 9.14345 12.4318 9.69656 12.5365V10.263C9.09982 10.1823 8.55128 9.98342 8.10959 9.68899C7.52581 9.29985 7.07031 8.69563 7.07031 7.94614C7.07031 7.19665 7.52581 6.59244 8.10959 6.2033C8.55128 5.90886 9.09982 5.71 9.69656 5.62928V5.3199C9.69656 4.98493 9.9681 4.71338 10.3031 4.71338ZM9.69656 6.85766C9.33347 6.92644 9.02055 7.0539 8.78241 7.21264C8.4157 7.45709 8.28336 7.7283 8.28336 7.94614C8.28336 8.16399 8.4157 8.4352 8.78241 8.67964C9.02055 8.83839 9.33347 8.96585 9.69656 9.03463V6.85766ZM10.9096 10.3594V12.5363C11.2727 12.4675 11.5856 12.3401 11.8237 12.1813C12.1905 11.9369 12.3228 11.6657 12.3228 11.4478C12.3228 11.23 12.1905 10.9588 11.8237 10.7143C11.5856 10.5556 11.2727 10.4281 10.9096 10.3594Z" fill="currentColor"/>
-              </svg>
-              <span className="text-[#464646]">{school.price}/yr</span>
-            </div>
-            <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 30 30" className="w-4 h-4 text-[#089E68]">
-                <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" stroke="currentColor" d="M13.4473 15.0017C13.4473 15.4143 13.6112 15.8099 13.9029 16.1017C14.1946 16.3934 14.5903 16.5573 15.0028 16.5573C15.4154 16.5573 15.811 16.3934 16.1028 16.1017C16.3945 15.8099 16.5584 15.4143 16.5584 15.0017C16.5584 14.5892 16.3945 14.1935 16.1028 13.9018C15.811 13.6101 15.4154 13.4462 15.0028 13.4462C14.5903 13.4462 14.1946 13.6101 13.9029 13.9018C13.6112 14.1935 13.4473 14.5892 13.4473 15.0017Z"/>
-                <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" stroke="currentColor" d="M15.0021 7.22391C13.4641 7.22391 11.9605 7.68007 10.6817 8.5347C9.40286 9.38933 8.40613 10.6041 7.81754 12.0253C7.22896 13.4465 7.07495 15.0103 7.37501 16.519C7.67507 18.0278 8.41571 19.4136 9.50328 20.5014C10.5908 21.5891 11.9765 22.3299 13.485 22.63C14.9935 22.9301 16.5571 22.7761 17.9781 22.1874C19.399 21.5987 20.6136 20.6018 21.4681 19.3228C22.3225 18.0437 22.7786 16.54 22.7786 15.0017"/>
-                <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" stroke="currentColor" d="M16.5583 1.08729C13.6749 0.763756 10.7622 1.34439 8.22315 2.74889C5.68409 4.15339 3.64416 6.31233 2.38553 8.92707C1.12691 11.5418 0.7118 14.4831 1.19762 17.3441C1.68345 20.2051 3.0462 22.8445 5.09736 24.897C7.14853 26.9495 9.78673 28.3138 12.647 28.8012C15.5074 29.2885 18.4484 28.8748 21.0634 27.6173C23.6783 26.3598 25.8379 24.3206 27.2435 21.7819C28.649 19.2431 29.231 16.3302 28.909 13.4462"/>
-                <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" stroke="currentColor" d="M19.6679 10.335V5.66837L24.3338 1.00171V5.66837H28.9997L24.3338 10.335H19.6679ZM19.6679 10.335L15.002 15.0017"/>
-              </svg>
-              <span className="text-[#464646]">Grades: {school.grades}</span>
-            </div>
-          </div>
-          <div className="school-description text-sm leading-relaxed text-[#4A4A4A] mb-3 line-clamp-3">
-            {school.description}
-          </div>
-          <div className="review-count text-[13px] font-semibold text-[#1D77BD] mb-4 cursor-pointer hover:text-[#346DC2] hover:underline transition-colors">
-            Read {school.reviews} reviews
-          </div>
-          <div className="hover-buttons flex gap-3 mt-auto">
-            <div className="hover-button button-info flex-1 py-3 px-3 rounded-lg text-sm font-medium text-center cursor-pointer bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors">
-              More Info
-            </div>
-            <div className="hover-button button-like flex-1 py-3 px-3 rounded-lg text-sm font-medium text-center cursor-pointer bg-[#298541] text-white hover:bg-[#237436] transition-colors flex items-center justify-center gap-2">
-              <svg fill="none" viewBox="0 0 16 16" className="w-4 h-4">
-                <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M10.7408 2C13.0889 2 14.6667 4.235 14.6667 6.32C14.6667 10.5425 8.11856 14 8.00004 14C7.88152 14 1.33337 10.5425 1.33337 6.32C1.33337 4.235 2.91115 2 5.2593 2C6.60745 2 7.48893 2.6825 8.00004 3.2825C8.51115 2.6825 9.39263 2 10.7408 2Z"/>
-              </svg>
-              Like
-            </div>
-          </div>
+        )}
       </div>
-      )}
 
-      {/* Hover Overlay for Classic Layout */}
-      {isClassicLayout && (
-        <div className="hover-overlay absolute top-0 left-0 w-full h-[calc(100%-60px)] bg-[rgba(255,255,255,0.98)] p-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out flex flex-col z-10 rounded-t-[12px]" style={{ pointerEvents: 'auto' }}>
-          <div className="hover-header flex gap-3 mb-3">
-            <Image
-              src={school.avatar}
-              alt={school.name}
-              width={40}
-              height={40}
-              className="school-avatar w-10 h-10 rounded-lg object-cover"
-            />
-            <div className="hover-school-name text-base font-semibold text-[#464646] line-clamp-2 leading-[1.3]">
-              {school.name}
-            </div>
-          </div>
-          <div className="hover-stats flex gap-3 mb-4">
-            <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-              <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4 text-[#089E68]">
-                <path fillRule="evenodd" clipRule="evenodd" d="M10.3399 2.51392C6.38177 2.51392 3.1731 5.72259 3.1731 9.6807C3.1731 13.6388 6.38177 16.8475 10.3399 16.8475C14.298 16.8475 17.5067 13.6388 17.5067 9.6807C17.5067 5.72259 14.298 2.51392 10.3399 2.51392ZM1.9231 9.6807C1.9231 5.03224 5.69142 1.26392 10.3399 1.26392C14.9883 1.26392 18.7567 5.03224 18.7567 9.6807C18.7567 14.3292 14.9883 18.0975 10.3399 18.0975C5.69142 18.0975 1.9231 14.3292 1.9231 9.6807Z" fill="currentColor"/>
-                <path fillRule="evenodd" clipRule="evenodd" d="M10.3031 4.71338C10.638 4.71338 10.9096 4.98493 10.9096 5.3199V5.62947C11.7726 5.74654 12.5494 6.11208 13.0363 6.67319C13.2559 6.92617 13.2288 7.30925 12.9758 7.52881C12.7229 7.74837 12.3398 7.72128 12.1202 7.4683C11.8892 7.20209 11.4627 6.96219 10.9096 6.85747V9.13097C11.5063 9.2117 12.0549 9.41056 12.4966 9.70499C13.0803 10.0941 13.5358 10.6984 13.5358 11.4478C13.5358 12.1973 13.0803 12.8015 12.4966 13.1907C12.0549 13.4851 11.5063 13.684 10.9096 13.7647V14.0741C10.9096 14.4091 10.638 14.6806 10.3031 14.6806C9.9681 14.6806 9.69656 14.4091 9.69656 14.0741V13.7645C8.83357 13.6474 8.0568 13.2819 7.5698 12.7208C7.35024 12.4678 7.37733 12.0847 7.63031 11.8652C7.88329 11.6456 8.26636 11.6727 8.48592 11.9257C8.71697 12.1919 9.14345 12.4318 9.69656 12.5365V10.263C9.09982 10.1823 8.55128 9.98342 8.10959 9.68899C7.52581 9.29985 7.07031 8.69563 7.07031 7.94614C7.07031 7.19665 7.52581 6.59244 8.10959 6.2033C8.55128 5.90886 9.09982 5.71 9.69656 5.62928V5.3199C9.69656 4.98493 9.9681 4.71338 10.3031 4.71338ZM9.69656 6.85766C9.33347 6.92644 9.02055 7.0539 8.78241 7.21264C8.4157 7.45709 8.28336 7.7283 8.28336 7.94614C8.28336 8.16399 8.4157 8.4352 8.78241 8.67964C9.02055 8.83839 9.33347 8.96585 9.69656 9.03463V6.85766ZM10.9096 10.3594V12.5363C11.2727 12.4675 11.5856 12.3401 11.8237 12.1813C12.1905 11.9369 12.3228 11.6657 12.3228 11.4478C12.3228 11.23 12.1905 10.9588 11.8237 10.7143C11.5856 10.5556 11.2727 10.4281 10.9096 10.3594Z" fill="currentColor"/>
-              </svg>
-              <span className="text-[#464646]">{school.price}</span>
-            </div>
-            <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18" className="w-4 h-4 text-[#089E68]">
-                <path d="m9.84 0 .001 7.243a1.948 1.948 0 1 1-1.64-.02V5.34a3.778 3.778 0 0 0 .824 7.462 3.776 3.776 0 0 0 3.207-5.77l1.358-.922A5.416 5.416 0 1 1 8.2 3.67V1.682a7.361 7.361 0 1 0 6.99 3.336l1.353-.918A8.908 8.908 0 0 1 18 9 9 9 0 1 1 8.202.035c.138-.012.276-.012.415-.008L9.84 0Z" fill="currentColor"/>
-              </svg>
-              <span className="text-[#464646]">Grades {school.grades}</span>
-            </div>
-          </div>
-          <div className="school-description text-sm leading-[1.6] text-[#4A4A4A] line-clamp-5 mb-3">
-            {school.description}
-          </div>
-          <div className="review-count text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer hover:underline transition-colors">
-            Read {school.reviews} reviews
-          </div>
-          <div className="hover-buttons flex flex-col gap-2 mt-auto">
-            <div className="hover-button button-info w-full py-3 px-3 rounded-lg text-sm font-medium cursor-pointer bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors flex items-center justify-center gap-2">
-              More Info
-            </div>
-            <div className="hover-button button-like w-full py-3 px-3 rounded-lg text-sm font-medium cursor-pointer bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9] transition-colors flex items-center justify-center gap-2">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M10.7408 2C13.0889 2 14.6667 4.235 14.6667 6.32C14.6667 10.5425 8.11856 14 8.00004 14C7.88152 14 1.33337 10.5425 1.33337 6.32C1.33337 4.235 2.91115 2 5.2593 2C6.60745 2 7.48893 2.6825 8.00004 3.2825C8.51115 2.6825 9.39263 2 10.7408 2Z"/>
-              </svg>
-              Like
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      {/* Options Drawer */}
+      <OptionsDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        schoolName={school.name}
+      />
     </div>
   );
 };

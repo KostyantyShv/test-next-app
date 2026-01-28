@@ -7,6 +7,7 @@ import { School } from "../types";
 interface MapContainerProps {
   isMapActive: boolean;
   schools: School[];
+  layout?: string;
   onExpandedChange?: (isExpanded: boolean) => void;
 }
 
@@ -63,7 +64,7 @@ const getMarkerColor = (grade: string): string => {
 };
 
 const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
-  ({ isMapActive, schools, onExpandedChange }, ref) => {
+  ({ isMapActive, schools, layout, onExpandedChange }, ref) => {
     const [mapType, setMapType] = useState<"roadmap" | "satellite">("roadmap");
     const [showTerrain, setShowTerrain] = useState(false);
     const [showLabels, setShowLabels] = useState(true);
@@ -120,7 +121,7 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
         (map as any).addListener("streetview_changed", () => {
           const streetView = (map as any).getStreetView();
           const isStreetViewActive = streetView && streetView.getVisible();
-          
+
           markersRef.current.forEach((marker) => {
             if (isStreetViewActive) {
               (marker as any).setMap(null);
@@ -139,7 +140,7 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
         // Convert schools to map format and create markers
         schools.forEach((school, index) => {
           const position = getPositionFromLocation(school.location, index);
-          
+
           const marker = new google.maps.Marker({
             position: position,
             map: map,
@@ -149,9 +150,8 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
                 encodeURIComponent(`
                   <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="20" cy="20" r="20" fill="${getMarkerColor(school.grade)}"/>
-                    <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-weight="bold" font-size="16">${
-                      school.grade
-                    }</text>
+                    <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-weight="bold" font-size="16">${school.grade
+                  }</text>
                   </svg>
                 `),
               scaledSize: new google.maps.Size(40, 40),
@@ -244,21 +244,22 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
     return (
       <>
         <div
-          className={`bg-white rounded-xl overflow-hidden transition-all duration-300 ${
-            isMapActive 
-              ? isExpanded 
-                ? "w-full m-6 border border-[rgba(0,0,0,0.1)]" 
+          className={`bg-white rounded-xl overflow-hidden transition-all duration-300 shrink-0 ${isMapActive
+            ? isExpanded
+              ? "flex-1 m-6 border border-[rgba(0,0,0,0.1)]"
+              : layout === "list"
+                ? "w-[340px] mr-6 mt-6 mb-6 border border-[rgba(0,0,0,0.1)]"
                 : "w-[400px] mr-6 mt-6 mb-6 border border-[rgba(0,0,0,0.1)]"
-              : "w-0 overflow-hidden"
-          }`}
-          style={isExpanded ? { minHeight: '600px' } : {}}
+            : "w-0 overflow-hidden"
+            }`}
+          style={isExpanded ? { minHeight: '500px' } : {}}
         >
           {isMapActive && (
             <>
-              
-              <div className="relative h-full flex-1" style={{ minHeight: isExpanded ? '600px' : '400px' }}>
-                <MapControls 
-                  mapType={mapType} 
+
+              <div className="relative h-full flex-1" style={{ minHeight: isExpanded ? '500px' : '400px' }}>
+                <MapControls
+                  mapType={mapType}
                   setMapType={setMapType}
                   onMapTypeChange={handleMapTypeChange}
                   showTerrain={showTerrain}
@@ -277,10 +278,10 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
                   mapInstanceRef={mapInstanceRef}
                 />
                 <div ref={mapRef} id="exploreMap" className="w-full h-full" />
-      </div>
+              </div>
             </>
           )}
-    </div>
+        </div>
         {isMapActive && (
           <Script
             id="google-maps-explore"
