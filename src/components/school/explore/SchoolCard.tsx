@@ -2,8 +2,8 @@ import React, { useRef, useState } from "react";
 import Image from "next/image";
 import { School } from "./types";
 import { SchoolCardIcons } from './SchoolCardIcons';
-import { OptionsDrawer } from './OptionsDrawer';
-import OptionsButton from "./OptionsButton";
+import { MobileOptionsDrawer } from './MobileOptionsDrawer';
+import { SchoolCardContextMenu } from './SchoolCardContextMenu';
 import { useSchoolsExplore } from "@/store/use-schools-explore";
 
 interface SchoolCardProps {
@@ -91,7 +91,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           className={`image-container relative ${isListLayout
             ? "w-[200px] flex-shrink-0 flex flex-col pr-4 pt-6"
             : isGridLayout
-              ? "w-full h-[140px] md:h-40 overflow-hidden"
+              ? "w-full h-[140px] overflow-hidden md:hidden"
               : "w-full h-32 md:h-40 overflow-hidden"
             }`}
         >
@@ -99,14 +99,21 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           {/* List Layout - Options Button */}
           {isListLayout && (
             <div className="absolute top-[36px] right-6 z-[2]">
+              {/* Desktop: Context Menu */}
+              <div className="hidden md:block">
+                <SchoolCardContextMenu schoolName={school.name} />
+              </div>
+
+              {/* Mobile: Drawer Button */}
               <div
-                className="w-8 h-8 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] transition-all z-[2] shadow-[0_1px_2px_rgba(0,0,0,0.1)] hover:bg-[#F5F5F7]"
+                className="md:hidden w-8 h-8 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] transition-all z-[2] shadow-[0_1px_2px_rgba(0,0,0,0.1)] hover:bg-[#F5F5F7] pointer-events-auto"
                 onClick={() => setIsDrawerOpen(true)}
               >
                 <SchoolCardIcons.MoreOptions />
               </div>
             </div>
           )}
+
 
           {/* List Layout - Specialty Label */}
           {isListLayout && school.specialty && (
@@ -162,24 +169,17 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           {/* Grid Layout - Options Button (top right) - Mobile */}
           {isGridLayout && (
             <div
-              className="md:hidden options-button absolute top-2 right-2 w-7 h-7 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#4A4A4A] transition-all z-[2] shadow-[0_2px_4px_rgba(0,0,0,0.1)] hover:bg-[#f5f5f5]"
+              className="md:hidden options-button absolute top-2 right-2 w-7 h-7 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#4A4A4A] transition-all z-[2] shadow-[0_2px_4px_rgba(0,0,0,0.1)] hover:bg-[#f5f5f5] pointer-events-auto"
               onClick={() => setIsDrawerOpen(true)}
             >
               <SchoolCardIcons.MoreOptions />
             </div>
           )}
 
-          {/* Grid Layout - Like Button (top right) - Desktop */}
+          {/* Grid Layout - Context Menu Button (top right) - Desktop */}
           {isGridLayout && (
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={(e) => { e.stopPropagation(); setIsLiked((v) => !v); }}
-              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setIsLiked((v) => !v); } }}
-              className={`hidden md:flex like-button absolute top-3 right-3 w-8 h-8 rounded-full items-center justify-center cursor-pointer transition-all z-[2] ${isLiked ? "bg-[#E6F7F0] text-[#016853] hover:bg-[#D1F0E4]" : "bg-white text-[#4A4A4A] hover:bg-[#f5f5f7]"
-                }`}
-            >
-              <SchoolCardIcons.Heart />
+            <div className="hidden md:block absolute top-3 right-3 z-[2]">
+              <SchoolCardContextMenu schoolName={school.name} />
             </div>
           )}
 
@@ -264,6 +264,69 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
         </div>
       )}
 
+      {/* Grid Layout Desktop - New Design */}
+      {isGridLayout && (
+        <div className="hidden md:block">
+
+          {/* Specialty Badge - Top of Card */}
+          {school.specialty && (
+            <div className={`absolute top-0 left-0 right-0 py-2 px-3 flex items-center gap-1.5 rounded-t-xl z-[5] text-xs font-medium ${school.specialty === "hot"
+              ? "bg-[rgba(255,77,77,0.1)] text-[#FF4D4D]"
+              : school.specialty === "instant-book"
+                ? "bg-[rgba(29,119,189,0.1)] text-[#1D77BD]"
+                : "bg-[rgba(255,153,0,0.1)] text-[#FF9900]"
+              }`}>
+              {school.specialty === "hot" && <SchoolCardIcons.Hot />}
+              {school.specialty === "instant-book" && <SchoolCardIcons.InstantBook />}
+              {school.specialty === "sponsored" && <SchoolCardIcons.Sponsored />}
+              {school.specialty === "hot" ? "High demand" : school.specialty === "instant-book" ? "Instant book" : "Sponsored"}
+            </div>
+          )}
+
+          {/* Card Header */}
+          <div className="pt-10 pr-[26px] pb-3 px-4 flex gap-4 items-start mt-0">
+            <Image
+              src={school.image}
+              alt={school.name}
+              width={72}
+              height={48}
+              className="w-[72px] h-12 rounded-lg object-cover shrink-0"
+            />
+            <div className="flex-1 flex flex-col w-full max-w-[calc(100%-10px)] overflow-hidden">
+              <h3 className="text-base font-semibold text-[#464646] mb-1 leading-[1.3] cursor-pointer hover:text-[#016853] hover:underline transition-colors">
+                {school.name}
+              </h3>
+              {school.ranking && (
+                <div className="text-[#089E68] text-xs font-medium leading-[1.4] whitespace-nowrap overflow-hidden text-ellipsis max-w-full">
+                  {school.ranking}
+                </div>
+              )}
+              <div className="flex items-center gap-1.5 px-2 py-1 rounded-2xl text-xs font-medium bg-[#E5E7EB] text-[#464646] mt-2 w-fit">
+                {school.schoolType}
+              </div>
+            </div>
+          </div>
+
+          {/* School Content */}
+          <div className="px-4 flex-grow">
+            <div className="flex flex-wrap gap-3 mb-4">
+              <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F] font-[450] tracking-[0.01em]">
+                <SchoolCardIcons.Location />
+                <span className="text-[#464646]">{school.location}</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F] font-[450] tracking-[0.01em]">
+                <SchoolCardIcons.Ratio />
+                <span className="text-[#464646]">{school.ratio}</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F] font-[450] tracking-[0.01em]">
+                <SchoolCardIcons.Star />
+                <span className="text-[#464646]"><span className="font-semibold">{school.rating}</span> ({school.reviews})</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Content Section */}
       <div
         className={`school-content ${isListLayout
@@ -271,7 +334,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           : isHybridLayout
             ? "p-4 md:p-4 flex flex-col min-w-0 overflow-hidden"
             : isGridLayout
-              ? "p-4 flex-1 flex flex-col min-w-0 overflow-hidden"
+              ? "p-4 flex-1 flex flex-col min-w-0 overflow-hidden md:hidden"
               : isClassicLayout
                 ? "px-0 flex flex-col min-w-0 overflow-hidden"
                 : "p-3 md:p-4 flex flex-col justify-between min-w-0 overflow-hidden"
@@ -332,7 +395,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
               {/* More Options */}
               <div
-                className="more-options absolute top-[-4px] right-0 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer z-[3] text-[#464646] active:bg-[#F5F5F7]"
+                className="more-options absolute top-[-4px] right-0 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer z-[3] text-[#464646] active:bg-[#F5F5F7] pointer-events-auto"
                 onClick={() => setIsDrawerOpen(true)}
               >
                 <SchoolCardIcons.MoreOptions />
@@ -458,8 +521,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                       </span>
                     )}
                   </div>
-                  <div className="actions flex items-center -mt-1">
-                    <OptionsButton />
+                  <div className="actions hidden md:flex items-center -mt-1">
+                    <SchoolCardContextMenu schoolName={school.name} />
                   </div>
                 </div>
 
@@ -841,26 +904,29 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
         )}
 
 
-        {/* Grid Layout - Footer with Grade Circle (CodePen: border rgba(1,104,83,0.1), padding 16px, no info icon) */}
+
+        {/* Grid Layout - Footer */}
         {isGridLayout && (
-          <div className="school-footer flex items-center justify-between py-4 px-4 border-t border-[rgba(1,104,83,0.1)] mt-auto">
-            <div className="grade flex items-center gap-2 font-semibold text-[#016853]">
-              <div className={`grade-circle w-8 h-8 ${getGradeClass(school.grade)} rounded-full flex items-center justify-center text-white text-sm font-semibold`}>
+          <div className="h-[54px] border-t border-[rgba(1,104,83,0.1)] p-3 px-4 flex items-center justify-between bg-white z-[20] relative">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-sm font-semibold shrink-0">
                 {school.grade}
+              </div>
+              <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                <SchoolCardIcons.Students />
+                <span>Students: <span className="text-[#464646]">{school.students}</span></span>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              {(establishment === "K-12" || establishment === "District" || establishment === "Graduates") ? (
-                <div className="students-score flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                  <SchoolCardIcons.Tuition />
-                  <span>Students: {school.students}</span>
-                </div>
-              ) : establishment === "Colleges" ? (
-                <div className="sat-score flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                  <SchoolCardIcons.SAT />
-                  <span>SAT: {school.sat || 'N/A'}</span>
-                </div>
-              ) : null}
+              <button
+                onClick={() => setIsLiked(!isLiked)}
+                className={`w-7 h-7 flex items-center justify-center rounded-full hover:bg-[#f5f5f7] transition-colors ${isLiked ? 'text-[#298541]' : 'text-[#5F5F5F]'}`}
+              >
+                <SchoolCardIcons.Heart />
+              </button>
+              <div className="hidden md:flex w-7 h-7 rounded-full items-center justify-center cursor-pointer text-[#5F5F5F] bg-[#f5f5f7] hover:text-[#346DC2] hover:bg-[#e8e8e8] transition-all">
+                <SchoolCardContextMenu schoolName={school.name} />
+              </div>
             </div>
           </div>
         )}
@@ -881,7 +947,10 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               </div>
             </div>
             <div className="md:hidden footer-right flex items-center gap-2">
-              <div className="options-button w-8 h-8 rounded-full bg-[#f5f5f7] flex items-center justify-center text-[#5F5F5F] cursor-pointer hover:text-[#346DC2] hover:bg-[#e8e8e8] transition-all">
+              <div
+                className="options-button w-8 h-8 rounded-full bg-[#f5f5f7] flex items-center justify-center text-[#5F5F5F] cursor-pointer hover:text-[#346DC2] hover:bg-[#e8e8e8] transition-all pointer-events-auto"
+                onClick={() => setIsDrawerOpen(true)}
+              >
                 <SchoolCardIcons.MoreOptions />
               </div>
               <div className="info-button w-8 h-8 rounded-full bg-[#f5f5f7] flex items-center justify-center text-[#5F5F5F] cursor-pointer hover:text-[#346DC2] hover:bg-[#e8e8e8] transition-all">
@@ -896,55 +965,66 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               </div>
             </div>
             <div className="hidden md:flex footer-actions items-center gap-2">
-              <OptionsButton className="!w-7 !h-7 !rounded-full !bg-[#f5f5f7] hover:!text-[#346DC2] hover:!bg-[#e8e8e8]" />
+              <SchoolCardContextMenu schoolName={school.name} />
             </div>
           </div>
         )}
 
-        {/* Hover Overlay for Grid Layout */}
+        {/* Hover Overlay for Grid Layout - Desktop Only */}
         {isGridLayout && (
-          <div className="hover-overlay absolute inset-0 bg-white bg-opacity-0 group-hover:bg-opacity-[0.98] transition-all duration-300 ease-in-out flex flex-col opacity-0 group-hover:opacity-100 invisible group-hover:visible z-10 p-6 pr-8" style={{ pointerEvents: 'auto' }}>
-            <div className="hover-header flex justify-between items-start gap-3 mb-4">
-              <div className="hover-school-main flex gap-3 flex-1 min-w-0">
-                <Image
-                  src={school.avatar}
-                  alt={school.name}
-                  width={40}
-                  height={40}
-                  className="school-avatar w-10 h-10 rounded-lg object-cover flex-shrink-0"
-                />
-                <div className="hover-school-name text-base font-semibold text-[#464646] cursor-pointer hover:text-[#346DC2] transition-colors flex-1 min-w-0">
-                  {school.name}
-                </div>
-              </div>
-              <div className="relative -translate-y-1 flex-shrink-0">
-                <OptionsButton className="!w-8 !h-8" />
+          <div className="hidden md:flex absolute inset-0 bg-[rgba(255,255,255,0.98)] z-10 pt-6 pr-6 pb-3 pl-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 rounded-t-xl flex-col">
+
+            {/* Hover Header */}
+            <div className="flex gap-3 mb-3">
+              <Image
+                src={school.image}
+                alt={school.name}
+                width={40}
+                height={40}
+                className="w-10 h-10 rounded-lg object-cover"
+              />
+              <div className="font-semibold text-base text-[#464646] mr-2 flex-1 cursor-pointer hover:text-[#346DC2] hover:underline transition-all">
+                {school.name}
               </div>
             </div>
-            <div className="hover-stats flex gap-3 mb-4">
-              <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                <SchoolCardIcons.Tuition />
-                <span className="text-[#464646]">{school.price}/yr</span>
+
+            {/* Hover Stats */}
+            <div className="flex gap-3 mb-4 text-[13px] text-[#5F5F5F]">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[#089E68]">$</span>
+                <span>{school.price || "$53,790/yr"}</span>
               </div>
-              <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                <SchoolCardIcons.SAT />
-                <span className="text-[#464646]">Grades: {school.grades}</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[#089E68]">A</span>
+                <span>{school.grades || "9-12"}</span>
               </div>
             </div>
-            <div className="school-description text-sm leading-relaxed text-[#4A4A4A] mb-3 line-clamp-3">
-              {school.description}
-            </div>
-            <div className="review-count text-[13px] font-semibold text-[#1D77BD] mb-4 cursor-pointer hover:text-[#346DC2] hover:underline transition-colors">
+
+            {/* Description */}
+            <p className="text-sm leading-relaxed text-[#4A4A4A] line-clamp-5 mb-3">
+              {school.description || "Excellent academic institution with outstanding faculty and facilities."}
+            </p>
+
+            {/* Review Link */}
+            <div className="text-[13px] font-semibold text-[#346DC2] hover:underline cursor-pointer mb-auto">
               Read {school.reviews} reviews
             </div>
-            <div className="hover-buttons flex gap-3 mt-auto">
-              <div className="hover-button button-info flex-1 py-3 px-3 rounded-lg text-sm font-medium text-center cursor-pointer bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors">
+
+            {/* Hover Buttons */}
+            <div className="flex gap-2 mt-auto">
+              <button className="flex-1 py-2.5 rounded-lg bg-[#F5F5F7] text-[#464646] text-sm font-medium hover:bg-[#E8E8EA] transition-colors">
                 More Info
-              </div>
-              <div className="hover-button button-like flex-1 py-3 px-3 rounded-lg text-sm font-medium text-center cursor-pointer bg-[#298541] text-white hover:bg-[#237436] transition-colors flex items-center justify-center gap-2">
+              </button>
+              <button
+                onClick={() => setIsLiked(!isLiked)}
+                className={`flex-1 py-2.5 rounded-lg flex items-center justify-center gap-2 text-sm font-medium transition-colors ${isLiked
+                  ? 'bg-[#298541] text-white hover:bg-[#237036]'
+                  : 'bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]'
+                  }`}
+              >
                 <SchoolCardIcons.Heart />
-                Like
-              </div>
+                {isLiked ? 'Liked' : 'Like'}
+              </button>
             </div>
           </div>
         )}
@@ -995,8 +1075,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
         )}
       </div>
 
-      {/* Options Drawer */}
-      <OptionsDrawer
+      {/* Mobile Options Drawer */}
+      <MobileOptionsDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         schoolName={school.name}
