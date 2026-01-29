@@ -74,9 +74,10 @@ const NestedMultiSelectItem: React.FC<MultiSelectProps> = ({ icon, text, isSelec
 
 interface SchoolCardContextMenuProps {
     schoolName?: string;
+    buttonClassName?: string;
 }
 
-export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ schoolName = "" }) => {
+export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ schoolName = "", buttonClassName }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedMoveTo, setSelectedMoveTo] = useState<string[]>([]);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
@@ -86,7 +87,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
 
     // Close dropdown when clicking outside
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
+        const handleClickOutside = (event: PointerEvent) => {
             if (
                 dropdownRef.current &&
                 !dropdownRef.current.contains(event.target as Node) &&
@@ -105,21 +106,19 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
         };
 
         if (isOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
+            document.addEventListener('pointerdown', handleClickOutside);
             document.addEventListener('keydown', handleEscKey);
             return () => {
-                document.removeEventListener('mousedown', handleClickOutside);
+                document.removeEventListener('pointerdown', handleClickOutside);
                 document.removeEventListener('keydown', handleEscKey);
             };
         }
     }, [isOpen]);
 
     const toggleDropdown = () => {
-        console.log('SchoolCardContextMenu - toggleDropdown called, current isOpen:', isOpen);
         if (!isOpen && buttonRef.current) {
             // Calculate position when opening
             const rect = buttonRef.current.getBoundingClientRect();
-            console.log('Button rect:', rect);
             const menuWidth = 240; // 60 * 4 = 240px (w-60)
             const menuMaxHeight = 400; // max-h-[400px]
             const spacing = 8; // spacing between button and menu
@@ -145,11 +144,9 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                 }
             }
 
-            console.log('Calculated menu position:', { top, left });
             setMenuPosition({ top, left });
         }
 
-        console.log('Setting isOpen to:', !isOpen);
         setIsOpen(!isOpen);
     };
 
@@ -162,7 +159,6 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
     };
 
     const handleAction = (action: string) => {
-        console.log(`Action: ${action} for school: ${schoolName}`);
         setIsOpen(false);
     };
 
@@ -176,12 +172,16 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
             {/* Trigger Button */}
             <button
                 ref={buttonRef}
-                onClick={(e) => {
+                type="button"
+                onPointerDown={(e) => {
+                    e.preventDefault();
                     e.stopPropagation();
-                    console.log('Button clicked!');
                     toggleDropdown();
                 }}
-                className="w-8 h-8 border border-[rgba(0,0,0,0.08)] rounded-lg flex items-center justify-center bg-white shadow-[0_2px_4px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_8px_rgba(0,0,0,0.1)] transition-all duration-200 pointer-events-auto relative z-50 cursor-pointer"
+                className={
+                    buttonClassName ||
+                    "w-8 h-8 border border-[rgba(0,0,0,0.08)] rounded-lg flex items-center justify-center bg-white shadow-[0_2px_4px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_8px_rgba(0,0,0,0.1)] transition-all duration-200 pointer-events-auto relative z-50 cursor-pointer"
+                }
             >
                 <ContextMenuIcons.Options />
             </button>
@@ -240,10 +240,10 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                         <MenuItem icon={<ContextMenuIcons.CopyLink />} text="Copy Link" onClick={() => handleAction('copy-link')} />
 
 
-                        {/* Add To - Opens Collection Modal */}
+                        {/* Save to collection - Opens Collection Modal */}
                         <MenuItem
                             icon={<ContextMenuIcons.AddTo />}
-                            text="Add To"
+                            text="Save to collection"
                             onClick={() => {
                                 setIsCollectionModalOpen(true);
                                 setIsOpen(false); // Close context menu

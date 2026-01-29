@@ -30,7 +30,14 @@ const ContentArea: React.FC<ContentAreaProps> = ({
 
   const getGridCols = () => {
     if (layout === "grid") {
-      return isMapActive ? "grid-cols-2" : "grid-cols-3";
+      // Match provided HTML (6.5) when map is OFF:
+      // 3 cols, 2 below 900px, 1 below 600px
+      //
+      // When map is ON, available width is much smaller → keep cards readable:
+      // 2 cols, 1 below ~700px.
+      return isMapActive
+        ? "grid-cols-2 max-[700px]:grid-cols-1"
+        : "grid-cols-3 max-[900px]:grid-cols-2 max-[600px]:grid-cols-1";
     }
     if (layout === "hybrid") {
       return isMapActive ? "grid-cols-1" : "grid-cols-2";
@@ -59,7 +66,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
         {/* Mobile Layouts */}
         <div className="md:hidden">
           {layout === "grid" && (
-            <div className="grid grid-cols-1 gap-4">
+            <div className="flex flex-col gap-4">
               {renderCards()}
             </div>
           )}

@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { MobileDrawerIcons } from './MobileDrawerIcons';
-import { MobileCollectionDrawer } from './MobileCollectionDrawer';
 
 // --- REUSABLE COMPONENTS ---
 
@@ -128,7 +127,24 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, title, children, hasBa
 
 // --- MAIN COMPONENT ---
 
-type ViewState = 'main' | 'add-to' | 'move-to';
+type ViewState = 'main' | 'collection' | 'move-to';
+
+interface Collection {
+    id: number;
+    name: string;
+    icon: string;
+    itemCount: number;
+    updatedAgo: string;
+    selected: boolean;
+}
+
+const INITIAL_COLLECTIONS: Collection[] = [
+    { id: 1, name: "Collection XYZ", icon: "😊", itemCount: 1, updatedAgo: "2 hours ago", selected: true },
+    { id: 2, name: "Collection ABC", icon: "🧠", itemCount: 63, updatedAgo: "1 day ago", selected: false },
+    { id: 3, name: "TASK X", icon: "📋", itemCount: 54, updatedAgo: "2 months ago", selected: false },
+    { id: 4, name: "S_HUB_2.0", icon: "🚀", itemCount: 101, updatedAgo: "2 months ago", selected: false },
+    { id: 5, name: "NEWS", icon: "📰", itemCount: 100, updatedAgo: "5 months ago", selected: false },
+];
 
 interface MobileOptionsDrawerProps {
     isOpen: boolean;
@@ -139,12 +155,8 @@ interface MobileOptionsDrawerProps {
 export const MobileOptionsDrawer: React.FC<MobileOptionsDrawerProps> = ({ isOpen, onClose, schoolName = "" }) => {
     const [currentView, setCurrentView] = useState<ViewState>('main');
     const [selectedMoveTo, setSelectedMoveTo] = useState<string[]>([]);
-    const [isCollectionDrawerOpen, setIsCollectionDrawerOpen] = useState(false);
-
-    // Debug logging
-    React.useEffect(() => {
-        console.log('MobileOptionsDrawer - isOpen:', isOpen, 'currentView:', currentView);
-    }, [isOpen, currentView]);
+    const [collections, setCollections] = useState<Collection[]>(INITIAL_COLLECTIONS);
+    const [collectionSearchQuery, setCollectionSearchQuery] = useState('');
 
     // Reset to main view when drawer is closed
     React.useEffect(() => {
@@ -154,7 +166,6 @@ export const MobileOptionsDrawer: React.FC<MobileOptionsDrawerProps> = ({ isOpen
     }, [isOpen]);
 
     const closeAll = () => {
-        console.log('MobileOptionsDrawer - closeAll called');
         onClose();
     };
 
@@ -169,7 +180,42 @@ export const MobileOptionsDrawer: React.FC<MobileOptionsDrawerProps> = ({ isOpen
     };
 
     const handleAction = (action: string) => {
-        console.log(`Action: ${action} for school: ${schoolName}`);
+        closeAll();
+    };
+
+    const filteredCollections = useMemo(() => {
+        const q = collectionSearchQuery.trim().toLowerCase();
+        if (!q) return collections;
+        return collections.filter((c) => c.name.toLowerCase().includes(q));
+    }, [collections, collectionSearchQuery]);
+
+    const toggleCollectionSelection = (id: number) => {
+        setCollections((prev) =>
+            prev.map((c) => (c.id === id ? { ...c, selected: !c.selected } : c))
+        );
+    };
+
+    const hasCollectionSelection = collections.some((c) => c.selected);
+
+    const handleCreateCollection = () => {
+        const name = window.prompt("Enter collection name:");
+        if (!name || !name.trim()) return;
+        const newCollection: Collection = {
+            id: Date.now(),
+            name: name.trim(),
+            icon: "📁",
+            itemCount: 0,
+            updatedAgo: "Just now",
+            selected: true,
+        };
+        setCollections((prev) => [newCollection, ...prev]);
+        setCollectionSearchQuery('');
+    };
+
+    const handleSaveToCollections = () => {
+        // Placeholder behavior (until wired to API)
+        const selected = collections.filter((c) => c.selected);
+        console.log(`Added "${schoolName}" to ${selected.length} collections:`, selected);
         closeAll();
     };
 
@@ -217,14 +263,8 @@ export const MobileOptionsDrawer: React.FC<MobileOptionsDrawerProps> = ({ isOpen
 
                 <DrawerItem
                     icon={<MobileDrawerIcons.AddTo />}
-                    text="Add To"
-                    onClick={() => {
-                        onClose(); // Close main options drawer first
-                        // Open collection drawer after animation completes
-                        setTimeout(() => {
-                            setIsCollectionDrawerOpen(true);
-                        }, 300); // Wait for drawer close animation
-                    }}
+                    text="Save to collection"
+                    onClick={() => setCurrentView('collection')}
                 />
 
                 <DrawerItem
@@ -242,17 +282,94 @@ export const MobileOptionsDrawer: React.FC<MobileOptionsDrawerProps> = ({ isOpen
                 <DrawerItem icon={<MobileDrawerIcons.ViewReports />} text="View Reports" onClick={() => handleAction('view-reports')} />
             </Drawer>
 
-            {/* Add To Drawer (Nested) */}
+            {/* Save to collection (full-screen within same drawer) */}
             <Drawer
-                isOpen={isOpen && currentView === 'add-to'}
+                isOpen={isOpen && currentView === 'collection'}
                 onClose={closeAll}
-                title="Add To"
+                title="Save to collection"
                 hasBack
                 onBack={openMain}
             >
-                <DrawerItem icon={<MobileDrawerIcons.NestedFavorites />} text="My Favorites" onClick={() => handleAction('add-to-favorites')} />
-                <DrawerItem icon={<MobileDrawerIcons.NestedWatchlist />} text="Watchlist" onClick={() => handleAction('add-to-watchlist')} />
-                <DrawerItem icon={<MobileDrawerIcons.NestedCustomList />} text="Custom List" onClick={() => handleAction('add-to-custom')} />
+                <div className="px-5 pt-3 pb-2">
+                    <input
+                        type="text"
+                        placeholder="Filter collections"
+                        value={collectionSearchQuery}
+                        onChange={(e) => setCollectionSearchQuery(e.target.value)}
+                        className="w-full px-4 py-3 border border-[#D1D5DB] rounded-lg text-[15px] text-[#4A4A4A] placeholder-[#5F5F5F] focus:outline-none focus:border-[#1D77BD] focus:ring-4 focus:ring-[#1D77BD]/10 transition-all"
+                    />
+                </div>
+
+                <div className="px-1">
+                    {filteredCollections.length > 0 ? (
+                        filteredCollections.map((collection) => (
+                            <div
+                                key={collection.id}
+                                onClick={() => toggleCollectionSelection(collection.id)}
+                                className="flex items-center px-5 py-3.5 cursor-pointer transition-colors active:bg-[#F7F9FC] group"
+                            >
+                                <div className="w-11 h-11 bg-[#DFDDDB] rounded-[10px] flex items-center justify-center text-xl mr-3.5 shrink-0 relative">
+                                    {collection.icon}
+                                    {collection.selected && (
+                                        <div className="absolute -top-0.5 -right-0.5 w-[18px] h-[18px] bg-[#1D77BD] border-2 border-white rounded-full flex items-center justify-center">
+                                            <svg viewBox="0 0 20 20" fill="currentColor" className="w-2.5 h-2.5 text-white">
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                                                    clipRule="evenodd"
+                                                />
+                                            </svg>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="flex-1 min-w-0">
+                                    <div className="text-[15px] font-medium text-[#464646] mb-0.5 truncate">
+                                        {collection.name}
+                                    </div>
+                                    <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                                        <span>
+                                            {collection.itemCount} {collection.itemCount === 1 ? 'item' : 'items'}
+                                        </span>
+                                        <div className="w-[3px] h-[3px] bg-[#5F5F5F] rounded-full shrink-0" />
+                                        <span>Updated {collection.updatedAgo}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="py-10 text-center text-sm text-[#5F5F5F]">
+                            No collections found
+                        </div>
+                    )}
+                </div>
+
+                <div className="px-5 pt-2 pb-3">
+                    <button
+                        type="button"
+                        onClick={handleCreateCollection}
+                        className="w-full flex items-center gap-3 mb-3.5 py-3.5 rounded-lg text-[#4A4A4A] active:bg-[#F7F9FC] transition-colors text-left"
+                    >
+                        <div className="w-9 h-9 bg-[#DFDDDB] rounded-full flex items-center justify-center shrink-0 text-[#5F5F5F]">
+                            <svg viewBox="0 0 24 24" fill="currentColor" className="w-[18px] h-[18px]">
+                                <path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" />
+                            </svg>
+                        </div>
+                        <span className="text-[15px] font-medium">Create a new collection</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={handleSaveToCollections}
+                        disabled={!hasCollectionSelection}
+                        className={`w-full py-3 rounded-lg text-[15px] font-medium text-white transition-colors ${hasCollectionSelection
+                            ? 'bg-[#1D77BD] active:bg-[#1565c0]'
+                            : 'bg-[#D1D5DB] cursor-not-allowed'
+                            }`}
+                    >
+                        Done
+                    </button>
+                </div>
             </Drawer>
 
             {/* Move To Drawer (Nested Multi-select) */}
@@ -282,13 +399,6 @@ export const MobileOptionsDrawer: React.FC<MobileOptionsDrawerProps> = ({ isOpen
                     onClick={() => toggleMoveToSelection('Scheduled')}
                 />
             </Drawer>
-
-            {/* Collection Drawer */}
-            <MobileCollectionDrawer
-                isOpen={isCollectionDrawerOpen}
-                onClose={() => setIsCollectionDrawerOpen(false)}
-                schoolName={schoolName}
-            />
         </>
     );
 };
