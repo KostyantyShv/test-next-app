@@ -75,8 +75,8 @@ export const RootLayoutClient = ({
         </div>
 
         <div className="flex-1 flex flex-col">
-          {/* Mobile Header - always show on mobile, including listing page */}
-          {!(isTeamMembersPage) && (
+          {/* Mobile Header - hide while mobile sidebar is open */}
+          {!(isTeamMembersPage) && !isMobileSidebarOpen && (
             <div className="md:hidden">
               <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} />
               <div className="h-[12px] flex-shrink-0" />

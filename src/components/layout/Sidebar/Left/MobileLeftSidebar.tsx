@@ -5,9 +5,14 @@ import { cn } from '@/lib/utils';
 import { Logo } from '@/components/ui/Logo';
 import { Avatar } from '@/components/ui/Avatar';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase_utils/client';
 import { useAudioPlayer } from '@/store/use-audio-player';
+import { Portal } from '@/components/ui/Portal';
+import { useTheme } from 'next-themes';
+import { NotificationsPanel } from '@/components/ui/NotificationsPanel';
+import { Cart } from '@/components/ui/Cart';
+import { default as CompareItems } from '@/components/ui/CompareItems';
 
 interface MobileLeftSidebarProps {
   isOpen: boolean;
@@ -68,8 +73,19 @@ const UserProfileName: FC = () => {
 };
 
 export const MobileLeftSidebar: FC<MobileLeftSidebarProps> = ({ isOpen, onClose }) => {
+  const router = useRouter();
   const pathname = usePathname();
   const [openSubmenus, setOpenSubmenus] = useState<Set<string>>(new Set());
+  const [mounted, setMounted] = useState(false);
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  // Prevent hydration mismatch for theme-dependent UI
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleSubmenu = (menuId: string) => {
     const newOpenSubmenus = new Set(openSubmenus);
@@ -79,6 +95,33 @@ export const MobileLeftSidebar: FC<MobileLeftSidebarProps> = ({ isOpen, onClose 
       newOpenSubmenus.add(menuId);
     }
     setOpenSubmenus(newOpenSubmenus);
+  };
+
+  const openCompare = () => {
+    onClose();
+    setIsCompareOpen(true);
+  };
+
+  const openCart = () => {
+    onClose();
+    setIsCartOpen(true);
+  };
+
+  const openNotifications = () => {
+    onClose();
+    setIsNotificationsOpen(true);
+  };
+
+  const toggleTheme = () => {
+    if (!mounted) return;
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    onClose();
+  };
+
+  const navigate = (href: string) => {
+    router.push(href);
+    onClose();
   };
 
   const exploreItems: NavItem[] = [
@@ -248,61 +291,302 @@ export const MobileLeftSidebar: FC<MobileLeftSidebarProps> = ({ isOpen, onClose 
   ];
 
   return (
-    <>
-      {/* Overlay */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-[1500] md:hidden transition-opacity duration-300"
-          onClick={onClose}
-        />
-      )}
-      
-      {/* Sidebar */}
-      <div className={cn(
-        "fixed top-0 left-0 z-[2000] w-[280px] h-full bg-white shadow-[2px_0_10px_rgba(0,0,0,0.1)] transform transition-transform duration-300 ease-in-out md:hidden",
-        "flex flex-col overflow-hidden",
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
-        {/* Header */}
-        <div className="px-5 py-4 flex items-center border-b border-gray-200 h-[65px] flex-shrink-0 sticky top-0 bg-white z-10">
-          <Logo />
-          <button
+    <Portal containerId="mobile-sidebar-root">
+      <>
+        {/* Overlay (keep below header) */}
+        {isOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-[4200] md:hidden transition-opacity duration-300"
             onClick={onClose}
-            className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-opacity duration-200 opacity-70 hover:opacity-100"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </div>
+          />
+        )}
 
-        {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto min-h-0">
-          <style jsx>{`
-            .sidebar-scroll::-webkit-scrollbar {
-              width: 4px;
-            }
-            .sidebar-scroll::-webkit-scrollbar-thumb {
-              background-color: rgba(0, 0, 0, 0.2);
-              border-radius: 4px;
-            }
-          `}</style>
-          
-          <nav className="sidebar-scroll py-2.5">
-            {/* Explore Section */}
-            <div className="py-4">
-              <div className="px-5 py-2.5 text-[11px] font-semibold text-gray-600 uppercase tracking-[0.07em]">
-                EXPLORE
+        {/* Sidebar (keep below header) */}
+        <div
+          className={cn(
+            "fixed top-0 left-0 z-[4500] w-[280px] h-full bg-white shadow-[2px_0_10px_rgba(0,0,0,0.1)] transform transition-transform duration-300 ease-in-out md:hidden",
+            "flex flex-col overflow-hidden",
+            isOpen ? "translate-x-0" : "-translate-x-full"
+          )}
+        >
+          {/* Header */}
+          <div className="px-5 py-4 flex items-center border-b border-gray-200 h-[65px] flex-shrink-0 sticky top-0 bg-white z-10">
+            <Logo />
+            <button
+              onClick={onClose}
+              className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-opacity duration-200 opacity-70 hover:opacity-100"
+              aria-label="Close sidebar"
+              type="button"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto min-h-0">
+            <style jsx>{`
+              .sidebar-scroll::-webkit-scrollbar {
+                width: 4px;
+              }
+              .sidebar-scroll::-webkit-scrollbar-thumb {
+                background-color: rgba(0, 0, 0, 0.2);
+                border-radius: 4px;
+              }
+            `}</style>
+
+            <nav className="sidebar-scroll py-2.5">
+              {/* Quick Actions (header buttons) */}
+              <div className="py-4">
+                <div className="px-5 py-2.5 text-[11px] font-semibold text-gray-600 uppercase tracking-[0.07em]">
+                  QUICK ACTIONS
+                </div>
+                <div className="px-2">
+                  <button
+                    type="button"
+                    onClick={openCompare}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-5 py-3 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
+                      "text-sm font-medium border border-transparent mx-2 my-0.5 text-left",
+                      "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800"
+                    )}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none" className="w-5 h-5 shrink-0">
+                      <path d="M4.5 11.25L6 12.75L9.375 9.375M6 6V3.9C6 3.05992 6 2.63988 6.16349 2.31901C6.3073 2.03677 6.53677 1.8073 6.81901 1.66349C7.13988 1.5 7.55992 1.5 8.4 1.5H14.1C14.9401 1.5 15.3601 1.5 15.681 1.66349C15.9632 1.8073 16.1927 2.03677 16.3365 2.31901C16.5 2.63988 16.5 3.05992 16.5 3.9V9.6C16.5 10.4401 16.5 10.8601 16.3365 11.181C16.1927 11.4632 15.9632 11.6927 15.681 11.8365C15.3601 12 14.9401 12 14.1 12H12M3.9 16.5H9.6C10.4401 16.5 10.8601 16.5 11.181 16.3365C11.4632 16.1927 11.6927 15.9632 11.8365 15.681C12 15.3601 12 14.9401 12 14.1V8.4C12 7.55992 12 7.13988 11.8365 6.81901C11.6927 6.53677 11.4632 6.3073 11.181 6.16349C10.8601 6 10.4401 6 9.6 6H3.9C3.05992 6 2.63988 6 2.31901 6.16349C2.03677 6.3073 1.8073 6.53677 1.66349 6.81901C1.5 7.13988 1.5 7.55992 1.5 8.4V14.1C1.5 14.9401 1.5 15.3601 1.66349 15.681C1.8073 15.9632 2.03677 16.1927 2.31901 16.3365C2.63988 16.5 3.05992 16.5 3.9 16.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                    </svg>
+                    <span>Compare</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={openNotifications}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-5 py-3 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
+                      "text-sm font-medium border border-transparent mx-2 my-0.5 text-left",
+                      "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800"
+                    )}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="w-5 h-5 shrink-0 fill-current">
+                      <path d="M7.52166 4.85499C8.70939 3.66726 10.3203 3 12 3C13.6797 3 15.2906 3.66726 16.4783 4.85499C17.6661 6.04272 18.3333 7.65363 18.3333 9.33333C18.3333 11.013 17.6661 12.6239 16.4783 13.8117C15.2906 14.9994 13.6797 15.6667 12 15.6667C10.3203 15.6667 8.70939 14.9994 7.52166 13.8117C6.33393 12.6239 5.66667 11.013 5.66667 9.33333C5.66667 7.65363 6.33393 6.04272 7.52166 4.85499Z" />
+                      <path d="M23.5859 18.5858C23.961 18.2107 24.4697 18 25.0001 18C25.5305 18 26.0392 18.2107 26.4143 18.5858C26.6314 18.8029 26.7934 19.0647 26.8914 19.3496C27.4303 19.6869 27.8933 20.1357 28.2482 20.6679C28.7012 21.3474 28.9607 22.1374 28.999 22.9531C28.9997 22.9687 29.0001 22.9844 29.0001 23V24.4293C29.0238 24.5668 29.076 24.698 29.1535 24.8144C29.2404 24.9446 29.3566 25.0527 29.4928 25.1298C29.888 25.3536 30.0828 25.8156 29.9671 26.2548C29.8514 26.694 29.4542 27 29.0001 27H21.0001C20.5459 27 20.1488 26.694 20.0331 26.2548C19.9174 25.8156 20.1121 25.3536 20.5073 25.1298C20.6436 25.0527 20.7598 24.9446 20.8466 24.8144C20.9242 24.698 20.9764 24.5668 21.0001 24.4293V23C21.0001 22.9844 21.0005 22.9687 21.0012 22.9531C21.0395 22.1374 21.299 21.3474 21.752 20.6679C22.1069 20.1357 22.5699 19.6869 23.1088 19.3496C23.2068 19.0647 23.3688 18.8029 23.5859 18.5858Z" />
+                    </svg>
+                    <span>Notifications</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={openCart}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-5 py-3 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
+                      "text-sm font-medium border border-transparent mx-2 my-0.5 text-left",
+                      "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800"
+                    )}
+                  >
+                    <svg fill="none" viewBox="0 0 24 24" className="w-5 h-5 shrink-0">
+                      <path fill="currentColor" d="M22.5 16.14L23.92 6l-18.8-.81L4.92 4A4.43 4.43 0 002.51.8L.58 0 0 1.39l1.88.78a2.88 2.88 0 011.56 2.11l2.5 14.86a2.54 2.54 0 103.57 3h5.93a2.54 2.54 0 100-1.5H9.52a2.53 2.53 0 00-2.1-1.79l-.31-1.83 15.39-.88zm-4.65 4.21a1 1 0 11-.1 1.997 1 1 0 01.1-1.997zm4.36-12.92l-1 7.29-14.33.84-1.51-8.85 16.84.72zM8.14 21.4a1 1 0 11-2 0 1 1 0 012 0z"></path>
+                    </svg>
+                    <span>Cart</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={toggleTheme}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-5 py-3 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
+                      "text-sm font-medium border border-transparent mx-2 my-0.5 text-left",
+                      "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800"
+                    )}
+                  >
+                    <svg fill="none" viewBox="0 0 20 20" className="w-5 h-5 shrink-0">
+                      <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M9.9999 2.49983C10.1099 2.49983 10.2191 2.49983 10.3274 2.49983C9.25685 3.49459 8.56872 4.83303 8.38264 6.28251C8.19656 7.732 8.52428 9.20086 9.30885 10.4338C10.0934 11.6667 11.2852 12.5857 12.6771 13.0311C14.0689 13.4764 15.5728 13.42 16.9274 12.8715C16.4063 14.1252 15.5547 15.214 14.4634 16.0217C13.3721 16.8294 12.0819 17.3257 10.7307 17.4577C9.37938 17.5896 8.01762 17.3523 6.79064 16.771C5.56366 16.1897 4.51749 15.2862 3.76372 14.157C3.00995 13.0277 2.57686 11.7151 2.51064 10.359C2.44442 9.00288 2.74755 7.65424 3.38771 6.45693C4.02787 5.25961 4.98103 4.25852 6.14554 3.56044C7.31004 2.86237 8.64219 2.49349 9.9999 2.49316V2.49983Z"></path>
+                    </svg>
+                    <span>Theme</span>
+                  </button>
+                </div>
               </div>
-              <div className="px-2">
-                {exploreItems.map((item) => (
+
+              {/* Explore Section */}
+              <div className="py-4">
+                <div className="px-5 py-2.5 text-[11px] font-semibold text-gray-600 uppercase tracking-[0.07em]">
+                  EXPLORE
+                </div>
+                <div className="px-2">
+                  {exploreItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={onClose}
+                      className={cn(
+                        "flex items-center gap-3 px-5 py-3 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
+                        "text-sm font-medium border border-transparent mx-2 my-0.5",
+                        "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800",
+                        pathname === item.href && "bg-gradient-to-r from-[#EBFCF4] to-[#D7F7E9] border-[#D7F7E9] text-[#0B6333] font-semibold"
+                      )}
+                    >
+                      <span className={cn("shrink-0", pathname === item.href && "text-[#0B6333]")}>{item.icon}</span>
+                      <span>{item.label}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Library Section */}
+              <div className="py-4">
+                <div className="px-5 py-2.5 text-[11px] font-semibold text-gray-600 uppercase tracking-[0.07em]">
+                  LIBRARY
+                </div>
+                <div className="px-2">
+                  {libraryItems.map((item) => {
+                    const submenuId = `submenu-${item.label.toLowerCase()}`;
+                    const isSubmenuOpen = openSubmenus.has(submenuId);
+                    const isActive = pathname === item.href;
+
+                    return (
+                      <div key={item.href}>
+                        <div
+                          className={cn(
+                            "relative flex items-center gap-3 px-5 py-2 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
+                            "text-sm font-medium border border-transparent mx-2 my-0.5",
+                            "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800",
+                            isActive && "bg-gradient-to-r from-[#EBFCF4] to-[#D7F7E9] border-[#D7F7E9] text-[#0B6333] font-semibold"
+                          )}
+                          onClick={(e) => {
+                            if (item.hasSubmenu) {
+                              e.preventDefault();
+                              // For Analytics / Collections / Monitors: go to the page and close sidebar
+                              if (item.href === "/analytics" || item.href === "/collections" || item.href === "/monitors") {
+                                navigate(item.href);
+                                return;
+                              }
+
+                              // For other submenu items, just toggle submenu
+                              toggleSubmenu(submenuId);
+                            } else {
+                              navigate(item.href);
+                            }
+                          }}
+                        >
+                          <span className={cn("shrink-0", isActive && "text-[#0B6333]")}>{item.icon}</span>
+                          <span className="flex-1">{item.label}</span>
+                          {item.hasSubmenu && (
+                            <div className="flex items-center gap-1 opacity-0 hover:opacity-100 transition-opacity duration-200">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  // Create collection logic here
+                                }}
+                                className="w-6 h-6 bg-[#DFDDDB] rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors"
+                                type="button"
+                              >
+                                <svg viewBox="0 0 22 22" fill="currentColor" className="w-4 h-4">
+                                  <path d="M22 11C22 17.0751 17.0751 22 11 22C4.92487 22 0 17.0751 0 11C0 4.92487 4.92487 0 11 0C17.0751 0 22 4.92487 22 11Z" fill="#E8E9ED" />
+                                  <path d="M11 16C10.5314 16 10.1515 15.6201 10.1515 15.1515V6.84848C10.1515 6.37988 10.5314 6 11 6C11.4686 6 11.8485 6.37988 11.8485 6.84848V15.1515C11.8485 15.6201 11.4686 16 11 16ZM6.84849 11.8485C6.37988 11.8485 6 11.4686 6 11C6 10.5314 6.37988 10.1515 6.84848 10.1515H15.1515C15.6201 10.1515 16 10.5314 16 11C16 11.4686 15.6201 11.8485 15.1515 11.8485H6.84849Z" fill="currentColor" />
+                                </svg>
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleSubmenu(submenuId);
+                                }}
+                                className="w-6 h-6 bg-[#DFDDDB] rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors"
+                                type="button"
+                              >
+                                <svg
+                                  className={cn("w-4 h-4 transition-transform duration-200", isSubmenuOpen && "rotate-180")}
+                                  height="16"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                >
+                                  <path d="M19 9l-7 7-7-7" strokeLinejoin="round" strokeLinecap="round" />
+                                </svg>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Submenu */}
+                        {item.hasSubmenu && item.submenuItems && (
+                          <div
+                            className={cn(
+                              "mt-0 relative bg-white py-1",
+                              isSubmenuOpen ? "block" : "hidden"
+                            )}
+                          >
+                            <div className="absolute left-7 top-0 bottom-0 w-0.5 bg-[#D7F7E9]" />
+                            {item.submenuItems.map((subItem) => (
+                              <Link
+                                key={subItem.href}
+                                href={subItem.href}
+                                onClick={onClose}
+                                className={cn(
+                                  "flex items-center px-5 py-2 pl-[52px] text-gray-700 text-sm font-medium transition-colors duration-200",
+                                  "hover:text-gray-800 relative",
+                                  pathname === subItem.href && "text-[#0B6333]"
+                                )}
+                              >
+                                <span className="mr-2 text-base">{subItem.emoji}</span>
+                                <span>{subItem.label}</span>
+                                {pathname === subItem.href && (
+                                  <div className="absolute left-7 top-0 bottom-0 w-0.5 bg-[#0B6333]" />
+                                )}
+                              </Link>
+                            ))}
+                            <div className="px-5 py-1.5 pl-[52px] text-gray-500 text-xs font-medium opacity-80 hover:opacity-100 cursor-pointer">
+                              3 more items
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </nav>
+          </div>
+
+          {/* Footer */}
+          <div className="px-2 py-2 border-t border-gray-200 bg-white flex-shrink-0 max-h-[250px] overflow-y-auto min-h-0">
+            <style jsx>{`
+              .sidebar-footer::-webkit-scrollbar {
+                width: 4px;
+              }
+              .sidebar-footer::-webkit-scrollbar-thumb {
+                background-color: rgba(0, 0, 0, 0.2);
+                border-radius: 4px;
+              }
+            `}</style>
+
+            <div className="sidebar-footer space-y-1">
+              {bottomItems.map((item) => (
+                item.href === '#' ? (
+                  <div
+                    key={item.href}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      useAudioPlayer.getState().setPlaylistVisible(true);
+                      onClose();
+                    }}
+                    className={cn(
+                      "flex items-center gap-3 px-5 py-2 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
+                      "text-sm font-medium border border-transparent mx-2 my-0.5",
+                      "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800",
+                      pathname === item.href && "bg-gradient-to-r from-[#EBFCF4] to-[#D7F7E9] border-[#D7F7E9] text-[#0B6333] font-semibold"
+                    )}
+                  >
+                    <span className={cn("shrink-0", pathname === item.href && "text-[#0B6333]")}>{item.icon}</span>
+                    <span>{item.label}</span>
+                  </div>
+                ) : (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={onClose}
                     className={cn(
-                      "flex items-center gap-3 px-5 py-3 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
+                      "flex items-center gap-3 px-5 py-2 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
                       "text-sm font-medium border border-transparent mx-2 my-0.5",
                       "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800",
                       pathname === item.href && "bg-gradient-to-r from-[#EBFCF4] to-[#D7F7E9] border-[#D7F7E9] text-[#0B6333] font-semibold"
@@ -311,198 +595,30 @@ export const MobileLeftSidebar: FC<MobileLeftSidebarProps> = ({ isOpen, onClose 
                     <span className={cn("shrink-0", pathname === item.href && "text-[#0B6333]")}>{item.icon}</span>
                     <span>{item.label}</span>
                   </Link>
-                ))}
-              </div>
+                )
+              ))}
+
+              {/* User Profile */}
+              <Link
+                href="/me"
+                onClick={onClose}
+                className="relative flex items-center px-5 py-2 gap-3 mx-2 my-2 rounded-3xl transition-all duration-200 cursor-pointer hover:bg-[#EBFCF4]"
+              >
+                <Avatar
+                  size="sm"
+                  className="shrink-0"
+                />
+                <UserProfileName />
+              </Link>
             </div>
-
-            {/* Library Section */}
-            <div className="py-4">
-              <div className="px-5 py-2.5 text-[11px] font-semibold text-gray-600 uppercase tracking-[0.07em]">
-                LIBRARY
-              </div>
-              <div className="px-2">
-                {libraryItems.map((item) => {
-                  const submenuId = `submenu-${item.label.toLowerCase()}`;
-                  const isSubmenuOpen = openSubmenus.has(submenuId);
-                  const isActive = pathname === item.href;
-
-                  return (
-                    <div key={item.href}>
-                      <div
-                        className={cn(
-                          "relative flex items-center gap-3 px-5 py-2 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
-                          "text-sm font-medium border border-transparent mx-2 my-0.5",
-                          "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800",
-                          isActive && "bg-gradient-to-r from-[#EBFCF4] to-[#D7F7E9] border-[#D7F7E9] text-[#0B6333] font-semibold"
-                        )}
-                        onClick={(e) => {
-                          if (item.hasSubmenu) {
-                            e.preventDefault();
-                            // For Analytics, navigate to /analytics page
-                            if (item.href === "/analytics") {
-                              window.location.href = "/analytics";
-                              onClose();
-                            }
-                            // For Collections, navigate to /collections page
-                            else if (item.href === "/collections") {
-                              window.location.href = "/collections";
-                              onClose();
-                            }
-                            // For Monitors, navigate to /monitors first, then toggle submenu
-                            else if (item.href === "/monitors") {
-                              window.location.href = "/monitors";
-                              onClose();
-                            }
-                            // For other items with submenu, toggle submenu
-                            else {
-                              toggleSubmenu(submenuId);
-                            }
-                          } else {
-                            onClose();
-                          }
-                        }}
-                      >
-                        <span className={cn("shrink-0", isActive && "text-[#0B6333]")}>{item.icon}</span>
-                        <span className="flex-1">{item.label}</span>
-                        {item.hasSubmenu && (
-                          <div className="flex items-center gap-1 opacity-0 hover:opacity-100 transition-opacity duration-200">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                // Create collection logic here
-                              }}
-                              className="w-6 h-6 bg-[#DFDDDB] rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors"
-                            >
-                              <svg viewBox="0 0 22 22" fill="currentColor" className="w-4 h-4">
-                                <path d="M22 11C22 17.0751 17.0751 22 11 22C4.92487 22 0 17.0751 0 11C0 4.92487 4.92487 0 11 0C17.0751 0 22 4.92487 22 11Z" fill="#E8E9ED" />
-                                <path d="M11 16C10.5314 16 10.1515 15.6201 10.1515 15.1515V6.84848C10.1515 6.37988 10.5314 6 11 6C11.4686 6 11.8485 6.37988 11.8485 6.84848V15.1515C11.8485 15.6201 11.4686 16 11 16ZM6.84849 11.8485C6.37988 11.8485 6 11.4686 6 11C6 10.5314 6.37988 10.1515 6.84848 10.1515H15.1515C15.6201 10.1515 16 10.5314 16 11C16 11.4686 15.6201 11.8485 15.1515 11.8485H6.84849Z" fill="currentColor" />
-                              </svg>
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleSubmenu(submenuId);
-                              }}
-                              className="w-6 h-6 bg-[#DFDDDB] rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors"
-                            >
-                              <svg 
-                                className={cn("w-4 h-4 transition-transform duration-200", isSubmenuOpen && "rotate-180")} 
-                                height="16" 
-                                stroke="currentColor" 
-                                strokeWidth="2" 
-                                viewBox="0 0 24 24" 
-                                fill="none"
-                              >
-                                <path d="M19 9l-7 7-7-7" strokeLinejoin="round" strokeLinecap="round" />
-                              </svg>
-                            </button>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Submenu */}
-                      {item.hasSubmenu && item.submenuItems && (
-                        <div className={cn(
-                          "mt-0 relative bg-white py-1",
-                          isSubmenuOpen ? "block" : "hidden"
-                        )}>
-                          <div className="absolute left-7 top-0 bottom-0 w-0.5 bg-[#D7F7E9]" />
-                          {item.submenuItems.map((subItem) => (
-                            <Link
-                              key={subItem.href}
-                              href={subItem.href}
-                              onClick={onClose}
-                              className={cn(
-                                "flex items-center px-5 py-2 pl-[52px] text-gray-700 text-sm font-medium transition-colors duration-200",
-                                "hover:text-gray-800 relative",
-                                pathname === subItem.href && "text-[#0B6333]"
-                              )}
-                            >
-                              <span className="mr-2 text-base">{subItem.emoji}</span>
-                              <span>{subItem.label}</span>
-                              {pathname === subItem.href && (
-                                <div className="absolute left-7 top-0 bottom-0 w-0.5 bg-[#0B6333]" />
-                              )}
-                            </Link>
-                          ))}
-                          <div className="px-5 py-1.5 pl-[52px] text-gray-500 text-xs font-medium opacity-80 hover:opacity-100 cursor-pointer">
-                            3 more items
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </nav>
-        </div>
-
-        {/* Footer */}
-        <div className="px-2 py-2 border-t border-gray-200 bg-white flex-shrink-0 max-h-[250px] overflow-y-auto min-h-0">
-          <style jsx>{`
-            .sidebar-footer::-webkit-scrollbar {
-              width: 4px;
-            }
-            .sidebar-footer::-webkit-scrollbar-thumb {
-              background-color: rgba(0, 0, 0, 0.2);
-              border-radius: 4px;
-            }
-          `}</style>
-          
-          <div className="sidebar-footer space-y-1">
-            {bottomItems.map((item) => (
-              item.href === '#' ? (
-                <div
-                  key={item.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    useAudioPlayer.getState().setPlaylistVisible(true);
-                    onClose();
-                  }}
-                  className={cn(
-                    "flex items-center gap-3 px-5 py-2 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
-                    "text-sm font-medium border border-transparent mx-2 my-0.5",
-                    "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800",
-                    pathname === item.href && "bg-gradient-to-r from-[#EBFCF4] to-[#D7F7E9] border-[#D7F7E9] text-[#0B6333] font-semibold"
-                  )}
-                >
-                  <span className={cn("shrink-0", pathname === item.href && "text-[#0B6333]")}>{item.icon}</span>
-                  <span>{item.label}</span>
-                </div>
-              ) : (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={onClose}
-                  className={cn(
-                    "flex items-center gap-3 px-5 py-2 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
-                    "text-sm font-medium border border-transparent mx-2 my-0.5",
-                    "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800",
-                    pathname === item.href && "bg-gradient-to-r from-[#EBFCF4] to-[#D7F7E9] border-[#D7F7E9] text-[#0B6333] font-semibold"
-                  )}
-                >
-                  <span className={cn("shrink-0", pathname === item.href && "text-[#0B6333]")}>{item.icon}</span>
-                  <span>{item.label}</span>
-                </Link>
-              )
-            ))}
-
-            {/* User Profile */}
-            <Link
-              href="/me"
-              onClick={onClose}
-              className="relative flex items-center px-5 py-2 gap-3 mx-2 my-2 rounded-3xl transition-all duration-200 cursor-pointer hover:bg-[#EBFCF4]"
-            >
-              <Avatar 
-                size="sm"
-                className="shrink-0"
-              />
-              <UserProfileName />
-            </Link>
           </div>
         </div>
-      </div>
-    </>
+
+        {/* Panels triggered from sidebar (mirror header buttons) */}
+        <NotificationsPanel isOpen={isNotificationsOpen} onClose={() => setIsNotificationsOpen(false)} />
+        <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+        <CompareItems isOpen={isCompareOpen} onClose={() => setIsCompareOpen(false)} />
+      </>
+    </Portal>
   );
 }; 

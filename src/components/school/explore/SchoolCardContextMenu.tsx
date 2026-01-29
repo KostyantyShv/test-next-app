@@ -1,7 +1,11 @@
+'use client';
+
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { ContextMenuIcons } from './ContextMenuIcons';
 import { AddToCollectionModal } from './AddToCollectionModal';
+import { MobileDrawer } from '@/components/ui/MobileDrawer/MobileDrawer';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 interface MenuItemProps {
     icon: React.ReactNode;
@@ -82,8 +86,10 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
     const [selectedMoveTo, setSelectedMoveTo] = useState<string[]>([]);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
     const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false);
+    const [isMoveToOpenMobile, setIsMoveToOpenMobile] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
+    const isMobile = useIsMobile();
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -115,7 +121,17 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
         }
     }, [isOpen]);
 
+    const closeMenu = () => {
+        setIsOpen(false);
+        setIsMoveToOpenMobile(false);
+    };
+
     const toggleDropdown = () => {
+        if (isMobile) {
+            setIsOpen(!isOpen);
+            return;
+        }
+
         if (!isOpen && buttonRef.current) {
             // Calculate position when opening
             const rect = buttonRef.current.getBoundingClientRect();
@@ -159,7 +175,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
     };
 
     const handleAction = (action: string) => {
-        setIsOpen(false);
+        closeMenu();
     };
 
     const handleSaveCollections = (selectedCollections: any[]) => {
@@ -186,8 +202,101 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                 <ContextMenuIcons.Options />
             </button>
 
-            {/* Render menu via Portal to avoid parent overflow clipping */}
-            {isOpen && typeof window !== 'undefined' && createPortal(
+            {/* Mobile: render context actions as modal/drawer */}
+            {isMobile && (
+                <MobileDrawer isOpen={isOpen} onClose={closeMenu}>
+                    <div className="sticky top-0 z-50 bg-white border-b border-black/10 px-5 py-4 flex items-center justify-between">
+                        <div className="text-[#016853] text-lg font-semibold">Actions</div>
+                        <button
+                            type="button"
+                            className="bg-transparent border-none text-[#5F5F5F] cursor-pointer p-2 rounded-full hover:bg-black/5 transition-colors"
+                            onClick={closeMenu}
+                        >
+                            <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 6l12 12m-12 0L18 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div className="p-2">
+                        <div className="px-3 pt-2 pb-1 text-xs font-semibold text-[#5F5F5F] uppercase tracking-[0.5px]">Actions</div>
+                        <MenuItem icon={<ContextMenuIcons.Compare />} text="Compare" onClick={() => handleAction('compare')} />
+                        <MenuItem icon={<ContextMenuIcons.ViewListing />} text="View Listing" onClick={() => handleAction('view-listing')} />
+                        <MenuItem icon={<ContextMenuIcons.Review />} text="Leave Review" onClick={() => handleAction('leave-review')} />
+                        <MenuItem icon={<ContextMenuIcons.Monitor />} text="Monitor" onClick={() => handleAction('monitor')} />
+                        <MenuItem icon={<ContextMenuIcons.Share />} text="Share" onClick={() => handleAction('share')} />
+
+                        <MenuItem
+                            icon={<ContextMenuIcons.Apply />}
+                            text="Apply Now"
+                            className="bg-[#EBFCF4] hover:bg-[#D7F7E9] text-[#016853] mt-0.5"
+                            textClassName="text-[#016853]"
+                            onClick={() => handleAction('apply-now')}
+                        />
+                        <MenuItem
+                            icon={<ContextMenuIcons.ViewOffers />}
+                            text="View Offers"
+                            className="bg-[#EBFCF4] hover:bg-[#D7F7E9] text-[#016853] mt-0.5"
+                            textClassName="text-[#016853]"
+                            onClick={() => handleAction('view-offers')}
+                        />
+
+                        <MenuItem icon={<ContextMenuIcons.VirtualTour />} text="Virtual Tour" onClick={() => handleAction('virtual-tour')} />
+                        <MenuItem icon={<ContextMenuIcons.CopyLink />} text="Copy Link" onClick={() => handleAction('copy-link')} />
+
+                        <MenuItem
+                            icon={<ContextMenuIcons.AddTo />}
+                            text="Save to collection"
+                            onClick={() => {
+                                setIsCollectionModalOpen(true);
+                                closeMenu();
+                            }}
+                        />
+
+                        <div className="px-3 pt-3 pb-1 text-xs font-semibold text-[#5F5F5F] uppercase tracking-[0.5px]">Move To</div>
+                        <div
+                            className="flex items-center px-3 py-2.5 rounded-lg cursor-pointer hover:bg-[#F7F9FC] transition-colors duration-200"
+                            onClick={() => setIsMoveToOpenMobile(v => !v)}
+                        >
+                            <div className="mr-3 flex items-center justify-center"><ContextMenuIcons.MoveTo /></div>
+                            <span className="text-sm font-medium text-[#464646] flex-grow">Choose destinations</span>
+                            <div className={`transition-transform duration-200 ${isMoveToOpenMobile ? 'rotate-90' : ''}`}>
+                                <ContextMenuIcons.Arrow />
+                            </div>
+                        </div>
+                        {isMoveToOpenMobile && (
+                            <div className="px-2 pb-1">
+                                <NestedMultiSelectItem
+                                    icon={<ContextMenuIcons.NestedHome />}
+                                    text="Home"
+                                    isSelected={selectedMoveTo.includes('Home')}
+                                    onClick={() => toggleMoveToSelection('Home')}
+                                />
+                                <NestedMultiSelectItem
+                                    icon={<ContextMenuIcons.NestedArchive />}
+                                    text="Archive"
+                                    isSelected={selectedMoveTo.includes('Archive')}
+                                    onClick={() => toggleMoveToSelection('Archive')}
+                                />
+                                <NestedMultiSelectItem
+                                    icon={<ContextMenuIcons.NestedScheduled />}
+                                    text="Scheduled"
+                                    isSelected={selectedMoveTo.includes('Scheduled')}
+                                    onClick={() => toggleMoveToSelection('Scheduled')}
+                                />
+                            </div>
+                        )}
+
+                        <div className="px-3 pt-3 pb-1 text-xs font-semibold text-[#5F5F5F] uppercase tracking-[0.5px]">Vendor</div>
+                        <MenuItem icon={<ContextMenuIcons.NewAnnouncement />} text="New Announcement" onClick={() => handleAction('new-announcement')} />
+                        <MenuItem icon={<ContextMenuIcons.ViewAnalytics />} text="View Analytics" onClick={() => handleAction('view-analytics')} />
+                        <MenuItem icon={<ContextMenuIcons.ViewReports />} text="View Reports" onClick={() => handleAction('view-reports')} />
+                    </div>
+                </MobileDrawer>
+            )}
+
+            {/* Desktop: render popover via Portal to avoid parent overflow clipping */}
+            {!isMobile && isOpen && typeof window !== 'undefined' && createPortal(
                 <div
                     ref={dropdownRef}
                     className="fixed w-60 bg-white rounded-[10px] shadow-[0_8px_24px_rgba(0,0,0,0.15)] z-[9999]"
@@ -246,7 +355,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                             text="Save to collection"
                             onClick={() => {
                                 setIsCollectionModalOpen(true);
-                                setIsOpen(false); // Close context menu
+                                closeMenu(); // Close context menu
                             }}
                         />
 

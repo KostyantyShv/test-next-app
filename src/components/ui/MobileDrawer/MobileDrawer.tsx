@@ -1,4 +1,7 @@
+'use client';
+
 import { ReactNode } from "react";
+import { Portal } from "@/components/ui/Portal";
 
 interface MobileDrawerProps {
   children: ReactNode;
@@ -14,23 +17,24 @@ export function MobileDrawer({ children, isOpen, onClose }: MobileDrawerProps) {
   };
 
   return (
-    <div className="block md:hidden">
-      {/* Full-screen overlay */}
-      <div
-        className={`fixed inset-0 bg-black/50 z-[2500] transition-all duration-300 ${
-          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
-        onClick={handleOverlayClick}
-      />
-      {/* Drawer */}
-      <div
-        className={`fixed bottom-0 left-0 w-full max-h-[70%] bg-white rounded-t-[20px] shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-[3000] transition-all duration-300 overflow-y-auto scrollbar-hide ${
-          isOpen ? "bottom-0 visible" : "bottom-[-100%] invisible"
-        }`}
-      >
-        
-        {children}
+    <Portal containerId="mobile-modal-root">
+      <div className="block md:hidden">
+        {/* Full-screen overlay */}
+        <div
+          className={`fixed inset-0 bg-black/50 z-[2500] transition-all duration-300 ${
+            isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
+          onClick={handleOverlayClick}
+        />
+        {/* Drawer */}
+        <div
+          className={`fixed bottom-0 left-0 w-full max-h-[70%] bg-white rounded-t-[20px] shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-[3000] transition-all duration-300 overflow-y-auto scrollbar-hide ${
+            isOpen ? "bottom-0 visible" : "bottom-[-100%] invisible"
+          }`}
+        >
+          {children}
+        </div>
       </div>
-    </div>
+    </Portal>
   );
 }

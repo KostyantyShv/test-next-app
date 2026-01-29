@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { MobileDrawerIcons } from './MobileDrawerIcons';
+import { Portal } from '@/components/ui/Portal';
 
 // --- REUSABLE COMPONENTS ---
 
@@ -228,177 +229,179 @@ export const MobileOptionsDrawer: React.FC<MobileOptionsDrawerProps> = ({ isOpen
     const Separator = () => <div className="h-px bg-[#E5E5E5] my-2" />;
 
     return (
-        <>
-            {/* Main Drawer */}
-            <Drawer
-                isOpen={isOpen && currentView === 'main'}
-                onClose={closeAll}
-                title="Actions"
-            >
-                <SectionTitle>Actions</SectionTitle>
-                <DrawerItem icon={<MobileDrawerIcons.Compare />} text="Compare" onClick={() => handleAction('compare')} />
-                <DrawerItem icon={<MobileDrawerIcons.ViewListing />} text="View Listing" onClick={() => handleAction('view-listing')} />
-                <DrawerItem icon={<MobileDrawerIcons.Review />} text="Leave Review" onClick={() => handleAction('leave-review')} />
-                <DrawerItem icon={<MobileDrawerIcons.Monitor />} text="Monitor" onClick={() => handleAction('monitor')} />
-                <DrawerItem icon={<MobileDrawerIcons.Share />} text="Share" onClick={() => handleAction('share')} />
+        <Portal containerId="mobile-modal-root">
+            <>
+                {/* Main Drawer */}
+                <Drawer
+                    isOpen={isOpen && currentView === 'main'}
+                    onClose={closeAll}
+                    title="Actions"
+                >
+                    <SectionTitle>Actions</SectionTitle>
+                    <DrawerItem icon={<MobileDrawerIcons.Compare />} text="Compare" onClick={() => handleAction('compare')} />
+                    <DrawerItem icon={<MobileDrawerIcons.ViewListing />} text="View Listing" onClick={() => handleAction('view-listing')} />
+                    <DrawerItem icon={<MobileDrawerIcons.Review />} text="Leave Review" onClick={() => handleAction('leave-review')} />
+                    <DrawerItem icon={<MobileDrawerIcons.Monitor />} text="Monitor" onClick={() => handleAction('monitor')} />
+                    <DrawerItem icon={<MobileDrawerIcons.Share />} text="Share" onClick={() => handleAction('share')} />
 
-                <DrawerItem
-                    icon={<MobileDrawerIcons.Apply />}
-                    text="Apply Now"
-                    className="bg-[#EBFCF4] active:bg-[#D7F7E9]"
-                    textClassName="text-[#016853]"
-                    onClick={() => handleAction('apply-now')}
-                />
-
-                <DrawerItem
-                    icon={<MobileDrawerIcons.ViewOffers />}
-                    text="View Offers"
-                    className="bg-[#EBFCF4] active:bg-[#D7F7E9]"
-                    textClassName="text-[#016853]"
-                    onClick={() => handleAction('view-offers')}
-                />
-
-                <DrawerItem icon={<MobileDrawerIcons.VirtualTour />} text="Virtual Tour" onClick={() => handleAction('virtual-tour')} />
-                <DrawerItem icon={<MobileDrawerIcons.CopyLink />} text="Copy Link" onClick={() => handleAction('copy-link')} />
-
-                <DrawerItem
-                    icon={<MobileDrawerIcons.AddTo />}
-                    text="Save to collection"
-                    onClick={() => setCurrentView('collection')}
-                />
-
-                <DrawerItem
-                    icon={<MobileDrawerIcons.MoveTo />}
-                    text="Move To"
-                    hasArrow
-                    onClick={() => setCurrentView('move-to')}
-                />
-
-                <Separator />
-
-                <SectionTitle>Vendor</SectionTitle>
-                <DrawerItem icon={<MobileDrawerIcons.NewAnnouncement />} text="New Announcement" onClick={() => handleAction('new-announcement')} />
-                <DrawerItem icon={<MobileDrawerIcons.ViewAnalytics />} text="View Analytics" onClick={() => handleAction('view-analytics')} />
-                <DrawerItem icon={<MobileDrawerIcons.ViewReports />} text="View Reports" onClick={() => handleAction('view-reports')} />
-            </Drawer>
-
-            {/* Save to collection (full-screen within same drawer) */}
-            <Drawer
-                isOpen={isOpen && currentView === 'collection'}
-                onClose={closeAll}
-                title="Save to collection"
-                hasBack
-                onBack={openMain}
-            >
-                <div className="px-5 pt-3 pb-2">
-                    <input
-                        type="text"
-                        placeholder="Filter collections"
-                        value={collectionSearchQuery}
-                        onChange={(e) => setCollectionSearchQuery(e.target.value)}
-                        className="w-full px-4 py-3 border border-[#D1D5DB] rounded-lg text-[15px] text-[#4A4A4A] placeholder-[#5F5F5F] focus:outline-none focus:border-[#1D77BD] focus:ring-4 focus:ring-[#1D77BD]/10 transition-all"
+                    <DrawerItem
+                        icon={<MobileDrawerIcons.Apply />}
+                        text="Apply Now"
+                        className="bg-[#EBFCF4] active:bg-[#D7F7E9]"
+                        textClassName="text-[#016853]"
+                        onClick={() => handleAction('apply-now')}
                     />
-                </div>
 
-                <div className="px-1">
-                    {filteredCollections.length > 0 ? (
-                        filteredCollections.map((collection) => (
-                            <div
-                                key={collection.id}
-                                onClick={() => toggleCollectionSelection(collection.id)}
-                                className="flex items-center px-5 py-3.5 cursor-pointer transition-colors active:bg-[#F7F9FC] group"
-                            >
-                                <div className="w-11 h-11 bg-[#DFDDDB] rounded-[10px] flex items-center justify-center text-xl mr-3.5 shrink-0 relative">
-                                    {collection.icon}
-                                    {collection.selected && (
-                                        <div className="absolute -top-0.5 -right-0.5 w-[18px] h-[18px] bg-[#1D77BD] border-2 border-white rounded-full flex items-center justify-center">
-                                            <svg viewBox="0 0 20 20" fill="currentColor" className="w-2.5 h-2.5 text-white">
-                                                <path
-                                                    fillRule="evenodd"
-                                                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                                                    clipRule="evenodd"
-                                                />
-                                            </svg>
+                    <DrawerItem
+                        icon={<MobileDrawerIcons.ViewOffers />}
+                        text="View Offers"
+                        className="bg-[#EBFCF4] active:bg-[#D7F7E9]"
+                        textClassName="text-[#016853]"
+                        onClick={() => handleAction('view-offers')}
+                    />
+
+                    <DrawerItem icon={<MobileDrawerIcons.VirtualTour />} text="Virtual Tour" onClick={() => handleAction('virtual-tour')} />
+                    <DrawerItem icon={<MobileDrawerIcons.CopyLink />} text="Copy Link" onClick={() => handleAction('copy-link')} />
+
+                    <DrawerItem
+                        icon={<MobileDrawerIcons.AddTo />}
+                        text="Save to collection"
+                        onClick={() => setCurrentView('collection')}
+                    />
+
+                    <DrawerItem
+                        icon={<MobileDrawerIcons.MoveTo />}
+                        text="Move To"
+                        hasArrow
+                        onClick={() => setCurrentView('move-to')}
+                    />
+
+                    <Separator />
+
+                    <SectionTitle>Vendor</SectionTitle>
+                    <DrawerItem icon={<MobileDrawerIcons.NewAnnouncement />} text="New Announcement" onClick={() => handleAction('new-announcement')} />
+                    <DrawerItem icon={<MobileDrawerIcons.ViewAnalytics />} text="View Analytics" onClick={() => handleAction('view-analytics')} />
+                    <DrawerItem icon={<MobileDrawerIcons.ViewReports />} text="View Reports" onClick={() => handleAction('view-reports')} />
+                </Drawer>
+
+                {/* Save to collection (full-screen within same drawer) */}
+                <Drawer
+                    isOpen={isOpen && currentView === 'collection'}
+                    onClose={closeAll}
+                    title="Save to collection"
+                    hasBack
+                    onBack={openMain}
+                >
+                    <div className="px-5 pt-3 pb-2">
+                        <input
+                            type="text"
+                            placeholder="Filter collections"
+                            value={collectionSearchQuery}
+                            onChange={(e) => setCollectionSearchQuery(e.target.value)}
+                            className="w-full px-4 py-3 border border-[#D1D5DB] rounded-lg text-[15px] text-[#4A4A4A] placeholder-[#5F5F5F] focus:outline-none focus:border-[#1D77BD] focus:ring-4 focus:ring-[#1D77BD]/10 transition-all"
+                        />
+                    </div>
+
+                    <div className="px-1">
+                        {filteredCollections.length > 0 ? (
+                            filteredCollections.map((collection) => (
+                                <div
+                                    key={collection.id}
+                                    onClick={() => toggleCollectionSelection(collection.id)}
+                                    className="flex items-center px-5 py-3.5 cursor-pointer transition-colors active:bg-[#F7F9FC] group"
+                                >
+                                    <div className="w-11 h-11 bg-[#DFDDDB] rounded-[10px] flex items-center justify-center text-xl mr-3.5 shrink-0 relative">
+                                        {collection.icon}
+                                        {collection.selected && (
+                                            <div className="absolute -top-0.5 -right-0.5 w-[18px] h-[18px] bg-[#1D77BD] border-2 border-white rounded-full flex items-center justify-center">
+                                                <svg viewBox="0 0 20 20" fill="currentColor" className="w-2.5 h-2.5 text-white">
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                                                        clipRule="evenodd"
+                                                    />
+                                                </svg>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="flex-1 min-w-0">
+                                        <div className="text-[15px] font-medium text-[#464646] mb-0.5 truncate">
+                                            {collection.name}
                                         </div>
-                                    )}
-                                </div>
-
-                                <div className="flex-1 min-w-0">
-                                    <div className="text-[15px] font-medium text-[#464646] mb-0.5 truncate">
-                                        {collection.name}
-                                    </div>
-                                    <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                                        <span>
-                                            {collection.itemCount} {collection.itemCount === 1 ? 'item' : 'items'}
-                                        </span>
-                                        <div className="w-[3px] h-[3px] bg-[#5F5F5F] rounded-full shrink-0" />
-                                        <span>Updated {collection.updatedAgo}</span>
+                                        <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                                            <span>
+                                                {collection.itemCount} {collection.itemCount === 1 ? 'item' : 'items'}
+                                            </span>
+                                            <div className="w-[3px] h-[3px] bg-[#5F5F5F] rounded-full shrink-0" />
+                                            <span>Updated {collection.updatedAgo}</span>
+                                        </div>
                                     </div>
                                 </div>
+                            ))
+                        ) : (
+                            <div className="py-10 text-center text-sm text-[#5F5F5F]">
+                                No collections found
                             </div>
-                        ))
-                    ) : (
-                        <div className="py-10 text-center text-sm text-[#5F5F5F]">
-                            No collections found
-                        </div>
-                    )}
-                </div>
+                        )}
+                    </div>
 
-                <div className="px-5 pt-2 pb-3">
-                    <button
-                        type="button"
-                        onClick={handleCreateCollection}
-                        className="w-full flex items-center gap-3 mb-3.5 py-3.5 rounded-lg text-[#4A4A4A] active:bg-[#F7F9FC] transition-colors text-left"
-                    >
-                        <div className="w-9 h-9 bg-[#DFDDDB] rounded-full flex items-center justify-center shrink-0 text-[#5F5F5F]">
-                            <svg viewBox="0 0 24 24" fill="currentColor" className="w-[18px] h-[18px]">
-                                <path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" />
-                            </svg>
-                        </div>
-                        <span className="text-[15px] font-medium">Create a new collection</span>
-                    </button>
+                    <div className="px-5 pt-2 pb-3">
+                        <button
+                            type="button"
+                            onClick={handleCreateCollection}
+                            className="w-full flex items-center gap-3 mb-3.5 py-3.5 rounded-lg text-[#4A4A4A] active:bg-[#F7F9FC] transition-colors text-left"
+                        >
+                            <div className="w-9 h-9 bg-[#DFDDDB] rounded-full flex items-center justify-center shrink-0 text-[#5F5F5F]">
+                                <svg viewBox="0 0 24 24" fill="currentColor" className="w-[18px] h-[18px]">
+                                    <path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" />
+                                </svg>
+                            </div>
+                            <span className="text-[15px] font-medium">Create a new collection</span>
+                        </button>
 
-                    <button
-                        type="button"
-                        onClick={handleSaveToCollections}
-                        disabled={!hasCollectionSelection}
-                        className={`w-full py-3 rounded-lg text-[15px] font-medium text-white transition-colors ${hasCollectionSelection
-                            ? 'bg-[#1D77BD] active:bg-[#1565c0]'
-                            : 'bg-[#D1D5DB] cursor-not-allowed'
-                            }`}
-                    >
-                        Done
-                    </button>
-                </div>
-            </Drawer>
+                        <button
+                            type="button"
+                            onClick={handleSaveToCollections}
+                            disabled={!hasCollectionSelection}
+                            className={`w-full py-3 rounded-lg text-[15px] font-medium text-white transition-colors ${hasCollectionSelection
+                                ? 'bg-[#1D77BD] active:bg-[#1565c0]'
+                                : 'bg-[#D1D5DB] cursor-not-allowed'
+                                }`}
+                        >
+                            Done
+                        </button>
+                    </div>
+                </Drawer>
 
-            {/* Move To Drawer (Nested Multi-select) */}
-            <Drawer
-                isOpen={isOpen && currentView === 'move-to'}
-                onClose={closeAll}
-                title="Move To"
-                hasBack
-                onBack={openMain}
-            >
-                <DrawerMultiSelectItem
-                    icon={<MobileDrawerIcons.NestedHome />}
-                    text="Home"
-                    isSelected={selectedMoveTo.includes('Home')}
-                    onClick={() => toggleMoveToSelection('Home')}
-                />
-                <DrawerMultiSelectItem
-                    icon={<MobileDrawerIcons.NestedArchive />}
-                    text="Archive"
-                    isSelected={selectedMoveTo.includes('Archive')}
-                    onClick={() => toggleMoveToSelection('Archive')}
-                />
-                <DrawerMultiSelectItem
-                    icon={<MobileDrawerIcons.NestedScheduled />}
-                    text="Scheduled"
-                    isSelected={selectedMoveTo.includes('Scheduled')}
-                    onClick={() => toggleMoveToSelection('Scheduled')}
-                />
-            </Drawer>
-        </>
+                {/* Move To Drawer (Nested Multi-select) */}
+                <Drawer
+                    isOpen={isOpen && currentView === 'move-to'}
+                    onClose={closeAll}
+                    title="Move To"
+                    hasBack
+                    onBack={openMain}
+                >
+                    <DrawerMultiSelectItem
+                        icon={<MobileDrawerIcons.NestedHome />}
+                        text="Home"
+                        isSelected={selectedMoveTo.includes('Home')}
+                        onClick={() => toggleMoveToSelection('Home')}
+                    />
+                    <DrawerMultiSelectItem
+                        icon={<MobileDrawerIcons.NestedArchive />}
+                        text="Archive"
+                        isSelected={selectedMoveTo.includes('Archive')}
+                        onClick={() => toggleMoveToSelection('Archive')}
+                    />
+                    <DrawerMultiSelectItem
+                        icon={<MobileDrawerIcons.NestedScheduled />}
+                        text="Scheduled"
+                        isSelected={selectedMoveTo.includes('Scheduled')}
+                        onClick={() => toggleMoveToSelection('Scheduled')}
+                    />
+                </Drawer>
+            </>
+        </Portal>
     );
 };
