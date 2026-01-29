@@ -20,7 +20,7 @@ const AboutPage: React.FC<{ id: string }> = ({ id }) => {
 
   return (
     <div id={id} className="flex justify-center my-cardMargin">
-      <div className="w-full max-w-[875px] bg-cardBackground rounded-cardBorderRadius shadow-cardShadow max-md:p-2 p-cardPadding  md:py-cardPadding">
+      <div className="w-full max-w-[1077px] bg-cardBackground rounded-cardBorderRadius shadow-cardShadow max-md:p-2 p-cardPadding  md:py-cardPadding">
         {/* Profile Header */}
         <div className="flex flex-col md:flex-row gap-6 mb-8 items-center">
           <Image

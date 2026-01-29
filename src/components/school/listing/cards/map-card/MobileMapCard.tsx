@@ -199,11 +199,7 @@ export default function MobileMapCard({ id }: { id: string }) {
   };
 
   return (
-    <div 
-      id={id} 
-      className="block md:hidden max-w-[390px] mx-auto"
-      style={{ scrollMarginTop: "80px" }}
-    >
+    <div className="block md:hidden max-w-[390px] mx-auto" style={{ scrollMarginTop: "80px" }}>
       <div className="w-full bg-white rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.05)] overflow-hidden border border-black/10">
         {/* Header with controls */}
         <MapHeader 

@@ -10,6 +10,7 @@ import ImagesGrigDesktop from "./images-grid/ImagesGrigDesktop";
 import PhotoGallery from "./photo-gallery/PhotoGalleryDesktop";
 import FooterMobile from "./footer-mobile/FooterMobile";
 import { SchoolInfoInterface } from "@/types/school-listings";
+import { useLeftSidebar } from "@/store/use-left-sidebar";
 
 type SchoolType = "k12" | "college" | "grad";
 
@@ -32,6 +33,7 @@ const Listing: React.FC<ListingProps> = ({
   const [isFooterVisible, setIsFooterVisible] = useState(false);
   const schoolInfoRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
+  const setIsCollapsed = useLeftSidebar((s) => s.setIsCollapsed);
   
   // Get active school type from URL
   const getSchoolType = (): SchoolType => {
@@ -55,6 +57,14 @@ const Listing: React.FC<ListingProps> = ({
       count: 9
     }
   };
+
+  // Force-collapse desktop left sidebar on listing page to keep layout consistent across browsers
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(min-width: 768px)").matches) {
+      setIsCollapsed(true);
+    }
+  }, [setIsCollapsed]);
 
   // Mobile footer visibility observer
   useEffect(() => {
@@ -85,16 +95,16 @@ const Listing: React.FC<ListingProps> = ({
 
   return (
     <div 
-      className="min-h-screen flex flex-col items-center"
+      className="min-h-screen w-full flex flex-col"
       style={{ backgroundColor: 'var(--background-color)' }}
     >
       {/* Desktop Header - Hidden on mobile */}
-      <div className="hidden md:block">
+      <div className="hidden md:block w-full">
         <Header />
       </div>
       
       {/* School Info Section with ref for mobile footer visibility */}
-      <div ref={schoolInfoRef} className="max-w-[1077px]">
+      <div ref={schoolInfoRef} className="w-full max-w-[1077px] mx-auto">
         {/* Mobile - separate components */}
         <div className="block md:hidden">
           <SchoolInfo 
@@ -124,7 +134,9 @@ const Listing: React.FC<ListingProps> = ({
       />
       
       {/* Main Content */}
-      <Content schoolType={schoolType} />
+      <div className="w-full">
+        <Content schoolType={schoolType} />
+      </div>
       
       {/* Mobile Footer - Only visible on mobile */}
       <div className="block md:hidden">

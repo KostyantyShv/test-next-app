@@ -8,137 +8,6 @@ export const useTabsObserver = () => {
   const observerRef = useRef<IntersectionObserver>(null);
 
   useEffect(() => {
-    const sections = [
-      {
-        id: SIDE_TABS_DESKTOP.MONTHLY_UPDATE_DESKTOP,
-        element: document.getElementById(
-          SIDE_TABS_DESKTOP.MONTHLY_UPDATE_DESKTOP
-        ),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.REPORT_CARD_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.REPORT_CARD_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.ABOUT_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.ABOUT_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.RANKINGS_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.RANKINGS_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.ADMISSIONS_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.ADMISSIONS_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.SCATTER_PLOT_DESKTOP,
-        element: document.getElementById(
-          SIDE_TABS_DESKTOP.SCATTER_PLOT_DESKTOP
-        ),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.OVERVIEW_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.OVERVIEW_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.TESTIMONIALS_DESKTOP,
-        element: document.getElementById(
-          SIDE_TABS_DESKTOP.TESTIMONIALS_DESKTOP
-        ),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.LINKS_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.LINKS_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.EVENTS_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.EVENTS_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.REVIEWS_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.REVIEWS_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.REVIEW_HIGHLIGHTS_DESKTOP,
-        element: document.getElementById(
-          SIDE_TABS_DESKTOP.REVIEW_HIGHLIGHTS_DESKTOP
-        ),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.SIMILAR_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.SIMILAR_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.MAP_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.MAP_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.CULTURE_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.CULTURE_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.COST_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.COST_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.MAJORS_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.MAJORS_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.STUDENTS_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.STUDENTS_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.ACADEMICS_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.ACADEMICS_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.TEACHERS_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.TEACHERS_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.ACTIVITIES_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.ACTIVITIES_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.SPOTLIGHT_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.SPOTLIGHT_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.CASE_STUDY_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.CASE_STUDY_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.AFTER_COLLEGE_DESKTOP,
-        element: document.getElementById(
-          SIDE_TABS_DESKTOP.AFTER_COLLEGE_DESKTOP
-        ),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.AREA_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.AREA_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.PROGRAMS_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.PROGRAMS_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.SOCIAL_MEDIA_DESKTOP,
-        element: document.getElementById(
-          SIDE_TABS_DESKTOP.SOCIAL_MEDIA_DESKTOP
-        ),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.COMPARISON_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.COMPARISON_DESKTOP),
-      },
-      {
-        id: SIDE_TABS_DESKTOP.ARTICLES_DESKTOP,
-        element: document.getElementById(SIDE_TABS_DESKTOP.ARTICLES_DESKTOP),
-      },
-    ].filter((section) => section.element);
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -154,13 +23,37 @@ export const useTabsObserver = () => {
       }
     );
 
-    sections.forEach((section) => {
-      if (section.element) observer.observe(section.element);
-    });
+    const observedIds = new Set<string>();
+    const allSectionIds = Object.values(SIDE_TABS_DESKTOP);
+
+    const tryObserveAvailableSections = () => {
+      allSectionIds.forEach((id) => {
+        if (observedIds.has(id)) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        observer.observe(el);
+        observedIds.add(id);
+      });
+    };
+
+    // First pass (most sections already exist)
+    tryObserveAvailableSections();
+
+    // Map is loaded via next/dynamic; it may appear after initial render.
+    // Poll for a short time to attach observer when it mounts.
+    const interval = window.setInterval(() => {
+      tryObserveAvailableSections();
+      if (observedIds.size >= allSectionIds.length) {
+        window.clearInterval(interval);
+      }
+    }, 250);
+    const timeout = window.setTimeout(() => window.clearInterval(interval), 12000);
 
     observerRef.current = observer;
 
     return () => {
+      window.clearInterval(interval);
+      window.clearTimeout(timeout);
       if (observerRef.current) {
         observerRef.current.disconnect();
       }

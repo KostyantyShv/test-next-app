@@ -9,17 +9,28 @@ import { schools } from "./mock";
 export default function MapCard({ id }: { id: string }) {
   const [mapType, setMapType] = useState<"roadmap" | "satellite">("roadmap");
   const [showLabels, setShowLabels] = useState(true);
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
   const mapContainerRef = useRef<{ exitStreetView: () => void } | null>(null);
   const desktopMapRef = useRef<HTMLDivElement>(null);
 
-  // Ensure id is set after component mounts (for dynamic imports)
+  // Ensure we only set the section id on the visible variant (prevents duplicate ids).
   useEffect(() => {
-    if (desktopMapRef.current && id) {
-      desktopMapRef.current.id = id;
-    }
-  }, [id]);
+    if (typeof window === "undefined") return;
+    const mql = window.matchMedia("(min-width: 768px)");
 
-  const handleMapTypeChange = (type: "roadmap" | "satellite") => {
+    const update = () => setIsDesktop(mql.matches);
+    update();
+
+    // Safari fallback
+    if (typeof mql.addEventListener === "function") {
+      mql.addEventListener("change", update);
+      return () => mql.removeEventListener("change", update);
+    }
+    mql.addListener(update);
+    return () => mql.removeListener(update);
+  }, []);
+
+  const handleMapTypeChange = (_type: "roadmap" | "satellite") => {
     if (mapContainerRef.current) {
       mapContainerRef.current.exitStreetView();
     }
@@ -33,11 +44,11 @@ export default function MapCard({ id }: { id: string }) {
       {/* Desktop Map Card - Always render outer div with id (like other components) */}
       <div 
         ref={desktopMapRef}
-        id={id} 
-        className="flex justify-center my-cardMargin"
+        id={isDesktop ? id : undefined}
+        className="hidden md:flex justify-center my-cardMargin"
         style={{ scrollMarginTop: "176px" }}
       >
-        <div className="hidden md:block w-full max-w-[875px] bg-white rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.05)] overflow-hidden border border-black/10">
+        <div className="hidden md:block w-full max-w-[1077px] bg-white rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.05)] overflow-hidden border border-black/10">
           <MapHeader 
             mapType={mapType}
             setMapType={setMapType}

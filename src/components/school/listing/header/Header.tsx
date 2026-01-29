@@ -148,12 +148,9 @@ const Header = ({
   return (
     <>
       <header
-        className={`fixed -top-3 z-[1001] transition-all duration-300 min-h-[5.8rem] bg-white border-b shadow-[0_2px_8px_rgba(0,0,0,0.06)] ${classes || ""}`}
-        style={{ 
+        className={`sticky top-0 z-[1001] transition-all duration-300 min-h-[5.8rem] bg-white border-b shadow-[0_2px_8px_rgba(0,0,0,0.06)] ${classes || ""}`}
+        style={{
           borderColor: "rgba(223, 221, 219, 0.4)",
-          top: "0px", // Changed from 63px to 0px - sticky header replaces default header
-          width: "calc(100% - 255px)",
-          left: "255px",
         }}
       >
       <div className="max-w-[1220px] mx-auto px-0">
@@ -280,8 +277,8 @@ const Header = ({
         </div>
       </div>
       </header>
-      {/* Spacer for fixed header to prevent content overlap */}
-      {isScrolled && <div className="h-[5.8rem]" />}
+      {/* Spacer for smooth layout when header appears */}
+      {isScrolled && <div className="h-[0px]" />}
     </>
   );
 };

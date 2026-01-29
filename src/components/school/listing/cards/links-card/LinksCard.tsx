@@ -118,7 +118,7 @@ const LinksCard = ({ id }: { id: string }) => {
       id={id}
       className="flex justify-center my-cardMargin md:p-0 font-['Inter'] md:font-sans"
     >
-      <div className="w-full md:max-w-[875px] bg-cardBackground rounded-cardBorderRadius overflow-hidden shadow-cardShadow">
+      <div className="w-full md:max-w-[1077px] bg-cardBackground rounded-cardBorderRadius overflow-hidden shadow-cardShadow">
         <div className="relative h-[140px] md:h-[200px] bg-[url('https://i.ibb.co/ds23z4nL/banner-background.png')] bg-center bg-cover">
           <div className="absolute -bottom-10 md:-bottom-[60px] left-1/2 md:left-10 -translate-x-1/2 md:translate-x-0 w-20 md:w-[120px] h-20 md:h-[120px] rounded-full border-4 md:border-[6px] border-white shadow-[0_2px_12px_rgba(0,0,0,0.1)] bg-white overflow-hidden z-[2]">
             <Image

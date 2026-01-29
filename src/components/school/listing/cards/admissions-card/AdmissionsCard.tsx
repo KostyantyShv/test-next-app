@@ -12,7 +12,7 @@ const Admissions: React.FC<{ id: string }> = ({ id }) => {
   ];
 
   return (
-    <div id={id} className="w-full max-w-[875px] mx-auto my-cardMargin">
+    <div id={id} className="w-full max-w-[1077px] mx-auto my-cardMargin">
       <div className="bg-white rounded-[12px] shadow-[0_4px_12px_rgba(0,0,0,0.08)] p-8">
         <h2 className="text-[#016853] text-[24px] font-semibold mb-8 tracking-[-0.2px]">
           Admissions
