@@ -1,14 +1,7 @@
 "use client";
-import { Inter } from "next/font/google";
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { saveVendorProfileScrollAndFocus } from "../utils/navPreserve";
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
 
 interface Follower {
   name: string;
@@ -165,7 +158,7 @@ const ConnectionsGrid: React.FC = () => {
     viewType === "followers" ? "4 Followers" : "45 Following";
 
   return (
-    <div className={`${inter.className} text-[#4A4A4A]`}>
+    <div className="text-[#4A4A4A]">
       <div className="flex justify-between items-center px-4 mt-4 md:mt-0">
         <div className="text-lg font-semibold text-[#464646]">
           {headerTitle}

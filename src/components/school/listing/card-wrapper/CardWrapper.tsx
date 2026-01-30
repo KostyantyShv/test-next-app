@@ -8,7 +8,7 @@ const CardWrapper: React.FC<{ children: React.ReactNode; id: string }> = ({
     <div
       id={id}
       className="font-inter flex justify-center my-cardMargin text-[#4A4A4A]"
-      style={{ scrollMarginTop: "176px" }}
+      style={{ scrollMarginTop: "132px" }}
     >
       <div className="max-w-[390px] md:max-w-[1077px] w-full bg-cardBackground p-4 md:p-cardPadding rounded-cardBorderRadius shadow-cardShadow md:py-cardPadding">
         {children}

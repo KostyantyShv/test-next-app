@@ -11,6 +11,7 @@ import PhotoGallery from "./photo-gallery/PhotoGalleryDesktop";
 import FooterMobile from "./footer-mobile/FooterMobile";
 import { SchoolInfoInterface } from "@/types/school-listings";
 import { useLeftSidebar } from "@/store/use-left-sidebar";
+import { useListingStickyHeader } from "@/store/use-listing-sticky-header";
 
 type SchoolType = "k12" | "college" | "grad";
 
@@ -31,9 +32,20 @@ const Listing: React.FC<ListingProps> = ({
 }) => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
+  const [isDesktopStickyHeaderVisible, setIsDesktopStickyHeaderVisible] =
+    useState(false);
+  const [desktopStickyBounds, setDesktopStickyBounds] = useState<{
+    left: number;
+    width: number;
+  } | null>(null);
   const schoolInfoRef = useRef<HTMLDivElement>(null);
+  const desktopStickyTriggerRef = useRef<HTMLDivElement>(null);
+  const desktopStickyBoundsRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const setIsCollapsed = useLeftSidebar((s) => s.setIsCollapsed);
+  const setIsDesktopListingStickyHeaderVisible = useListingStickyHeader(
+    (s) => s.setIsDesktopStickyHeaderVisible
+  );
   
   // Get active school type from URL
   const getSchoolType = (): SchoolType => {
@@ -93,16 +105,60 @@ const Listing: React.FC<ListingProps> = ({
     };
   }, []);
 
+  // Desktop sticky header visibility:
+  // show it when the "hero" (school info/photos) has scrolled out of view.
+  useEffect(() => {
+    const triggerEl = desktopStickyTriggerRef.current;
+    if (!triggerEl) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        // When the trigger is NOT intersecting the viewport, it means we've scrolled past the hero.
+        setIsDesktopStickyHeaderVisible(!entry.isIntersecting);
+      },
+      {
+        root: null,
+        // Account for the stacked global header height on desktop:
+        // app header (63px) + header bottom bar (12px) + layout spacer (12px) = 87px
+        rootMargin: "-87px 0px 0px 0px",
+        threshold: 0,
+      }
+    );
+
+    observer.observe(triggerEl);
+    return () => observer.disconnect();
+  }, []);
+
+  // Keep fixed header aligned to the same content column as the page (between sidebars).
+  useEffect(() => {
+    const el = desktopStickyBoundsRef.current;
+    if (!el) return;
+
+    const update = () => {
+      const rect = el.getBoundingClientRect();
+      setDesktopStickyBounds({ left: rect.left, width: rect.width });
+    };
+
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  // Sync to global layout so we can hide the main desktop header.
+  useEffect(() => {
+    setIsDesktopListingStickyHeaderVisible(isDesktopStickyHeaderVisible);
+    return () => setIsDesktopListingStickyHeaderVisible(false);
+  }, [isDesktopStickyHeaderVisible, setIsDesktopListingStickyHeaderVisible]);
+
   return (
     <div 
       className="min-h-screen w-full flex flex-col"
       style={{ backgroundColor: 'var(--background-color)' }}
     >
-      {/* Desktop Header - Hidden on mobile */}
-      <div className="hidden md:block w-full">
-        <Header />
-      </div>
-      
+      {/* Desktop bounds anchor for fixed header alignment */}
+      <div ref={desktopStickyBoundsRef} className="hidden md:block w-full" />
+
       {/* School Info Section with ref for mobile footer visibility */}
       <div ref={schoolInfoRef} className="w-full max-w-[1077px] mx-auto">
         {/* Mobile - separate components */}
@@ -123,6 +179,30 @@ const Listing: React.FC<ListingProps> = ({
             <SchoolInfoDesktop schoolInfo={schoolInfo || defaultSchoolInfo} />
           </div>
         </div>
+
+        {/* Desktop sticky-header trigger (sentinel) */}
+        <div ref={desktopStickyTriggerRef} className="hidden md:block h-px w-full" />
+      </div>
+
+      {/* Desktop sticky header:
+          appears when the main (school info) section is no longer visible,
+          then sticks under the global header while scrolling */}
+      <div
+        className={`hidden md:block transition-opacity duration-200 ${
+          isDesktopStickyHeaderVisible
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        }`}
+        // No layout shifts: fixed header overlay, aligned to content column.
+        style={{
+          position: "fixed",
+          top: 0,
+          left: desktopStickyBounds?.left ?? 0,
+          width: desktopStickyBounds?.width ?? "100%",
+          zIndex: 6000,
+        }}
+      >
+        <Header position="fixed" topOffsetPx={0} />
       </div>
       
       {/* Photo Gallery */}
@@ -134,7 +214,11 @@ const Listing: React.FC<ListingProps> = ({
       />
       
       {/* Main Content */}
-      <div className="w-full">
+      <div
+        className="w-full"
+        // When the fixed header is visible, prevent content from being hidden under it.
+        style={isDesktopStickyHeaderVisible ? { paddingTop: 112 } : undefined}
+      >
         <Content schoolType={schoolType} />
       </div>
       

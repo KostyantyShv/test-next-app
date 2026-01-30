@@ -22,7 +22,7 @@ export const MobileActions: FC = () => {
   // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
-  }, [theme]);
+  }, []);
 
   // Close Cart when Monitor opens
   useEffect(() => {
@@ -39,8 +39,8 @@ export const MobileActions: FC = () => {
   }, [isCartOpen]);
 
   const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
+    const isDarkish = theme === "midnight" || theme === "dark";
+    setTheme(isDarkish ? "light" : "midnight");
   };
 
   if (!mounted) {

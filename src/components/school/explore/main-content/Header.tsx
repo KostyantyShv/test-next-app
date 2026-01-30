@@ -3,11 +3,14 @@ import CategoryDropdown from "./CategoryDropdown";
 import SearchBox from "./SearchBox";
 import MapButton from "./MapButton";
 import LayoutToggle from "./LayoutToggle";
+import MapContainer from "./MapContainer";
+import { School } from "../types";
 import { useSchoolsExplore } from "@/store/use-schools-explore";
 import { establishmentTypes } from "./mock";
 import K12Filters from "../filter-sidebar/filters/k12-filters";
 import CollegesFilters from "../filter-sidebar/filters/colleges-filters";
 import { ESTABLISHMENT } from "@/store/enum";
+import { Portal } from "@/components/ui/Portal";
 import {
   FiltersType,
   FilterValue,
@@ -29,6 +32,7 @@ interface HeaderProps {
   setIsSearchActive: (value: boolean) => void;
   isMapActive: boolean;
   setIsMapActive: (value: boolean) => void;
+  schools: School[];
   layout: string;
   setLayout: (value: string) => void;
   renderDropdownItems: () => React.ReactNode;
@@ -51,6 +55,7 @@ const Header: React.FC<HeaderProps> = ({
   setIsSearchActive,
   isMapActive,
   setIsMapActive,
+  schools,
   layout,
   setLayout,
   renderDropdownItems,
@@ -429,21 +434,22 @@ const Header: React.FC<HeaderProps> = ({
 
           <div className="w-px h-6 bg-[rgba(0,0,0,0.1)] mx-2"></div>
 
-          {/* Layout Toggle */}
-          <div className="flex items-center bg-[#f5f5f7] rounded-md p-0.5 w-9 overflow-hidden hover:w-[134px] transition-all duration-300 group">
+          {/* Layout Toggle (pixel-match to provided HTML) */}
+          <div className="layout-toggle flex items-center bg-[#f5f5f7] rounded-[6px] p-[2px]">
             {layouts.map((layoutOption) => (
               <button
                 key={layoutOption.type}
                 onClick={() => handleLayoutChange(layoutOption.type)}
-                className={`flex items-center justify-center w-8 h-7 rounded transition-all ${layout === layoutOption.type
-                  ? 'bg-white shadow-sm order-last'
-                  : 'group-hover:flex hidden'
-                  }`}
+                className={`layout-toggle-button flex items-center justify-center w-8 h-7 border-none rounded-[4px] transition-[background-color,box-shadow,color] duration-200 ${
+                  layout === layoutOption.type
+                    ? "bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)] text-[#0B6333]"
+                    : "bg-transparent text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)]"
+                }`}
+                type="button"
               >
-                <div className={`w-4 h-4 ${layout === layoutOption.type ? 'text-[#0093B0]' : 'text-[#4A4A4A]'
-                  }`}>
+                <span className="w-4 h-4 flex items-center justify-center">
                   {layoutOption.icon}
-                </div>
+                </span>
               </button>
             ))}
           </div>
@@ -455,13 +461,6 @@ const Header: React.FC<HeaderProps> = ({
 
       {/* Mobile Header */}
       <div className="md:hidden relative">
-        {isOverlayVisible && (
-          <div
-            className="fixed inset-0 bg-black/50 z-[900]"
-            onClick={closeAllMobileLayers}
-          />
-        )}
-
         <div className="flex items-center justify-between px-4 py-3 bg-white shadow-sm border-b border-[rgba(0,0,0,0.08)]">
           {/* Establishment Selector */}
           <div
@@ -482,7 +481,7 @@ const Header: React.FC<HeaderProps> = ({
           {/* Right side buttons */}
           <div className="flex items-center gap-2">
             <button
-              className="w-9 h-9 rounded-full flex items-center justify-center text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
               onClick={() => setIsSearchActive(!isSearchActive)}
             >
               <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5">
@@ -533,57 +532,67 @@ const Header: React.FC<HeaderProps> = ({
 
         {/* Mobile Search Box */}
         {isSearchActive && (
-          <div className="absolute top-[64px] left-0 right-0 z-[950]">
-            <form
-              onSubmit={handleSearchSubmit}
-              className="mx-4 rounded-lg bg-white shadow-[0_6px_16px_rgba(0,0,0,0.08)] border border-[rgba(0,0,0,0.05)] px-3 py-2 flex items-center gap-3"
-            >
-              <div className="text-sm font-semibold text-[#4A4A4A] whitespace-nowrap">Where</div>
-              <div className="flex items-center flex-1 bg-[#f5f5f7] border border-[rgba(0,0,0,0.1)] rounded-md px-3 h-10">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Enter a city, state or country"
-                  className="flex-1 bg-transparent border-none outline-none text-sm"
-                  autoFocus
-                />
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className={`w-5 h-5 flex items-center justify-center text-[#5F5F5F] opacity-70 hover:opacity-100 transition-opacity translate-y-0.5 ${searchQuery.length >= 2 ? "flex" : "hidden"}`}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M6.34314 4.22183C5.75736 3.63604 4.80761 3.63604 4.22182 4.22183C3.63604 4.80761 3.63604 5.75736 4.22182 6.34315L9.87868 12L4.22182 17.6569C3.63604 18.2426 3.63604 19.1924 4.22182 19.7782C4.80761 20.364 5.75736 20.364 6.34314 19.7782L12 14.1213L17.6569 19.7782C18.2426 20.364 19.1924 20.364 19.7782 19.7782C20.364 19.1924 20.364 18.2426 19.7782 17.6569L14.1213 12L19.7782 6.34315C20.364 5.75736 20.364 4.80761 19.7782 4.22183C19.1924 3.63604 18.2426 3.63604 17.6569 4.22183L12 9.87868L6.34314 4.22183Z" fill="currentColor" />
-                  </svg>
-                </button>
-                <div className="w-px h-5 bg-[rgba(0,0,0,0.1)] mx-2" />
-                <button
-                  type="button"
-                  className="w-6 h-6 flex items-center justify-center text-[#0093B0] opacity-80 hover:opacity-100 transition-opacity"
-                >
-                  <svg
-                    fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="16"
-                    height="16"
+          <div className="absolute top-14 left-0 right-0 z-[950] bg-white px-4 py-[10px] border-b border-[rgba(0,0,0,0.05)] shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
+            <form onSubmit={handleSearchSubmit}>
+              <div className="flex items-center w-full relative">
+                <div className="flex items-center bg-[#f5f5f7] border border-[rgba(0,0,0,0.1)] rounded-lg h-9 w-full px-3">
+                  <div className="text-[14px] font-semibold text-[#4A4A4A] whitespace-nowrap mr-2 min-w-[50px]">
+                    Where
+                  </div>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Enter a city, state or country"
+                    className="border-none outline-none text-[14px] w-full h-full bg-transparent"
+                    autoFocus
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className={`w-5 h-5 bg-none border-none items-center justify-center cursor-pointer text-[#5F5F5F] opacity-70 flex-shrink-0 ${
+                      searchQuery.trim() !== "" ? "flex" : "hidden"
+                    }`}
+                    aria-label="Clear search"
                   >
-                    <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7 c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z"></path><path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3 c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8 C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1 c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1 C18.6,5.5,19.8,8.4,19.2,11.2z"></path>
-                  </svg>
-                </button>
-                <button
-                  type="submit"
-                  className="w-7 h-7 rounded-full bg-[#0093B0] flex items-center justify-center ml-2"
-                >
-                  <svg fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
-                    <path d="M21.7,20.3l-3.3-2.9c1.5-1.7,2.3-3.8,2.3-6.1c0-5.1-4.2-9.3-9.3-9.3S2,6.2,2,11.3s4.2,9.3,9.3,9.3c2.1,0,4-0.7,5.7-1.9l3.4,3c0.2,0.2,0.4,0.2,0.6,0.2c0.3,0,0.5-0.1,0.7-0.3C22.1,21.3,22.1,20.7,21.7,20.3z M11.3,18.7c-4.1,0-7.4-3.3-7.4-7.4s3.3-7.4,7.4-7.4s7.4,3.3,7.4,7.4S15.4,18.7,11.3,18.7z"></path>
-                  </svg>
-                </button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M6.34314 4.22183C5.75736 3.63604 4.80761 3.63604 4.22182 4.22183C3.63604 4.80761 3.63604 5.75736 4.22182 6.34315L9.87868 12L4.22182 17.6569C3.63604 18.2426 3.63604 19.1924 4.22182 19.7782C4.80761 20.364 5.75736 20.364 6.34314 19.7782L12 14.1213L17.6569 19.7782C18.2426 20.364 19.1924 20.364 19.7782 19.7782C20.364 19.1924 20.364 18.2426 19.7782 17.6569L14.1213 12L19.7782 6.34315C20.364 5.75736 20.364 4.80761 19.7782 4.22183C19.1924 3.63604 18.2426 3.63604 17.6569 4.22183L12 9.87868L6.34314 4.22183Z" fill="currentColor" />
+                    </svg>
+                  </button>
+                  <div className="w-px h-5 bg-[rgba(0,0,0,0.1)] mx-1" />
+                  <button
+                    type="button"
+                    className="w-6 h-6 bg-none border-none flex items-center justify-center cursor-pointer text-[#0093B0] opacity-80 flex-shrink-0 mr-1"
+                    aria-label="Use my location"
+                  >
+                    <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+                      <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7 c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z"></path><path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3 c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8 C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1 c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1 C18.6,5.5,19.8,8.4,19.2,11.2z"></path>
+                    </svg>
+                  </button>
+                  <button
+                    type="submit"
+                    className="w-6 h-6 rounded-full bg-[#0093B0] border-none flex items-center justify-center cursor-pointer flex-shrink-0"
+                    aria-label="Search"
+                  >
+                    <svg fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
+                      <path d="M21.7,20.3l-3.3-2.9c1.5-1.7,2.3-3.8,2.3-6.1c0-5.1-4.2-9.3-9.3-9.3S2,6.2,2,11.3s4.2,9.3,9.3,9.3c2.1,0,4-0.7,5.7-1.9l3.4,3c0.2,0.2,0.4,0.2,0.6,0.2c0.3,0,0.5-0.1,0.7-0.3C22.1,21.3,22.1,20.7,21.7,20.3z M11.3,18.7c-4.1,0-7.4-3.3-7.4-7.4s3.3-7.4,7.4-7.4s7.4,3.3,7.4,7.4S15.4,18.7,11.3,18.7z"></path>
+                    </svg>
+                  </button>
+                </div>
               </div>
             </form>
           </div>
         )}
+
+        {/* Mobile overlays/drawers must render via portals */}
+        <Portal containerId="mobile-modal-root">
+          <div className="md:hidden">
+            {isOverlayVisible && (
+              <div
+                className="fixed inset-0 bg-black/50 z-[900]"
+                onClick={closeAllMobileLayers}
+              />
+            )}
 
         {/* Mobile Establishment Drawer */}
         {isEstablishmentDrawerOpen && (
@@ -814,48 +823,19 @@ const Header: React.FC<HeaderProps> = ({
                 </svg>
               </button>
             </div>
-            <div className="flex-1 relative bg-[#f5f5f7]">
-              <div
-                id="map"
-                className="w-full h-full"
-                style={{ backgroundColor: "#f5f5f7" }}
-              >
-                {/* Map placeholder - in a real implementation, this would be a map component */}
-                <div className="w-full h-full flex items-center justify-center text-[#5F5F5F]">
-                  <div className="text-center">
-                    <svg
-                      fill="currentColor"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      className="w-16 h-16 mx-auto mb-4 opacity-50"
-                    >
-                      <path d="M17.3 8.64003L21.54 10.86L21.55 10.85C21.83 11 22.01 11.28 22.01 11.6V21.13C22.01 21.43 21.86 21.7 21.61 21.86C21.47 21.94 21.32 21.99 21.16 21.99C21.02 21.99 20.9 21.96 20.78 21.9L14.79 18.89L9.64001 21.84C9.62001 21.85 9.54001 21.88 9.51001 21.88C9.46001 21.91 9.37001 21.95 9.28001 21.95H9.21001C9.06001 21.95 8.93001 21.92 8.81001 21.86L2.48001 18.69C2.20001 18.54 2.01001 18.25 2.01001 17.92V8.39003C2.01001 8.10003 2.17001 7.82003 2.42001 7.66003C2.67001 7.51003 3.00001 7.50003 3.26001 7.64003L6.83001 9.50003C6.78001 9.33003 6.74001 9.18003 6.71001 9.03003C6.28001 6.83003 6.82001 4.80003 8.21001 3.45003C10.24 1.48003 13.64 1.51003 15.64 3.51003C16.62 4.48003 17.22 5.83003 17.34 7.30003C17.38 7.72003 17.36 8.17003 17.3 8.64003ZM20.29 19.77V12.14L16.85 10.33C16.62 10.88 16.34 11.4 16 11.87L15.6 12.43V17.41L20.29 19.77ZM3.71001 17.41L8.33001 19.73V12.43L8.10001 12.11L3.71001 9.82003V17.41ZM10.04 19.66L13.89 17.44V14.77L12.84 16.21C12.44 16.78 11.48 16.78 11.07 16.21L10.04 14.78V19.66ZM11.96 14.54L14.62 10.87H14.63C15.37 9.83003 15.74 8.59003 15.64 7.45003C15.55 6.38003 15.1 5.38003 14.44 4.73003C13.78 4.08003 12.86 3.70003 11.9 3.70003C10.94 3.70003 10.04 4.06003 9.39001 4.70003C8.65001 5.41003 8.26001 6.44003 8.26001 7.60003C8.26001 7.96003 8.30001 8.34003 8.38001 8.72003C8.53001 9.53003 8.88001 10.31 9.47001 11.11L11.96 14.54Z"></path>
-                    </svg>
-                    <p className="text-sm">Map View</p>
-                    <p className="text-xs opacity-75">Interactive map coming soon</p>
-                  </div>
-                </div>
-              </div>
-              <div className="absolute top-4 right-4 flex flex-col gap-2">
-                <button className="w-10 h-10 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg flex items-center justify-center shadow-sm hover:bg-[#f5f5f7] transition-colors">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-[#4A4A4A]">
-                    <path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" fill="currentColor" />
-                  </svg>
-                </button>
-                <button className="w-10 h-10 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg flex items-center justify-center shadow-sm hover:bg-[#f5f5f7] transition-colors">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-[#4A4A4A]">
-                    <path d="M5 12a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z" fill="currentColor" />
-                  </svg>
-                </button>
-                <button className="w-10 h-10 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg flex items-center justify-center shadow-sm hover:bg-[#f5f5f7] transition-colors">
-                  <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5 text-[#4A4A4A]">
-                    <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7 c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z"></path><path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3 c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8 C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1 c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1 C18.6,5.5,19.8,8.4,19.2,11.2z"></path>
-                  </svg>
-                </button>
-              </div>
+            <div className="flex-1 min-h-0 bg-[#f5f5f7] flex flex-col">
+              <MapContainer
+                isMapActive={isMapActive}
+                schools={schools}
+                layout={layout}
+                mode="mobileDrawer"
+              />
             </div>
           </div>
         )}
+
+          </div>
+        </Portal>
       </div>
     </>
   );

@@ -1,16 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Inter } from "next/font/google";
 import BillingInformation from "./BillingInformation";
 import AddPaymentModal from "./modals/add-payment/AddPaymentModal";
 import EditPaymentModal from "./modals/edit-payment/EditPaymentModal";
 import InvoiceDetailModal from "./modals/invoice-detail/InvoiceDetailModal";
 import PastInvoicesModal from "./modals/past-invoices/PastInvoicesModal";
 import ConfirmationModal from "./modals/confirmation/ConfirmationModal";
-
-// Components
-const inter = Inter({ subsets: ["latin"] });
 
 export default function BillingPage() {
   const [activeModal, setActiveModal] = useState<string | null>(null);
@@ -68,7 +64,7 @@ export default function BillingPage() {
   };
 
   return (
-    <div className={`${inter.className} text-[#4A4A4A]`}>
+    <div className="text-[#4A4A4A]">
       <div className="max-w-[1055px] mx-auto my-5 max-md:mx-5">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">

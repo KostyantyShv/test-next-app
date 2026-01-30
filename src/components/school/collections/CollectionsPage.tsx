@@ -4,23 +4,17 @@ import FiltersSection from "./sections/FiltersSection";
 import MainContentSection from "./sections/MainContentSection";
 
 const CollectionsPage = () => {
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
-
-  const handleExpandCollapse = () => {
-    setIsExpanded((prev) => !prev);
-  };
+  // Keep expand behavior identical to ExplorePage:
+  // Header owns the button UI state and notifies the page to update maxWidth.
+  const [isContainerExpanded, setIsContainerExpanded] = useState(false);
 
   return (
     <div
-      className={`transition-all duration-300 ease-in-out mx-auto px-3 sm:px-4 md:px-6 ${
-        isExpanded ? "w-full max-w-[1350px]" : "w-full max-w-[1080px]"
-      }`}
+      className="transition-all duration-300 ease-in-out mx-auto px-3 sm:px-4 md:px-6 w-full"
+      style={{ maxWidth: isContainerExpanded ? "1318.75px" : "1055px" }}
     >
       <FiltersSection />
-      <MainContentSection
-        isExpanded={isExpanded}
-        handleExpandCollapse={handleExpandCollapse}
-      />
+      <MainContentSection onContainerExpandChange={setIsContainerExpanded} />
     </div>
   );
 };

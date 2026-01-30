@@ -1,11 +1,4 @@
 import React from "react";
-import { Inter } from "next/font/google";
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
 
 interface Collection {
   name: string;
@@ -198,7 +191,7 @@ export const CollectionsGrid: React.FC = () => {
   };
 
   return (
-    <div className={`${inter.className}text-[#4A4A4A]`}>
+    <div className="text-[#4A4A4A]">
       <div className="">
         <div className="mx-auto">
           

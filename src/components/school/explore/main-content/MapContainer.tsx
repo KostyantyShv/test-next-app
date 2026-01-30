@@ -9,6 +9,7 @@ interface MapContainerProps {
   schools: School[];
   layout?: string;
   onExpandedChange?: (isExpanded: boolean) => void;
+  mode?: "desktopPanel" | "mobileDrawer";
 }
 
 export interface MapContainerRef {
@@ -64,7 +65,7 @@ const getMarkerColor = (grade: string): string => {
 };
 
 const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
-  ({ isMapActive, schools, layout, onExpandedChange }, ref) => {
+  ({ isMapActive, schools, layout, onExpandedChange, mode = "desktopPanel" }, ref) => {
     const [mapType, setMapType] = useState<"roadmap" | "satellite">("roadmap");
     const [showTerrain, setShowTerrain] = useState(false);
     const [showLabels, setShowLabels] = useState(true);
@@ -81,6 +82,38 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
         }
       },
     }));
+
+    // Reset map UI state when closing/opening the map panel.
+    // Fixes inconsistent "expand/collapse arrow" direction after:
+    // 1) open map, 2) expand (full view), 3) close map, 4) open map again.
+    useEffect(() => {
+      if (isMapActive) return;
+
+      // Reset UI toggles.
+      setIsExpanded(false);
+      onExpandedChange?.(false);
+      setMapType("roadmap");
+      setShowTerrain(false);
+      setShowLabels(true);
+
+      // Best-effort cleanup of map instance/markers.
+      if (mapInstanceRef.current) {
+        try {
+          const map = mapInstanceRef.current as any;
+          const streetView = map.getStreetView?.();
+          if (streetView?.getVisible?.()) {
+            map.setStreetView(null);
+          }
+        } catch {
+          // ignore
+        }
+      }
+      markersRef.current.forEach((marker) => (marker as any).setMap(null));
+      infoWindowsRef.current.forEach((iw) => iw.close());
+      markersRef.current = [];
+      infoWindowsRef.current = [];
+      mapInstanceRef.current = null;
+    }, [isMapActive, onExpandedChange]);
 
     useEffect(() => {
       if (!mapRef.current || !isMapActive) return;
@@ -244,20 +277,36 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
     return (
       <>
         <div
-          className={`bg-white rounded-xl overflow-hidden transition-all duration-300 shrink-0 ${isMapActive
-            ? isExpanded
-              ? "flex-1 m-6 border border-[rgba(0,0,0,0.1)]"
-              : layout === "list"
-                ? "w-[340px] mr-6 mt-6 mb-6 border border-[rgba(0,0,0,0.1)]"
-                : "w-[400px] mr-6 mt-6 mb-6 border border-[rgba(0,0,0,0.1)]"
-            : "w-0 overflow-hidden"
-            }`}
-          style={isExpanded ? { minHeight: '500px' } : {}}
+          className={
+            mode === "mobileDrawer"
+              ? `bg-white rounded-xl overflow-hidden transition-all duration-300 flex flex-col min-w-0 ${isMapActive ? "flex-1 m-4 border border-[rgba(0,0,0,0.1)]" : "h-0 overflow-hidden"}`
+              : `bg-white rounded-xl overflow-hidden transition-all duration-300 ${isMapActive
+                  ? isExpanded
+                    ? "flex-1 m-6 border border-[rgba(0,0,0,0.1)]"
+                    : layout === "list"
+                      ? "w-[340px] mr-6 mt-6 mb-6 border border-[rgba(0,0,0,0.1)]"
+                      : "w-[400px] mr-6 mt-6 mb-6 border border-[rgba(0,0,0,0.1)]"
+                  : "w-0 overflow-hidden"
+                } ${isExpanded ? "min-w-0" : "shrink-0"}`
+          }
+          style={
+            mode === "mobileDrawer"
+              ? undefined
+              : isExpanded
+                ? { minHeight: "500px" }
+                : {}
+          }
         >
           {isMapActive && (
             <>
 
-              <div className="relative h-full flex-1" style={{ minHeight: isExpanded ? '500px' : '400px' }}>
+              <div
+                className="relative flex-1 min-h-0"
+                style={{
+                  minHeight:
+                    mode === "mobileDrawer" ? "100%" : isExpanded ? "500px" : "400px",
+                }}
+              >
                 <MapControls
                   mapType={mapType}
                   setMapType={setMapType}

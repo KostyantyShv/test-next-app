@@ -60,28 +60,28 @@ const ContentArea: React.FC<ContentAreaProps> = ({
   return (
     <div className="flex flex-col md:flex-row min-h-[400px] min-w-0">
       <div
-        className={`flex-1 min-w-0 p-6 transition-all duration-300 ${isMapExpanded ? "hidden" : ""}`}
+        className={`flex-1 min-w-0 md:p-6 transition-all duration-300 ${isMapExpanded ? "hidden" : ""}`}
         aria-hidden={isMapExpanded}
       >
         {/* Mobile Layouts */}
         <div className="md:hidden">
           {layout === "grid" && (
-            <div className="flex flex-col gap-4">
+            <div className="py-4 px-4 flex flex-col gap-4">
               {renderCards()}
             </div>
           )}
           {layout === "list" && (
-            <div className="flex flex-col gap-4">
+            <div className="py-4 pl-4 pr-5 flex flex-col gap-4">
               {renderCards()}
             </div>
           )}
           {layout === "hybrid" && (
-            <div className="grid grid-cols-1 gap-4">
+            <div className="py-4 px-4 grid grid-cols-1 gap-4">
               {renderCards()}
             </div>
           )}
           {layout === "classic" && (
-            <div className="flex flex-col gap-4">
+            <div className="py-4 px-4 flex flex-col gap-4">
               {renderCards()}
             </div>
           )}
@@ -100,7 +100,15 @@ const ContentArea: React.FC<ContentAreaProps> = ({
           )}
         </div>
       </div>
-      <MapContainer isMapActive={isMapActive} schools={schools} layout={layout} onExpandedChange={setIsMapExpanded} />
+      {/* Desktop map panel only (mobile uses a drawer in Header) */}
+      <div className="hidden md:block">
+        <MapContainer
+          isMapActive={isMapActive}
+          schools={schools}
+          layout={layout}
+          onExpandedChange={setIsMapExpanded}
+        />
+      </div>
     </div>
   );
 };

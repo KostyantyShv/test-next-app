@@ -16,20 +16,26 @@ const navTabs = [
 const Header = ({
   classes,
   imageSizes = "w-16 h-16",
+  position = "sticky",
+  topOffsetPx = 87,
 }: {
   classes?: string;
   imageSizes?: string;
+  position?: "sticky" | "fixed";
+  topOffsetPx?: number;
 }) => {
   const [activeTab, setActiveTab] = useState(SIDE_TABS_DESKTOP.ABOUT_DESKTOP);
-  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Listing header height is closer to ~112px (thumb 64px + vertical paddings),
+  // keep extra breathing room for anchor alignment.
+  const HEADER_HEIGHT_PX = 112;
+  const EXTRA_SCROLL_PADDING_PX = 20;
+  const headerScrollOffset = topOffsetPx + HEADER_HEIGHT_PX + EXTRA_SCROLL_PADDING_PX;
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 100);
-      
       // Update active tab based on scroll position
-      const headerHeight = 63 + 93 + 20; // Same as in handleNavClick
-      const scrollPosition = window.scrollY + headerHeight;
+      const scrollPosition = window.scrollY + headerScrollOffset;
 
       // Find which section is currently in view
       let currentActiveTab = navTabs[0].id;
@@ -67,7 +73,7 @@ const Header = ({
     setActiveTab(tabId);
     
     // Calculate header offset
-    const headerOffset = 176; // 63px top + 93px header + 20px padding
+    const headerOffset = headerScrollOffset;
     
     // Special handling for Map section which might load asynchronously
     const scrollToElement = (attempts = 0) => {
@@ -140,21 +146,18 @@ const Header = ({
     }
   };
 
-  // Don't render header when at top of page
-  if (!isScrolled) {
-    return null;
-  }
-
   return (
     <>
       <header
-        className={`sticky top-0 z-[1001] transition-all duration-300 min-h-[5.8rem] bg-white border-b shadow-[0_2px_8px_rgba(0,0,0,0.06)] ${classes || ""}`}
+        className={`${
+          position === "fixed" ? "w-full rounded-b-lg" : "sticky top-[8px]"
+        } z-[1001] transition-all duration-300 min-h-[5.8rem] bg-white border-b shadow-[0_2px_8px_rgba(0,0,0,0.06)] ${classes || ""}`}
         style={{
           borderColor: "rgba(223, 221, 219, 0.4)",
         }}
       >
-      <div className="max-w-[1220px] mx-auto px-0">
-        <div className="flex justify-between items-start px-16 py-4 gap-10 relative">
+      <div className="w-full mx-auto px-0">
+        <div className="flex justify-between items-start px-4 md:px-6 py-4 gap-6 relative">
           {/* School Info */}
           <div className="flex gap-5 flex-1">
             {/* Thumbnail */}
@@ -277,8 +280,6 @@ const Header = ({
         </div>
       </div>
       </header>
-      {/* Spacer for smooth layout when header appears */}
-      {isScrolled && <div className="h-[0px]" />}
     </>
   );
 };

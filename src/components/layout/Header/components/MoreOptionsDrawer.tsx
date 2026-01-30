@@ -25,8 +25,8 @@ export const MoreOptionsDrawer: FC<MoreOptionsDrawerProps> = ({ isOpen, onClose 
   }, [isOpen]);
 
   const handleThemeToggle = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
+    const isDarkish = theme === "midnight" || theme === "dark";
+    setTheme(isDarkish ? "light" : "midnight");
     onClose();
   };
 

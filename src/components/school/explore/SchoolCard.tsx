@@ -5,6 +5,7 @@ import { SchoolCardIcons } from './SchoolCardIcons';
 import { MobileOptionsDrawer } from './MobileOptionsDrawer';
 import { SchoolCardContextMenu } from './SchoolCardContextMenu';
 import { useSchoolsExplore } from "@/store/use-schools-explore";
+import { Portal } from "@/components/ui/Portal";
 
 interface SchoolCardProps {
   school: School;
@@ -119,7 +120,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
         {/* Specialty badge (full-width, top) */}
         {school.specialty && (
           <div
-            className={`specialty-badge absolute top-0 left-0 right-0 px-3 py-2 text-xs font-medium flex items-center gap-1.5 rounded-t-xl z-[5] ${
+            className={`specialty-badge hidden md:flex absolute top-0 left-0 right-0 px-3 py-2 text-xs font-medium items-center gap-1.5 rounded-t-xl z-[5] ${
               school.specialty === "hot"
                 ? "bg-[rgba(255,77,77,0.1)] text-[#FF4D4D]"
                 : school.specialty === "instant-book"
@@ -234,95 +235,129 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           </div>
         </div>
 
-        {/* Mobile (<md) — HTML 7 layout */}
+        {/* Mobile (<md) — HTML Mobile (10) layout 1:1 */}
         <div className="md:hidden">
-          <div className="card-header pt-10 pb-3 px-4 flex gap-3 items-start">
-            <Image
-              src={school.avatar || school.image}
-              alt={school.name}
-              width={72}
-              height={60}
-              className="school-thumbnail w-[72px] h-[60px] rounded-[6px] object-cover shrink-0"
-            />
-            <div className="school-info flex-1 flex flex-col overflow-hidden">
-              <div className="school-name text-[15px] font-semibold text-[#464646] mb-1 leading-[1.3] line-clamp-3">
-                {school.name}
-              </div>
-              {school.ranking ? (
-                <div className="ranking-text text-[#089E68] text-xs font-medium leading-[1.4] whitespace-nowrap overflow-hidden text-ellipsis">
-                  {school.ranking}
-                </div>
-              ) : null}
-              <div className="school-type-badge flex items-center gap-1.5 px-2 py-1 rounded-2xl text-[11px] font-medium bg-[#E5E7EB] text-[#464646] mt-1.5 w-fit">
-                <span className="[&>svg]:w-3 [&>svg]:h-3 [&>svg]:text-[#464646]">
-                  <SchoolCardIcons.TotalSchools />
+          <div className="image-container relative w-full h-[140px] overflow-hidden">
+            <button
+              type="button"
+              className="options-button absolute top-2 right-2 w-7 h-7 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#4A4A4A] transition-all z-[2] shadow-[0_2px_4px_rgba(0,0,0,0.1)] hover:bg-[#f5f5f5]"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsDrawerOpen(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setIsDrawerOpen(true);
+                }
+              }}
+            >
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+              </svg>
+            </button>
+
+            {school.specialty && (
+              <div
+                className={`specialty-label absolute top-2 left-0 h-7 bg-white rounded-r-[14px] flex items-center px-[10px] z-[2] text-[11px] font-medium shadow-[0_2px_4px_rgba(0,0,0,0.1)] ${
+                  school.specialty === "hot"
+                    ? "text-[#FF4D4D]"
+                    : school.specialty === "instant-book"
+                      ? "text-[#1D77BD]"
+                      : "text-[#FF9900]"
+                }`}
+              >
+                <span className="[&>svg]:w-[14px] [&>svg]:h-[14px] mr-1 flex items-center">
+                  {school.specialty === "hot" ? <SchoolCardIcons.Hot /> : null}
+                  {school.specialty === "instant-book" ? <SchoolCardIcons.InstantBook /> : null}
+                  {school.specialty === "sponsored" ? <SchoolCardIcons.Sponsored /> : null}
                 </span>
-                {school.schoolType}
+                {school.specialtyLabel ||
+                  (school.specialty === "hot"
+                    ? "High demand"
+                    : school.specialty === "instant-book"
+                      ? "Instant book"
+                      : "Sponsored")}
+              </div>
+            )}
+
+            <Image
+              src={school.image}
+              alt={school.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className="school-image object-cover"
+            />
+
+            <div className="school-type-label absolute bottom-0 left-2.5 bg-white px-2 pt-1 text-[11px] font-semibold text-[#464646] tracking-[0.02em] rounded-t-md h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
+              {school.schoolType}
+            </div>
+          </div>
+
+          <div className="school-content p-3">
+            {school.ranking ? (
+              <div className="ranking-text text-[#089E68] text-[13px] whitespace-nowrap overflow-hidden text-ellipsis font-medium max-w-full">
+                {school.ranking}
+              </div>
+            ) : null}
+
+            <h3 className="school-name text-[16px] font-semibold text-[#464646] leading-[1.4] mt-1 mb-1.5 line-clamp-3">
+              {school.name}
+            </h3>
+
+            <div className="school-stats flex flex-wrap gap-2 mb-3">
+              <div className="stat flex items-center gap-[6px] text-[13px] text-[#5F5F5F] tracking-[0.01em] font-[450]">
+                <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#565656]">
+                  <SchoolCardIcons.Location />
+                </span>
+                <span>{school.location}</span>
+              </div>
+
+              <div className="stat flex items-center gap-[6px] text-[13px] text-[#5F5F5F] tracking-[0.01em] font-[450]">
+                <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#565656]">
+                  {secondStat.icon}
+                </span>
+                <span>{secondStat.value}</span>
+              </div>
+
+              <div className="stat flex items-center gap-[6px] text-[13px] text-[#5F5F5F] tracking-[0.01em] font-[450]">
+                <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#565656]">
+                  <SchoolCardIcons.Star />
+                </span>
+                <span>
+                  <strong className="font-semibold text-[#444444]">{ratingNum}</strong>{" "}
+                  ({reviewsCount})
+                </span>
               </div>
             </div>
-          </div>
 
-          <div className="school-content pt-2 pb-3 px-4">
-            <div className="school-stats flex flex-wrap gap-x-3 gap-y-2">
-              {mobileStats.map((s, idx) => (
-                <div key={idx} className="stat flex items-center gap-1.5 text-xs text-[#5F5F5F] w-[calc(50%-8px)] min-w-0">
-                  <span className="[&>svg]:w-[14px] [&>svg]:h-[14px] [&>svg]:text-[#565656] flex-shrink-0">
-                    {s.icon}
-                  </span>
-                  <span className="text-[#464646] font-medium truncate">
-                    {s.boldPrefix ? (
-                      <>
-                        <span className="font-semibold">{s.boldPrefix}</span> {s.value.replace(String(s.boldPrefix), "").trim()}
-                      </>
-                    ) : (
-                      s.value
-                    )}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="school-footer py-3 px-4 border-t border-[rgba(1,104,83,0.1)] flex items-center justify-between relative z-20">
-            <div className="footer-left flex items-center gap-3">
+            <div className="school-footer flex items-center justify-between px-3 py-[10px] border-t border-[#E5E7EB] bg-[#F4F6FA] rounded-b-xl">
               <div className={`grade-circle w-7 h-7 ${getGradeClass(school.grade)} rounded-full flex items-center justify-center text-white text-xs font-semibold`}>
                 {school.grade}
               </div>
-            </div>
-            <div className="footer-actions flex gap-2">
-              <div
-                className="info-button w-7 h-7 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] bg-[#f5f5f7] transition-all hover:text-[#346DC2] hover:bg-[#e8e8e8]"
-                onClick={(e) => { e.stopPropagation(); setIsInfoOpen(true); }}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setIsInfoOpen(true); } }}
-              >
-                <svg fill="none" viewBox="0 0 20 20" width="18" height="18">
-                  <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 6V10" />
-                  <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 13.1094H10.0067" />
-                  <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z" />
-                </svg>
+
+              <div className="flex items-center">
+                <div className="students-score flex items-center gap-[6px] text-[12px] text-[#5F5F5F]">
+                  <span className="[&>svg]:w-4 [&>svg]:h-4 text-[#089E68]">
+                    {footerStat.icon}
+                  </span>
+                  <span>{footerStat.label}</span>
+                </div>
+
+                <button
+                  type="button"
+                  className="info-button w-7 h-7 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] ml-2 transition-all hover:text-[#346DC2]"
+                  onClick={(e) => { e.stopPropagation(); setIsInfoOpen(true); }}
+                  aria-label="More info"
+                >
+                  <svg fill="none" viewBox="0 0 20 20" width="18" height="18">
+                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 6V10" />
+                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 13.1094H10.0067" />
+                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z" />
+                  </svg>
+                </button>
               </div>
-              {/* Mobile grid: 3 dots opens mobile drawer menu */}
-              <button
-                type="button"
-                className="options-button w-7 h-7 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] bg-[#f5f5f7] transition-all hover:text-[#346DC2] hover:bg-[#e8e8e8] pointer-events-auto relative z-30"
-                onPointerDown={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setIsDrawerOpen(true);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    setIsDrawerOpen(true);
-                  }
-                }}
-              >
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                  <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
-                </svg>
-              </button>
             </div>
           </div>
 
@@ -516,19 +551,25 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
     })();
 
     return (
-      <div className="school-card flex flex-col sm:flex-row p-5 border border-[rgba(0,0,0,0.08)] rounded-xl transition-all duration-200 ease-in-out relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:border-[rgba(1,104,83,0.2)]">
-        <div className={`image-container relative w-full sm:w-[60px] sm:mr-5 shrink-0 flex flex-col ${school.specialty ? "has-specialty" : ""}`}>
+      <div className="school-card flex flex-col max-[768px]:flex-col min-[577px]:flex-row p-5 border border-[rgba(0,0,0,0.08)] rounded-xl transition-all duration-200 ease-in-out relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:border-[rgba(1,104,83,0.2)]">
+        <div
+          className={`image-container relative w-full shrink-0 flex flex-col ${
+            school.specialty ? "has-specialty" : ""
+          } max-[768px]:mb-4 min-[577px]:w-[60px] min-[577px]:h-[60px] min-[577px]:mr-4 min-[577px]:mb-0 md:mr-5`}
+        >
           <Image
             src={school.image}
             alt={school.name}
             width={640}
             height={360}
-            className={`school-image w-full h-[160px] sm:w-[60px] sm:h-[60px] object-cover ${school.specialty ? "rounded-t-lg sm:rounded-t-lg" : "rounded-lg"}`}
+            className={`school-image w-full h-[160px] object-cover max-[768px]:h-[160px] min-[577px]:w-[60px] min-[577px]:h-[60px] ${
+              school.specialty ? "rounded-t-lg rounded-b-none" : "rounded-lg"
+            }`}
           />
           {school.specialty ? specialtyFooter : null}
         </div>
 
-        <div className="school-type-label absolute bg-[rgba(1,104,83,0.1)] text-[#016853] px-2 py-1 rounded-md text-[10px] font-semibold tracking-[0.02em] uppercase z-[2] top-3 left-3 sm:top-0 sm:left-[89px] md:top-5 md:left-[98px]">
+        <div className="school-type-label absolute bg-[rgba(1,104,83,0.1)] text-[#016853] px-2 py-1 rounded-md text-[10px] font-semibold tracking-[0.02em] uppercase z-[2] top-3 left-3 min-[577px]:top-0 min-[577px]:left-[89px] md:top-5 md:left-[98px]">
           {school.schoolType}
         </div>
 
@@ -651,7 +692,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                 }`}
                 onClick={() => setIsLiked((v) => !v)}
               >
-                <SchoolCardIcons.Heart />
+                <SchoolCardIcons.Heart filled={isLiked} />
                 {isLiked ? "Liked" : "Like"}
               </button>
             </div>
@@ -894,82 +935,138 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           </div>
         </div>
 
-        {/* Mobile (<md) list card — match provided HTML 1:1 */}
+        {/* Mobile (<md) list card — match provided HTML structure/styles 1:1 */}
         <div className="md:hidden">
-          <div className="relative h-[400px] rounded-[16px] overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.15)] bg-white isolate">
-            {/* School type badge (top-left) */}
-            <div className="absolute top-0 left-0 z-[3] bg-[rgba(8,58,155,0.9)] text-white px-3 pt-2 pb-1 rounded-[16px_0_12px_0] text-[11px] font-semibold tracking-[0.5px] uppercase backdrop-blur-[4px]">
-              {school.schoolType}
-            </div>
-
-            {/* Specialty label (top-right) */}
-            {school.specialty ? (
-              <div className="absolute top-0 right-0 z-[3] bg-[rgba(8,58,155,0.8)] text-white px-2 py-1 rounded-md text-[11px] font-medium flex items-center gap-1 backdrop-blur-[4px]">
-                {school.specialty === "hot" ? <SchoolCardIcons.Hot /> : null}
-                {school.specialty === "instant-book" ? <SchoolCardIcons.InstantBook /> : null}
-                {school.specialty === "sponsored" ? <SchoolCardIcons.Sponsored /> : null}
-                {school.specialty === "hot" ? "High demand" : school.specialty === "instant-book" ? "Instant book" : "Sponsored"}
-              </div>
-            ) : null}
-
-            {/* Image */}
-            <div className="absolute inset-0 rounded-[16px] overflow-hidden">
-              <Image
-                src={school.image}
-                alt={school.name}
-                fill
-                sizes="100vw"
-                className="object-cover"
-              />
-            </div>
-
-            {/* Content overlay */}
-            <div className="absolute left-0 right-0 bottom-[90px] h-[180px] p-4 flex flex-col justify-end z-[2] bg-[linear-gradient(180deg,transparent_0%,rgba(8,65,172,0.9)_100%)]">
-              <div className="text-white/90 text-[11px] font-medium mb-1 uppercase tracking-[0.5px]">
-                {school.location}
-              </div>
-              <h3 className="text-white text-[18px] font-bold leading-[1.3] mb-1.5 line-clamp-3">
-                {school.name}
-              </h3>
-              <div className="text-white/90 text-[13px] font-medium whitespace-nowrap overflow-hidden text-ellipsis">
-                {school.ranking}
-              </div>
-            </div>
-
-            {/* Footer overlay */}
-            <div className="absolute left-0 right-0 bottom-0 h-[90px] px-4 py-3 flex items-center justify-between z-[2] bg-[rgba(8,65,172,0.95)] backdrop-blur-[8px] rounded-b-[16px]">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-white/20 rounded-md flex items-center justify-center text-white text-sm font-bold backdrop-blur-[4px]">
-                  {school.grade}
+          <div className="school-card bg-white rounded-[12px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#E5E7EB] relative">
+            <div className="card-main flex relative">
+              {/* Image Section */}
+              <div className="image-wrapper relative w-[120px] min-h-[143px] self-stretch flex-shrink-0 flex flex-col">
+                <div className="relative w-[120px] h-[120px] flex-shrink-0">
+                  <Image
+                    src={school.image}
+                    alt={school.name}
+                    fill
+                    sizes="120px"
+                    className="object-cover"
+                  />
                 </div>
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-1.5 text-white/90 text-[12px] font-medium">
-                    <SchoolCardIcons.Star className="w-[14px] h-[14px] text-white/90" />
-                    <span>{ratingNum} ({reviewsCount})</span>
-                  </div>
-                  {establishment === "Colleges" ? (
-                    <div className="flex items-center gap-1.5 text-white/90 text-[12px] font-medium">
-                      <SchoolCardIcons.SAT className="w-[14px] h-[14px] text-white/90" />
-                      <span>{school.sat || "—"}</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-1.5 text-white/90 text-[12px] font-medium">
-                      <SchoolCardIcons.Students className="w-[14px] h-[14px] text-white/90" />
-                      <span>{school.students || "—"}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
 
-              <div className="flex items-center gap-2">
-                {/* Info button */}
+                <div className="school-type-footer mt-auto w-full bg-[#F5F5F7] text-[#464646] text-[11px] font-medium text-center py-[5px]">
+                  {school.schoolType}
+                </div>
+
+                {/* Options button */}
                 <button
                   type="button"
-                  className="w-8 h-8 bg-white/15 rounded-full flex items-center justify-center text-white backdrop-blur-[4px] transition-colors hover:bg-white/25"
+                  className="options-button absolute top-2 left-2 w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-[0_2px_4px_rgba(0,0,0,0.15)] z-[5] border-none"
+                  onPointerDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsDrawerOpen(true);
+                  }}
+                  aria-label="More options"
+                >
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" className="text-[#666]">
+                    <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                  </svg>
+                </button>
+
+                {/* Specialty label */}
+                {school.specialty ? (
+                  <div
+                    className={`specialty-label absolute left-0 bottom-[36px] h-6 bg-white rounded-r-[12px] flex items-center px-2.5 text-[11px] font-medium shadow-[1px_2px_4px_rgba(0,0,0,0.1)] z-[2] ${
+                      school.specialty === "hot"
+                        ? "text-[#FF4D4D]"
+                        : school.specialty === "instant-book"
+                          ? "text-[#1D77BD]"
+                          : "text-[#FF9900]"
+                    }`}
+                  >
+                    <span className="specialty-icon inline-flex mr-1 [&>svg]:w-3 [&>svg]:h-3">
+                      {school.specialty === "hot" ? <SchoolCardIcons.Hot /> : null}
+                      {school.specialty === "instant-book" ? <SchoolCardIcons.InstantBook /> : null}
+                      {school.specialty === "sponsored" ? <SchoolCardIcons.Sponsored /> : null}
+                    </span>
+                    {school.specialty === "hot"
+                      ? "High demand"
+                      : school.specialty === "instant-book"
+                        ? "Instant book"
+                        : "Sponsored"}
+                  </div>
+                ) : null}
+              </div>
+
+              {/* Content Section */}
+              <div className="school-content flex-1 p-3 flex flex-col min-w-0 overflow-hidden">
+                {school.ranking ? (
+                  <div className="ranking-text text-[#089E68] text-xs mb-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
+                    {school.ranking}
+                  </div>
+                ) : null}
+
+                <div className="school-name text-[16px] font-semibold text-[#464646] mb-1 leading-[1.3] line-clamp-3">
+                  {school.name}
+                </div>
+
+                <div className="school-location text-[#5F5F5F] text-[13px] mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
+                  {school.location}
+                </div>
+
+                <div className="stats-row flex gap-3 mt-1 items-center w-full overflow-hidden whitespace-nowrap">
+                  <div className="stat flex items-center gap-1.5 text-[12px] text-[#5F5F5F] flex-shrink-0 min-w-0">
+                    <span className="[&>svg]:w-[14px] [&>svg]:h-[14px] [&>svg]:text-[#565656] flex-shrink-0">
+                      {establishment === "Colleges" || establishment === "Graduates" ? (
+                        <SchoolCardIcons.Duration />
+                      ) : (
+                        <SchoolCardIcons.Ratio />
+                      )}
+                    </span>
+                    <span className="stat-text text-[#464646] font-medium truncate">
+                      {establishment === "Colleges" || establishment === "Graduates"
+                        ? school.duration || "—"
+                        : school.ratio || "—"}
+                    </span>
+                  </div>
+
+                  <div className="stat flex items-center gap-1.5 text-[12px] text-[#5F5F5F] flex-shrink-0 min-w-0">
+                    <span className="[&>svg]:w-[14px] [&>svg]:h-[14px] [&>svg]:text-[#565656] flex-shrink-0">
+                      <SchoolCardIcons.Star />
+                    </span>
+                    <span className="stat-text text-[#464646] font-medium truncate">
+                      <strong className="font-semibold">{ratingNum}</strong>{" "}
+                      ({reviewsCount})
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="card-footer flex items-center justify-between px-3 py-[10px] border-t border-[#E5E7EB] bg-[#FAFAFA] min-w-0">
+              <div className={`grade-circle w-8 h-8 ${getGradeClass(school.grade)} rounded-full flex items-center justify-center text-white text-[14px] font-semibold`}>
+                {school.grade}
+              </div>
+
+              <div className="footer-actions flex items-center gap-4 min-w-0">
+                <div className="students-display flex items-center gap-1 text-[12px] text-[#565656] min-w-0">
+                  <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#00DF8B]">
+                    {establishment === "Colleges" ? <SchoolCardIcons.SAT /> : <SchoolCardIcons.Students />}
+                  </span>
+                  <span className="whitespace-nowrap overflow-hidden text-ellipsis min-w-0">
+                    {establishment === "Colleges"
+                      ? `SAT: ${school.sat || "—"}`
+                      : `Students: ${school.students || "—"}`}
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  className="info-button flex items-center justify-center text-[#565656]"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsInfoOpen(true);
                   }}
+                  aria-label="More info"
                 >
                   <svg fill="none" viewBox="0 0 20 20" width="18" height="18">
                     <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 6V10" />
@@ -977,36 +1074,21 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                     <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z" />
                   </svg>
                 </button>
-
-                {/* Options button */}
-                <button
-                  type="button"
-                  className="w-8 h-8 bg-white/15 rounded-full flex items-center justify-center text-white backdrop-blur-[4px] transition-colors hover:bg-white/25"
-                  onPointerDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setIsDrawerOpen(true);
-                  }}
-                >
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="5" r="1" />
-                    <circle cx="12" cy="12" r="1" />
-                    <circle cx="12" cy="19" r="1" />
-                  </svg>
-                </button>
               </div>
             </div>
           </div>
 
           {/* Info Drawer (mobile) */}
-          <div
-            className={`fixed inset-0 bg-black/50 z-[100] transition-opacity duration-300 ease-in-out ${isInfoOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}`}
-            onClick={() => setIsInfoOpen(false)}
-          />
-          <div
-            className={`fixed bottom-0 left-0 right-0 z-[101] bg-white rounded-t-[16px] shadow-[0_-2px_10px_rgba(0,0,0,0.15)] max-h-[80vh] overflow-hidden flex flex-col transition-transform duration-300 ease-in-out ${isInfoOpen ? "translate-y-0" : "translate-y-full"}`}
-            aria-hidden={!isInfoOpen}
-          >
+          <Portal containerId="mobile-modal-root">
+            <>
+              <div
+                className={`fixed inset-0 bg-black/50 z-[1000] transition-opacity duration-300 ease-in-out ${isInfoOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}`}
+                onClick={() => setIsInfoOpen(false)}
+              />
+              <div
+                className={`fixed bottom-0 left-0 right-0 z-[1001] bg-white rounded-t-[16px] shadow-[0_-2px_10px_rgba(0,0,0,0.15)] max-h-[80vh] overflow-hidden flex flex-col transition-transform duration-300 ease-in-out ${isInfoOpen ? "translate-y-0" : "translate-y-full"}`}
+                aria-hidden={!isInfoOpen}
+              >
             <div className="p-4 border-b border-black/10 flex items-center relative">
               <div className="flex gap-3 items-center flex-1">
                 <Image
@@ -1164,6 +1246,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               </div>
             </div>
           </div>
+            </>
+          </Portal>
 
           {/* Mobile Options Drawer */}
           <MobileOptionsDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} schoolName={school.name} />

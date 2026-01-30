@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   CollectionsSchool,
   ConfirmModal,
   NoteModal,
-  SchoolCard,
   schools,
 } from "../components/Card/Card";
 import MapContainer from "../../explore/main-content/MapContainer";
@@ -28,6 +27,12 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
   const [currentNoteId, setCurrentNoteId] = useState<number | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [noteText, setNoteText] = useState("");
+  const [isMapExpanded, setIsMapExpanded] = useState(false);
+
+  // Keep behavior identical to Explore: if the map panel is closed, ensure we exit expanded mode.
+  useEffect(() => {
+    if (!isMapActive) setIsMapExpanded(false);
+  }, [isMapActive]);
 
   const handleRatingChange = (index: number, rating: number) => {
     setSchoolData((prev) => {
@@ -139,13 +144,55 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
     classic: 8,
   };
 
+  // Match Explore behavior: grid columns change when map is open (and "card" behaves like grid for sizing).
+  const effectiveLayoutForMap = layout === "card" ? "grid" : layout;
+
+  const getExploreLikeGridCols = (variant: "grid" | "hybrid" | "classic") => {
+    if (variant === "grid") {
+      // Same as Explore: when map is ON → 2 cols, 1 below ~700px. When OFF → 3 cols, 2 below 900px, 1 below 600px.
+      return isMapActive
+        ? "grid-cols-2 max-[700px]:grid-cols-1"
+        : "grid-cols-3 max-[900px]:grid-cols-2 max-[600px]:grid-cols-1";
+    }
+    if (variant === "hybrid") {
+      return isMapActive ? "grid-cols-1" : "grid-cols-2";
+    }
+    // classic
+    return isMapActive ? "grid-cols-2" : "grid-cols-4";
+  };
+
+  // Keep map prop shape identical to Explore map component (even though we render collections cards).
+  const mapSchools: School[] = schoolData.map((school) => ({
+    name: school.name,
+    schoolType: school.schoolType,
+    location: school.location,
+    ratio: "",
+    rating: school.rating,
+    image: school.image,
+    avatar: school.avatar,
+    ranking: school.ranking || "",
+    grade: school.grade,
+    students: school.students,
+    price: "",
+    grades: school.grades,
+    specialty: school.specialty as "hot" | "instant-book" | "sponsored" | undefined,
+    specialtyLabel: school.specialty,
+    description: school.description,
+    reviews: school.reviews,
+  }));
+
   return (
-    <div className="flex flex-col md:flex-row p-3 sm:p-4 md:p-6 min-h-[400px]">
-      <div className="flex-1 transition-all duration-300">
+    <div className="flex flex-col md:flex-row items-start min-h-[400px] min-w-0">
+      <div
+        className={`flex-1 min-w-0 p-6 transition-all duration-300 ${
+          isMapExpanded ? "hidden" : ""
+        }`}
+        aria-hidden={isMapExpanded}
+      >
         <div
-          className={`grid gap-3 sm:gap-4 md:gap-6 ${
-            layout === "card" ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3" : "hidden"
-          } ${isMapActive ? "grid-cols-1 md:grid-cols-2" : ""}`}
+          className={`grid gap-6 min-w-0 ${
+            layout === "card" ? getExploreLikeGridCols("grid") : "hidden"
+          }`}
         >
           {schoolData
             .slice(0, cardCounts.grid)
@@ -164,11 +211,11 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             ))}
         </div>
         <div
-          className={`flex flex-col gap-3 sm:gap-4 ${
+          className={`flex flex-col gap-4 min-w-0 ${
             layout === "list" ? "block" : "hidden"
           }`}
         >
-          {schools
+          {schoolData
             .slice(0, cardCounts.list)
             .map((school: CollectionsSchool, i: number) => (
               <CardList
@@ -185,11 +232,11 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             ))}
         </div>
         <div
-          className={`grid gap-3 sm:gap-4 md:gap-6 ${
-            layout === "hybrid" ? "grid-cols-1 sm:grid-cols-2" : "hidden"
-          } ${isMapActive ? "grid-cols-1" : ""}`}
+          className={`grid gap-6 min-w-0 ${
+            layout === "hybrid" ? getExploreLikeGridCols("hybrid") : "hidden"
+          }`}
         >
-          {schools
+          {schoolData
             .slice(0, cardCounts.hybrid)
             .map((school: CollectionsSchool, i: number) => (
               <CardHybrid
@@ -206,11 +253,11 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             ))}
         </div>
         <div
-          className={`grid gap-3 sm:gap-4 md:gap-6 ${
+          className={`grid gap-6 min-w-0 ${
             layout === "table" ? "grid-cols-1" : "hidden"
-          } ${isMapActive ? "grid-cols-1" : ""}`}
+          }`}
         >
-          {schools
+          {schoolData
             .slice(0, cardCounts.classic)
             .map((school: CollectionsSchool, i: number) => (
               <CardTable
@@ -226,11 +273,11 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             ))}
         </div>
         <div
-          className={`grid gap-3 sm:gap-4 md:gap-6 ${
-            layout === "classic" ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4" : "hidden"
-          } ${isMapActive ? "grid-cols-2 sm:grid-cols-3" : ""}`}
+          className={`grid gap-6 min-w-0 ${
+            layout === "classic" ? getExploreLikeGridCols("classic") : "hidden"
+          }`}
         >
-          {schools
+          {schoolData
             .slice(0, cardCounts.classic)
             .map((school: CollectionsSchool, i: number) => (
               <CardClassic
@@ -247,11 +294,11 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             ))}
         </div>
         <div
-          className={`grid gap-3 sm:gap-4 md:gap-6 ${
-            layout === "grid" ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3" : "hidden"
-          } ${isMapActive ? "grid-cols-1 md:grid-cols-2" : ""}`}
+          className={`grid gap-6 min-w-0 ${
+            layout === "grid" ? getExploreLikeGridCols("grid") : "hidden"
+          }`}
         >
-          {schools
+          {schoolData
             .slice(0, cardCounts.classic)
             .map((school: CollectionsSchool, i: number) => (
               <CardCard
@@ -268,31 +315,13 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             ))}
         </div>
       </div>
-      {isMapActive && (
-        <div className="hidden md:block w-full md:w-1/3 lg:w-1/4">
-          <MapContainer
-            isMapActive={isMapActive}
-            schools={schoolData.map((school) => ({
-              name: school.name,
-              schoolType: school.schoolType,
-              location: school.location,
-              ratio: "",
-              rating: school.rating,
-              image: school.image,
-              avatar: school.avatar,
-              ranking: school.ranking || "",
-              grade: school.grade,
-              students: school.students,
-              price: "",
-              grades: school.grades,
-              specialty: school.specialty as "hot" | "instant-book" | "sponsored" | undefined,
-              specialtyLabel: school.specialty,
-              description: school.description,
-              reviews: school.reviews,
-            }))}
-          />
-        </div>
-      )}
+      {/* Use the same MapContainer behavior as Explore (expand/collapse, sizing by layout, reset on close). */}
+      <MapContainer
+        isMapActive={isMapActive}
+        layout={effectiveLayoutForMap}
+        onExpandedChange={setIsMapExpanded}
+        schools={mapSchools}
+      />
       <NoteModal
         isOpen={isNoteModalOpen}
         title={isEditing ? "Edit Note" : "Create Note"}

@@ -1,11 +1,4 @@
 import React from "react";
-import { Inter } from "next/font/google";
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
 
 interface School {
   name: string;
@@ -311,7 +304,7 @@ const SchoolCard: React.FC<{ school: School }> = ({ school }) => {
 
 export const LikedGrid: React.FC = () => {
   return (
-    <div className={`${inter.className} text-[#4A4A4A]`}>
+    <div className="text-[#4A4A4A]">
       <div className="mx-auto">
         <div className="md:bg-white">
           <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-4 py-4 md:px-0 md:pt-8 md:pb-0">

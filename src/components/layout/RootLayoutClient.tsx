@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { LeftSidebar } from "@/components/layout/Sidebar/Left";
@@ -10,6 +10,7 @@ import { RightSidebar } from "./Sidebar/Right";
 import { AudioPlayer } from "@/components/player/AudioPlayer";
 import { Playlist } from "@/components/player/Playlist/Playlist";
 import { useAudioPlayer } from "@/store/use-audio-player";
+import { useListingStickyHeader } from "@/store/use-listing-sticky-header";
 import { cn } from "@/lib/utils";
 import PageContainer from "./PageContainer";
 
@@ -22,8 +23,10 @@ export const RootLayoutClient = ({
   children: React.ReactNode;
 }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [isListingPageScrolled, setIsListingPageScrolled] = useState(false);
   const { isPlayerVisible, isPlaylistVisible } = useAudioPlayer();
+  const isDesktopListingStickyHeaderVisible = useListingStickyHeader(
+    (s) => s.isDesktopStickyHeaderVisible
+  );
   const pathname = usePathname();
   
   // Check if current route is an auth route
@@ -31,26 +34,8 @@ export const RootLayoutClient = ({
   
   // Check if current route is team-members-dashboard (hide header on mobile)
   const isTeamMembersPage = pathname?.startsWith("/team-members-dashboard");
-  
-  // Check if current route is listing page
-  const isListingPage = pathname?.startsWith("/listing");
-  
-  // Hide default header on listing page when scrolled (sticky header replaces it)
-  useEffect(() => {
-    if (!isListingPage) {
-      setIsListingPageScrolled(false);
-      return;
-    }
-    
-    const handleScroll = () => {
-      setIsListingPageScrolled(window.scrollY > 100);
-    };
-    
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Check initial state
-    
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isListingPage]);
+  const isListingPage =
+    pathname?.startsWith("/listing") || pathname?.startsWith("/schools/listing");
 
   // If auth route, render children without layout
   if (isAuthRoute) {
@@ -83,8 +68,9 @@ export const RootLayoutClient = ({
             </div>
           )}
           
-          {/* Desktop Header - hide on listing page when scrolled (sticky header replaces it) */}
-          {!(isTeamMembersPage) && !(isListingPage && isListingPageScrolled) && (
+          {/* Desktop Header - hidden when listing sticky header is visible */}
+          {!(isTeamMembersPage) &&
+            !(isListingPage && isDesktopListingStickyHeaderVisible) && (
             <div className="hidden md:block">
               <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} />
               <div className="h-[12px] flex-shrink-0" />

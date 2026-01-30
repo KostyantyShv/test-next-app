@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useLayoutEffect, useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { ContextMenuIcons } from './ContextMenuIcons';
 import { AddToCollectionModal } from './AddToCollectionModal';
@@ -85,11 +85,18 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
     const [isOpen, setIsOpen] = useState(false);
     const [selectedMoveTo, setSelectedMoveTo] = useState<string[]>([]);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+    const [menuPlacement, setMenuPlacement] = useState<"top" | "bottom">("bottom");
+    const [menuArrowLeft, setMenuArrowLeft] = useState<number>(0);
     const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false);
     const [isMoveToOpenMobile, setIsMoveToOpenMobile] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const isMobile = useIsMobile();
+    const moveToItemRef = useRef<HTMLDivElement>(null);
+    const moveToDropdownRef = useRef<HTMLDivElement>(null);
+    const [isMoveToOpenDesktop, setIsMoveToOpenDesktop] = useState(false);
+    const [moveToPosition, setMoveToPosition] = useState<{ top: number; left: number; side: "left" | "right"; arrowTop: number } | null>(null);
+    const moveToCloseTimerRef = useRef<number | null>(null);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -121,9 +128,112 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
         }
     }, [isOpen]);
 
+    const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
+
+    const updateMenuPosition = () => {
+        const btn = buttonRef.current;
+        if (!btn) return;
+
+        const rect = btn.getBoundingClientRect();
+        const menuWidth = 240; // w-60
+        const spacing = 8;
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        // Prefer real rendered height when available (prevents unnecessary "flip to top").
+        const measuredHeight = dropdownRef.current?.getBoundingClientRect().height;
+        const menuHeight = measuredHeight && measuredHeight > 0 ? measuredHeight : 400; // fallback
+
+        // Default placement: below, aligned to right edge of button.
+        let placement: "top" | "bottom" = "bottom";
+        let top = rect.bottom + spacing;
+        let left = rect.right - menuWidth;
+
+        // Keep within viewport horizontally.
+        left = clamp(left, 10, viewportWidth - menuWidth - 10);
+
+        // If it overflows bottom, flip to top (but only if needed).
+        if (top + menuHeight > viewportHeight - 10) {
+            placement = "top";
+            top = rect.top - spacing - menuHeight;
+            top = clamp(top, 10, viewportHeight - menuHeight - 10);
+        }
+
+        // Arrow should point at the button center. Requested tweaks:
+        // - move right by 2px
+        const buttonCenterX = rect.left + rect.width / 2;
+        const arrowLeft = clamp(buttonCenterX - left + 2, 18, menuWidth - 18);
+
+        setMenuPlacement(placement);
+        setMenuArrowLeft(arrowLeft);
+        setMenuPosition({ top, left });
+    };
+
+    const updateMoveToPosition = () => {
+        const anchor = moveToItemRef.current;
+        if (!anchor) return;
+        const rect = anchor.getBoundingClientRect();
+        const nestedWidth = 240; // w-60
+        const spacing = 8;
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        const measuredHeight = moveToDropdownRef.current?.getBoundingClientRect().height;
+        const nestedHeight = measuredHeight && measuredHeight > 0 ? measuredHeight : 180;
+
+        let side: "left" | "right" = "right";
+        let left = rect.right + spacing;
+        if (left + nestedWidth > viewportWidth - 10) {
+            side = "left";
+            left = rect.left - spacing - nestedWidth;
+        }
+        left = clamp(left, 10, viewportWidth - nestedWidth - 10);
+
+        let top = rect.top;
+        top = clamp(top, 10, viewportHeight - nestedHeight - 10);
+
+        const anchorCenterY = rect.top + rect.height / 2;
+        const arrowTop = clamp(anchorCenterY - top - 8, 12, nestedHeight - 28);
+
+        setMoveToPosition({ top, left, side, arrowTop });
+    };
+
+    // Compute correct position before paint (prevents any 0,0 flash / jump).
+    useLayoutEffect(() => {
+        if (isMobile || !isOpen) return;
+        updateMenuPosition();
+        if (isMoveToOpenDesktop) updateMoveToPosition();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isOpen, isMobile, isMoveToOpenDesktop]);
+
+    // Keep the desktop menu (and nested menu) attached to the 3-dots while scrolling/resizing.
+    useEffect(() => {
+        if (isMobile || !isOpen) return;
+
+        const onAnyScrollOrResize = () => {
+            updateMenuPosition();
+            if (isMoveToOpenDesktop) updateMoveToPosition();
+        };
+
+        // Initial + post-render measurement correction.
+        onAnyScrollOrResize();
+        const raf = window.requestAnimationFrame(onAnyScrollOrResize);
+
+        window.addEventListener("resize", onAnyScrollOrResize);
+        // Capture scroll events from any scroll container, not just window.
+        window.addEventListener("scroll", onAnyScrollOrResize, true);
+        return () => {
+            window.cancelAnimationFrame(raf);
+            window.removeEventListener("resize", onAnyScrollOrResize);
+            window.removeEventListener("scroll", onAnyScrollOrResize, true);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isOpen, isMobile, isMoveToOpenDesktop]);
+
     const closeMenu = () => {
         setIsOpen(false);
         setIsMoveToOpenMobile(false);
+        setIsMoveToOpenDesktop(false);
     };
 
     const toggleDropdown = () => {
@@ -131,39 +241,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
             setIsOpen(!isOpen);
             return;
         }
-
-        if (!isOpen && buttonRef.current) {
-            // Calculate position when opening
-            const rect = buttonRef.current.getBoundingClientRect();
-            const menuWidth = 240; // 60 * 4 = 240px (w-60)
-            const menuMaxHeight = 400; // max-h-[400px]
-            const spacing = 8; // spacing between button and menu
-
-            // Calculate initial position (below button, aligned to right edge)
-            let top = rect.bottom + spacing;
-            let left = rect.right - menuWidth;
-
-            // Check if menu would go off the right edge of viewport
-            if (left < 10) {
-                left = rect.left; // align to left edge of button instead
-            }
-
-            // Check if menu would go off the bottom of viewport
-            const viewportHeight = window.innerHeight;
-            if (top + menuMaxHeight > viewportHeight - 10) {
-                // Position above the button instead
-                top = rect.top - menuMaxHeight - spacing;
-
-                // If still not enough space, position at top with spacing
-                if (top < 10) {
-                    top = 10;
-                }
-            }
-
-            setMenuPosition({ top, left });
-        }
-
-        setIsOpen(!isOpen);
+        setIsOpen((v) => !v);
     };
 
     const toggleMoveToSelection = (value: string) => {
@@ -305,8 +383,17 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                         left: `${menuPosition.left}px`,
                     }}
                 >
-                    {/* Triangle Shape (Top Right) */}
-                    <div className="absolute -top-2 right-[14px] w-4 h-4 bg-white rotate-45 shadow-[-2px_-2px_4px_rgba(0,0,0,0.05)]"></div>
+                    {/* Arrow pointer (should point to 3 dots, and flip when menu flips) */}
+                    <div
+                        className="absolute w-4 h-4 bg-white rotate-45 shadow-[-2px_-2px_4px_rgba(0,0,0,0.05)]"
+                        style={{
+                            left: `${menuArrowLeft}px`,
+                            transform: "translateX(-50%) rotate(45deg)",
+                            // Requested: move tip DOWN 5px (was -8px), and align to center (+2px handled above).
+                            top: menuPlacement === "bottom" ? "-3px" : undefined,
+                            bottom: menuPlacement === "top" ? "-3px" : undefined,
+                        }}
+                    />
 
                     {/* Scrollable content container with custom scrollbar */}
                     <div
@@ -360,35 +447,31 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                         />
 
                         {/* Move To (Nested Multi-select) */}
-                        <div className="group relative">
-                            <div className="flex items-center px-3 py-2.5 rounded-lg cursor-pointer hover:bg-[#F7F9FC] transition-colors duration-200">
+                        <div
+                            className="relative"
+                            onPointerEnter={() => {
+                                if (moveToCloseTimerRef.current) {
+                                    window.clearTimeout(moveToCloseTimerRef.current);
+                                    moveToCloseTimerRef.current = null;
+                                }
+                                setIsMoveToOpenDesktop(true);
+                                // Ensure we position with fresh DOM rects.
+                                window.requestAnimationFrame(updateMoveToPosition);
+                            }}
+                            onPointerLeave={() => {
+                                if (moveToCloseTimerRef.current) window.clearTimeout(moveToCloseTimerRef.current);
+                                moveToCloseTimerRef.current = window.setTimeout(() => {
+                                    setIsMoveToOpenDesktop(false);
+                                }, 80);
+                            }}
+                        >
+                            <div
+                                ref={moveToItemRef}
+                                className="flex items-center px-3 py-2.5 rounded-lg cursor-pointer hover:bg-[#F7F9FC] transition-colors duration-200"
+                            >
                                 <div className="mr-3 flex items-center justify-center"><ContextMenuIcons.MoveTo /></div>
                                 <span className="text-sm font-medium text-[#464646] flex-grow">Move To</span>
                                 <ContextMenuIcons.Arrow />
-                            </div>
-
-                            {/* Nested Dropdown */}
-                            <div className="hidden group-hover:block absolute left-full top-0 ml-2 w-60 bg-white rounded-[10px] shadow-[0_4px_16px_rgba(0,0,0,0.1)] p-2 z-10">
-                                <div className="absolute top-[15px] -left-2 w-4 h-4 bg-white rotate-45 shadow-[-2px_2px_4px_rgba(0,0,0,0.05)]"></div>
-
-                                <NestedMultiSelectItem
-                                    icon={<ContextMenuIcons.NestedHome />}
-                                    text="Home"
-                                    isSelected={selectedMoveTo.includes('Home')}
-                                    onClick={() => toggleMoveToSelection('Home')}
-                                />
-                                <NestedMultiSelectItem
-                                    icon={<ContextMenuIcons.NestedArchive />}
-                                    text="Archive"
-                                    isSelected={selectedMoveTo.includes('Archive')}
-                                    onClick={() => toggleMoveToSelection('Archive')}
-                                />
-                                <NestedMultiSelectItem
-                                    icon={<ContextMenuIcons.NestedScheduled />}
-                                    text="Scheduled"
-                                    isSelected={selectedMoveTo.includes('Scheduled')}
-                                    onClick={() => toggleMoveToSelection('Scheduled')}
-                                />
                             </div>
                         </div>
 
@@ -401,6 +484,56 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
 
                     </div>
                     {/* End of scrollable content */}
+                </div>,
+                document.body
+            )}
+
+            {/* Desktop nested "Move To" menu: portal + fixed so it isn't clipped by overflow and stays attached */}
+            {!isMobile && isOpen && isMoveToOpenDesktop && moveToPosition && typeof window !== 'undefined' && createPortal(
+                <div
+                    ref={moveToDropdownRef}
+                    className="fixed w-60 bg-white rounded-[10px] shadow-[0_4px_16px_rgba(0,0,0,0.1)] p-2 z-[10000]"
+                    style={{ top: `${moveToPosition.top}px`, left: `${moveToPosition.left}px` }}
+                    onPointerEnter={() => {
+                        if (moveToCloseTimerRef.current) {
+                            window.clearTimeout(moveToCloseTimerRef.current);
+                            moveToCloseTimerRef.current = null;
+                        }
+                        setIsMoveToOpenDesktop(true);
+                    }}
+                    onPointerLeave={() => {
+                        if (moveToCloseTimerRef.current) window.clearTimeout(moveToCloseTimerRef.current);
+                        moveToCloseTimerRef.current = window.setTimeout(() => {
+                            setIsMoveToOpenDesktop(false);
+                        }, 80);
+                    }}
+                >
+                    <div
+                        className="absolute w-4 h-4 bg-white rotate-45 shadow-[-2px_2px_4px_rgba(0,0,0,0.05)]"
+                        style={{
+                            top: `${moveToPosition.arrowTop}px`,
+                            left: moveToPosition.side === "right" ? "-8px" : undefined,
+                            right: moveToPosition.side === "left" ? "-8px" : undefined,
+                        }}
+                    />
+                    <NestedMultiSelectItem
+                        icon={<ContextMenuIcons.NestedHome />}
+                        text="Home"
+                        isSelected={selectedMoveTo.includes('Home')}
+                        onClick={() => toggleMoveToSelection('Home')}
+                    />
+                    <NestedMultiSelectItem
+                        icon={<ContextMenuIcons.NestedArchive />}
+                        text="Archive"
+                        isSelected={selectedMoveTo.includes('Archive')}
+                        onClick={() => toggleMoveToSelection('Archive')}
+                    />
+                    <NestedMultiSelectItem
+                        icon={<ContextMenuIcons.NestedScheduled />}
+                        text="Scheduled"
+                        isSelected={selectedMoveTo.includes('Scheduled')}
+                        onClick={() => toggleMoveToSelection('Scheduled')}
+                    />
                 </div>,
                 document.body
             )}

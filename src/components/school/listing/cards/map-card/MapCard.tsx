@@ -9,11 +9,12 @@ import { schools } from "./mock";
 export default function MapCard({ id }: { id: string }) {
   const [mapType, setMapType] = useState<"roadmap" | "satellite">("roadmap");
   const [showLabels, setShowLabels] = useState(true);
-  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
+  const [isDesktop, setIsDesktop] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(min-width: 768px)").matches;
+  });
   const mapContainerRef = useRef<{ exitStreetView: () => void } | null>(null);
-  const desktopMapRef = useRef<HTMLDivElement>(null);
 
-  // Ensure we only set the section id on the visible variant (prevents duplicate ids).
   useEffect(() => {
     if (typeof window === "undefined") return;
     const mql = window.matchMedia("(min-width: 768px)");
@@ -38,39 +39,41 @@ export default function MapCard({ id }: { id: string }) {
 
   return (
     <>
-      {/* Mobile Map Card */}
-      <MobileMapCard id={id} />
+      {/* Mobile Map Card (only render on mobile to avoid initializing Google Maps in hidden DOM) */}
+      {!isDesktop && <MobileMapCard id={id} />}
 
-      {/* Desktop Map Card - Always render outer div with id (like other components) */}
-      <div 
-        ref={desktopMapRef}
-        id={isDesktop ? id : undefined}
-        className="hidden md:flex justify-center my-cardMargin"
-        style={{ scrollMarginTop: "176px" }}
-      >
-        <div className="hidden md:block w-full max-w-[1077px] bg-white rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.05)] overflow-hidden border border-black/10">
-          <MapHeader 
-            mapType={mapType}
-            setMapType={setMapType}
-            onMapTypeChange={handleMapTypeChange}
-            showLabels={showLabels}
-            setShowLabels={setShowLabels}
-          />
-          <div className="relative h-[500px]">
-            <MapContainer 
-              schools={schools} 
+      {/* Desktop Map Card */}
+      {isDesktop && (
+        <div
+          id={id}
+          className="hidden md:flex justify-center my-cardMargin"
+          style={{ scrollMarginTop: "132px" }}
+        >
+          <div className="w-full max-w-[1077px] bg-white rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.05)] overflow-hidden border border-black/10">
+            <MapHeader
               mapType={mapType}
+              setMapType={setMapType}
+              onMapTypeChange={handleMapTypeChange}
               showLabels={showLabels}
-              ref={mapContainerRef}
+              setShowLabels={setShowLabels}
             />
+            {/* Match Explore map panel height */}
+            <div className="relative h-[400px]">
+              <MapContainer
+                schools={schools}
+                mapType={mapType}
+                showLabels={showLabels}
+                ref={mapContainerRef}
+              />
+            </div>
           </div>
+          <Script
+            id="google-maps"
+            src={`https://maps.googleapis.com/maps/api/js?key=AIzaSyBuuN90JoSkfCGWSO_i5MOqMZnQiZ9skiY`}
+            strategy="afterInteractive"
+          />
         </div>
-        <Script
-          id="google-maps"
-          src={`https://maps.googleapis.com/maps/api/js?key=AIzaSyBuuN90JoSkfCGWSO_i5MOqMZnQiZ9skiY`}
-          strategy="afterInteractive"
-        />
-      </div>
+      )}
     </>
   );
 }

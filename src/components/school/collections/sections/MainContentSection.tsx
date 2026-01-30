@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { useSchoolsExplore } from "@/store/use-schools-explore";
-import { establishmentTypes } from "../../explore/main-content/mock";
 import Header from "../../explore/main-content/Header";
 import { schools } from "../../explore/mock";
 import {
@@ -16,10 +14,13 @@ import ActionsDropdown from "../components/ActionsDropdown/ActionsDropdown";
 import CreateCollectionModal from "../components/CreateCollectionModal/CreateCollectionModal";
 import ContentArea from "./ContentArea";
 
-const MainContentSection: React.FC<{
-  isExpanded: boolean;
-  handleExpandCollapse: () => void;
-}> = ({ handleExpandCollapse, isExpanded }) => {
+interface MainContentSectionProps {
+  onContainerExpandChange?: (isExpanded: boolean) => void;
+}
+
+const MainContentSection: React.FC<MainContentSectionProps> = ({
+  onContainerExpandChange,
+}) => {
   const { subcategory, setSubcategory } = useSchoolsCollection(
     (state) => state
   );
@@ -91,47 +92,10 @@ const MainContentSection: React.FC<{
     </div>
   );
 
-  const renderExpandCollapseButton = () => (
-    <button onClick={() => handleExpandCollapse()}>
-      {isExpanded ? (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
-          <path d="M15 4v16"></path>
-          <path d="M9 10l2 2l-2 2"></path>
-        </svg>
-      ) : (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
-          <path d="M15 4v16"></path>
-          <path d="M10 10l-2 2l2 2"></path>
-        </svg>
-      )}
-    </button>
-  );
-
   return (
     <div className="w-full mx-auto bg-white rounded-lg sm:rounded-xl border border-[rgba(0,0,0,0.1)] shadow-[0_1px_4px_rgba(0,0,0,0.05)] sm:shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-hidden">
       <Header
+        schools={schools}
         layouts={layouts}
         dropdownValue={subcategory}
         dropdownIcon={DROPDOWN_SUBCATEGORIES_ICONS[subcategory]}
@@ -145,7 +109,7 @@ const MainContentSection: React.FC<{
         layoutToggleWidth={200}
         renderActionsButton={renderActionsDropdown}
         renderItemsCount={renderItemsCount}
-        renderExpandCollapseButton={renderExpandCollapseButton}
+        onContainerExpandChange={onContainerExpandChange}
       />
       <ContentArea isMapActive={isMapActive} layout={layout} />
       <CreateCollectionModal

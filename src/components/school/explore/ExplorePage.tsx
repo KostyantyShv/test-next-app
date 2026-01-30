@@ -9,10 +9,10 @@ const ExplorePage = () => {
   return (
     <div
       className="min-h-screen flex flex-col items-center py-4 md:py-5 px-3 md:px-5"
-      style={{ backgroundColor: 'var(--background-color)' }}
+      style={{ backgroundColor: "var(--background-color, var(--background))" }}
     >
       <div 
-        className="w-full transition-all duration-300"
+        className="w-full"
         style={{ 
           maxWidth: isContainerExpanded ? '1318.75px' : '1055px' 
         }}

@@ -1,13 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { Inter } from "next/font/google";
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
 
 type Review = {
   author: string;
@@ -255,7 +248,7 @@ const ReviewCard: React.FC<{
 
 const ReviewsGrid: React.FC<ReviewsGridProps> = ({ reviews = mockReviews }) => {
   return (
-    <div className={`${inter.className} text-[#4A4A4A]`}>
+    <div className="text-[#4A4A4A]">
       <div className="mx-auto">
         <div className="md:bg-white">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4 md:pt-8 px-4 md:px-0">

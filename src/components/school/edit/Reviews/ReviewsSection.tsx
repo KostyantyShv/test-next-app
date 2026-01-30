@@ -1,10 +1,7 @@
-import { Inter } from "next/font/google";
 import { useState, useEffect, useCallback } from "react";
 import ReviewTable from "./ReviewTable";
 import { initialReviews } from "./mock/reviews";
 import { Review } from "./types/review";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export default function ReviewsSection() {
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
@@ -33,7 +30,7 @@ export default function ReviewsSection() {
   }, [truncateText]);
 
   return (
-    <div className={`text-gray-700 ${inter.className}`}>
+    <div className="text-gray-700">
       <div className="container mx-auto">
         <div className="md:flex md:gap-6">
           {/* Desktop Header */}

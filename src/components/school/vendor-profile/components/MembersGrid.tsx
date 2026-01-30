@@ -1,14 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { Inter } from "next/font/google";
 import { saveVendorProfileScrollAndFocus } from "../utils/navPreserve";
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
 
 interface Member {
   name: string;
@@ -115,7 +108,7 @@ export default function MembersGrid() {
   };
 
   return (
-    <div className={`${inter.className} text-[#4A4A4A]`}>
+    <div className="text-[#4A4A4A]">
       <div className="flex justify-between items-center px-4 mt-4 md:mt-0">
         <div className="text-base md:text-lg font-semibold text-[#464646]">4 Members</div>
         <div className="text-[13px] md:text-sm text-[#6F767E]">

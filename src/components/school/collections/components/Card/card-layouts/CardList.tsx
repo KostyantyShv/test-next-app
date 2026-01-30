@@ -78,8 +78,8 @@ export const CardList: React.FC<{
 
   return (
     <div>
-      <div className="school-card relative flex bg-white rounded-lg overflow-visible shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-gray-200 transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] z-[1] max-w-full lg:flex-row flex-col">
-        <div className="image-section w-full lg:w-[280px] flex flex-col pt-6 pr-0 lg:pr-6 pb-0 relative">
+      <div className="school-card relative flex bg-white rounded-lg overflow-visible shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-gray-200 transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] z-[1] w-full max-w-full min-w-0 xl:flex-row flex-col">
+        <div className="image-section w-full xl:w-[280px] flex flex-col pt-6 pr-0 xl:pr-6 pb-0 relative">
           {school.specialty && (
             <div
               className={`specialty-label absolute top-9 left-6 h-8 bg-white rounded-full flex items-center px-3 cursor-pointer transition-all duration-200 z-[2] text-xs font-medium shadow-[0_2px_4px_rgba(0,0,0,0.1)] ${
@@ -99,9 +99,9 @@ export const CardList: React.FC<{
             alt={school.name}
             width={250}
             height={148}
-            className="school-image h-[9.25rem] w-full object-cover rounded-lg lg:ml-3 ml-0"
+            className="school-image h-[9.25rem] w-full object-cover rounded-lg xl:ml-3 ml-0"
           />
-          <div className="image-buttons flex gap-2 pt-3 pb-0 lg:ml-3 ml-0 w-full">
+          <div className="image-buttons flex gap-2 pt-3 pb-0 xl:ml-3 ml-0 w-full">
             <div className="image-button compare-button flex-1 py-2 px-4 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium text-center cursor-pointer transition-all duration-200 hover:bg-gray-200">
               Compare
             </div>
@@ -110,14 +110,14 @@ export const CardList: React.FC<{
             </div>
           </div>
         </div>
-        <div className="content-section flex-1 p-6 flex flex-col">
+        <div className="content-section flex-1 p-6 flex flex-col min-w-0">
           {school.ranking && (
             <div className="ranking-text text-sm text-green-600 font-medium mb-2">
               {school.ranking}
             </div>
           )}
-          <div className="school-name-container flex items-center mb-3">
-            <h3 className="school-name text-xl font-semibold text-gray-700 leading-tight cursor-pointer transition-all duration-200 hover:text-green-700 hover:underline hover:decoration-green-700 flex-1">
+          <div className="school-name-container flex items-center mb-3 min-w-0">
+            <h3 className="school-name text-xl font-semibold text-gray-700 leading-tight cursor-pointer transition-all duration-200 hover:text-green-700 hover:underline hover:decoration-green-700 flex-1 min-w-0 break-words">
               {school.name}
             </h3>
             <div
@@ -250,7 +250,7 @@ export const CardList: React.FC<{
               </div>
             </div>
           </div>
-          <div className="stats-section flex flex-wrap gap-6 mb-4">
+          <div className="stats-section flex flex-wrap gap-6 mb-4 min-w-0">
             <div className="stat flex items-center gap-2 text-sm text-gray-600">
               <svg
                 fill="currentColor"
@@ -260,7 +260,7 @@ export const CardList: React.FC<{
                 <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z" />
                 <path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1C18.6,5.5,19.8,8.4,19.2,11.2z" />
               </svg>
-              <span className="text-gray-700 font-medium">
+              <span className="text-gray-700 font-medium min-w-0 break-words">
                 {school.location}
               </span>
             </div>
@@ -278,7 +278,7 @@ export const CardList: React.FC<{
                   fill="currentColor"
                 />
               </svg>
-              <span className="text-gray-700 font-medium">
+              <span className="text-gray-700 font-medium min-w-0 break-words">
                 Added {school.dateSaved}
               </span>
             </div>
@@ -290,7 +290,7 @@ export const CardList: React.FC<{
               >
                 <path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Zm-15.34,5.47-48.7,42a8,8,0,0,0-2.56,7.91l14.88,62.8a.37.37,0,0,1-.17.48c-.18.14-.23.11-.38,0l-54.72-33.65a8,8,0,0,0-8.38,0L69.09,215.94c-.15.09-.19.12-.38,0a.37.37,0,0,1-.17-.48l14.88-62.8a8,8,0,0,0-2.56-7.91l-48.7-42c-.12-.1-.23-.19-.13-.50s.18-.27.33-.29l63.92-5.16A8,8,0,0,0,103,91.86l24.62-59.61c.08-.17.11-.25.35-.25s.27.08.35.25L153,91.86a8,8,0,0,0,6.75,4.92l63.92,5.16c.15,0,.24,0,.33.29S224,102.63,223.84,102.73Z" />
               </svg>
-              <span className="text-gray-700 font-medium">
+              <span className="text-gray-700 font-medium min-w-0 break-words">
                 <strong>{school.rating.split(" ")[0]}</strong> (
                 {school.notes.length} reviews)
               </span>
@@ -310,7 +310,7 @@ export const CardList: React.FC<{
                 <path d="M16 7h4" />
                 <path d="M18 19h-13a2 2 0 1 1 0 -4h4a2 2 0 1 0 0 -4h-3" />
               </svg>
-              <span className="text-gray-700 font-medium">
+              <span className="text-gray-700 font-medium min-w-0 break-words">
                 {school.notes.length}{" "}
                 <span
                   className="create-note-inline text-blue-600 text-sm font-medium cursor-pointer transition-colors duration-200 hover:underline"
@@ -338,8 +338,8 @@ export const CardList: React.FC<{
               </div>
             )}
           </div>
-          <div className="footer-section flex flex-col lg:flex-row items-start lg:items-center justify-between mt-auto z-20">
-            <div className="metrics flex flex-col lg:flex-row items-start lg:items-center gap-6">
+          <div className="footer-section flex flex-col xl:flex-row items-start xl:items-center justify-between mt-auto z-20">
+            <div className="metrics flex flex-col xl:flex-row items-start xl:items-center gap-6">
               <div
                 className="status-dropdown relative cursor-pointer z-[200]"
                 data-school-id={index}

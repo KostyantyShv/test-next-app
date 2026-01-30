@@ -46,7 +46,9 @@ const ContentDesktop: React.FC<ContentDesktopProps> = ({ schoolType = "college" 
   const { activeTab, setActiveTab } = useTabsObserver();
 
   const scrollToSection = (tabId: string) => {
-    const headerOffset = 176; // sticky header total height on listing page
+    // Listing replacement header (desktop): fixed at top (0px),
+    // listing header ~112px + 20px padding => ~132px total.
+    const headerOffset = 132;
 
     const findElement = () =>
       (document.getElementById(tabId) ||
