@@ -15,6 +15,17 @@ export const layouts = [
     ),
   },
   {
+    type: "card",
+    icon: (
+      <svg viewBox="0 0 16 16">
+        <path
+          fill="currentColor"
+          d="M3 2.5C3 1.94772 3.44772 1.5 4 1.5H12C12.5523 1.5 13 1.94772 13 2.5V13.5C13 14.0523 12.5523 14.5 12 14.5H4C3.44772 14.5 3 14.0523 3 13.5V2.5ZM4.5 4V8H11.5V4H4.5ZM4.5 9.5V12H10V9.5H4.5Z"
+        />
+      </svg>
+    ),
+  },
+  {
     type: "list",
     icon: (
       <svg viewBox="0 0 16 16">
@@ -24,6 +35,17 @@ export const layouts = [
           clipRule="evenodd"
           fillRule="evenodd"
         ></path>
+      </svg>
+    ),
+  },
+  {
+    type: "magazine",
+    icon: (
+      <svg viewBox="0 0 16 16">
+        <path
+          fill="currentColor"
+          d="M2 2.5C2 1.94772 2.44772 1.5 3 1.5H13C13.5523 1.5 14 1.94772 14 2.5V13.5C14 14.0523 13.5523 14.5 13 14.5H3C2.44772 14.5 2 14.0523 2 13.5V2.5ZM3.5 3.5V12.5H7.5V3.5H3.5ZM9 3.5V12.5H12.5V3.5H9Z"
+        />
       </svg>
     ),
   },

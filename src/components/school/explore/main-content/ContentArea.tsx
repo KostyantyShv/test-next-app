@@ -23,18 +23,26 @@ const ContentArea: React.FC<ContentAreaProps> = ({
   // При повноекранній мапі (isMapExpanded) картки ховаються; при виході — знову показуються.
   const cardCounts = {
     grid: 6,
+    card: 6,
     list: 4,
+    magazine: 4,
     hybrid: 4,
     classic: 8,
   };
 
   const getGridCols = () => {
     if (layout === "grid") {
-      // Match provided HTML (6.5) when map is OFF:
-      // 3 cols, 2 below 900px, 1 below 600px
+      // Match provided HTML (Grid 6) when map is OFF:
+      // grid-template-columns: repeat(auto-fill, minmax(250px, 1fr))
       //
       // When map is ON, available width is much smaller → keep cards readable:
       // 2 cols, 1 below ~700px.
+      return isMapActive
+        ? "grid-cols-2 max-[700px]:grid-cols-1"
+        : "grid-cols-[repeat(auto-fill,minmax(250px,1fr))]";
+    }
+    if (layout === "card") {
+      // Keep previous "card" layout grid behavior.
       return isMapActive
         ? "grid-cols-2 max-[700px]:grid-cols-1"
         : "grid-cols-3 max-[900px]:grid-cols-2 max-[600px]:grid-cols-1";
@@ -43,7 +51,9 @@ const ContentArea: React.FC<ContentAreaProps> = ({
       return isMapActive ? "grid-cols-1" : "grid-cols-2";
     }
     if (layout === "classic") {
-      return isMapActive ? "grid-cols-2" : "grid-cols-4";
+      return isMapActive
+        ? "grid-cols-2 max-[700px]:grid-cols-1"
+        : "grid-cols-4 max-[1100px]:grid-cols-3 max-[900px]:grid-cols-2 max-[600px]:grid-cols-1";
     }
     return "";
   };
@@ -70,7 +80,17 @@ const ContentArea: React.FC<ContentAreaProps> = ({
               {renderCards()}
             </div>
           )}
+          {layout === "card" && (
+            <div className="py-4 px-4 flex flex-col gap-4">
+              {renderCards()}
+            </div>
+          )}
           {layout === "list" && (
+            <div className="py-4 pl-4 pr-5 flex flex-col gap-4">
+              {renderCards()}
+            </div>
+          )}
+          {layout === "magazine" && (
             <div className="py-4 pl-4 pr-5 flex flex-col gap-4">
               {renderCards()}
             </div>
@@ -81,7 +101,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
             </div>
           )}
           {layout === "classic" && (
-            <div className="py-4 px-4 flex flex-col gap-4">
+            <div className="py-4 px-4 grid grid-cols-1 gap-5">
               {renderCards()}
             </div>
           )}
@@ -89,8 +109,8 @@ const ContentArea: React.FC<ContentAreaProps> = ({
 
         {/* Desktop Layouts */}
         <div className="hidden md:block min-w-0">
-          {layout === "grid" || layout === "hybrid" || layout === "classic" ? (
-            <div className={`grid gap-6 min-w-0 ${getGridCols()}`}>
+          {layout === "grid" || layout === "card" || layout === "hybrid" || layout === "classic" ? (
+            <div className={`grid ${layout === "classic" ? "gap-5" : "gap-6"} min-w-0 ${getGridCols()}`}>
               {renderCards()}
             </div>
           ) : (
@@ -101,7 +121,11 @@ const ContentArea: React.FC<ContentAreaProps> = ({
         </div>
       </div>
       {/* Desktop map panel only (mobile uses a drawer in Header) */}
-      <div className="hidden md:block">
+      <div
+        className={`hidden md:block min-w-0 ${
+          isMapActive && isMapExpanded ? "flex-1" : "shrink-0 self-start sticky top-6"
+        }`}
+      >
         <MapContainer
           isMapActive={isMapActive}
           schools={schools}

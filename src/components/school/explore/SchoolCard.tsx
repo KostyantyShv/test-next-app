@@ -36,13 +36,227 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const isListLayout = layout === "list";
+  const isMagazineLayout = layout === "magazine";
+  const isCardLayout = layout === "card";
   const isGridLayout = layout === "grid";
   const isHybridLayout = layout === "hybrid";
   const isClassicLayout = layout === "classic";
-  const showHoverOverlay = layout === "grid" || layout === "classic";
+  // Hover overlay is part of the HTML specs for these desktop cards.
+  const showHoverOverlay = layout === "grid" || layout === "classic" || layout === "card";
 
-  // Grid Layout (6.5) — match provided HTML structure/styles 1:1
+  // Grid Layout (6) — match provided HTML structure/styles 1:1
   if (isGridLayout) {
+    const ratingNum = (school.rating || "").match(/[\d.]+/)?.[0] || school.rating;
+    const reviewsCount = typeof school.reviews === "number"
+      ? school.reviews
+      : Number((school.rating || "").match(/\(([^)]+)\)/)?.[1]) || 0;
+
+    const ratingCountText = reviewsCount ? `(${reviewsCount})` : (school.rating || "").match(/\([^)]+\)/)?.[0] || "";
+
+    const specialty = (() => {
+      if (!school.specialty) return null;
+      if (school.specialty === "hot") return { className: "text-[#FF4D4D]", icon: <SchoolCardIcons.Hot />, label: "High demand" };
+      if (school.specialty === "instant-book")
+        return { className: "text-[#1D77BD]", icon: <SchoolCardIcons.InstantBook />, label: "Instant book" };
+      return { className: "text-[#FF9900]", icon: <SchoolCardIcons.Sponsored />, label: "Sponsored" };
+    })();
+
+    const secondStat = (() => {
+      if (establishment === "Colleges" || establishment === "Graduates") {
+        return { icon: <SchoolCardIcons.Duration />, value: school.duration || "—" };
+      }
+      if (establishment === "District") {
+        return { icon: <SchoolCardIcons.TotalSchools />, value: String((school as any).totalSchools || "—") };
+      }
+      return { icon: <SchoolCardIcons.Ratio />, value: school.ratio || "—" };
+    })();
+
+    const footerStat = (() => {
+      if (establishment === "Colleges") {
+        return { icon: <SchoolCardIcons.SAT />, text: `SAT: ${school.sat || "—"}` };
+      }
+      return { icon: <SchoolCardIcons.Students />, text: `Students: ${school.students || "—"}` };
+    })();
+
+    const hoverStat1 = (() => {
+      if (establishment === "District") {
+        return { icon: <SchoolCardIcons.Ratio />, text: school.ratio || "—" };
+      }
+      const perYear = establishment === "K-12" || establishment === "Colleges";
+      const price = school.price || "—";
+      return { icon: <SchoolCardIcons.Tuition />, text: perYear && !price.includes("/") ? `${price}/yr` : price };
+    })();
+
+    const hoverStat2 = (() => {
+      if (establishment === "Colleges") {
+        return { icon: <SchoolCardIcons.Acceptance />, text: `Acceptance: ${school.acceptanceRate || (school as any).acceptance || "—"}` };
+      }
+      if (establishment === "Graduates") {
+        return { icon: <SchoolCardIcons.MedianSalary />, text: `~${(school as any).medianSalary || "—"}` };
+      }
+      return { icon: <SchoolCardIcons.Grades />, text: `Grades: ${school.grades || "—"}` };
+    })();
+
+    const showReview = Boolean((school as any).review) && Math.random() > 0.5;
+
+    return (
+      <div className="school-card group relative flex flex-col bg-white rounded-[12px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#E5E7EB] transition-[transform,box-shadow] duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
+        {/* Image */}
+        <div className="image-container relative w-full h-[160px] overflow-hidden">
+          <Image src={school.image} alt={school.name} fill sizes="(max-width: 1055px) 33vw, 250px" className="school-image object-cover" />
+
+          <button
+            type="button"
+            className={`like-button absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 z-[2] ${
+              isLiked
+                ? "bg-[#E6F7F0] text-[#016853] hover:bg-[#D1F0E4]"
+                : "bg-white text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853]"
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsLiked((v) => !v);
+            }}
+            aria-label="Like"
+          >
+            <SchoolCardIcons.Heart filled={isLiked} />
+          </button>
+
+          {specialty ? (
+            <div className={`specialty-label absolute top-3 left-0 h-8 bg-white rounded-r-[16px] flex items-center px-3 text-[12px] font-medium shadow-[0_2px_2px_rgba(0,0,0,0.1)] z-[2] ${specialty.className}`}>
+              <span className="[&>svg]:w-4 [&>svg]:h-4 mr-1">{specialty.icon}</span>
+              {specialty.label}
+            </div>
+          ) : null}
+
+          <div className="school-type-label absolute bottom-0 left-[10px] bg-white px-2 pt-1 text-[11px] font-semibold text-[#464646] tracking-[0.02em] rounded-t-[4px] h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
+            {school.schoolType}
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="school-content p-4 flex-1">
+          {school.ranking ? (
+            <div className="ranking-text text-[#089E68] text-[13px] mb-2 whitespace-nowrap overflow-hidden text-ellipsis font-medium">
+              {school.ranking}
+            </div>
+          ) : null}
+
+          <div className="school-name text-[16px] font-semibold text-[#464646] mb-2 leading-[1.4]">
+            {school.name}
+          </div>
+
+          <div className="school-stats flex flex-wrap gap-3 mb-4">
+            <div className="stat flex items-center gap-[6px] text-[13px] text-[#5F5F5F] tracking-[0.01em] font-[450]">
+              <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#565656]">
+                <SchoolCardIcons.Location />
+              </span>
+              <span className="text-[#464646]">{school.location}</span>
+            </div>
+
+            <div className="stat flex items-center gap-[6px] text-[13px] text-[#5F5F5F] tracking-[0.01em] font-[450]">
+              <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#565656]">{secondStat.icon}</span>
+              <span className="text-[#464646]">{secondStat.value}</span>
+            </div>
+
+            <div className="stat flex items-center gap-[6px] text-[13px] text-[#5F5F5F] tracking-[0.01em] font-[450]">
+              <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#565656]">
+                <SchoolCardIcons.Star className="w-4 h-4 text-[#565656]" />
+              </span>
+              <span className="text-[#464646]">
+                <strong className="font-semibold text-[#444444]">{ratingNum}</strong> {ratingCountText}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="school-footer p-4 border-t border-[rgba(1,104,83,0.1)] flex items-center justify-between">
+          <div className="grade flex items-center gap-2 font-semibold text-[#016853]">
+            <div className="grade-circle w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-[14px] font-semibold">
+              {school.grade}
+            </div>
+          </div>
+
+          <div className="students-score flex items-center gap-[6px] text-[13px] text-[#5F5F5F]">
+            <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">{footerStat.icon}</span>
+            <span className="whitespace-nowrap">{footerStat.text}</span>
+          </div>
+        </div>
+
+        {/* Hover overlay */}
+        <div className="hover-overlay pointer-events-none absolute inset-0 bg-[rgba(255,255,255,0.98)] p-6 opacity-0 invisible transition-[opacity,visibility] duration-300 ease-in-out flex flex-col z-[10] group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto">
+          <div className="hover-header flex justify-between gap-3 mb-4">
+            <div className="hover-school-main flex gap-3">
+              <Image src={school.avatar || school.image} alt={school.name} width={40} height={40} className="school-avatar w-10 h-10 rounded-lg object-cover" />
+              <div className="hover-school-name text-[16px] font-semibold text-[#464646] hover:text-[#346DC2] transition-colors cursor-pointer">
+                {school.name}
+              </div>
+            </div>
+
+            <div className="more-options relative w-8 h-8 flex items-center justify-center cursor-pointer -translate-y-1">
+              <span className="absolute inset-0 m-auto w-7 h-7 rounded-full bg-transparent transition-colors duration-200 hover:bg-[#f5f5f7]" />
+              <div className="relative z-[1] w-8 h-8 flex items-center justify-center">
+                <SchoolCardContextMenu
+                  schoolName={school.name}
+                  buttonClassName="w-8 h-8 bg-transparent border-none flex items-center justify-center text-[#565656] pointer-events-auto"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="hover-stats flex gap-3 mb-4">
+            <div className="hover-stat flex items-center gap-[6px] text-[13px] text-[#5F5F5F]">
+              <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">{hoverStat1.icon}</span>
+              <span className="text-[#464646]">{hoverStat1.text}</span>
+            </div>
+            <div className="hover-stat flex items-center gap-[6px] text-[13px] text-[#5F5F5F]">
+              <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">{hoverStat2.icon}</span>
+              <span className="text-[#464646]">{hoverStat2.text}</span>
+            </div>
+          </div>
+
+          <div className="school-description text-[14px] leading-[1.6] text-[#4A4A4A] line-clamp-3 mb-3">
+            {showReview ? (
+              <>
+                <span className="reviewer-type font-semibold text-[#464646] mr-1">
+                  {(school as any).reviewerType || "Parent"}:
+                </span>
+                {(school as any).review}
+              </>
+            ) : (
+              school.description
+            )}
+          </div>
+
+          <div className="review-count text-[13px] font-semibold text-[#1D77BD] mb-4 cursor-pointer hover:text-[#346DC2] hover:underline">
+            Read {school.reviews} reviews
+          </div>
+
+          <div className="hover-buttons flex gap-3 mt-auto">
+            <button type="button" className="hover-button button-info flex-1 py-3 rounded-lg text-[14px] font-medium bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors">
+              More Info
+            </button>
+            <button
+              type="button"
+              className="hover-button button-like flex-1 py-3 rounded-lg text-[14px] font-medium bg-[#298541] text-white hover:bg-[#237436] transition-colors flex items-center justify-center gap-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsLiked((v) => !v);
+              }}
+            >
+              <span className="[&>svg]:w-4 [&>svg]:h-4">
+                <SchoolCardIcons.Heart filled={false} />
+              </span>
+              {isLiked ? "Liked" : "Like"}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Card Layout (6.5) — keep previous implementation
+  if (isCardLayout) {
     type MobileStat = { icon: React.ReactNode; value: string; boldPrefix?: string };
 
     const truncateName = (name: string) => {
@@ -210,7 +424,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               <div
                 className={`like-indicator w-7 h-7 flex items-center justify-center cursor-pointer ${
                   isLiked ? "text-[#298541]" : "text-[#5F5F5F]"
-                }`}
+                } [&>svg]:w-4 [&>svg]:h-4`}
                 role="button"
                 tabIndex={0}
                 onClick={(e) => {
@@ -438,19 +652,28 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
             <div className="hover-stats flex gap-3 mb-4">
               <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                <span className="text-[#089E68]">
+                <span className="text-[#089E68] [&>svg]:w-4 [&>svg]:h-4">
                   <SchoolCardIcons.Tuition />
                 </span>
                 <span>{hoverTuition}</span>
               </div>
               <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                <span className="text-[#089E68]">{hoverStat2.icon}</span>
+                <span className="text-[#089E68] [&>svg]:w-4 [&>svg]:h-4">{hoverStat2.icon}</span>
                 <span>{hoverStat2.label}</span>
               </div>
             </div>
 
             <p className="description text-sm leading-[1.6] text-[#4A4A4A] overflow-hidden mb-3 line-clamp-5">
-              {school.description}
+              {Boolean((school as any).review) && school.name.length % 2 === 0 ? (
+                <>
+                  <span className="reviewer-type font-semibold mr-1">
+                    {(school as any).reviewerType || "Parent"}:
+                  </span>
+                  {(school as any).review}
+                </>
+              ) : (
+                school.description
+              )}
             </p>
 
             <div className="review-count text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer hover:underline">
@@ -459,10 +682,27 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
             <div className="hover-buttons flex flex-row gap-2 mt-auto">
               <button
-                className="hover-button w-full py-3 px-3 rounded-lg text-sm font-medium cursor-pointer bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors flex items-center justify-center gap-2"
+                className="hover-button flex-1 py-3 px-3 rounded-lg text-sm font-medium cursor-pointer bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors flex items-center justify-center gap-2"
                 type="button"
               >
                 More Info
+              </button>
+              <button
+                type="button"
+                className={`hover-button flex-1 py-3 px-3 rounded-lg text-sm font-medium cursor-pointer transition-colors flex items-center justify-center gap-2 ${
+                  isLiked
+                    ? "bg-[#298541] text-white"
+                    : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsLiked((v) => !v);
+                }}
+              >
+                <span className="[&>svg]:w-4 [&>svg]:h-4">
+                  <SchoolCardIcons.Heart filled={isLiked} />
+                </span>
+                {isLiked ? "Liked" : "Like"}
               </button>
             </div>
           </div>
@@ -704,555 +944,712 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
     );
   }
 
-  // List Layout (Desktop + responsive) — match provided HTML structure/styles 1:1
-  if (isListLayout) {
+  // Magazine Layout (Desktop + responsive) — match provided HTML "Magazine Style (10)" 1:1
+  if (isMagazineLayout) {
     const ratingNum = (school.rating || "").match(/[\d.]+/)?.[0] || school.rating;
-    const reviewsCount = typeof school.reviews === "number"
-      ? school.reviews
-      : Number((school.rating || "").match(/\(([^)]+)\)/)?.[1]) || 0;
+    const reviewsCount =
+      typeof school.reviews === "number" ? school.reviews : Number((school.rating || "").match(/\(([^)]+)\)/)?.[1]) || 0;
 
-    const tuitionPerYear = (() => {
-      // In provided HTML mobile drawer: K-12 + Colleges show "/yr"
-      if (!school.price) return "";
-      if (school.price.includes("/")) return school.price;
-      if (establishment === "K-12" || establishment === "Colleges") return `${school.price}/yr`;
-      return school.price;
+    const specialtyMeta = (() => {
+      if (!school.specialty) return null;
+      if (school.specialty === "hot") return { className: "hot text-[#FF4D4D]", icon: <SchoolCardIcons.Hot />, label: "High demand" };
+      if (school.specialty === "instant-book")
+        return { className: "instant-book text-[#1D77BD]", icon: <SchoolCardIcons.InstantBook />, label: "Instant book" };
+      return { className: "sponsored text-[#FF9900]", icon: <SchoolCardIcons.Sponsored />, label: "Sponsored" };
     })();
 
-    const renderDrawerDescription = () => {
-      // If description has "X: text" → bold the prefix like in provided HTML
-      const text = school.description || "";
-      const idx = text.indexOf(":");
-      if (idx > 0 && idx < 30) {
-        const prefix = text.slice(0, idx);
-        const rest = text.slice(idx + 1);
-        return (
-          <p className="text-sm leading-[1.6] text-[#4A4A4A] mb-4">
-            <strong className="font-semibold text-[#464646]">{prefix}:</strong>
-            {rest}
-          </p>
-        );
-      }
-      return <p className="text-sm leading-[1.6] text-[#4A4A4A] mb-4">{text}</p>;
+    const formatNumber = (value?: string) => {
+      if (!value) return "—";
+      const num = Number(String(value).replace(/[^\d]/g, ""));
+      return Number.isFinite(num) ? num.toLocaleString() : value;
     };
 
-    const Stat = ({
-      icon,
-      value,
-      tooltip,
-      valueBoldPrefix,
-    }: {
-      icon: React.ReactNode;
-      value: string;
-      tooltip: string;
-      valueBoldPrefix?: string;
-    }) => (
-      <div className="relative group flex items-center gap-2 text-sm text-[#5F5F5F] leading-none">
-        <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#565656] flex-shrink-0">
-          {icon}
-        </span>
-        <span className="text-[#464646] font-medium leading-none min-w-0 truncate">
-          {valueBoldPrefix ? (
-            <>
-              <span className="font-semibold">{valueBoldPrefix}</span>{" "}
-              {value.replace(String(valueBoldPrefix), "").trim()}
-            </>
-          ) : (
-            value
-          )}
-        </span>
+    const medianSalaryRaw = (school as any).medianSalary as string | undefined;
+    const medianSalaryText = medianSalaryRaw ? (medianSalaryRaw.includes("$") ? medianSalaryRaw : `$${medianSalaryRaw}`) : "—";
 
-        <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[calc(100%+10px)] opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/80 text-white text-center rounded px-2 py-1 text-xs font-medium whitespace-nowrap z-10">
-          {tooltip}
-          <span className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-black/80" />
-        </span>
-      </div>
-    );
-
-    const primaryStats = (() => {
-      const base = [
-        <Stat key="loc" icon={<SchoolCardIcons.Location />} value={school.location} tooltip="Location" />,
-        <Stat
-          key="rating"
-          icon={<SchoolCardIcons.Star className="w-4 h-4 text-[#565656]" />}
-          value={`${ratingNum} (${reviewsCount})`}
-          tooltip="Rating & Reviews"
-          valueBoldPrefix={ratingNum}
-        />,
+    const primaryStats: Array<{ icon: React.ReactNode; text: string; tooltip: string }> = (() => {
+      const base: Array<{ icon: React.ReactNode; text: string; tooltip: string }> = [
+        { icon: <SchoolCardIcons.Location />, text: school.location, tooltip: "Location" },
+        {
+          icon: <SchoolCardIcons.Star className="w-4 h-4 text-[#565656]" />,
+          text: `${ratingNum} (${reviewsCount})`,
+          tooltip: "Rating & Reviews",
+        },
       ];
+
+      if (establishment === "K-12") {
+        return [
+          ...base,
+          { icon: <SchoolCardIcons.Ratio />, text: school.ratio, tooltip: "Student to Teacher Ratio" },
+          { icon: <SchoolCardIcons.Students />, text: formatNumber(school.students), tooltip: "Students" },
+          { icon: <SchoolCardIcons.Tuition />, text: school.price, tooltip: "Tuition per Year" },
+        ];
+      }
 
       if (establishment === "Colleges") {
         return [
           ...base,
-          school.duration ? (
-            <Stat key="duration" icon={<SchoolCardIcons.Duration />} value={school.duration} tooltip="Duration" />
-          ) : null,
-          school.sat ? (
-            <Stat key="sat" icon={<SchoolCardIcons.SAT />} value={school.sat} tooltip="SAT Range" />
-          ) : null,
-          school.price ? (
-            <Stat key="tuition" icon={<SchoolCardIcons.Tuition />} value={school.price} tooltip="Tuition per Year" />
-          ) : null,
-        ].filter(Boolean);
+          { icon: <SchoolCardIcons.Duration />, text: school.duration || "—", tooltip: "Duration" },
+          { icon: <SchoolCardIcons.SAT />, text: school.sat || "—", tooltip: "SAT Range" },
+          { icon: <SchoolCardIcons.Tuition />, text: school.price, tooltip: "Tuition per Year" },
+        ];
       }
 
-      // K-12 / District / Graduates (data model supports these fields)
+      if (establishment === "Graduates") {
+        return [
+          ...base,
+          { icon: <SchoolCardIcons.Duration />, text: school.duration || "—", tooltip: "Duration" },
+          { icon: <SchoolCardIcons.Students />, text: formatNumber(school.students), tooltip: "Students" },
+          { icon: <SchoolCardIcons.MedianSalary />, text: medianSalaryText, tooltip: "Median Salary" },
+        ];
+      }
+
+      // District
+      const totalSchools = (school as any).totalSchools as string | undefined;
       return [
         ...base,
-        school.ratio ? (
-          <Stat key="ratio" icon={<SchoolCardIcons.Ratio />} value={school.ratio} tooltip="Student to Teacher Ratio" />
-        ) : null,
-        school.students ? (
-          <Stat key="students" icon={<SchoolCardIcons.Students />} value={school.students} tooltip="Students" />
-        ) : null,
-        school.price ? (
-          <Stat key="tuition" icon={<SchoolCardIcons.Tuition />} value={school.price} tooltip="Tuition per Year" />
-        ) : null,
-      ].filter(Boolean);
+        { icon: <SchoolCardIcons.TotalSchools />, text: totalSchools ? `${totalSchools} Schools` : "—", tooltip: "Total Schools" },
+        { icon: <SchoolCardIcons.Students />, text: formatNumber(school.students), tooltip: "Students" },
+        { icon: <SchoolCardIcons.Ratio />, text: school.ratio, tooltip: "Student to Teacher Ratio" },
+      ];
     })();
 
     return (
-      <>
-        {/* Desktop (md+) list card — previous desktop 1:1 */}
-        <div className="hidden md:flex school-card bg-white rounded-xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-[transform,box-shadow] duration-300 ease-in-out border border-[#E5E7EB] relative min-h-[280px] hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
-          {/* Content Section */}
-          <div className="flex-1 p-6 flex flex-col justify-between">
-            <div className="flex-1">
-              {school.ranking ? (
-                <div className="text-[#089E68] text-[13px] mb-2 font-medium">
-                  {school.ranking}
-                </div>
-              ) : null}
+      <div className="school-card bg-white rounded-xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-[transform,box-shadow] duration-300 ease-in-out border border-[#E5E7EB] flex relative min-h-[280px] hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] max-[1024px]:flex-col max-[1024px]:min-h-0">
+        {/* Content Section */}
+        <div className="content-section flex-1 p-6 flex flex-col justify-between">
+          <div className="content-main flex-1">
+            {school.ranking ? <div className="ranking-text text-[#089E68] text-[13px] mb-2 font-medium">{school.ranking}</div> : null}
 
-              <div className="flex items-start gap-3 mb-3">
-                <h3 className="text-[20px] font-semibold text-[#464646] leading-[1.4] cursor-pointer hover:text-[#346DC2] transition-colors">
-                  {school.name}
-                </h3>
-                <div className="w-6 h-6 bg-[rgba(29,119,189,0.1)] rounded-md flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <SchoolCardIcons.Verified />
-                </div>
+            <div className="name-section flex items-start gap-3 mb-3">
+              <h3 className="school-name text-[20px] font-semibold text-[#464646] leading-[1.4] cursor-pointer hover:text-[#346DC2] transition-colors">
+                {school.name}
+              </h3>
+              <div className="verified-badge w-6 h-6 bg-[rgba(29,119,189,0.1)] rounded-md flex items-center justify-center flex-shrink-0">
+                <SchoolCardIcons.Verified />
               </div>
-
-              <div className="flex gap-6 mb-4 flex-wrap">
-                {primaryStats}
-              </div>
-
-              <p className="text-sm leading-[1.6] text-[#4A4A4A] mb-4 line-clamp-3">
-                {school.description}
-              </p>
             </div>
 
-            {/* Footer */}
-            <div className="flex items-center justify-between pt-4 border-t border-[#f0f0f0] mt-4">
-              <div className="flex items-center gap-6 flex-wrap">
-                <div className="flex items-center gap-2">
-                  <div className="relative group">
-                    <div
-                      className={`w-8 h-8 ${getGradeClass(school.grade)} rounded-full flex items-center justify-center text-white text-sm font-semibold cursor-pointer`}
-                    >
-                      {school.grade}
-                    </div>
-                    <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/80 text-white px-2.5 py-1.5 rounded text-xs whitespace-nowrap z-10">
-                      {school.grade} Overall Grade
-                    </div>
-                    <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[34px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-0 h-0 border-x-[6px] border-x-transparent border-t-[6px] border-t-black/80 z-10" />
-                  </div>
+            <div className="primary-stats flex gap-6 mb-4 flex-wrap max-[1024px]:flex-col max-[1024px]:gap-3 max-[1024px]:items-start">
+              {primaryStats.map((s, idx) => (
+                <div key={idx} className="stat relative group flex items-center gap-2 text-sm text-[#5F5F5F] leading-none">
+                  <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#565656] flex-shrink-0 block">{s.icon}</span>
+                  <span className="text-[#464646] font-medium leading-none">{s.text}</span>
+                  <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[125%] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300 bg-black/80 text-white text-center rounded px-2 py-1 text-xs font-medium whitespace-nowrap z-10">
+                    {s.tooltip}
+                    <span className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-black/80" />
+                  </span>
                 </div>
+              ))}
+            </div>
+
+            <p className="description text-sm leading-[1.6] text-[#4A4A4A] mb-4 line-clamp-3">{school.description}</p>
+          </div>
+
+          <div className="card-footer flex items-center justify-between pt-4 border-t border-[#f0f0f0] mt-4 max-[1024px]:flex-col max-[1024px]:gap-4 max-[1024px]:items-start">
+            <div className="secondary-stats flex items-center gap-6 flex-wrap max-[1024px]:flex-col max-[1024px]:gap-3 max-[1024px]:items-start">
+              <div className="grade flex items-center gap-2 relative group">
+                <div className="grade-circle w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-sm font-semibold cursor-pointer">
+                  {school.grade}
+                </div>
+                <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/80 text-white px-2.5 py-1.5 rounded text-xs whitespace-nowrap z-10">
+                  {school.grade} Overall Grade
+                </div>
+                <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[34px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-0 h-0 border-x-[6px] border-x-transparent border-t-[6px] border-t-black/80 z-10" />
+              </div>
+            </div>
+
+            <div className="footer-options flex items-center gap-2 max-[1024px]:w-full max-[1024px]:justify-between">
+              <div className="footer-actions flex gap-2 max-[1024px]:w-full">
+                <button type="button" className="action-button info-button h-9 px-4 rounded-lg text-sm font-medium bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors max-[1024px]:flex-1">
+                  More Info
+                </button>
+                <button
+                  type="button"
+                  className={`action-button apply-button h-9 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 max-[1024px]:flex-1 ${
+                    isLiked ? "liked bg-[#E6F7F0] text-[#016853] hover:bg-[#D1F0E4]" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                  }`}
+                  onClick={() => setIsLiked((v) => !v)}
+                >
+                  <SchoolCardIcons.Heart filled={isLiked} />
+                  <span>{isLiked ? "Liked" : "Like"}</span>
+                </button>
               </div>
 
-              <div className="flex items-center gap-2">
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    className="h-9 px-4 rounded-lg text-sm font-medium bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors"
-                  >
-                    More Info
-                  </button>
-                  <button
-                    type="button"
-                    className={`h-9 px-4 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${isLiked
-                      ? "bg-[#E6F7F0] text-[#016853] hover:bg-[#D1F0E4]"
-                      : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
-                      }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsLiked((v) => !v);
-                    }}
-                  >
-                    <SchoolCardIcons.Heart />
-                    <span>{isLiked ? "Liked" : "Like"}</span>
-                  </button>
-                </div>
-
+              <div className="footer-icon-button w-9 h-9 bg-[#F5F5F7] rounded-[12px] flex items-center justify-center cursor-pointer text-[#5F5F5F] hover:bg-[#E8E8EA] transition-colors flex-shrink-0">
                 <SchoolCardContextMenu
                   schoolName={school.name}
-                  buttonClassName="w-9 h-9 bg-[#F5F5F7] rounded-[12px] flex items-center justify-center cursor-pointer text-[#5F5F5F] hover:bg-[#E8E8EA] transition-colors pointer-events-auto"
+                  buttonClassName="w-9 h-9 bg-transparent border-none flex items-center justify-center text-[#5F5F5F]"
                 />
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Image Section */}
-          <div className="w-[280px] relative flex flex-col">
-            {school.specialty ? (
-              <div
-                className={`absolute top-6 right-0 h-8 bg-white rounded-l-xl flex items-center px-2.5 text-xs font-medium shadow-[-1px_2px_2px_rgba(0,0,0,0.1)] z-[2] ${school.specialty === "hot"
-                  ? "text-[#FF4D4D]"
-                  : school.specialty === "instant-book"
-                    ? "text-[#1D77BD]"
-                    : "text-[#FF9900]"
-                  }`}
-              >
-                {school.specialty === "hot" ? (
-                  <>
-                    <SchoolCardIcons.Hot /> High demand
-                  </>
-                ) : school.specialty === "instant-book" ? (
-                  <>
-                    <SchoolCardIcons.InstantBook /> Instant book
-                  </>
-                ) : (
-                  <>
-                    <SchoolCardIcons.Sponsored /> Sponsored
-                  </>
-                )}
-              </div>
-            ) : null}
-
-            <div className="relative w-full h-full min-h-[280px]">
-              <Image
-                src={school.image}
-                alt={school.name}
-                fill
-                sizes="280px"
-                className="object-cover"
-              />
+        {/* Image Section */}
+        <div className="image-section w-[280px] relative flex flex-col max-[1024px]:w-full max-[1024px]:h-[200px]">
+          {specialtyMeta ? (
+            <div
+              className={`specialty-label absolute top-6 right-0 h-8 bg-white rounded-l-xl flex items-center px-2.5 cursor-pointer transition-all z-[2] text-xs font-medium shadow-[-1px_2px_2px_rgba(0,0,0,0.1)] ${specialtyMeta.className} max-[1024px]:right-3 max-[1024px]:top-3 max-[1024px]:rounded-xl max-[1024px]:shadow-[0_2px_4px_rgba(0,0,0,0.1)]`}
+            >
+              <span className="[&>svg]:w-4 [&>svg]:h-4 mr-1">{specialtyMeta.icon}</span>
+              {specialtyMeta.label}
             </div>
+          ) : null}
 
-            <div className="absolute bottom-0 left-0 right-0 bg-black/80 text-white py-3 px-4 text-[13px] font-medium text-center">
+          <div className="relative flex-1 min-h-[280px] max-[1024px]:min-h-0">
+            <Image src={school.image} alt={school.name} fill sizes="(max-width: 1024px) 100vw, 280px" className="object-cover" />
+          </div>
+
+          <div className="school-type-badge absolute bottom-0 left-0 right-0 bg-black/80 text-white py-3 px-4 text-[13px] font-medium text-center">
+            {school.schoolType}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // List Layout (Desktop + responsive) — match provided HTML structure/styles 1:1
+  if (isListLayout) {
+    const ratingNum = (school.rating || "").match(/[\d.]+/)?.[0] || school.rating;
+    const reviewsCount =
+      typeof school.reviews === "number" ? school.reviews : Number((school.rating || "").match(/\(([^)]+)\)/)?.[1]) || 0;
+
+    const tuitionText = (() => {
+      const price = school.price || "—";
+      const perYear = establishment === "K-12" || establishment === "Colleges";
+      if (!perYear) return price;
+      return price.includes("/") ? price : `${price}/yr`;
+    })();
+
+    const specialty = (() => {
+      if (!school.specialty) return null;
+      if (school.specialty === "hot") return { className: "text-[#FF4D4D]", icon: <SchoolCardIcons.Hot />, label: "High demand" };
+      if (school.specialty === "instant-book")
+        return { className: "text-[#1D77BD]", icon: <SchoolCardIcons.InstantBook />, label: "Instant book" };
+      return { className: "text-[#FF9900]", icon: <SchoolCardIcons.Sponsored />, label: "Sponsored" };
+    })();
+
+    const StatWithTooltip = ({
+      icon,
+      text,
+      tooltip,
+    }: {
+      icon: React.ReactNode;
+      text: string;
+      tooltip?: string;
+    }) => (
+      <div className={`stat flex items-center gap-2 text-sm text-[#5F5F5F] ${tooltip ? "relative group" : ""}`}>
+        <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#565656] flex-shrink-0">{icon}</span>
+        <span className="text-[#464646] font-medium">{text}</span>
+        {tooltip ? (
+          <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[125%] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300 bg-black/80 text-white text-center rounded px-2 py-1 text-xs font-medium whitespace-nowrap z-10">
+            {tooltip}
+            <span className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-black/80" />
+          </span>
+        ) : null}
+      </div>
+    );
+
+    const secondStat = (() => {
+      if (establishment === "K-12") {
+        return <StatWithTooltip icon={<SchoolCardIcons.Ratio />} text={school.ratio || "—"} tooltip="Student to Teacher Ratio" />;
+      }
+      if (establishment === "Colleges") {
+        return <StatWithTooltip icon={<SchoolCardIcons.Duration />} text={school.duration || "—"} tooltip="Duration" />;
+      }
+      if (establishment === "Graduates") {
+        return <StatWithTooltip icon={<SchoolCardIcons.Duration />} text={school.duration || "—"} tooltip="Duration" />;
+      }
+      // District
+      return (
+        <StatWithTooltip
+          icon={<SchoolCardIcons.TotalSchools />}
+          text={String((school as any).totalSchools || "—")}
+          tooltip="Total Schools"
+        />
+      );
+    })();
+
+    const metrics = (() => {
+      if (establishment === "K-12") {
+        return (
+          <>
+            <div className="students-count flex items-center gap-2 text-sm text-[#5F5F5F]">
+              <span className="[&>svg]:text-[#089E68]">
+                <SchoolCardIcons.Students />
+              </span>
+              <span className="text-[#464646] font-medium">Students: {(school.students as any)?.toLocaleString?.() || school.students || "—"}</span>
+            </div>
+            <div className="tuition flex items-center gap-2 text-sm text-[#5F5F5F]">
+              <span className="[&>svg]:text-[#089E68]">
+                <SchoolCardIcons.Tuition />
+              </span>
+              <span className="text-[#464646] font-medium">{tuitionText}</span>
+            </div>
+            <div className="grade-range flex items-center gap-2 text-sm text-[#5F5F5F]">
+              <span className="[&>svg]:text-[#089E68]">
+                <SchoolCardIcons.Grades />
+              </span>
+              <span className="text-[#464646] font-medium">Grades: {school.grades || "—"}</span>
+            </div>
+          </>
+        );
+      }
+
+      if (establishment === "Colleges") {
+        return (
+          <>
+            <div className="sat-score flex items-center gap-2 text-sm text-[#5F5F5F]">
+              <span className="[&>svg]:text-[#089E68]">
+                <SchoolCardIcons.SAT />
+              </span>
+              <span className="text-[#464646] font-medium">SAT: {school.sat || "—"}</span>
+            </div>
+            <div className="tuition flex items-center gap-2 text-sm text-[#5F5F5F]">
+              <span className="[&>svg]:text-[#089E68]">
+                <SchoolCardIcons.Tuition />
+              </span>
+              <span className="text-[#464646] font-medium">{tuitionText}</span>
+            </div>
+            <div className="acceptance flex items-center gap-2 text-sm text-[#5F5F5F]">
+              <span className="[&>svg]:text-[#089E68]">
+                <SchoolCardIcons.Acceptance />
+              </span>
+              <span className="text-[#464646] font-medium">Acceptance: {(school as any).acceptance || school.acceptanceRate || "—"}</span>
+            </div>
+          </>
+        );
+      }
+
+      if (establishment === "Graduates") {
+        return (
+          <>
+            <div className="students-count flex items-center gap-2 text-sm text-[#5F5F5F]">
+              <span className="[&>svg]:text-[#089E68]">
+                <SchoolCardIcons.Students />
+              </span>
+              <span className="text-[#464646] font-medium">Students: {(school.students as any)?.toLocaleString?.() || school.students || "—"}</span>
+            </div>
+            <div className="tuition flex items-center gap-2 text-sm text-[#5F5F5F]">
+              <span className="[&>svg]:text-[#089E68]">
+                <SchoolCardIcons.Tuition />
+              </span>
+              <span className="text-[#464646] font-medium">{school.price || "—"}</span>
+            </div>
+            <div className="median-salary flex items-center gap-2 text-sm text-[#5F5F5F]">
+              <span className="[&>svg]:text-[#089E68]">
+                <SchoolCardIcons.MedianSalary />
+              </span>
+              <span className="text-[#464646] font-medium">~{(school as any).medianSalary || "—"}</span>
+            </div>
+          </>
+        );
+      }
+
+      // District
+      return (
+        <>
+          <div className="students-count flex items-center gap-2 text-sm text-[#5F5F5F]">
+            <span className="[&>svg]:text-[#089E68]">
+              <SchoolCardIcons.Students />
+            </span>
+            <span className="text-[#464646] font-medium">Students: {(school.students as any)?.toLocaleString?.() || school.students || "—"}</span>
+          </div>
+          <StatWithTooltip
+            icon={
+              <span className="[&>svg]:text-[#089E68]">
+                <SchoolCardIcons.Ratio />
+              </span>
+            }
+            text={school.ratio || "—"}
+            tooltip="Student to Teacher Ratio"
+          />
+          <div className="grade-range flex items-center gap-2 text-sm text-[#5F5F5F]">
+            <span className="[&>svg]:text-[#089E68]">
+              <SchoolCardIcons.Grades />
+            </span>
+            <span className="text-[#464646] font-medium">Grades: {school.grades || "—"}</span>
+          </div>
+        </>
+      );
+    })();
+
+    return (
+      <div className="school-card bg-white rounded-xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-[transform,box-shadow] duration-300 ease-in-out border border-[#E5E7EB] flex relative hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] max-[1024px]:flex-col">
+        {/* Image section (left) */}
+        <div className="image-section w-[280px] flex flex-col pr-6 pt-6 relative max-[1024px]:w-full max-[1024px]:px-6">
+          {/* Specialty */}
+          {specialty ? (
+            <div className={`specialty-label absolute top-9 left-3 h-8 bg-white rounded-r-xl flex items-center px-2.5 text-xs font-medium shadow-[1px_2px_2px_rgba(0,0,0,0.1)] z-[2] ${specialty.className}`}>
+              <span className="[&>svg]:w-4 [&>svg]:h-4 mr-1">{specialty.icon}</span>
+              {specialty.label}
+            </div>
+          ) : null}
+
+          {/* Options */}
+          <div className="options-button absolute top-9 right-6 w-8 h-8 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] transition-all z-[2] shadow-[0_1px_2px_rgba(0,0,0,0.1)] hover:bg-[#F5F5F7]">
+            <SchoolCardContextMenu
+              schoolName={school.name}
+              buttonClassName="w-8 h-8 bg-transparent border-none flex items-center justify-center text-[#5F5F5F]"
+            />
+          </div>
+
+          <Image
+            src={school.image}
+            alt={school.name}
+            width={280}
+            height={148}
+            className="school-image h-[148px] w-full object-cover rounded-lg ml-3 max-[1024px]:ml-0 max-[1024px]:h-[200px]"
+          />
+
+          <div className="image-buttons flex gap-2 py-3 ml-3 w-[calc(100%-12px)] max-[1024px]:ml-0 max-[1024px]:w-full">
+            <div className="school-type-full w-full px-4 py-2 text-center bg-[#F5F5F7] text-[#464646] text-[13px] font-medium rounded-lg">
               {school.schoolType}
             </div>
           </div>
         </div>
 
-        {/* Mobile (<md) list card — match provided HTML structure/styles 1:1 */}
-        <div className="md:hidden">
-          <div className="school-card bg-white rounded-[12px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#E5E7EB] relative">
-            <div className="card-main flex relative">
-              {/* Image Section */}
-              <div className="image-wrapper relative w-[120px] min-h-[143px] self-stretch flex-shrink-0 flex flex-col">
-                <div className="relative w-[120px] h-[120px] flex-shrink-0">
-                  <Image
-                    src={school.image}
-                    alt={school.name}
-                    fill
-                    sizes="120px"
-                    className="object-cover"
-                  />
-                </div>
+        {/* Content section */}
+        <div className="content-section flex-1 p-6 flex flex-col">
+          {school.ranking ? <div className="ranking-text text-[#089E68] text-[13px] mb-2 font-medium">{school.ranking}</div> : null}
 
-                <div className="school-type-footer mt-auto w-full bg-[#F5F5F7] text-[#464646] text-[11px] font-medium text-center py-[5px]">
-                  {school.schoolType}
-                </div>
-
-                {/* Options button */}
-                <button
-                  type="button"
-                  className="options-button absolute top-2 left-2 w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-[0_2px_4px_rgba(0,0,0,0.15)] z-[5] border-none"
-                  onPointerDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setIsDrawerOpen(true);
-                  }}
-                  aria-label="More options"
-                >
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" className="text-[#666]">
-                    <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
-                  </svg>
-                </button>
-
-                {/* Specialty label */}
-                {school.specialty ? (
-                  <div
-                    className={`specialty-label absolute left-0 bottom-[36px] h-6 bg-white rounded-r-[12px] flex items-center px-2.5 text-[11px] font-medium shadow-[1px_2px_4px_rgba(0,0,0,0.1)] z-[2] ${
-                      school.specialty === "hot"
-                        ? "text-[#FF4D4D]"
-                        : school.specialty === "instant-book"
-                          ? "text-[#1D77BD]"
-                          : "text-[#FF9900]"
-                    }`}
-                  >
-                    <span className="specialty-icon inline-flex mr-1 [&>svg]:w-3 [&>svg]:h-3">
-                      {school.specialty === "hot" ? <SchoolCardIcons.Hot /> : null}
-                      {school.specialty === "instant-book" ? <SchoolCardIcons.InstantBook /> : null}
-                      {school.specialty === "sponsored" ? <SchoolCardIcons.Sponsored /> : null}
-                    </span>
-                    {school.specialty === "hot"
-                      ? "High demand"
-                      : school.specialty === "instant-book"
-                        ? "Instant book"
-                        : "Sponsored"}
-                  </div>
-                ) : null}
-              </div>
-
-              {/* Content Section */}
-              <div className="school-content flex-1 p-3 flex flex-col min-w-0 overflow-hidden">
-                {school.ranking ? (
-                  <div className="ranking-text text-[#089E68] text-xs mb-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
-                    {school.ranking}
-                  </div>
-                ) : null}
-
-                <div className="school-name text-[16px] font-semibold text-[#464646] mb-1 leading-[1.3] line-clamp-3">
-                  {school.name}
-                </div>
-
-                <div className="school-location text-[#5F5F5F] text-[13px] mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
-                  {school.location}
-                </div>
-
-                <div className="stats-row flex gap-3 mt-1 items-center w-full overflow-hidden whitespace-nowrap">
-                  <div className="stat flex items-center gap-1.5 text-[12px] text-[#5F5F5F] flex-shrink-0 min-w-0">
-                    <span className="[&>svg]:w-[14px] [&>svg]:h-[14px] [&>svg]:text-[#565656] flex-shrink-0">
-                      {establishment === "Colleges" || establishment === "Graduates" ? (
-                        <SchoolCardIcons.Duration />
-                      ) : (
-                        <SchoolCardIcons.Ratio />
-                      )}
-                    </span>
-                    <span className="stat-text text-[#464646] font-medium truncate">
-                      {establishment === "Colleges" || establishment === "Graduates"
-                        ? school.duration || "—"
-                        : school.ratio || "—"}
-                    </span>
-                  </div>
-
-                  <div className="stat flex items-center gap-1.5 text-[12px] text-[#5F5F5F] flex-shrink-0 min-w-0">
-                    <span className="[&>svg]:w-[14px] [&>svg]:h-[14px] [&>svg]:text-[#565656] flex-shrink-0">
-                      <SchoolCardIcons.Star />
-                    </span>
-                    <span className="stat-text text-[#464646] font-medium truncate">
-                      <strong className="font-semibold">{ratingNum}</strong>{" "}
-                      ({reviewsCount})
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Footer */}
-            <div className="card-footer flex items-center justify-between px-3 py-[10px] border-t border-[#E5E7EB] bg-[#FAFAFA] min-w-0">
-              <div className={`grade-circle w-8 h-8 ${getGradeClass(school.grade)} rounded-full flex items-center justify-center text-white text-[14px] font-semibold`}>
-                {school.grade}
-              </div>
-
-              <div className="footer-actions flex items-center gap-4 min-w-0">
-                <div className="students-display flex items-center gap-1 text-[12px] text-[#565656] min-w-0">
-                  <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#00DF8B]">
-                    {establishment === "Colleges" ? <SchoolCardIcons.SAT /> : <SchoolCardIcons.Students />}
-                  </span>
-                  <span className="whitespace-nowrap overflow-hidden text-ellipsis min-w-0">
-                    {establishment === "Colleges"
-                      ? `SAT: ${school.sat || "—"}`
-                      : `Students: ${school.students || "—"}`}
-                  </span>
-                </div>
-
-                <button
-                  type="button"
-                  className="info-button flex items-center justify-center text-[#565656]"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsInfoOpen(true);
-                  }}
-                  aria-label="More info"
-                >
-                  <svg fill="none" viewBox="0 0 20 20" width="18" height="18">
-                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 6V10" />
-                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 13.1094H10.0067" />
-                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.6" stroke="currentColor" d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z" />
-                  </svg>
-                </button>
-              </div>
+          <div className="name-section flex items-center gap-2 relative">
+            <h3 className="school-name text-[20px] font-semibold text-[#464646] mb-3 leading-[1.4] cursor-pointer hover:text-[#346DC2] transition-colors">
+              {school.name}
+            </h3>
+            <div className="verified-badge w-6 h-6 bg-[rgba(29,119,189,0.1)] rounded-md flex items-center justify-center -mt-1.5">
+              <SchoolCardIcons.Verified />
             </div>
           </div>
 
-          {/* Info Drawer (mobile) */}
-          <Portal containerId="mobile-modal-root">
-            <>
-              <div
-                className={`fixed inset-0 bg-black/50 z-[1000] transition-opacity duration-300 ease-in-out ${isInfoOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}`}
-                onClick={() => setIsInfoOpen(false)}
+          <div className="stats-section flex gap-6 mb-4 max-[1024px]:flex-col max-[1024px]:gap-3">
+            <div className="stat-group flex gap-6">
+              <StatWithTooltip icon={<SchoolCardIcons.Location />} text={school.location} tooltip="Location" />
+              {secondStat}
+            </div>
+            <div className="stat-group flex gap-6">
+              <StatWithTooltip
+                icon={<SchoolCardIcons.Star />}
+                text={`${ratingNum} (${reviewsCount})`}
+                tooltip="Rating"
               />
-              <div
-                className={`fixed bottom-0 left-0 right-0 z-[1001] bg-white rounded-t-[16px] shadow-[0_-2px_10px_rgba(0,0,0,0.15)] max-h-[80vh] overflow-hidden flex flex-col transition-transform duration-300 ease-in-out ${isInfoOpen ? "translate-y-0" : "translate-y-full"}`}
-                aria-hidden={!isInfoOpen}
-              >
-            <div className="p-4 border-b border-black/10 flex items-center relative">
-              <div className="flex gap-3 items-center flex-1">
-                <Image
-                  src={school.image}
-                  alt={school.name}
-                  width={40}
-                  height={40}
-                  className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-                />
-                <div className="text-base font-semibold text-[#464646] leading-[1.3] mr-[60px]">
-                  {school.name}
-                </div>
-              </div>
-
-              <button
-                type="button"
-                className="w-8 h-8 flex items-center justify-center rounded-full text-[#5F5F5F] absolute right-[52px] top-3 hover:bg-[#f5f5f7] transition-colors"
-                onClick={() => {
-                  setIsInfoOpen(false);
-                  setIsDrawerOpen(true);
-                }}
-              >
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="5" r="1" />
-                  <circle cx="12" cy="12" r="1" />
-                  <circle cx="12" cy="19" r="1" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                className="w-8 h-8 flex items-center justify-center rounded-full text-[#5F5F5F] absolute right-4 top-3 hover:bg-[#f5f5f7] transition-colors"
-                onClick={() => setIsInfoOpen(false)}
-              >
-                <svg viewBox="0 0 20 20" fill="none" width="20" height="20">
-                  <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-            </div>
-
-            <div className="p-4 overflow-y-auto max-h-[calc(80vh-140px)]">
-              <div className="flex flex-wrap gap-x-4 gap-y-3 mb-4">
-                {establishment === "K-12" ? (
-                  <>
-                    {school.ratio ? (
-                      <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                        <SchoolCardIcons.Ratio className="text-[#089E68]" />
-                        <span>{school.ratio}</span>
-                      </div>
-                    ) : null}
-                    {tuitionPerYear ? (
-                      <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                        <SchoolCardIcons.Tuition className="text-[#089E68]" />
-                        <span>{tuitionPerYear}</span>
-                      </div>
-                    ) : null}
-                    {school.grades ? (
-                      <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                        <SchoolCardIcons.Grades className="text-[#089E68]" />
-                        <span>Grades: {school.grades}</span>
-                      </div>
-                    ) : null}
-                  </>
-                ) : establishment === "Colleges" ? (
-                  <>
-                    {school.duration ? (
-                      <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                        <SchoolCardIcons.Duration className="text-[#089E68]" />
-                        <span>{school.duration}</span>
-                      </div>
-                    ) : null}
-                    {tuitionPerYear ? (
-                      <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                        <SchoolCardIcons.Tuition className="text-[#089E68]" />
-                        <span>{tuitionPerYear}</span>
-                      </div>
-                    ) : null}
-                    {school.acceptanceRate ? (
-                      <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                        <SchoolCardIcons.Acceptance className="text-[#089E68]" />
-                        <span>Acceptance: {school.acceptanceRate}</span>
-                      </div>
-                    ) : null}
-                  </>
-                ) : establishment === "District" ? (
-                  <>
-                    {school.ratio ? (
-                      <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                        <SchoolCardIcons.Ratio className="text-[#089E68]" />
-                        <span>{school.ratio}</span>
-                      </div>
-                    ) : null}
-                    {school.grades ? (
-                      <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                        <SchoolCardIcons.Grades className="text-[#089E68]" />
-                        <span>Grades: {school.grades}</span>
-                      </div>
-                    ) : null}
-                    {school.students ? (
-                      <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                        <SchoolCardIcons.Students className="text-[#089E68]" />
-                        <span>{school.students}</span>
-                      </div>
-                    ) : null}
-                  </>
-                ) : (
-                  <>
-                    {school.duration ? (
-                      <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                        <SchoolCardIcons.Duration className="text-[#089E68]" />
-                        <span>{school.duration}</span>
-                      </div>
-                    ) : null}
-                    {school.price ? (
-                      <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                        <SchoolCardIcons.Tuition className="text-[#089E68]" />
-                        <span>{school.price}</span>
-                      </div>
-                    ) : null}
-                    {school.students ? (
-                      <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                        <SchoolCardIcons.Students className="text-[#089E68]" />
-                        <span>{school.students}</span>
-                      </div>
-                    ) : null}
-                  </>
-                )}
-              </div>
-
-              {renderDrawerDescription()}
-
-              <div className="text-[13px] font-medium text-[#346DC2] mb-4 cursor-pointer">
-                Read {reviewsCount} reviews
-              </div>
-            </div>
-
-            <div className="p-4 border-t border-black/10">
-              <div className="flex gap-3 w-full">
-                <button
-                  type="button"
-                  className="flex-1 py-3 rounded-lg text-sm font-medium bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors"
-                >
-                  More Info
-                </button>
-                <button
-                  type="button"
-                  className={`flex-1 py-3 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors ${isLiked
-                    ? "bg-[#298541] text-white"
-                    : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
-                    }`}
-                  onClick={() => setIsLiked((v) => !v)}
-                >
-                  <SchoolCardIcons.Heart />
-                  {isLiked ? "Liked" : "Like"}
-                </button>
-              </div>
             </div>
           </div>
-            </>
-          </Portal>
 
-          {/* Mobile Options Drawer */}
-          <MobileOptionsDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} schoolName={school.name} />
+          <p className="description text-sm leading-[1.6] text-[#4A4A4A] mb-4 line-clamp-2">{school.description}</p>
+
+          <div className="footer-section mt-auto flex items-center justify-between max-[1024px]:flex-col max-[1024px]:gap-4 max-[1024px]:items-start">
+            <div className="metrics flex items-center gap-6 flex-wrap max-[1024px]:flex-col max-[1024px]:items-start">
+              <div className="grade flex items-center gap-2 relative group">
+                <div className="grade-circle w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-sm font-semibold cursor-pointer">
+                  {school.grade}
+                </div>
+                <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/80 text-white px-2.5 py-1.5 rounded text-xs whitespace-nowrap z-10">
+                  {school.grade} Overall Grade
+                </div>
+                <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[34px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-0 h-0 border-x-[6px] border-x-transparent border-t-[6px] border-t-black/80 z-10" />
+              </div>
+              {metrics}
+            </div>
+
+            <div className="actions flex gap-2">
+              <button type="button" className="action-button info-button h-9 px-4 rounded-lg text-sm font-medium bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors">
+                More Info
+              </button>
+              <button
+                type="button"
+                className={`action-button apply-button h-9 px-4 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                  isLiked ? "bg-[#E6F7F0] text-[#016853] hover:bg-[#D1F0E4]" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                }`}
+                onClick={() => setIsLiked((v) => !v)}
+              >
+                <SchoolCardIcons.Heart filled={isLiked} />
+                <span>{isLiked ? "Liked" : "Like"}</span>
+              </button>
+            </div>
+          </div>
         </div>
-      </>
+      </div>
+    );
+  }
+
+  // Classic Layout (Desktop) — match provided HTML 1:1
+  if (isClassicLayout) {
+    const truncateName = (name: string) => {
+      if (!name) return "";
+      if (name.length > 30) {
+        const truncated = name.substring(0, 28);
+        const lastSpace = truncated.lastIndexOf(" ");
+        return `${truncated.substring(0, lastSpace > 0 ? lastSpace : truncated.length)}..`;
+      }
+      return name;
+    };
+
+    const ratingNum = (school.rating || "").match(/[\d.]+/)?.[0] || school.rating;
+    const reviewsCount =
+      typeof school.reviews === "number"
+        ? school.reviews
+        : Number((school.rating || "").match(/\(([^)]+)\)/)?.[1]) || 0;
+
+    const specialty = (() => {
+      if (!school.specialty) return null;
+      if (school.specialty === "hot")
+        return {
+          className: "hot bg-[rgba(255,77,77,0.1)] text-[#FF4D4D]",
+          icon: <SchoolCardIcons.Hot />,
+          label: "High demand",
+        };
+      if (school.specialty === "instant-book")
+        return {
+          className: "instant-book bg-[rgba(29,119,189,0.1)] text-[#1D77BD]",
+          icon: <SchoolCardIcons.InstantBook />,
+          label: "Instant book",
+        };
+      return {
+        className: "sponsored bg-[rgba(255,153,0,0.1)] text-[#FF9900]",
+        icon: <SchoolCardIcons.Sponsored />,
+        label: "Sponsored",
+      };
+    })();
+
+    const stats = (() => {
+      if (establishment === "K-12") {
+        return [
+          { label: "Location", value: school.location || "—", icon: <SchoolCardIcons.Location /> },
+          { label: "Ratio", value: school.ratio || "—", icon: <SchoolCardIcons.Ratio /> },
+          {
+            label: "Students",
+            value: (school.students as any)?.toLocaleString?.() || (school.students as any) || "—",
+            icon: <SchoolCardIcons.Students />,
+          },
+          {
+            label: "Rating",
+            valueNode: (
+              <>
+                <strong className="font-semibold">{ratingNum}</strong> ({reviewsCount || "—"})
+              </>
+            ),
+            icon: <SchoolCardIcons.Star />,
+          },
+        ];
+      }
+
+      if (establishment === "Colleges") {
+        return [
+          { label: "Location", value: school.location || "—", icon: <SchoolCardIcons.Location /> },
+          { label: "Duration", value: school.duration || "—", icon: <SchoolCardIcons.Duration /> },
+          { label: "Tuition", value: school.price || "—", icon: <SchoolCardIcons.Tuition /> },
+          {
+            label: "Acceptance",
+            value: (school as any).acceptance || school.acceptanceRate || "—",
+            icon: <SchoolCardIcons.Acceptance />,
+          },
+        ];
+      }
+
+      if (establishment === "Graduates") {
+        return [
+          { label: "Location", value: school.location || "—", icon: <SchoolCardIcons.Location /> },
+          { label: "Duration", value: school.duration || "—", icon: <SchoolCardIcons.Duration /> },
+          { label: "Tuition", value: school.price || "—", icon: <SchoolCardIcons.Tuition /> },
+          {
+            label: "Students",
+            value: (school.students as any)?.toLocaleString?.() || (school.students as any) || "—",
+            icon: <SchoolCardIcons.Students />,
+          },
+        ];
+      }
+
+      // District
+      return [
+        { label: "Location", value: school.location || "—", icon: <SchoolCardIcons.Location /> },
+        { label: "Schools", value: String((school as any).totalSchools || "—"), icon: <SchoolCardIcons.TotalSchools /> },
+        {
+          label: "Students",
+          value: (school.students as any)?.toLocaleString?.() || (school.students as any) || "—",
+          icon: <SchoolCardIcons.Students />,
+        },
+        {
+          label: "Rating",
+          valueNode: (
+            <>
+              <strong className="font-semibold">{ratingNum}</strong> ({reviewsCount || "—"})
+            </>
+          ),
+          icon: <SchoolCardIcons.Star />,
+        },
+      ];
+    })();
+
+    const hoverStats = (() => {
+      if (establishment === "K-12") {
+        return [
+          { icon: <SchoolCardIcons.Tuition />, text: school.price || "—" },
+          { icon: <SchoolCardIcons.Grades />, text: school.grades || "—" },
+        ];
+      }
+      if (establishment === "Colleges") {
+        return [{ icon: <SchoolCardIcons.SAT />, text: `SAT: ${school.sat || "—"}` }];
+      }
+      if (establishment === "Graduates") {
+        return [{ icon: <SchoolCardIcons.MedianSalary />, text: `Median: ${(school as any).medianSalary || "—"}` }];
+      }
+      return [
+        { icon: <SchoolCardIcons.Ratio />, text: school.ratio || "—" },
+        { icon: <SchoolCardIcons.Grades />, text: school.grades || "—" },
+      ];
+    })();
+
+    const reviewerType = (school as any).reviewerType || "Parent";
+
+    return (
+      <div className="school-card group relative flex flex-col bg-white rounded-[12px] overflow-hidden border border-[rgba(0,0,0,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all duration-200 ease-in-out hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:border-[rgba(1,104,83,0.2)]">
+        {/* Specialty badge / placeholder */}
+        {specialty ? (
+          <div className={`specialty-badge absolute top-0 left-0 right-0 px-3 py-2 text-[13px] font-medium flex items-center justify-center gap-1.5 leading-none rounded-t-[12px] z-[2] ${specialty.className}`}>
+            <span className="[&>svg]:w-3.5 [&>svg]:h-3.5">{specialty.icon}</span>
+            {specialty.label}
+          </div>
+        ) : (
+          <div className="empty-badge absolute top-0 left-0 right-0 h-8 bg-[#F5F5F7] rounded-t-[12px] z-[1]" />
+        )}
+
+        {/* Header */}
+        <div className="card-header flex px-4 pt-10 pb-3 items-start gap-3 h-[108px]">
+          <div className="grade-circle w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-[14px] font-semibold flex-shrink-0">
+            {school.grade}
+          </div>
+          <div className="school-info flex-1 min-w-0 overflow-hidden">
+            <div className="school-name text-[16px] font-semibold text-[#464646] mb-1 leading-[1.3] line-clamp-2 overflow-hidden">
+              {truncateName(school.name)}
+            </div>
+            {school.ranking ? (
+              <div className="ranking-text text-[#089E68] text-xs font-medium leading-[1.4] whitespace-nowrap overflow-hidden text-ellipsis max-w-[calc(100%-16px)] pr-2.5">
+                {school.ranking}
+              </div>
+            ) : null}
+          </div>
+        </div>
+
+        {/* Image */}
+        <div className="image-container relative w-full p-3 pb-0">
+          <Image
+            src={school.image}
+            alt={school.name}
+            width={720}
+            height={720}
+            className="school-image w-full h-[140px] object-cover rounded-lg"
+          />
+          <div className="school-type-label absolute bottom-1 left-[18px] bg-white px-2 pt-1 text-[11px] font-semibold text-[#464646] tracking-[0.02em] rounded-t-[4px] h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
+            {school.schoolType}
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="school-content p-4 flex flex-col h-[160px]">
+          <div className="stats-section grid grid-cols-2 gap-2.5 mb-4">
+            {stats.map((s: any) => (
+              <div key={s.label} className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
+                <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
+                  {s.icon}
+                </div>
+                <div className="stat-content flex flex-col gap-1">
+                  <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">{s.label}</div>
+                  <div className="stat-value text-[12px] text-[#464646] font-medium leading-[1.3]">
+                    {s.valueNode ?? s.value}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="school-footer h-[60px] px-4 py-3 border-t border-[rgba(0,0,0,0.06)] flex items-center justify-between">
+          <div className="footer-left flex items-center gap-2">
+            <button
+              type="button"
+              className={`like-indicator w-7 h-7 flex items-center justify-center cursor-pointer ${
+                isLiked ? "text-[#298541]" : "text-[#5F5F5F]"
+              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsLiked((v) => !v);
+              }}
+              aria-pressed={isLiked}
+              aria-label="Like"
+            >
+              <span className="[&>svg]:w-[18px] [&>svg]:h-[18px]">
+                <SchoolCardIcons.Heart filled={isLiked} />
+              </span>
+            </button>
+          </div>
+
+          <div className="footer-actions flex items-center gap-2">
+            <SchoolCardContextMenu
+              schoolName={school.name}
+              buttonClassName="options-button w-7 h-7 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] bg-[#f5f5f7] transition-all hover:text-[#346DC2] hover:bg-[#e8e8e8] pointer-events-auto"
+            />
+          </div>
+        </div>
+
+        {/* Hover overlay */}
+        <div className="hover-overlay absolute top-0 left-0 w-full h-[calc(100%-60px)] bg-[rgba(255,255,255,0.98)] p-6 opacity-0 invisible transition-opacity duration-300 ease-in-out flex flex-col z-10 rounded-t-[12px] group-hover:opacity-100 group-hover:visible">
+          <div className="hover-header flex gap-3 mb-3">
+            <Image
+              src={school.avatar || school.image}
+              alt={school.name}
+              width={40}
+              height={40}
+              className="school-avatar w-10 h-10 rounded-lg object-cover"
+            />
+            <div className="hover-school-name text-[16px] font-semibold text-[#464646] line-clamp-2 leading-[1.3]">
+              {school.name}
+            </div>
+          </div>
+
+          <div className="hover-stats flex gap-3 mb-4">
+            {hoverStats.map((s, idx) => (
+              <div key={idx} className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">{s.icon}</span>
+                <span className="text-[#464646]">{s.text}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="school-description text-[14px] leading-[1.6] text-[#4A4A4A] line-clamp-5 mb-3">
+            <strong className="font-semibold text-[#464646] mr-1">{reviewerType}:</strong>
+            {school.description}
+          </div>
+
+          <div className="review-count text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer">
+            Read {reviewsCount || school.reviews || "—"} reviews
+          </div>
+
+          <div className="hover-buttons flex flex-col gap-2 mt-auto">
+            <button type="button" className="hover-button button-info w-full py-3 rounded-lg text-[14px] font-medium bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors flex items-center justify-center">
+              More Info
+            </button>
+            <button
+              type="button"
+              className={`hover-button button-like w-full py-3 rounded-lg text-[14px] font-medium transition-colors flex items-center justify-center gap-2 ${
+                isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsLiked((v) => !v);
+              }}
+              aria-pressed={isLiked}
+            >
+              <span className="[&>svg]:w-4 [&>svg]:h-4">
+                <SchoolCardIcons.Heart filled={isLiked} />
+              </span>
+              {isLiked ? "Liked" : "Like"}
+            </button>
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -1266,7 +1663,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
             : isClassicLayout
               ? "flex flex-col relative justify-between"
               : "flex flex-col justify-between"
-        } relative hover:-translate-y-1 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] ${isHybridLayout ? "hover:border-[rgba(1,104,83,0.2)]" : isClassicLayout ? "hover:border-[rgba(1,104,83,0.2)]" : ""
+        } relative hover:-translate-y-1 ${isClassicLayout ? "shadow-[0_2px_8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)]" : "hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)]"} ${isHybridLayout ? "hover:border-[rgba(1,104,83,0.2)]" : isClassicLayout ? "hover:border-[rgba(1,104,83,0.2)]" : ""
         }`}
     >
       {/* Grid Layout is handled above */}
@@ -1416,8 +1813,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
       {/* Classic Layout - Card Header */}
       {isClassicLayout && (
-        <div className="card-header flex px-4 pt-10 pb-3 items-start gap-3">
-          <div className={`grade-circle w-8 h-8 ${getGradeClass(school.grade)} rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0`}>
+        <div className="card-header flex px-4 pt-10 pb-3 items-start gap-3 h-[108px]">
+          <div className="grade-circle w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-[14px] font-semibold flex-shrink-0">
             {school.grade}
           </div>
           <div className="school-info flex-1 min-w-0 w-[calc(100%-44px)] overflow-hidden">
@@ -1435,16 +1832,16 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
       {/* Classic Layout - Image Container */}
       {isClassicLayout && (
-        <div className="image-container relative w-full px-4 pt-0 mb-4">
+        <div className="image-container relative w-full p-3 pb-0">
           <Image
             height={720}
             width={720}
             src={school.image}
             alt={school.name}
-            className="school-image w-full h-[160px] md:h-[140px] object-cover rounded-lg"
+            className="school-image w-full h-[140px] object-cover rounded-lg"
           />
           {/* Classic Layout - School Type Label */}
-          <div className="school-type-label absolute bottom-1 left-6 bg-white px-2 pt-1 text-[11px] font-semibold text-[#464646] tracking-[0.02em] rounded-t-md h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
+          <div className="school-type-label absolute bottom-1 left-[18px] bg-white px-2 pt-1 text-[11px] font-semibold text-[#464646] tracking-[0.02em] rounded-t-md h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
             {school.schoolType}
           </div>
         </div>
@@ -1461,7 +1858,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
             : isGridLayout
               ? "p-4 flex-1 flex flex-col min-w-0 overflow-hidden md:hidden"
               : isClassicLayout
-                ? "px-0 flex flex-col min-w-0 overflow-hidden"
+                ? "p-4 flex flex-col min-w-0 overflow-hidden h-[160px]"
                 : "p-3 md:p-4 flex flex-col justify-between min-w-0 overflow-hidden"
           }`}
       >
@@ -1767,103 +2164,63 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
         {/* Classic Layout - Stats Section */}
         {isClassicLayout && (() => {
-          // Determine stats based on establishment type
-          const getSecondStat = () => {
-            if (establishment === "K-12") {
-              return { label: "Ratio", value: school.ratio, icon: "ratio" };
-            } else if (establishment === "Colleges" || establishment === "Graduates") {
-              return { label: "Duration", value: school.duration || school.ratio, icon: "duration" };
-            } else if (establishment === "District") {
-              return { label: "Ratio", value: school.ratio, icon: "ratio" };
-            }
-            return { label: "Ratio", value: school.ratio, icon: "ratio" };
+          const ratingNum = (school.rating || "").match(/[\d.]+/)?.[0] || school.rating;
+          const reviewsCount = typeof school.reviews === "number"
+            ? school.reviews
+            : Number((school.rating || "").match(/\(([^)]+)\)/)?.[1]) || 0;
+
+          const formatValue = (v: any) => {
+            if (v === null || v === undefined || v === "") return "—";
+            return String(v);
           };
 
-          const getFourthStat = () => {
+          const stats: Array<{ label: string; value: string; icon: React.ReactNode }> = (() => {
             if (establishment === "K-12") {
-              return { label: "Students", value: school.students, icon: "students" };
-            } else if (establishment === "Colleges") {
-              return { label: "Acceptance", value: school.acceptanceRate, icon: "acceptance" };
-            } else if (establishment === "Graduates") {
-              return { label: "Students", value: school.students, icon: "students" };
-            } else if (establishment === "District") {
-              return { label: "Students", value: school.students, icon: "students" };
+              return [
+                { label: "Location", value: formatValue(school.location), icon: <SchoolCardIcons.Location /> },
+                { label: "Ratio", value: formatValue(school.ratio), icon: <SchoolCardIcons.Ratio /> },
+                { label: "Students", value: formatValue(school.students), icon: <SchoolCardIcons.Students /> },
+                { label: "Rating", value: `${ratingNum} (${reviewsCount || "—"})`, icon: <SchoolCardIcons.Star /> },
+              ];
             }
-            return { label: "Students", value: school.students, icon: "students" };
-          };
-
-          const secondStat = getSecondStat();
-          const fourthStat = getFourthStat();
-
-          const ratioIcon = <SchoolCardIcons.Ratio />;
-
-          const durationIcon = <SchoolCardIcons.Duration />;
-
-          const priceIcon = <SchoolCardIcons.Tuition />;
-
-          const studentsIcon = <SchoolCardIcons.Students />;
-
-          const acceptanceIcon = <SchoolCardIcons.Acceptance />;
+            if (establishment === "Colleges") {
+              return [
+                { label: "Location", value: formatValue(school.location), icon: <SchoolCardIcons.Location /> },
+                { label: "Duration", value: formatValue(school.duration), icon: <SchoolCardIcons.Duration /> },
+                { label: "Tuition", value: formatValue(school.price), icon: <SchoolCardIcons.Tuition /> },
+                { label: "Acceptance", value: formatValue(school.acceptanceRate || (school as any).acceptance), icon: <SchoolCardIcons.Acceptance /> },
+              ];
+            }
+            if (establishment === "Graduates") {
+              return [
+                { label: "Location", value: formatValue(school.location), icon: <SchoolCardIcons.Location /> },
+                { label: "Duration", value: formatValue(school.duration), icon: <SchoolCardIcons.Duration /> },
+                { label: "Tuition", value: formatValue(school.price), icon: <SchoolCardIcons.Tuition /> },
+                { label: "Students", value: formatValue(school.students), icon: <SchoolCardIcons.Students /> },
+              ];
+            }
+            // District
+            return [
+              { label: "Location", value: formatValue(school.location), icon: <SchoolCardIcons.Location /> },
+              { label: "Schools", value: formatValue((school as any).totalSchools), icon: <SchoolCardIcons.TotalSchools /> },
+              { label: "Students", value: formatValue(school.students), icon: <SchoolCardIcons.Students /> },
+              { label: "Rating", value: `${ratingNum} (${reviewsCount || "—"})`, icon: <SchoolCardIcons.Star /> },
+            ];
+          })();
 
           return (
-            <div className="stats-section grid grid-cols-2 gap-2.5 mb-4 px-4">
-              {/* Location - Always first */}
-              <div className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
-                <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
-                  <SchoolCardIcons.Location />
-                </div>
-                <div className="stat-content flex flex-col gap-1">
-                  <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">Location</div>
-                  <div className="stat-value text-[10px] text-[#464646] font-medium leading-[1.3]">{school.location}</div>
-                </div>
-              </div>
-
-              {/* Second stat */}
-              <div className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
-                <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
-                  {secondStat.icon === "ratio" ? ratioIcon : durationIcon}
-                </div>
-                <div className="stat-content flex flex-col">
-                  <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">{secondStat.label}</div>
-                  <div className="stat-value text-[10px] text-[#464646] font-medium leading-[1.3]">{secondStat.value}</div>
-                </div>
-              </div>
-
-              {/* Tuition - Third stat (not for District) */}
-              {establishment !== "District" && (
-                <div className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
+            <div className="stats-section grid grid-cols-2 gap-2.5 mb-4">
+              {stats.map((s) => (
+                <div key={s.label} className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
                   <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
-                    {priceIcon}
+                    {s.icon}
                   </div>
-                  <div className="stat-content flex flex-col">
-                    <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">Tuition</div>
-                    <div className="stat-value text-[10px] text-[#464646] font-medium leading-[1.3]">{school.price}</div>
-                  </div>
-                </div>
-              )}
-
-              {/* Fourth stat */}
-              {establishment === "Colleges" ? (
-                <div className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
-                  <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
-                    {acceptanceIcon}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">{fourthStat.label}</div>
-                    <div className="stat-value text-[10px] text-[#464646] font-medium leading-[1.3]">{fourthStat.value}</div>
+                  <div className="stat-content flex flex-col gap-1">
+                    <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">{s.label}</div>
+                    <div className="stat-value text-[12px] text-[#464646] font-medium leading-[1.3]">{s.value}</div>
                   </div>
                 </div>
-              ) : (
-                <div className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
-                  <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
-                    {studentsIcon}
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">{fourthStat.label}</div>
-                    <div className="stat-value text-[10px] text-[#464646] font-medium leading-[1.3]">{fourthStat.value}</div>
-                  </div>
-                </div>
-              )}
+              ))}
             </div>
           );
         })()}
@@ -2059,38 +2416,30 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
         {/* Classic Layout - Footer */}
         {isClassicLayout && (
           <div className="school-footer px-4 py-3 border-t border-[rgba(0,0,0,0.06)] mt-auto flex justify-between items-center">
-            {/* Mobile Footer */}
-            <div className="md:hidden footer-left flex items-center gap-3">
-              <div className="rating-text flex items-center gap-1 text-[12px] text-[#5F5F5F]">
-                <SchoolCardIcons.Star />
-                <span>
-                  <span className="font-semibold text-[#464646]">{school.rating.split(' ')[0]}</span> {school.rating.split(' ').slice(1).join(' ')}
-                </span>
-              </div>
-              <div className="like-indicator w-6 h-6 flex items-center justify-center text-[#5F5F5F] cursor-pointer">
-                <SchoolCardIcons.Heart />
-              </div>
-            </div>
-            <div className="md:hidden footer-right flex items-center gap-2">
-              <div
-                className="options-button w-8 h-8 rounded-full bg-[#f5f5f7] flex items-center justify-center text-[#5F5F5F] cursor-pointer hover:text-[#346DC2] hover:bg-[#e8e8e8] transition-all pointer-events-auto"
-                onClick={() => setIsDrawerOpen(true)}
+            <div className="footer-left flex items-center gap-2">
+              <button
+                type="button"
+                className={`like-indicator w-7 h-7 flex items-center justify-center cursor-pointer transition-colors ${
+                  isLiked ? "text-[#298541]" : "text-[#5F5F5F]"
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsLiked((v) => !v);
+                }}
+                aria-pressed={isLiked}
+                aria-label="Like"
               >
-                <SchoolCardIcons.MoreOptions />
-              </div>
-              <div className="info-button w-8 h-8 rounded-full bg-[#f5f5f7] flex items-center justify-center text-[#5F5F5F] cursor-pointer hover:text-[#346DC2] hover:bg-[#e8e8e8] transition-all">
-                <SchoolCardIcons.Heart />
-              </div>
+                <span className="[&>svg]:w-[18px] [&>svg]:h-[18px]">
+                  <SchoolCardIcons.Heart filled={isLiked} />
+                </span>
+              </button>
             </div>
 
-            {/* Desktop Footer */}
-            <div className="hidden md:flex footer-left items-center gap-2">
-              <div className="like-indicator w-7 h-7 flex items-center justify-center text-[#5F5F5F] cursor-pointer">
-                <SchoolCardIcons.Heart />
-              </div>
-            </div>
-            <div className="hidden md:flex footer-actions items-center gap-2">
-              <SchoolCardContextMenu schoolName={school.name} />
+            <div className="footer-actions flex items-center gap-2">
+              <SchoolCardContextMenu
+                schoolName={school.name}
+                buttonClassName="options-button w-7 h-7 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] bg-[#f5f5f7] transition-all hover:text-[#346DC2] hover:bg-[#e8e8e8] pointer-events-auto"
+              />
             </div>
           </div>
         )}
@@ -2156,46 +2505,97 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
         {/* Hover Overlay for Classic Layout */}
         {isClassicLayout && (
-          <div className="hover-overlay absolute top-0 left-0 w-full h-[calc(100%-60px)] bg-[rgba(255,255,255,0.98)] p-6 pr-8 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out flex flex-col z-10 rounded-t-[12px]" style={{ pointerEvents: 'auto' }}>
-            <div className="hover-header flex gap-3 mb-3 min-w-0">
-              <Image
-                src={school.avatar}
-                alt={school.name}
-                width={40}
-                height={40}
-                className="school-avatar w-10 h-10 rounded-lg object-cover flex-shrink-0"
-              />
-              <div className="hover-school-name text-base font-semibold text-[#464646] line-clamp-2 leading-[1.3] flex-1 min-w-0">
-                {school.name}
-              </div>
-            </div>
-            <div className="hover-stats flex gap-3 mb-4">
-              <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                <SchoolCardIcons.Tuition />
-                <span className="text-[#464646]">{school.price}</span>
-              </div>
-              <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                <div className="stat-icon flex-shrink-0">
-                  <SchoolCardIcons.Ratio />
-                </div>
-                <span className="text-[#464646]">Grades {school.grades}</span>
-              </div>
-            </div>
-            <div className="school-description text-sm leading-[1.6] text-[#4A4A4A] line-clamp-5 mb-3">
-              {school.description}
-            </div>
-            <div className="review-count text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer hover:underline transition-colors">
-              Read {school.reviews} reviews
-            </div>
-            <div className="hover-buttons flex flex-col gap-2 mt-auto">
-              <div className="hover-button button-info w-full py-3 px-3 rounded-lg text-sm font-medium cursor-pointer bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors flex items-center justify-center gap-2">
-                More Info
-              </div>
-              <div className="hover-button button-like w-full py-3 px-3 rounded-lg text-sm font-medium cursor-pointer bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9] transition-colors flex items-center justify-center gap-2">
-                <SchoolCardIcons.Heart />
-                Like
-              </div>
-            </div>
+          <div
+            className="hover-overlay absolute top-0 left-0 w-full h-[calc(100%-60px)] bg-[rgba(255,255,255,0.98)] p-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out flex flex-col z-10 rounded-t-[12px]"
+            style={{ pointerEvents: "auto" }}
+          >
+            {(() => {
+              const reviewerType = (school as any).reviewerType || "Parent";
+              const ratingNum = (school.rating || "").match(/[\d.]+/)?.[0] || school.rating;
+              const reviewsCount = typeof school.reviews === "number"
+                ? school.reviews
+                : Number((school.rating || "").match(/\(([^)]+)\)/)?.[1]) || 0;
+
+              const hoverStats: Array<{ icon: React.ReactNode; text: string }> = (() => {
+                if (establishment === "K-12") {
+                  return [
+                    { icon: <SchoolCardIcons.Tuition />, text: school.price || "—" },
+                    { icon: <SchoolCardIcons.Grades />, text: school.grades || "—" },
+                  ];
+                }
+                if (establishment === "Colleges") {
+                  return [{ icon: <SchoolCardIcons.SAT />, text: `SAT: ${school.sat || "—"}` }];
+                }
+                if (establishment === "Graduates") {
+                  return [{ icon: <SchoolCardIcons.MedianSalary />, text: `Median: ${(school as any).medianSalary || "—"}` }];
+                }
+                // District
+                return [
+                  { icon: <SchoolCardIcons.Ratio />, text: school.ratio || "—" },
+                  { icon: <SchoolCardIcons.Grades />, text: school.grades || "—" },
+                ];
+              })();
+
+              return (
+                <>
+                  <div className="hover-header flex gap-3 mb-3 min-w-0">
+                    <Image
+                      src={school.avatar || school.image}
+                      alt={school.name}
+                      width={40}
+                      height={40}
+                      className="school-avatar w-10 h-10 rounded-lg object-cover flex-shrink-0"
+                    />
+                    <div className="hover-school-name text-base font-semibold text-[#464646] line-clamp-2 leading-[1.3] flex-1 min-w-0">
+                      {school.name}
+                    </div>
+                  </div>
+
+                  <div className="hover-stats flex gap-3 mb-4">
+                    {hoverStats.map((s, idx) => (
+                      <div key={idx} className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                        <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">{s.icon}</span>
+                        <span className="text-[#464646]">{s.text}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="school-description text-[14px] leading-[1.6] text-[#4A4A4A] line-clamp-5 mb-3">
+                    <strong className="font-semibold text-[#464646] mr-1">{reviewerType}:</strong>
+                    {school.description}
+                  </div>
+
+                  <div className="review-count text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer">
+                    Read {reviewsCount || school.reviews || ratingNum} reviews
+                  </div>
+
+                  <div className="hover-buttons flex flex-col gap-2 mt-auto">
+                    <button
+                      type="button"
+                      className="hover-button button-info w-full py-3 rounded-lg text-[14px] font-medium cursor-pointer bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors flex items-center justify-center gap-2"
+                    >
+                      More Info
+                    </button>
+                    <button
+                      type="button"
+                      className={`hover-button button-like w-full py-3 rounded-lg text-[14px] font-medium cursor-pointer transition-colors flex items-center justify-center gap-2 ${
+                        isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsLiked((v) => !v);
+                      }}
+                      aria-pressed={isLiked}
+                    >
+                      <span className="[&>svg]:w-4 [&>svg]:h-4">
+                        <SchoolCardIcons.Heart filled={isLiked} />
+                      </span>
+                      {isLiked ? "Liked" : "Like"}
+                    </button>
+                  </div>
+                </>
+              );
+            })()}
           </div>
         )}
       </div>

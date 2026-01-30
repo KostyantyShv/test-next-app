@@ -191,7 +191,9 @@ const MobileHybridExplore: React.FC<{
         <div className="p-2">
           {[
             { value: "grid", label: "Grid" },
+            { value: "card", label: "Card" },
             { value: "list", label: "List" },
+            { value: "magazine", label: "Magazine" },
             { value: "hybrid", label: "Hybrid" },
             { value: "classic", label: "Classic" },
           ].map((opt) => (

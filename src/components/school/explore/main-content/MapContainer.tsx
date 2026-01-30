@@ -66,6 +66,11 @@ const getMarkerColor = (grade: string): string => {
 
 const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
   ({ isMapActive, schools, layout, onExpandedChange, mode = "desktopPanel" }, ref) => {
+    // Desktop panel heights (px). Keep explicit height to avoid blank Google Map
+    // during width/height transitions and when using `h-full` on the map node.
+    const DESKTOP_COLLAPSED_HEIGHT = 720;
+    const DESKTOP_EXPANDED_HEIGHT = 840;
+
     const [mapType, setMapType] = useState<"roadmap" | "satellite">("roadmap");
     const [showTerrain, setShowTerrain] = useState(false);
     const [showLabels, setShowLabels] = useState(true);
@@ -74,6 +79,17 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
     const mapInstanceRef = useRef<google.maps.Map | null>(null);
     const markersRef = useRef<google.maps.Marker[]>([]);
     const infoWindowsRef = useRef<google.maps.InfoWindow[]>([]);
+
+    const resizeMapSoon = () => {
+      if (!mapInstanceRef.current || typeof google === "undefined" || !google.maps?.event) return;
+      const map = mapInstanceRef.current;
+      const center = (map as any).getCenter?.();
+      // Google Maps often needs explicit resize after container transitions.
+      google.maps.event.trigger(map, "resize");
+      if (center) {
+        (map as any).setCenter(center);
+      }
+    };
 
     useImperativeHandle(ref, () => ({
       exitStreetView: () => {
@@ -149,6 +165,10 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
         });
 
         mapInstanceRef.current = map;
+
+        // Ensure map paints after panel transition/layout.
+        setTimeout(resizeMapSoon, 0);
+        setTimeout(resizeMapSoon, 350);
 
         // Listen for street view changes to show/hide markers
         (map as any).addListener("streetview_changed", () => {
@@ -233,6 +253,17 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
       }
     }, [schools, isMapActive]);
 
+    // Fix "blank map" when the panel expands/collapses (size transition).
+    useEffect(() => {
+      if (!isMapActive) return;
+      const t1 = setTimeout(resizeMapSoon, 0);
+      const t2 = setTimeout(resizeMapSoon, 350);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    }, [isMapActive, isExpanded, layout]);
+
     // Handle map type changes
     useEffect(() => {
       if (!mapInstanceRef.current || typeof google === "undefined" || !isMapActive) return;
@@ -283,7 +314,7 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
               : `bg-white rounded-xl overflow-hidden transition-all duration-300 ${isMapActive
                   ? isExpanded
                     ? "flex-1 m-6 border border-[rgba(0,0,0,0.1)]"
-                    : layout === "list"
+                    : layout === "list" || layout === "magazine"
                       ? "w-[340px] mr-6 mt-6 mb-6 border border-[rgba(0,0,0,0.1)]"
                       : "w-[400px] mr-6 mt-6 mb-6 border border-[rgba(0,0,0,0.1)]"
                   : "w-0 overflow-hidden"
@@ -292,8 +323,11 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
           style={
             mode === "mobileDrawer"
               ? undefined
-              : isExpanded
-                ? { minHeight: "500px" }
+              : isMapActive
+                ? {
+                    height: isExpanded ? `${DESKTOP_EXPANDED_HEIGHT}px` : `${DESKTOP_COLLAPSED_HEIGHT}px`,
+                    minHeight: isExpanded ? `${DESKTOP_EXPANDED_HEIGHT}px` : `${DESKTOP_COLLAPSED_HEIGHT}px`,
+                  }
                 : {}
           }
         >
@@ -303,8 +337,18 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
               <div
                 className="relative flex-1 min-h-0"
                 style={{
+                  height:
+                    mode === "mobileDrawer"
+                      ? "100%"
+                      : isExpanded
+                        ? `${DESKTOP_EXPANDED_HEIGHT}px`
+                        : `${DESKTOP_COLLAPSED_HEIGHT}px`,
                   minHeight:
-                    mode === "mobileDrawer" ? "100%" : isExpanded ? "500px" : "400px",
+                    mode === "mobileDrawer"
+                      ? "100%"
+                      : isExpanded
+                        ? `${DESKTOP_EXPANDED_HEIGHT}px`
+                        : `${DESKTOP_COLLAPSED_HEIGHT}px`,
                 }}
               >
                 <MapControls
