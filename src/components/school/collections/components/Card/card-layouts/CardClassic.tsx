@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { CollectionsSchool, Note, RatingCheckmarks } from "../Card";
 import { NotesModal } from "../../modals/NotesModal";
+import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
 
 interface Props {
   school: CollectionsSchool;
@@ -23,7 +24,6 @@ export const CardClassic: React.FC<Props> = ({
   onStatusChange,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [showTooltip, setShowTooltip] = useState<boolean>(false);
   const [showStatusOptions, setShowStatusOptions] = useState<boolean>(false);
 
   const handleModalClose = () => setIsModalOpen((prev) => !prev);
@@ -253,84 +253,10 @@ export const CardClassic: React.FC<Props> = ({
             <div className="text-base font-semibold text-gray-700 cursor-pointer hover:text-teal-700 hover:underline max-w-[calc(100%-50px)] line-clamp-2">
               {truncateText(school.name, 25)}
             </div>
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-gray-500 hover:bg-gray-100 hover:text-gray-700 ml-auto flex-shrink-0"
-              onClick={() => setShowTooltip(!showTooltip)}
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="12" cy="12" r="1"></circle>
-                <circle cx="12" cy="5" r="1"></circle>
-                <circle cx="12" cy="19" r="1"></circle>
-              </svg>
-              {showTooltip && (
-                <div className="absolute top-full right-0 w-44 bg-white rounded-lg shadow-lg z-[1000]">
-                  <div className="flex items-center gap-2 p-3 text-sm text-gray-700 cursor-pointer hover:bg-gray-100">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <rect
-                        x="3"
-                        y="3"
-                        width="18"
-                        height="18"
-                        rx="2"
-                        ry="2"
-                      ></rect>
-                      <line x1="8" y1="12" x2="16" y2="12"></line>
-                      <line x1="12" y1="8" x2="12" y2="16"></line>
-                    </svg>
-                    Add to Dashboard
-                  </div>
-                  <div className="flex items-center gap-2 p-3 text-sm text-gray-700 cursor-pointer hover:bg-gray-100">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                    Share School
-                  </div>
-                  <div className="flex items-center gap-2 p-3 text-sm text-gray-700 cursor-pointer hover:bg-gray-100">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
-                    </svg>
-                    Hide School
-                  </div>
-                </div>
-              )}
-            </div>
+            <SchoolCardContextMenu
+              schoolName={school.name}
+              buttonClassName="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-gray-500 hover:bg-gray-100 hover:text-gray-700 ml-auto flex-shrink-0"
+            />
           </div>
           <div className="flex gap-3 mb-4">
             <div className="flex items-center gap-1.5 text-sm text-gray-500 relative group/date-added">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { LeftSidebar } from "@/components/layout/Sidebar/Left";
@@ -24,12 +24,19 @@ export const RootLayoutClient = ({
   children: React.ReactNode;
 }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
   const { isPlayerVisible, isPlaylistVisible } = useAudioPlayer();
   const isLeftSidebarCollapsed = useLeftSidebar((s) => s.isCollapsed);
   const isDesktopListingStickyHeaderVisible = useListingStickyHeader(
     (s) => s.isDesktopStickyHeaderVisible
   );
   const pathname = usePathname();
+
+  // Prevent hydration mismatches caused by client-only persisted UI state (e.g. sidebar collapsed).
+  // First render (server + initial client) uses a stable default; then we sync after mount.
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
   
   // Check if current route is an auth route
   const isAuthRoute = AUTH_ROUTES.some(route => pathname?.startsWith(route));
@@ -55,12 +62,12 @@ export const RootLayoutClient = ({
       {/* Playlist */}
       {isPlaylistVisible && <Playlist />}
 
-      <div className="flex h-full">
+      <div className="flex h-full min-w-0">
         {/* Desktop Sidebar: keep always visible (fixed) */}
         <div
           className={cn(
             "hidden md:block shrink-0",
-            isLeftSidebarCollapsed ? "w-20" : "w-64"
+            (hasMounted ? isLeftSidebarCollapsed : false) ? "w-20" : "w-64"
           )}
           aria-hidden="true"
         />
@@ -68,7 +75,7 @@ export const RootLayoutClient = ({
           <LeftSidebar />
         </div>
 
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0">
           {/* Mobile Header - hide while mobile sidebar is open */}
           {!(isTeamMembersPage) && !isMobileSidebarOpen && (
             <div className="md:hidden">

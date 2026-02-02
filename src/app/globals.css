@@ -716,8 +716,14 @@ body {
   display: block;
 }
 
-/* Hybrid Layout Stats Tooltips */
-.stat-hybrid:hover::after {
+/* Card stats tooltips (Classic/Hybrid + Mobile Hybrid) */
+.stat[data-tooltip],
+.mh-stat[data-tooltip] {
+  position: relative;
+}
+
+.stat[data-tooltip]:hover::after,
+.mh-stat[data-tooltip]:hover::after {
   content: attr(data-tooltip);
   position: absolute;
   bottom: 100%;
@@ -729,7 +735,7 @@ body {
   border-radius: 4px;
   font-size: 11px;
   white-space: nowrap;
-  z-index: 5;
+  z-index: 50;
   margin-bottom: 6px;
   pointer-events: none;
   opacity: 0;

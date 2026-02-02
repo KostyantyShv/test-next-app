@@ -141,7 +141,7 @@ export default function LeaderboardMobile() {
       </div>
 
       {/* Leaderboard section */}
-      <div className="bg-white rounded-2xl shadow-md overflow-hidden" style={{ width: '366px', margin: '0 auto' }}>
+      <div className="w-full max-w-[366px] mx-auto bg-white rounded-2xl shadow-md overflow-hidden">
         <button
           className="w-full flex items-center justify-between px-5 py-5 border-b border-[#F8F9FA] bg-white cursor-pointer"
           onClick={() => setIsExpanded(!isExpanded)}

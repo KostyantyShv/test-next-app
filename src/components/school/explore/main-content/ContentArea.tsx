@@ -52,7 +52,8 @@ const ContentArea: React.FC<ContentAreaProps> = ({
     }
     if (layout === "classic") {
       return isMapActive
-        ? "grid-cols-2 max-[700px]:grid-cols-1"
+        // When map is active, always keep 2 columns (no 3-col breakpoints)
+        ? "grid-cols-2"
         : "grid-cols-4 max-[1100px]:grid-cols-3 max-[900px]:grid-cols-2 max-[600px]:grid-cols-1";
     }
     return "";

@@ -7,6 +7,7 @@ import {
 } from "../Card";
 import Image from "next/image";
 import { NotesModal } from "../../modals/NotesModal";
+import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
 
 export const CardList: React.FC<{
   school: CollectionsSchool;
@@ -27,7 +28,6 @@ export const CardList: React.FC<{
   onEditNote,
   onDeleteNote,
 }) => {
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -120,135 +120,11 @@ export const CardList: React.FC<{
             <h3 className="school-name text-xl font-semibold text-gray-700 leading-tight cursor-pointer transition-all duration-200 hover:text-green-700 hover:underline hover:decoration-green-700 flex-1 min-w-0 break-words">
               {school.name}
             </h3>
-            <div
-              className="more-options w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-700 relative ml-2"
-              onClick={() => setIsTooltipOpen(!isTooltipOpen)}
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <div
-                className={`tooltip absolute top-full right-0 mt-2 w-44 bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.15)] overflow-hidden z-50 transition-all duration-200 ${
-                  isTooltipOpen ? "block" : "hidden"
-                }`}
-              >
-                <div className="tooltip-item flex items-center gap-2 px-4 py-2.5 text-sm text-gray-600 cursor-pointer transition-all duration-200 hover:bg-gray-100">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9 4H5C4.44772 4 4 4.44772 4 5V9C4 9.55228 4.44772 10 5 10H9C9.55228 10 10 9.55228 10 9V5C10 4.44772 9.55228 4 9 4Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M19 4H15C14.4477 4 14 4.44772 14 5V9C14 9.55228 14.4477 10 15 10H19C19.5523 10 20 9.55228 20 9V5C20 4.44772 19.5523 4 19 4Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M9 14H5C4.44772 14 4 14.4477 4 15V19C4 19.5523 4.44772 20 5 20H9C9.55228 20 10 19.5523 10 19V15C10 14.4477 9.55228 14 9 14Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M19 14H15C14.4477 14 14 14.4477 14 15V19C14 19.5523 14.4477 20 15 20H19C19.5523 20 20 19.5523 20 19V15C20 14.4477 19.5523 14 19 14Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  Add to Dashboard
-                </div>
-                <div className="tooltip-item flex items-center gap-2 px-4 py-2.5 text-sm text-gray-600 cursor-pointer transition-all duration-200 hover:bg-gray-100">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M11 4H4C3.44772 4 3 4.44772 3 5V19C3 19.5523 3.44772 20 4 20H18C18.5523 20 19 19.5523 19 19V12"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M17.5 2.5C17.8978 2.10217 18.4374 1.87868 19 1.87868C19.5626 1.87868 20.1022 2.10217 20.5 2.5C20.8978 2.89783 21.1213 3.43739 21.1213 4C21.1213 4.56261 20.8978 5.10217 20.5 5.5L12 14L8 15L9 11L17.5 2.5Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  Edit School
-                </div>
-                <div className="tooltip-item flex items-center gap-2 px-4 py-2.5 text-sm text-gray-600 cursor-pointer transition-all duration-200 hover:bg-gray-100">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M3 6H5H21"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  Remove
-                </div>
-              </div>
-            </div>
+            <SchoolCardContextMenu
+              schoolName={school.name}
+              buttonClassName="more-options w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-700 relative ml-2 [&_svg]:w-[18px] [&_svg]:h-[18px]"
+              preferredPlacement="bottom"
+            />
           </div>
           <div className="stats-section flex flex-wrap gap-6 mb-4 min-w-0">
             <div className="stat flex items-center gap-2 text-sm text-gray-600">

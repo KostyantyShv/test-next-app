@@ -81,7 +81,8 @@ const MainContent: React.FC<MainContentProps> = ({ onContainerExpandChange }) =>
         setIsMapActive={setIsMapActive}
         layout={layout}
         setLayout={setLayout}
-        layoutToggleWidth={134}
+        // Expanded width should fit all layout icons + gaps/padding.
+        layoutToggleWidth={layouts.length * 32 + (layouts.length - 1) * 4 + 6}
         renderSearchTypeButton={renderSearchTypeButton}
         onContainerExpandChange={onContainerExpandChange}
       />

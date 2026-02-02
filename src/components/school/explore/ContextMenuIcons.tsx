@@ -1,9 +1,28 @@
 import React from 'react';
 
 export const ContextMenuIcons = {
-    Options: () => (
-        <svg viewBox="0 0 24 24" className="w-6 h-6 fill-[#5F5F5F]">
+    Options: ({ className = "" }: { className?: string }) => (
+        <svg
+            viewBox="0 0 24 24"
+            className={`${className ? className : "w-6 h-6"} fill-[#5F5F5F]`}
+        >
             <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+        </svg>
+    ),
+    // List layout (Explore) - icon from provided HTML (3 outlined dots).
+    OptionsList: ({ className = "" }: { className?: string }) => (
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className ? className : "w-[14px] h-[14px]"}
+        >
+            <circle cx="12" cy="5" r="1"></circle>
+            <circle cx="12" cy="12" r="1"></circle>
+            <circle cx="12" cy="19" r="1"></circle>
         </svg>
     ),
     Compare: () => (

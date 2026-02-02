@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useLayoutEffect, useState, useRef, useEffect } from 'react';
+import React, { useCallback, useLayoutEffect, useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { ContextMenuIcons } from './ContextMenuIcons';
 import { AddToCollectionModal } from './AddToCollectionModal';
@@ -79,14 +79,15 @@ const NestedMultiSelectItem: React.FC<MultiSelectProps> = ({ icon, text, isSelec
 interface SchoolCardContextMenuProps {
     schoolName?: string;
     buttonClassName?: string;
+    iconClassName?: string;
+    iconVariant?: "default" | "list";
+    preferredPlacement?: "top" | "bottom";
 }
 
-export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ schoolName = "", buttonClassName }) => {
+export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ schoolName = "", buttonClassName, iconClassName, iconVariant = "default", preferredPlacement }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedMoveTo, setSelectedMoveTo] = useState<string[]>([]);
-    const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
     const [menuPlacement, setMenuPlacement] = useState<"top" | "bottom">("bottom");
-    const [menuArrowLeft, setMenuArrowLeft] = useState<number>(0);
     const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false);
     const [isMoveToOpenMobile, setIsMoveToOpenMobile] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -97,6 +98,10 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
     const [isMoveToOpenDesktop, setIsMoveToOpenDesktop] = useState(false);
     const [moveToPosition, setMoveToPosition] = useState<{ top: number; left: number; side: "left" | "right"; arrowTop: number } | null>(null);
     const moveToCloseTimerRef = useRef<number | null>(null);
+    const placementLockedRef = useRef(false);
+    const lockedPlacementRef = useRef<"top" | "bottom">("bottom");
+    const rafPosRef = useRef<number | null>(null);
+    const lastPosRef = useRef<{ top: number; left: number; arrowLeft: number; placement: "top" | "bottom" } | null>(null);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -130,7 +135,16 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
 
     const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
-    const updateMenuPosition = () => {
+    const applyMenuStyles = (next: { top: number; left: number; arrowLeft: number; placement: "top" | "bottom" }) => {
+        const el = dropdownRef.current;
+        if (!el) return;
+        // Use transform-only positioning to avoid layout jitter while scrolling.
+        const placementTransform = next.placement === "top" ? " translateY(-100%)" : "";
+        el.style.transform = `translate3d(${next.left}px, ${next.top}px, 0)${placementTransform}`;
+        el.style.setProperty("--menu-arrow-left", `${next.arrowLeft}px`);
+    };
+
+    const updateMenuPosition = (force: boolean = false) => {
         const btn = buttonRef.current;
         if (!btn) return;
 
@@ -139,35 +153,84 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
         const spacing = 8;
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
-
-        // Prefer real rendered height when available (prevents unnecessary "flip to top").
         const measuredHeight = dropdownRef.current?.getBoundingClientRect().height;
-        const menuHeight = measuredHeight && measuredHeight > 0 ? measuredHeight : 400; // fallback
+        const menuHeight = measuredHeight && measuredHeight > 0 ? measuredHeight : 320;
 
-        // Default placement: below, aligned to right edge of button.
-        let placement: "top" | "bottom" = "bottom";
-        let top = rect.bottom + spacing;
+        // Decide placement once (prevents jumpy flipping while scrolling).
+        // Prefer bottom by default (more predictable). Allow callers (e.g. Classic footer) to prefer opening upward.
+        let placement: "top" | "bottom" = placementLockedRef.current ? lockedPlacementRef.current : "bottom";
+        if (!placementLockedRef.current) {
+            const availableBelow = viewportHeight - (rect.bottom + spacing);
+            const availableAbove = rect.top - spacing;
+            const fitsBelow = availableBelow >= menuHeight;
+            const fitsAbove = availableAbove >= menuHeight;
+            if (preferredPlacement) {
+                // Honor preferred placement if it has reasonable space; otherwise fall back.
+                const pref = preferredPlacement;
+                if (pref === "bottom") {
+                    placement = fitsBelow ? "bottom" : (fitsAbove ? "top" : (availableBelow >= availableAbove ? "bottom" : "top"));
+                } else {
+                    placement = fitsAbove ? "top" : (fitsBelow ? "bottom" : (availableBelow >= availableAbove ? "bottom" : "top"));
+                }
+            } else {
+                placement = fitsBelow ? "bottom" : (fitsAbove ? "top" : (availableBelow >= availableAbove ? "bottom" : "top"));
+            }
+            lockedPlacementRef.current = placement;
+            placementLockedRef.current = true;
+        }
+
+        // Keep attached to the trigger.
+        // For "top" placement we anchor to rect.top and use translateY(-100%) in render,
+        // so menu height changes won't cause vertical jumping.
+        const top = placement === "bottom" ? rect.bottom + spacing : rect.top - spacing;
         let left = rect.right - menuWidth;
 
         // Keep within viewport horizontally.
         left = clamp(left, 10, viewportWidth - menuWidth - 10);
-
-        // If it overflows bottom, flip to top (but only if needed).
-        if (top + menuHeight > viewportHeight - 10) {
-            placement = "top";
-            top = rect.top - spacing - menuHeight;
-            top = clamp(top, 10, viewportHeight - menuHeight - 10);
-        }
 
         // Arrow should point at the button center. Requested tweaks:
         // - move right by 2px
         const buttonCenterX = rect.left + rect.width / 2;
         const arrowLeft = clamp(buttonCenterX - left + 2, 18, menuWidth - 18);
 
-        setMenuPlacement(placement);
-        setMenuArrowLeft(arrowLeft);
-        setMenuPosition({ top, left });
+        const next = {
+            placement,
+            top,
+            left,
+            arrowLeft,
+        };
+
+        const prev = lastPosRef.current;
+        if (
+            force ||
+            !prev ||
+            prev.placement !== next.placement ||
+            prev.top !== next.top ||
+            prev.left !== next.left ||
+            prev.arrowLeft !== next.arrowLeft
+        ) {
+            lastPosRef.current = next;
+            // Only placement needs React state (for arrow orientation).
+            if (menuPlacement !== next.placement) setMenuPlacement(next.placement);
+            // Imperatively position to avoid re-render jitter on scroll.
+            applyMenuStyles(next);
+        }
     };
+
+    // When the portal mounts, immediately position it. This prevents a "stuck at 0,0" render
+    // in cases where layout effects are delayed/skipped due to portal timing.
+    const setDropdownNode = useCallback(
+        (node: HTMLDivElement | null) => {
+            dropdownRef.current = node;
+            if (!node) return;
+            if (isMobile || !isOpen) return;
+            // Position now that the DOM node exists (menu height can be measured).
+            updateMenuPosition(true);
+            window.requestAnimationFrame(() => updateMenuPosition(true));
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [isMobile, isOpen]
+    );
 
     const updateMoveToPosition = () => {
         const anchor = moveToItemRef.current;
@@ -202,30 +265,38 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
     useLayoutEffect(() => {
         if (isMobile || !isOpen) return;
         updateMenuPosition();
+        // Post-mount correction (ensures portal ref exists + measured layout is settled)
+        const raf = window.requestAnimationFrame(() => updateMenuPosition());
         if (isMoveToOpenDesktop) updateMoveToPosition();
+        return () => window.cancelAnimationFrame(raf);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, isMobile, isMoveToOpenDesktop]);
 
-    // Keep the desktop menu (and nested menu) attached to the 3-dots while scrolling/resizing.
+    // Keep the desktop menu glued to the trigger while open.
+    // Placement is locked when opening (prevents flip/jitter). We only update transforms.
     useEffect(() => {
         if (isMobile || !isOpen) return;
 
-        const onAnyScrollOrResize = () => {
-            updateMenuPosition();
-            if (isMoveToOpenDesktop) updateMoveToPosition();
+        const schedule = () => {
+            if (rafPosRef.current) return;
+            rafPosRef.current = window.requestAnimationFrame(() => {
+                rafPosRef.current = null;
+                updateMenuPosition();
+                if (isMoveToOpenDesktop) updateMoveToPosition();
+            });
         };
 
         // Initial + post-render measurement correction.
-        onAnyScrollOrResize();
-        const raf = window.requestAnimationFrame(onAnyScrollOrResize);
+        schedule();
 
-        window.addEventListener("resize", onAnyScrollOrResize);
+        window.addEventListener("resize", schedule);
         // Capture scroll events from any scroll container, not just window.
-        window.addEventListener("scroll", onAnyScrollOrResize, true);
+        window.addEventListener("scroll", schedule, true);
         return () => {
-            window.cancelAnimationFrame(raf);
-            window.removeEventListener("resize", onAnyScrollOrResize);
-            window.removeEventListener("scroll", onAnyScrollOrResize, true);
+            if (rafPosRef.current) window.cancelAnimationFrame(rafPosRef.current);
+            rafPosRef.current = null;
+            window.removeEventListener("resize", schedule);
+            window.removeEventListener("scroll", schedule, true);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, isMobile, isMoveToOpenDesktop]);
@@ -234,6 +305,8 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
         setIsOpen(false);
         setIsMoveToOpenMobile(false);
         setIsMoveToOpenDesktop(false);
+        placementLockedRef.current = false;
+        lastPosRef.current = null;
     };
 
     const toggleDropdown = () => {
@@ -241,7 +314,16 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
             setIsOpen(!isOpen);
             return;
         }
-        setIsOpen((v) => !v);
+        setIsOpen((v) => {
+            const next = !v;
+            if (next) {
+                placementLockedRef.current = false;
+                // Important: if the menu was previously closed by clicking the trigger again,
+                // lastPosRef may still be set. Clear it so the first open always applies transform.
+                lastPosRef.current = null;
+            }
+            return next;
+        });
     };
 
     const toggleMoveToSelection = (value: string) => {
@@ -277,7 +359,11 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                     "w-8 h-8 border border-[rgba(0,0,0,0.08)] rounded-lg flex items-center justify-center bg-white shadow-[0_2px_4px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_8px_rgba(0,0,0,0.1)] transition-all duration-200 pointer-events-auto relative z-50 cursor-pointer"
                 }
             >
-                <ContextMenuIcons.Options />
+                {iconVariant === "list" ? (
+                    <ContextMenuIcons.OptionsList className={iconClassName} />
+                ) : (
+                    <ContextMenuIcons.Options className={iconClassName} />
+                )}
             </button>
 
             {/* Mobile: render context actions as modal/drawer */}
@@ -376,24 +462,38 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
             {/* Desktop: render popover via Portal to avoid parent overflow clipping */}
             {!isMobile && isOpen && typeof window !== 'undefined' && createPortal(
                 <div
-                    ref={dropdownRef}
-                    className="fixed w-60 bg-white rounded-[10px] shadow-[0_8px_24px_rgba(0,0,0,0.15)] z-[9999]"
+                    ref={setDropdownNode}
+                    className="fixed top-0 left-0 w-60 bg-white rounded-[10px] shadow-[0_8px_24px_rgba(0,0,0,0.15)] z-[9999] will-change-transform"
                     style={{
-                        top: `${menuPosition.top}px`,
-                        left: `${menuPosition.left}px`,
+                        // Note: position is updated imperatively (see applyMenuStyles / updateMenuPosition).
+                        // Keep a default CSS var so arrow has a valid initial value before first measurement.
+                        ["--menu-arrow-left" as any]: `0px`,
                     }}
                 >
-                    {/* Arrow pointer (should point to 3 dots, and flip when menu flips) */}
-                    <div
-                        className="absolute w-4 h-4 bg-white rotate-45 shadow-[-2px_-2px_4px_rgba(0,0,0,0.05)]"
-                        style={{
-                            left: `${menuArrowLeft}px`,
-                            transform: "translateX(-50%) rotate(45deg)",
-                            // Requested: move tip DOWN 5px (was -8px), and align to center (+2px handled above).
-                            top: menuPlacement === "bottom" ? "-3px" : undefined,
-                            bottom: menuPlacement === "top" ? "-3px" : undefined,
-                        }}
-                    />
+                    {/* Arrow pointer (single "cone" that always points to the 3-dots) */}
+                    {menuPlacement === "bottom" ? (
+                        // Menu is below the button → arrow on top pointing UP to button
+                        <div
+                            className="absolute w-0 h-0 border-l-[8px] border-r-[8px] border-b-[8px] border-l-transparent border-r-transparent border-b-white"
+                            style={{
+                                left: "var(--menu-arrow-left)",
+                                top: "-8px",
+                                transform: "translateX(-50%)",
+                                filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.12))",
+                            }}
+                        />
+                    ) : (
+                        // Menu is above the button → arrow on bottom pointing DOWN to button
+                        <div
+                            className="absolute w-0 h-0 border-l-[8px] border-r-[8px] border-t-[8px] border-l-transparent border-r-transparent border-t-white"
+                            style={{
+                                left: "var(--menu-arrow-left)",
+                                bottom: "-8px",
+                                transform: "translateX(-50%)",
+                                filter: "drop-shadow(0 -2px 6px rgba(0,0,0,0.12))",
+                            }}
+                        />
+                    )}
 
                     {/* Scrollable content container with custom scrollbar */}
                     <div
@@ -508,14 +608,28 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                         }, 80);
                     }}
                 >
-                    <div
-                        className="absolute w-4 h-4 bg-white rotate-45 shadow-[-2px_2px_4px_rgba(0,0,0,0.05)]"
-                        style={{
-                            top: `${moveToPosition.arrowTop}px`,
-                            left: moveToPosition.side === "right" ? "-8px" : undefined,
-                            right: moveToPosition.side === "left" ? "-8px" : undefined,
-                        }}
-                    />
+                    {/* Nested arrow: single cone pointing back to the anchor item */}
+                    {moveToPosition.side === "right" ? (
+                        // Nested menu is to the RIGHT of the anchor → arrow on left pointing LEFT
+                        <div
+                            className="absolute w-0 h-0 border-t-[8px] border-b-[8px] border-r-[8px] border-t-transparent border-b-transparent border-r-white"
+                            style={{
+                                top: `${moveToPosition.arrowTop}px`,
+                                left: "-8px",
+                                filter: "drop-shadow(2px 0 6px rgba(0,0,0,0.10))",
+                            }}
+                        />
+                    ) : (
+                        // Nested menu is to the LEFT of the anchor → arrow on right pointing RIGHT
+                        <div
+                            className="absolute w-0 h-0 border-t-[8px] border-b-[8px] border-l-[8px] border-t-transparent border-b-transparent border-l-white"
+                            style={{
+                                top: `${moveToPosition.arrowTop}px`,
+                                right: "-8px",
+                                filter: "drop-shadow(-2px 0 6px rgba(0,0,0,0.10))",
+                            }}
+                        />
+                    )}
                     <NestedMultiSelectItem
                         icon={<ContextMenuIcons.NestedHome />}
                         text="Home"

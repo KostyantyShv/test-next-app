@@ -15,7 +15,9 @@ const LayoutToggle: React.FC<LayoutToggleProps> = ({
 }) => {
   return (
     <div
-      className={`flex items-center bg-[#f5f5f7] rounded-md p-[2px] w-9 overflow-hidden transition-all duration-300 hover:w-[${width}px] group`}
+      // Use a CSS variable so Tailwind can generate the class (avoids dynamic `hover:w-[${width}px]`).
+      style={{ ["--expanded-width" as never]: `${width}px` } as React.CSSProperties}
+      className="flex items-center gap-[4px] bg-[#f5f5f7] rounded-md p-[3px] w-10 overflow-hidden transition-all duration-300 hover:w-[var(--expanded-width)] group"
     >
       {layouts.map(({ type, icon }, index) => (
         <button
@@ -33,7 +35,7 @@ const LayoutToggle: React.FC<LayoutToggleProps> = ({
         >
           <span
             className={`w-5 h-5 flex items-center justify-center ${
-              layout === type ? "text-[#0093B0]" : "text-[#4A4A4A]"
+              layout === type ? "text-[#0093B0]" : "text-[#6B7280]"
             }`}
           >
             {icon}

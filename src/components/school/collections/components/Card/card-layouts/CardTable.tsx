@@ -1,7 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { CollectionsSchool, Note, RatingCheckmarks } from "../Card";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { NotesModal } from "../../modals/NotesModal";
+import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
 
 interface SchoolCardProps {
   school: CollectionsSchool;
@@ -29,12 +30,6 @@ export const CardTable: React.FC<SchoolCardProps> = ({
     ref: statusRef,
     setIsOpened: setIsStatusOpen,
   } = useDisclosure();
-
-  const {
-    isOpened: isDropdownOpened,
-    setIsOpened: setIsDropdownOpened,
-    ref: dropdownRef,
-  } = useDisclosure();
   const truncateText = (
     text: string | undefined,
     maxLength: number,
@@ -58,8 +53,6 @@ export const CardTable: React.FC<SchoolCardProps> = ({
   const toggleExpand = (): void => {
     setIsExpanded(!isExpanded);
   };
-
-  const handleDropdownOpen = () => setIsDropdownOpened(true);
 
   const handleStatusChange = (status: string): void => {
     onStatusChange(index, status);
@@ -368,136 +361,10 @@ export const CardTable: React.FC<SchoolCardProps> = ({
               </div>
             </td>
             <td className="p-4 bg-white border-b border-[#e5e7eb]">
-              <div
-                onClick={handleDropdownOpen}
-                className="options-button w-8 h-8 rounded-md flex items-center justify-center cursor-pointer hover:bg-[#F5F5F7] transition-colors duration-200 relative"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  className="w-[18px] h-[18px] text-[#5F5F5F]"
-                >
-                  <g fillRule="nonzero" fill="currentColor">
-                    <path d="M12 10.393a1.607 1.607 0 1 0 0 3.214 1.607 1.607 0 0 0 0-3.214M18 10.393a1.607 1.607 0 1 0 0 3.214 1.607 1.607 0 0 0 0-3.214M6 10.393a1.607 1.607 0 1 0 0 3.214 1.607 1.607 0 0 0 0-3.214" />
-                  </g>
-                </svg>
-                <div
-                  ref={dropdownRef}
-                  className={`dropdown-menu absolute top-[calc(100%+8px)] right-0 bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.15)] min-w-[180px] z-[1000] ${
-                    isDropdownOpened ? "block" : "hidden"
-                  }`}
-                >
-                  <div className="dropdown-item flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#4A4A4A] cursor-pointer hover:bg-[#F5F5F7] transition-colors duration-200">
-                    <svg
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      className="w-4 h-4"
-                    >
-                      <path d="M21.12 9.88005C21.07 9.83005 20.07 8.62005 20.07 8.62005C19.65 8.14005 18.95 8.11005 18.5 8.55005L17.62 9.43005L15.06 6.87005C14.91 6.71005 14.91 6.46005 15.06 6.30005L16.49 4.87005C17.27 4.09005 17.27 2.83005 16.49 2.05005C15.8 1.36005 14.75 1.27005 13.98 1.85005L10.13 5.70005C9.34 6.48005 9.29 7.75005 10.01 8.58005C10.16 8.76005 10.16 9.05005 9.97 9.19005L4.3 14.87C3.91 15.26 3.91 15.9 4.3 16.29C4.69 16.68 5.32 16.68 5.71 16.29L11.39 10.62C11.54 10.47 11.82 10.47 12 10.62C12.83 11.34 14.1 11.29 14.88 10.5L18.74 6.65005C18.81 6.58005 18.91 6.54005 19 6.54005C19.09 6.54005 19.18 6.58005 19.25 6.65005L19.98 7.38005L18.55 8.81005C18.11 9.26005 18.15 9.96005 18.62 10.38L20.93 12.1901C21.5 12.6401 22.01 12.5001 22.25 11.9001C22.52 11.2901 22.34 10.8401 21.99 10.0001L21.12 9.88005Z" />
-                    </svg>
-                    Edit
-                  </div>
-                  <div
-                    className={`dropdown-item flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#4A4A4A] cursor-pointer hover:bg-[#F5F5F7] transition-colors duration-200`}
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4">
-                      <path
-                        d="M12 2C6.49 2 2 6.49 2 12C2 17.51 6.49 22 12 22C17.51 22 22 17.51 22 12C22 6.49 17.51 2 12 2ZM16.78 9.7L11.11 15.37C10.97 15.51 10.78 15.59 10.58 15.59C10.38 15.59 10.19 15.51 10.05 15.37L7.22 12.54C6.93 12.25 6.93 11.77 7.22 11.48C7.51 11.19 7.99 11.19 8.28 11.48L10.58 13.78L15.72 8.64C16.01 8.35 16.49 8.35 16.78 8.64C17.07 8.93 17.07 9.4 16.78 9.7Z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                    Apply
-                  </div>
-                  <div className="dropdown-item flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#4A4A4A] cursor-pointer hover:bg-[#F5F5F7] transition-colors duration-200">
-                    <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4">
-                      <path
-                        d="M16 2H8C4 2 2 4 2 8V21C2 21.55 2.45 22 3 22H16C20 22 22 20 22 16V8C22 4 20 2 16 2Z"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M12.9 7.54996L7.64999 12.8"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeMiterlimit="10"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M7.65002 7.54996L12.9 12.8"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeMiterlimit="10"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    Remove
-                  </div>
-                  <div className="dropdown-item flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#4A4A4A] cursor-pointer hover:bg-[#F5F5F7] transition-colors duration-200">
-                    <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4">
-                      <path
-                        d="M19.06 18.6699L16.92 14.3999L14.78 18.6699"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M15.1699 17.9099H18.6899"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M16.9201 22C14.1201 22 11.8401 19.73 11.8401 16.92C11.8401 14.12 14.1101 11.85 16.9201 11.85C19.7301 11.85 22.0001 14.12 22.0001 16.92C22.0001 19.73 19.7301 22 16.9201 22Z"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M5.02 2H8.94C11.01 2 12.01 3.00002 11.96 5.02002V8.94C12.01 11.01 11.01 12.01 8.94 12.01H5.02C2.99 12.01 2 11.01 2 8.94V5.02002C2 3.00002 3 2 5.02 2Z"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M9.01001 5.84998H4.95001"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M7.01001 5.84998V5.84998"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M9.01001 9.15002H4.95001"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M7.01001 9.15002V9.15002"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    More options
-                  </div>
-                </div>
-              </div>
+              <SchoolCardContextMenu
+                schoolName={school.name}
+                buttonClassName="options-button w-8 h-8 rounded-md flex items-center justify-center cursor-pointer hover:bg-[#F5F5F7] transition-colors duration-200 relative text-[#5F5F5F]"
+              />
             </td>
           </tr>
           <tr

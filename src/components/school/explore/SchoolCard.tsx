@@ -791,7 +791,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
     })();
 
     return (
-      <div className="school-card flex flex-col max-[768px]:flex-col min-[577px]:flex-row p-5 border border-[rgba(0,0,0,0.08)] rounded-xl transition-all duration-200 ease-in-out relative overflow-hidden hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:border-[rgba(1,104,83,0.2)]">
+      <div className="school-card flex flex-col max-[768px]:flex-col min-[577px]:flex-row p-5 border border-[rgba(0,0,0,0.08)] rounded-xl transition-all duration-200 ease-in-out relative overflow-visible hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:border-[rgba(1,104,83,0.2)]">
         <div
           className={`image-container relative w-full shrink-0 flex flex-col ${
             school.specialty ? "has-specialty" : ""
@@ -825,7 +825,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               <div className="school-name text-base font-semibold text-[#464646] leading-[1.4] max-h-[2.8em] overflow-hidden line-clamp-2 cursor-pointer hover:text-[#016853] transition-colors">
                 {school.name}
               </div>
-              {school.verified ? (
+              {school.verified !== false ? (
                 <span className="verified-badge inline-flex items-center justify-center ml-1 shrink-0 mt-1">
                   <SchoolCardIcons.Verified />
                 </span>
@@ -846,7 +846,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               <div className="hidden md:block">
                 <SchoolCardContextMenu
                   schoolName={school.name}
-                  buttonClassName="more-options w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] transition-colors mt-[-3px] hover:bg-[#F5F5F7] hover:text-[#464646] pointer-events-auto"
+                  // Make dots horizontal (match HTML ellipsis)
+                  buttonClassName="more-options w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] transition-colors mt-[-3px] hover:bg-[#F5F5F7] hover:text-[#464646] pointer-events-auto [&_svg]:rotate-90 [&_svg]:w-[18px] [&_svg]:h-[18px]"
                 />
               </div>
             </div>
@@ -1303,7 +1304,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
             className="school-image h-[148px] w-full object-cover rounded-lg ml-3 max-[1024px]:ml-0 max-[1024px]:h-[200px]"
           />
 
-          <div className="image-buttons flex gap-2 py-3 ml-3 w-[calc(100%-12px)] max-[1024px]:ml-0 max-[1024px]:w-full">
+          <div className="image-buttons flex gap-2 py-3 ml-3 w-full max-[1024px]:ml-0 max-[1024px]:w-full">
             <div className="school-type-full w-full px-4 py-2 text-center bg-[#F5F5F7] text-[#464646] text-[13px] font-medium rounded-lg">
               {school.schoolType}
             </div>
@@ -1416,68 +1417,70 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
     const stats = (() => {
       if (establishment === "K-12") {
         return [
-          { label: "Location", value: school.location || "—", icon: <SchoolCardIcons.Location /> },
-          { label: "Ratio", value: school.ratio || "—", icon: <SchoolCardIcons.Ratio /> },
+          { label: "Location", value: school.location || "—", icon: <SchoolCardIcons.Location className="text-[#089E68]" /> },
+          { label: "Ratio", value: school.ratio || "—", icon: <SchoolCardIcons.Ratio className="text-[#089E68]" /> },
           {
             label: "Students",
             value: (school.students as any)?.toLocaleString?.() || (school.students as any) || "—",
-            icon: <SchoolCardIcons.Students />,
+            icon: <SchoolCardIcons.Students className="text-[#089E68]" />,
           },
           {
             label: "Rating",
             valueNode: (
               <>
-                <strong className="font-semibold">{ratingNum}</strong> ({reviewsCount || "—"})
+                <strong className="font-bold">{ratingNum}</strong>{" "}
+                <span className="font-normal">({reviewsCount || "—"})</span>
               </>
             ),
-            icon: <SchoolCardIcons.Star />,
+            icon: <SchoolCardIcons.StarOutline className="w-4 h-4 text-[#089E68]" />,
           },
         ];
       }
 
       if (establishment === "Colleges") {
         return [
-          { label: "Location", value: school.location || "—", icon: <SchoolCardIcons.Location /> },
-          { label: "Duration", value: school.duration || "—", icon: <SchoolCardIcons.Duration /> },
-          { label: "Tuition", value: school.price || "—", icon: <SchoolCardIcons.Tuition /> },
+          { label: "Location", value: school.location || "—", icon: <SchoolCardIcons.Location className="text-[#089E68]" /> },
+          { label: "Duration", value: school.duration || "—", icon: <SchoolCardIcons.Duration className="text-[#089E68]" /> },
+          { label: "Tuition", value: school.price || "—", icon: <SchoolCardIcons.Tuition className="text-[#089E68]" /> },
           {
             label: "Acceptance",
             value: (school as any).acceptance || school.acceptanceRate || "—",
-            icon: <SchoolCardIcons.Acceptance />,
+            icon: <SchoolCardIcons.Acceptance className="text-[#089E68]" />,
           },
         ];
       }
 
       if (establishment === "Graduates") {
         return [
-          { label: "Location", value: school.location || "—", icon: <SchoolCardIcons.Location /> },
-          { label: "Duration", value: school.duration || "—", icon: <SchoolCardIcons.Duration /> },
-          { label: "Tuition", value: school.price || "—", icon: <SchoolCardIcons.Tuition /> },
+          { label: "Location", value: school.location || "—", icon: <SchoolCardIcons.Location className="text-[#089E68]" /> },
+          { label: "Duration", value: school.duration || "—", icon: <SchoolCardIcons.Duration className="text-[#089E68]" /> },
+          { label: "Tuition", value: school.price || "—", icon: <SchoolCardIcons.Tuition className="text-[#089E68]" /> },
           {
             label: "Students",
             value: (school.students as any)?.toLocaleString?.() || (school.students as any) || "—",
-            icon: <SchoolCardIcons.Students />,
+            icon: <SchoolCardIcons.Students className="text-[#089E68]" />,
           },
         ];
       }
 
       // District
       return [
-        { label: "Location", value: school.location || "—", icon: <SchoolCardIcons.Location /> },
-        { label: "Schools", value: String((school as any).totalSchools || "—"), icon: <SchoolCardIcons.TotalSchools /> },
+        { label: "Location", value: school.location || "—", icon: <SchoolCardIcons.Location className="text-[#089E68]" /> },
+        { label: "Schools", value: String((school as any).totalSchools || "—"), icon: <SchoolCardIcons.TotalSchools className="text-[#089E68]" /> },
         {
           label: "Students",
           value: (school.students as any)?.toLocaleString?.() || (school.students as any) || "—",
-          icon: <SchoolCardIcons.Students />,
+          icon: <SchoolCardIcons.Students className="text-[#089E68]" />,
         },
         {
           label: "Rating",
           valueNode: (
             <>
-              <strong className="font-semibold">{ratingNum}</strong> ({reviewsCount || "—"})
+              <strong className="font-bold">{ratingNum}</strong>{" "}
+              <span className="font-normal">({reviewsCount || "—"})</span>
             </>
           ),
-          icon: <SchoolCardIcons.Star />,
+          icon: <SchoolCardIcons.StarOutline className="w-4 h-4 text-[#089E68]" />,
         },
       ];
     })();
@@ -1504,7 +1507,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
     const reviewerType = (school as any).reviewerType || "Parent";
 
     return (
-      <div className="school-card group relative flex flex-col bg-white rounded-[12px] overflow-hidden border border-[rgba(0,0,0,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all duration-200 ease-in-out hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:border-[rgba(1,104,83,0.2)]">
+      <div className="school-card group relative flex flex-col bg-white rounded-[12px] overflow-visible border border-[rgba(0,0,0,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all duration-200 ease-in-out hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:border-[rgba(1,104,83,0.2)]">
         {/* Specialty badge / placeholder */}
         {specialty ? (
           <div className={`specialty-badge absolute top-0 left-0 right-0 px-3 py-2 text-[13px] font-medium flex items-center justify-center gap-1.5 leading-none rounded-t-[12px] z-[2] ${specialty.className}`}>
@@ -1548,15 +1551,16 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
         {/* Content */}
         <div className="school-content p-4 flex flex-col h-[160px]">
-          <div className="stats-section grid grid-cols-2 gap-2.5 mb-4">
+          {/* Make left column (Location/Students) slightly wider */}
+          <div className="stats-section grid grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] gap-2.5 mb-4">
             {stats.map((s: any) => (
-              <div key={s.label} className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
+              <div key={s.label} className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg" data-tooltip={s.label}>
                 <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
                   {s.icon}
                 </div>
                 <div className="stat-content flex flex-col gap-1">
                   <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">{s.label}</div>
-                  <div className="stat-value text-[12px] text-[#464646] font-medium leading-[1.3]">
+                  <div className="stat-value text-[12px] text-[#464646] font-semibold leading-[1.3]">
                     {s.valueNode ?? s.value}
                   </div>
                 </div>
@@ -1566,8 +1570,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
         </div>
 
         {/* Footer */}
-        <div className="school-footer h-[60px] px-4 py-3 border-t border-[rgba(0,0,0,0.06)] flex items-center justify-between">
-          <div className="footer-left flex items-center gap-2">
+        <div className="school-footer mt-2 h-[52px] px-4 py-2 border-t border-[rgba(0,0,0,0.06)] flex items-center justify-between relative z-20">
+          <div className="footer-left flex items-center gap-2 flex-1">
             <button
               type="button"
               className={`like-indicator w-7 h-7 flex items-center justify-center cursor-pointer ${
@@ -1586,16 +1590,18 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
             </button>
           </div>
 
-          <div className="footer-actions flex items-center gap-2">
+          <div className="footer-actions flex items-center gap-2 ml-auto">
             <SchoolCardContextMenu
               schoolName={school.name}
-              buttonClassName="options-button w-7 h-7 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] bg-[#f5f5f7] transition-all hover:text-[#346DC2] hover:bg-[#e8e8e8] pointer-events-auto"
+              preferredPlacement="top"
+              buttonClassName="options-button relative z-30 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] bg-[#f5f5f7] transition-all hover:text-[#346DC2] hover:bg-[#e8e8e8] pointer-events-auto [&_svg]:w-[14px] [&_svg]:h-[14px]"
             />
           </div>
         </div>
 
-        {/* Hover overlay */}
-        <div className="hover-overlay absolute top-0 left-0 w-full h-[calc(100%-60px)] bg-[rgba(255,255,255,0.98)] p-6 opacity-0 invisible transition-opacity duration-300 ease-in-out flex flex-col z-10 rounded-t-[12px] group-hover:opacity-100 group-hover:visible">
+        {/* Hover overlay
+            Note: keep overlay visible on hover but do NOT steal hover from underlying stats/tooltips. */}
+        <div className="hover-overlay pointer-events-none absolute top-0 left-0 w-full h-[calc(100%-60px)] bg-[rgba(255,255,255,0.98)] p-6 opacity-0 invisible transition-opacity duration-300 ease-in-out flex flex-col z-10 rounded-t-[12px] group-hover:opacity-100 group-hover:visible">
           <div className="hover-header flex gap-3 mb-3">
             <Image
               src={school.avatar || school.image}
@@ -1623,11 +1629,11 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
             {school.description}
           </div>
 
-          <div className="review-count text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer">
+          <div className="review-count pointer-events-auto text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer">
             Read {reviewsCount || school.reviews || "—"} reviews
           </div>
 
-          <div className="hover-buttons flex flex-col gap-2 mt-auto">
+          <div className="hover-buttons pointer-events-auto flex flex-col gap-2 mt-auto">
             <button type="button" className="hover-button button-info w-full py-3 rounded-lg text-[14px] font-medium bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors flex items-center justify-center">
               More Info
             </button>
@@ -1659,7 +1665,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
         } ${isListLayout
           ? "flex min-w-0"
           : isHybridLayout
-            ? "flex p-4 border-[1px] border-[rgba(0,0,0,0.08)] active:scale-[0.98] active:border-[rgba(1,104,83,0.2)]"
+            ? "flex p-5 border-[1px] border-[rgba(0,0,0,0.08)] active:scale-[0.98] active:border-[rgba(1,104,83,0.2)]"
             : isClassicLayout
               ? "flex flex-col relative justify-between"
               : "flex flex-col justify-between"
@@ -1672,7 +1678,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
       {!isClassicLayout && !isHybridLayout && (
         <div
           className={`image-container relative ${isListLayout
-            ? "w-[200px] flex-shrink-0 flex flex-col pr-4 pt-6"
+            ? "w-[280px] flex-shrink-0 flex flex-col pr-6 pt-6"
             : isGridLayout
               ? "w-full h-[140px] overflow-hidden md:hidden"
               : "w-full h-32 md:h-40 overflow-hidden"
@@ -1684,12 +1690,18 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
             <div className="absolute top-[36px] right-6 z-[2]">
               {/* Desktop: Context Menu */}
               <div className="hidden md:block">
-                <SchoolCardContextMenu schoolName={school.name} />
+                <SchoolCardContextMenu
+                  schoolName={school.name}
+                  // Match Classic layout styling 1:1
+                  buttonClassName="options-button w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] bg-[#f5f5f7] transition-all hover:text-[#346DC2] hover:bg-[#e8e8e8] pointer-events-auto"
+                  iconVariant="list"
+                  iconClassName="w-[14px] h-[14px]"
+                />
               </div>
 
               {/* Mobile: Drawer Button */}
               <div
-                className="md:hidden w-8 h-8 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] transition-all z-[2] shadow-[0_1px_2px_rgba(0,0,0,0.1)] hover:bg-[#F5F5F7] pointer-events-auto"
+                className="md:hidden w-7 h-7 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] bg-[#f5f5f7] transition-all z-[2] hover:bg-[#e8e8e8] hover:text-[#346DC2] pointer-events-auto [&_svg]:w-[14px] [&_svg]:h-[14px]"
                 onClick={() => setIsDrawerOpen(true)}
               >
                 <SchoolCardIcons.MoreOptions />
@@ -1742,7 +1754,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
           {/* List Layout - Image Buttons */}
           {isListLayout && (
-            <div className="image-buttons flex gap-2 py-3 ml-3">
+            <div className="image-buttons flex gap-2 py-3 ml-3 w-full max-[1024px]:ml-0 max-[1024px]:w-full">
               <div className="school-type-full w-full px-4 py-2 text-center bg-[#F5F5F7] text-[#464646] text-[13px] font-medium rounded-lg">
                 {school.schoolType}
               </div>
@@ -1907,7 +1919,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                 )}
                 <h3 className="school-name text-[15px] font-semibold text-[#464646] leading-[1.3] overflow-hidden line-clamp-3 pr-4 min-w-0">
                   {school.name}
-                  {school.verified && (
+                  {school.verified !== false && (
                     <span className="verified-badge-title inline-flex items-center ml-1 flex-shrink-0 align-middle relative -top-[1px]">
                       <SchoolCardIcons.Verified />
                     </span>
@@ -1988,175 +2000,186 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           </div>
         )}
 
-        {/* Hybrid Layout - Desktop Version */}
+        {/* Hybrid Layout - Desktop Version (pixel-match) */}
         {isHybridLayout && (
-          <div className="hidden md:flex md:flex-col relative pt-5 h-full">
+          <div className="hidden md:flex md:flex-col relative h-full">
+            {/* Absolute label (matches HTML positioning) */}
+            <div className="school-type-label absolute top-5 left-[98px] bg-[rgba(1,104,83,0.1)] text-[#016853] px-2 py-1 rounded-md text-[10px] font-semibold tracking-[0.02em] uppercase z-[2]">
+              {school.schoolType}
+            </div>
 
-            <div className="flex mb-3 min-w-0">
+            <div className="flex min-w-0">
               {/* Image Container */}
-              <div className="relative w-[60px] mr-4 flex-shrink-0 flex flex-col">
+              <div className={`image-container relative w-[60px] mr-5 flex-shrink-0 flex flex-col ${school.specialty ? "has-specialty" : ""}`}>
                 <img
-                  src={school.image || '/placeholder.jpg'}
+                  src={school.image || "/placeholder.jpg"}
                   alt={school.name}
-                  className={`w-[60px] h-[60px] object-cover ${school.specialty ? 'rounded-t-lg' : 'rounded-lg'}`}
+                  className={`school-image w-[60px] h-[60px] object-cover ${school.specialty ? "rounded-t-lg" : "rounded-lg"}`}
                 />
                 {school.specialty && (
                   <div
-                    className={`specialty-footer w-full text-[10px] font-bold uppercase tracking-tight text-center py-1 rounded-b-lg flex items-center justify-center gap-1 ${school.specialty === "hot"
+                    className={`specialty-footer w-full text-[11px] font-semibold text-center py-1 rounded-b-lg flex items-center justify-center gap-1 ${school.specialty === "hot"
                       ? "bg-[#FFEBEB] text-[#FF4D4D]"
                       : school.specialty === "instant-book"
                         ? "bg-[#E6F1FA] text-[#1D77BD]"
                         : "bg-[#FFF4E5] text-[#FF9900]"
                       }`}
                   >
-                    {school.specialty === "hot" && <SchoolCardIcons.Hot />}
-                    {school.specialty === "instant-book" && <SchoolCardIcons.InstantBook />}
+                    {school.specialty === "hot" ? (
+                      <SchoolCardIcons.Hot />
+                    ) : school.specialty === "instant-book" ? (
+                      <SchoolCardIcons.InstantBook />
+                    ) : (
+                      <SchoolCardIcons.Sponsored />
+                    )}
                     {school.specialty === "hot" ? "Hot" : school.specialty === "instant-book" ? "Book" : "Ad"}
                   </div>
                 )}
               </div>
 
               {/* Content Container */}
-              <div className="flex-1 min-w-0 flex flex-col">
-
-                {/* 1. Label positioned relatively inside flow */}
-                <div className="w-fit bg-[rgba(1,104,83,0.1)] text-[#016853] px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide mb-1.5">
-                  {school.schoolType}
-                </div>
-
-                {/* 2. Ranking */}
+              <div className="school-content flex-1 min-w-0 flex flex-col pt-5">
                 {school.ranking && (
-                  <div className="ranking-text text-[#089E68] text-[13px] mb-1 font-medium whitespace-nowrap overflow-hidden text-ellipsis w-full">
+                  <div className="ranking-text text-[#089E68] text-[13px] mb-2 mt-2 font-medium whitespace-nowrap overflow-hidden text-ellipsis max-w-[calc(100%-20px)]">
                     {school.ranking}
                   </div>
                 )}
 
-                {/* 3. Header Name & Verified */}
                 <div className="school-header flex items-start justify-between mb-1">
-                  <div className="school-name-container flex items-start gap-1 max-w-[calc(100%-30px)]">
-                    <h3 className="school-name text-[16px] font-bold text-[#464646] leading-[1.3] cursor-pointer hover:text-[#016853] transition-colors line-clamp-2">
+                  <div className="school-name-container flex items-start gap-1.5 max-w-[calc(100%-40px)]">
+                    <h3 className="school-name text-[16px] font-semibold text-[#464646] leading-[1.4] cursor-pointer hover:text-[#016853] transition-colors line-clamp-2">
                       {school.name}
                     </h3>
-                    {school.verified && (
-                      <span className="verified-badge inline-flex items-center flex-shrink-0 mt-0.5 text-[#1D77BD]">
+                    {school.verified !== false && (
+                      <span className="verified-badge inline-flex items-center justify-center ml-1 flex-shrink-0 mt-1 text-[#1D77BD]">
                         <SchoolCardIcons.Verified className="w-4 h-4" />
                       </span>
                     )}
                   </div>
-                  <div className="actions hidden md:flex items-center -mt-1">
-                    <SchoolCardContextMenu schoolName={school.name} />
+
+                  <div className="actions flex items-center">
+                    <SchoolCardContextMenu
+                      schoolName={school.name}
+                      // Rotate the default vertical dots to horizontal (match HTML ellipsis)
+                      buttonClassName="more-options w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] transition-colors hover:bg-[#F5F5F7] hover:text-[#464646] -mt-[3px] [&_svg]:rotate-90 [&_svg]:w-[18px] [&_svg]:h-[18px]"
+                    />
                   </div>
                 </div>
 
-                {/* 4. Stats Rows */}
-                <div className="school-stats flex flex-col gap-1.5 mb-3">
-
-                  {/* Row 1: Location | Ratio/Duration | Students | Price */}
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-[#5F5F5F] leading-none">
-                    {/* Location */}
-                    <div className="stat flex items-center gap-1.5">
-                      <SchoolCardIcons.Location />
-                      <span className="text-[#464646] font-medium">{school.location}</span>
-                    </div>
-
-                    {/* Ratio or Duration */}
-                    {(school.ratio || school.duration) && (
-                      <div className="stat flex items-center gap-1.5">
-                        {school.ratio ? <SchoolCardIcons.Ratio /> : <SchoolCardIcons.Duration />}
-                        <span className="text-[#464646] font-medium">{school.ratio || school.duration}</span>
-                      </div>
-                    )}
-
-                    {/* Students */}
-                    {school.students && (
-                      <div className="stat flex items-center gap-1.5">
-                        <SchoolCardIcons.Students />
-                        <span className="text-[#464646] font-medium">{school.students}</span>
-                      </div>
-                    )}
-
-                    {/* Price / Tuition (Show for both K12 and College if exists) */}
-                    {school.price && (
-                      <div className="stat flex items-center gap-1.5">
-                        <SchoolCardIcons.Tuition />
-                        <span className="text-[#464646] font-medium">{school.price}</span>
-                      </div>
-                    )}
+                {/* Stats (match HTML: one wrap container, tooltips handled elsewhere) */}
+                <div className="school-stats flex flex-wrap gap-4 mb-3 text-[13px] text-[#5F5F5F]">
+                  <div className="stat flex items-center gap-1.5" data-tooltip="Location">
+                    <SchoolCardIcons.Location />
+                    <span className="text-[#464646] font-medium">{school.location}</span>
                   </div>
 
-                  {/* Row 2: Grades OR SAT/Acceptance */}
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-[#5F5F5F] leading-none">
-                    {school.grades && (
-                      <div className="stat flex items-center gap-1.5">
-                        <SchoolCardIcons.Grades />
-                        <span className="text-[#464646] font-medium">Grades {school.grades}</span>
-                      </div>
-                    )}
-
-                    {school.sat && (
-                      <div className="stat flex items-center gap-1.5">
-                        <SchoolCardIcons.SAT />
-                        <span className="text-[#464646] font-medium">SAT: {school.sat}</span>
-                      </div>
-                    )}
-
-                    {school.acceptanceRate && (
-                      <div className="stat flex items-center gap-1.5">
-                        <SchoolCardIcons.Acceptance />
-                        <span className="text-[#464646] font-medium">Accpt: {school.acceptanceRate}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            {/* Description Box with Bold Logic */}
-            <div className="school-description bg-[#F8F9FB] rounded-lg mb-3 p-3 text-[13px] leading-[1.5] text-[#5F5F5F] relative border border-[#EAEDF2]">
-              <div className={`description-text ${isDescriptionExpanded ? '' : 'line-clamp-2'} overflow-hidden`}>
-                {(() => {
-                  // Check if description has a colon (e.g. "Parent: text") to bold the prefix
-                  const parts = school.description ? school.description.split(':') : [];
-                  if (parts.length > 1) {
-                    return (
-                      <span>
-                        <span className="font-bold text-[#464646]">{parts[0]}:</span>
-                        {parts.slice(1).join(':')}
+                  {(school.ratio || school.duration) && (
+                    <div className="stat flex items-center gap-1.5" data-tooltip={school.ratio ? "Student-Teacher Ratio" : "Duration"}>
+                      {school.ratio ? <SchoolCardIcons.Ratio /> : <SchoolCardIcons.Duration />}
+                      <span className="text-[#464646] font-medium">
+                        {school.ratio ? <span className="stat-prefix">Ratio: </span> : null}
+                        {school.ratio || school.duration}
                       </span>
-                    );
-                  }
-                  return school.description;
-                })()}
+                    </div>
+                  )}
 
-                {/* Inline Link */}
-                <a href="#" className="review-link text-xs font-semibold ml-1 text-[#346DC2] hover:underline whitespace-nowrap">
-                  View More
-                </a>
-              </div>
-            </div>
+                  {school.students && (
+                    <div className="stat flex items-center gap-1.5" data-tooltip="Students">
+                      <SchoolCardIcons.Students />
+                      <span className="text-[#464646] font-medium">
+                        <span className="stat-prefix">Students: </span>
+                        {school.students}
+                      </span>
+                    </div>
+                  )}
 
-            {/* Footer */}
-            <div className="school-footer flex items-center justify-between pt-3 border-t border-[rgba(0,0,0,0.06)] mt-auto">
-              <div className="metrics flex items-center gap-3">
-                <div className={`grade-circle w-[26px] h-[26px] ${getGradeClass(school.grade)} rounded-full flex items-center justify-center text-white text-[12px] font-bold`}>
-                  {school.grade}
+                  {school.price && (
+                    <div className="stat flex items-center gap-1.5" data-tooltip="Tuition">
+                      <SchoolCardIcons.Tuition />
+                      <span className="text-[#464646] font-medium">{school.price}</span>
+                    </div>
+                  )}
+
+                  {school.grades && (
+                    <div className="stat flex items-center gap-1.5" data-tooltip="Grades">
+                      <SchoolCardIcons.Grades />
+                      <span className="text-[#464646] font-medium">Grades {school.grades}</span>
+                    </div>
+                  )}
+
+                  {school.sat && (
+                    <div className="stat flex items-center gap-1.5" data-tooltip="SAT Score">
+                      <SchoolCardIcons.SAT />
+                      <span className="text-[#464646] font-medium">SAT: {school.sat}</span>
+                    </div>
+                  )}
+
+                  {school.acceptanceRate && (
+                    <div className="stat flex items-center gap-1.5" data-tooltip="Acceptance Rate">
+                      <SchoolCardIcons.Acceptance />
+                      <span className="text-[#464646] font-medium">Accpt: {school.acceptanceRate}</span>
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center gap-1 text-[13px]">
-                  <SchoolCardIcons.Star className="w-3.5 h-3.5 text-[#00DF8B]" />
-                  <span className="font-bold text-[#464646]">{school.rating}</span>
-                  <span className="text-[#9CA3AF]">({school.reviews})</span>
-                </div>
-              </div>
 
-              <div className="footer-buttons flex items-center gap-2">
-                <button className="flex items-center justify-center px-3 py-1.5 rounded-md text-[13px] font-medium bg-white text-[#464646] border border-[#E5E7EB] hover:bg-[#F9FAFB] transition-colors">
-                  More Info
-                </button>
-                <button className="flex items-center gap-1.5 bg-[#EBFCF4] text-[#016853] border border-[rgba(1,104,83,0.2)] rounded-md px-3 py-1.5 text-[13px] font-medium hover:bg-[#D7F7E9] transition-colors">
-                  <SchoolCardIcons.Heart />
-                  Like
-                </button>
+                {/* Description */}
+                <div className="school-description bg-[#F8F9FB] rounded-lg mb-3 p-3 text-[13px] leading-[1.4] text-[#5F5F5F] relative overflow-hidden border border-[#EAEDF2]">
+                  <div className={`description-text ${isDescriptionExpanded ? "" : "line-clamp-2"} overflow-hidden`}>
+                    {(() => {
+                      const parts = school.description ? school.description.split(":") : [];
+                      if (parts.length > 1) {
+                        return (
+                          <span>
+                            <span className="reviewer-type font-semibold text-[#464646] mr-1">{parts[0]}:</span>
+                            {parts.slice(1).join(":")}
+                          </span>
+                        );
+                      }
+                      return school.description;
+                    })()}
+
+                    {isDescriptionExpanded ? (
+                      <a href="#" className="review-link text-[#346DC2] text-xs font-medium ml-1 hover:underline whitespace-nowrap">
+                        Read {school.reviews} reviews
+                      </a>
+                    ) : null}
+                  </div>
+
+                  <div
+                    className="view-more-description text-[#346DC2] text-xs font-medium mt-1 cursor-pointer inline-block hover:underline"
+                    onClick={() => setIsDescriptionExpanded((v) => !v)}
+                  >
+                    {isDescriptionExpanded ? "View Less" : "View More"}
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="school-footer flex items-center justify-between mt-auto pt-4 border-t border-[rgba(0,0,0,0.06)]">
+                  <div className="metrics flex items-center gap-4">
+                    <div className="grade flex items-center gap-2 relative">
+                      <div className={`grade-circle w-7 h-7 ${getGradeClass(school.grade)} rounded-full flex items-center justify-center text-white text-[13px] font-semibold`}>
+                        {school.grade}
+                      </div>
+                    </div>
+                    <div className="reviews flex items-center gap-2 text-[13px] text-[#5F5F5F]">
+                      <div className="star-rating flex items-center gap-1">
+                        <SchoolCardIcons.Star className="w-3.5 h-3.5 text-[#00DF8B]" />
+                        <span className="rating-value font-medium text-[#464646]">{school.rating}</span>
+                        <span className="review-count text-[#5F5F5F]">({school.reviews})</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="footer-buttons flex items-center gap-2">
+                    <button className="btn btn-more-info px-3 py-2 rounded-md text-[13px] font-medium bg-[#F5F5F7] text-[#464646] border border-[rgba(0,0,0,0.08)] hover:bg-[#EAEDF2] transition-colors">
+                      More Info
+                    </button>
+                    <button className="btn btn-like flex items-center gap-1.5 px-3 py-2 rounded-md text-[13px] font-medium bg-[#EBFCF4] text-[#016853] border border-[rgba(1,104,83,0.2)] hover:bg-[#D7F7E9] transition-colors">
+                      <SchoolCardIcons.Heart />
+                      Like
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -2174,42 +2197,67 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
             return String(v);
           };
 
-          const stats: Array<{ label: string; value: string; icon: React.ReactNode }> = (() => {
+          const stats: Array<{
+            label: string;
+            value: string;
+            icon: React.ReactNode;
+            valueNode?: React.ReactNode;
+          }> = (() => {
             if (establishment === "K-12") {
               return [
-                { label: "Location", value: formatValue(school.location), icon: <SchoolCardIcons.Location /> },
-                { label: "Ratio", value: formatValue(school.ratio), icon: <SchoolCardIcons.Ratio /> },
-                { label: "Students", value: formatValue(school.students), icon: <SchoolCardIcons.Students /> },
-                { label: "Rating", value: `${ratingNum} (${reviewsCount || "—"})`, icon: <SchoolCardIcons.Star /> },
+                { label: "Location", value: formatValue(school.location), icon: <SchoolCardIcons.Location className="text-[#089E68]" /> },
+                { label: "Ratio", value: formatValue(school.ratio), icon: <SchoolCardIcons.Ratio className="text-[#089E68]" /> },
+                { label: "Students", value: formatValue(school.students), icon: <SchoolCardIcons.Students className="text-[#089E68]" /> },
+                {
+                  label: "Rating",
+                  value: `${ratingNum} (${reviewsCount || "—"})`,
+                  valueNode: (
+                    <span>
+                      <strong className="font-bold text-[#464646]">{ratingNum}</strong>{" "}
+                      <span className="font-normal text-[#5F5F5F]">({reviewsCount || "—"})</span>
+                    </span>
+                  ),
+                  icon: <SchoolCardIcons.StarOutline className="w-4 h-4 text-[#089E68]" />,
+                },
               ];
             }
             if (establishment === "Colleges") {
               return [
-                { label: "Location", value: formatValue(school.location), icon: <SchoolCardIcons.Location /> },
-                { label: "Duration", value: formatValue(school.duration), icon: <SchoolCardIcons.Duration /> },
-                { label: "Tuition", value: formatValue(school.price), icon: <SchoolCardIcons.Tuition /> },
-                { label: "Acceptance", value: formatValue(school.acceptanceRate || (school as any).acceptance), icon: <SchoolCardIcons.Acceptance /> },
+                { label: "Location", value: formatValue(school.location), icon: <SchoolCardIcons.Location className="text-[#089E68]" /> },
+                { label: "Duration", value: formatValue(school.duration), icon: <SchoolCardIcons.Duration className="text-[#089E68]" /> },
+                { label: "Tuition", value: formatValue(school.price), icon: <SchoolCardIcons.Tuition className="text-[#089E68]" /> },
+                { label: "Acceptance", value: formatValue(school.acceptanceRate || (school as any).acceptance), icon: <SchoolCardIcons.Acceptance className="text-[#089E68]" /> },
               ];
             }
             if (establishment === "Graduates") {
               return [
-                { label: "Location", value: formatValue(school.location), icon: <SchoolCardIcons.Location /> },
-                { label: "Duration", value: formatValue(school.duration), icon: <SchoolCardIcons.Duration /> },
-                { label: "Tuition", value: formatValue(school.price), icon: <SchoolCardIcons.Tuition /> },
-                { label: "Students", value: formatValue(school.students), icon: <SchoolCardIcons.Students /> },
+                { label: "Location", value: formatValue(school.location), icon: <SchoolCardIcons.Location className="text-[#089E68]" /> },
+                { label: "Duration", value: formatValue(school.duration), icon: <SchoolCardIcons.Duration className="text-[#089E68]" /> },
+                { label: "Tuition", value: formatValue(school.price), icon: <SchoolCardIcons.Tuition className="text-[#089E68]" /> },
+                { label: "Students", value: formatValue(school.students), icon: <SchoolCardIcons.Students className="text-[#089E68]" /> },
               ];
             }
             // District
             return [
-              { label: "Location", value: formatValue(school.location), icon: <SchoolCardIcons.Location /> },
-              { label: "Schools", value: formatValue((school as any).totalSchools), icon: <SchoolCardIcons.TotalSchools /> },
-              { label: "Students", value: formatValue(school.students), icon: <SchoolCardIcons.Students /> },
-              { label: "Rating", value: `${ratingNum} (${reviewsCount || "—"})`, icon: <SchoolCardIcons.Star /> },
+              { label: "Location", value: formatValue(school.location), icon: <SchoolCardIcons.Location className="text-[#089E68]" /> },
+              { label: "Schools", value: formatValue((school as any).totalSchools), icon: <SchoolCardIcons.TotalSchools className="text-[#089E68]" /> },
+              { label: "Students", value: formatValue(school.students), icon: <SchoolCardIcons.Students className="text-[#089E68]" /> },
+              {
+                label: "Rating",
+                value: `${ratingNum} (${reviewsCount || "—"})`,
+                valueNode: (
+                  <span>
+                    <strong className="font-bold text-[#464646]">{ratingNum}</strong>{" "}
+                    <span className="font-normal text-[#5F5F5F]">({reviewsCount || "—"})</span>
+                  </span>
+                ),
+                icon: <SchoolCardIcons.StarOutline className="w-4 h-4 text-[#089E68]" />,
+              },
             ];
           })();
 
           return (
-            <div className="stats-section grid grid-cols-2 gap-2.5 mb-4">
+            <div className="stats-section grid grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] gap-2.5 mb-4">
               {stats.map((s) => (
                 <div key={s.label} className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
                   <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
@@ -2217,7 +2265,9 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                   </div>
                   <div className="stat-content flex flex-col gap-1">
                     <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">{s.label}</div>
-                    <div className="stat-value text-[12px] text-[#464646] font-medium leading-[1.3]">{s.value}</div>
+                    <div className="stat-value text-[12px] text-[#464646] font-semibold leading-[1.3]">
+                      {s.valueNode ?? s.value}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -2415,8 +2465,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
         {/* Classic Layout - Footer */}
         {isClassicLayout && (
-          <div className="school-footer px-4 py-3 border-t border-[rgba(0,0,0,0.06)] mt-auto flex justify-between items-center">
-            <div className="footer-left flex items-center gap-2">
+          <div className="school-footer px-4 py-2 border-t border-[rgba(0,0,0,0.06)] mt-auto flex justify-between items-center">
+            <div className="footer-left flex items-center gap-2 flex-1">
               <button
                 type="button"
                 className={`like-indicator w-7 h-7 flex items-center justify-center cursor-pointer transition-colors ${
@@ -2435,9 +2485,10 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               </button>
             </div>
 
-            <div className="footer-actions flex items-center gap-2">
+            <div className="footer-actions flex items-center gap-2 ml-auto">
               <SchoolCardContextMenu
                 schoolName={school.name}
+                preferredPlacement="top"
                 buttonClassName="options-button w-7 h-7 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] bg-[#f5f5f7] transition-all hover:text-[#346DC2] hover:bg-[#e8e8e8] pointer-events-auto"
               />
             </div>
@@ -2505,10 +2556,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
         {/* Hover Overlay for Classic Layout */}
         {isClassicLayout && (
-          <div
-            className="hover-overlay absolute top-0 left-0 w-full h-[calc(100%-60px)] bg-[rgba(255,255,255,0.98)] p-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out flex flex-col z-10 rounded-t-[12px]"
-            style={{ pointerEvents: "auto" }}
-          >
+          <div className="hover-overlay pointer-events-none absolute top-0 left-0 w-full h-[calc(100%-60px)] bg-[rgba(255,255,255,0.98)] p-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out flex flex-col z-10 rounded-t-[12px]">
             {(() => {
               const reviewerType = (school as any).reviewerType || "Parent";
               const ratingNum = (school.rating || "").match(/[\d.]+/)?.[0] || school.rating;
@@ -2565,11 +2613,11 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                     {school.description}
                   </div>
 
-                  <div className="review-count text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer">
+                  <div className="review-count pointer-events-auto text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer">
                     Read {reviewsCount || school.reviews || ratingNum} reviews
                   </div>
 
-                  <div className="hover-buttons flex flex-col gap-2 mt-auto">
+                  <div className="hover-buttons pointer-events-auto flex flex-col gap-2 mt-auto">
                     <button
                       type="button"
                       className="hover-button button-info w-full py-3 rounded-lg text-[14px] font-medium cursor-pointer bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors flex items-center justify-center gap-2"

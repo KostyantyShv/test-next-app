@@ -7,6 +7,7 @@ import {
   truncateText,
 } from "../Card";
 import { NotesModal } from "../../modals/NotesModal";
+import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
 
 export const CardHybrid: React.FC<{
   school: CollectionsSchool;
@@ -26,7 +27,6 @@ export const CardHybrid: React.FC<{
   onEditNote,
   onDeleteNote,
 }) => {
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -117,123 +117,11 @@ export const CardHybrid: React.FC<{
             <h3 className="school-name text-base font-semibold text-gray-700 cursor-pointer transition-all duration-200 hover:text-green-700 hover:underline hover:decoration-green-700 flex-1">
               {school.name}
             </h3>
-            <div
-              className="more-options w-8 h-8 flex items-center justify-center cursor-pointer text-gray-600 rounded-full transition-all duration-200 hover:bg-gray-100 hover:text-gray-700 relative"
-              onClick={() => setIsTooltipOpen(!isTooltipOpen)}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 19.4477 11 19C11 19.5523 11.4477 20 12 20Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <div
-                className={`tooltip absolute top-full right-0 w-44 bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.15)] overflow-hidden z-10 transition-all duration-200 ${
-                  isTooltipOpen ? "block" : "hidden"
-                }`}
-              >
-                <div className="tooltip-item flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 cursor-pointer transition-all duration-200 hover:bg-gray-100">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M3 12H21"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M16 17L21 12L16 7"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  Add to Dashboard
-                </div>
-                <div className="tooltip-item flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 cursor-pointer transition-all duration-200 hover:bg-gray-100">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M19 9L12 16L5 9"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  Compare Schools
-                </div>
-                <div className="tooltip-item flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 cursor-pointer transition-all duration-200 hover:bg-gray-100">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M11 4H4V11H11V4Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M20 4H13V11H20V4Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M11 13H4V20H11V13Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M20 13H13V20H20V13Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  Add to Collection
-                </div>
-                <div className="tooltip-item flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 cursor-pointer transition-all duration-200 hover:bg-gray-100">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M9 12L11 14L15 10"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  Mark as Visited
-                </div>
-              </div>
-            </div>
+            <SchoolCardContextMenu
+              schoolName={school.name}
+              buttonClassName="more-options w-8 h-8 flex items-center justify-center cursor-pointer text-gray-600 rounded-full transition-all duration-200 hover:bg-gray-100 hover:text-gray-700 relative [&_svg]:w-[18px] [&_svg]:h-[18px]"
+              preferredPlacement="bottom"
+            />
           </div>
           <div className="stats-section flex flex-wrap gap-4 mb-3">
             <div className="stat flex items-center gap-1.5 text-sm text-gray-600">

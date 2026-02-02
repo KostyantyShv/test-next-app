@@ -6,6 +6,7 @@ import {
   truncateText,
 } from "../Card";
 import Image from "next/image";
+import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
 import { NotesModal } from "../../modals/NotesModal";
 
 export const CardGrid: React.FC<{
@@ -27,7 +28,6 @@ export const CardGrid: React.FC<{
   onEditNote,
   onDeleteNote,
 }) => {
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -200,36 +200,11 @@ export const CardGrid: React.FC<{
               <div className="hover-school-name text-base font-semibold text-gray-700 mr-2 cursor-pointer transition-all duration-200 hover:text-green-700 hover:underline hover:decoration-green-700">
                 {school.name}
               </div>
-              <div
-                className="more-options min-w-6 h-6 flex items-center justify-center cursor-pointer text-gray-600 rounded transition-all duration-200 hover:bg-gray-100 hover:text-gray-700 relative"
-                onClick={() => setIsTooltipOpen(!isTooltipOpen)}
-              >
-                <svg
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                  className="w-4 h-4"
-                >
-                  <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"></path>
-                </svg>
-                <div
-                  className={`tooltip absolute top-full right-0 mt-2 bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.15)] p-2 min-w-[150px] z-50 transition-all duration-200 ${
-                    isTooltipOpen
-                      ? "opacity-100 visible"
-                      : "opacity-0 invisible"
-                  }`}
-                >
-                  <div className="before:content-[''] before:absolute before:-top-1.5 before:right-2.5 before:w-3 before:h-3 before:bg-white before:rotate-45 before:shadow-[-2px_-2px_5px_rgba(0,0,0,0.06)]"></div>
-                  <div className="tooltip-option px-4 py-2 text-sm text-gray-700 cursor-pointer transition-all duration-200 hover:bg-gray-100">
-                    Share
-                  </div>
-                  <div className="tooltip-option px-4 py-2 text-sm text-gray-700 cursor-pointer transition-all duration-200 hover:bg-gray-100">
-                    Add to Comparison
-                  </div>
-                  <div className="tooltip-option px-4 py-2 text-sm text-gray-700 cursor-pointer transition-all duration-200 hover:bg-gray-100">
-                    View Details
-                  </div>
-                </div>
-              </div>
+              <SchoolCardContextMenu
+                schoolName={school.name}
+                buttonClassName="more-options min-w-6 h-6 flex items-center justify-center cursor-pointer text-gray-600 rounded transition-all duration-200 hover:bg-gray-100 hover:text-gray-700 relative [&_svg]:w-4 [&_svg]:h-4 [&_svg]:fill-current [&_svg]:text-current"
+                preferredPlacement="bottom"
+              />
             </div>
           </div>
           <div className="hover-stats flex gap-3 mb-4 flex-shrink-0">

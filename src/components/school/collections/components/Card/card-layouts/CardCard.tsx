@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { CollectionsSchool, Note, RatingCheckmarks } from "../Card";
 import { NotesModal } from "../../modals/NotesModal";
+import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
 
 interface SchoolCardProps {
   school: CollectionsSchool;
@@ -25,7 +26,6 @@ export const CardCard: React.FC<SchoolCardProps> = ({
   onDeleteNote,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false);
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] =
     useState<boolean>(false);
 
@@ -232,36 +232,11 @@ C18.6,5.5,19.8,8.4,19.2,11.2z"
               >
                 {school.name}
               </div>
-              <div
-                className="min-w-6 h-6 flex items-center justify-center cursor-pointer text-gray-600 hover:bg-gray-100 hover:text-gray-700 rounded transition-all duration-200 relative"
-                onClick={() => setIsTooltipOpen(!isTooltipOpen)}
-              >
-                <svg
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                  className="w-4 h-4"
-                >
-                  <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"></path>
-                </svg>
-                <div
-                  className={`absolute top-full right-0 bg-white rounded-lg shadow-lg p-2 min-w-[150px] z-50 transition-all duration-200 ${
-                    isTooltipOpen
-                      ? "opacity-100 visible"
-                      : "opacity-0 invisible"
-                  }`}
-                >
-                  <div className="absolute top-[-6px] right-2.5 w-3 h-3 bg-white rotate-45 shadow-[-2px_-2px_5px_rgba(0,0,0,0.06)]"></div>
-                  <div className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer">
-                    Share
-                  </div>
-                  <div className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer">
-                    Add to Comparison
-                  </div>
-                  <div className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer">
-                    View Details
-                  </div>
-                </div>
-              </div>
+              <SchoolCardContextMenu
+                schoolName={school.name}
+                buttonClassName="min-w-6 h-6 flex items-center justify-center cursor-pointer text-gray-600 hover:bg-gray-100 hover:text-gray-700 rounded transition-all duration-200 relative [&_svg]:w-4 [&_svg]:h-4 [&_svg]:fill-current [&_svg]:text-current"
+                preferredPlacement="bottom"
+              />
             </div>
           </div>
           <div className="flex gap-3 mb-4 flex-shrink-0">

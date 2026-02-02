@@ -434,25 +434,13 @@ const Header: React.FC<HeaderProps> = ({
 
           <div className="w-px h-6 bg-[rgba(0,0,0,0.1)] mx-2"></div>
 
-          {/* Layout Toggle (pixel-match to provided HTML) */}
-          <div className="layout-toggle flex items-center bg-[#f5f5f7] rounded-[6px] p-[2px]">
-            {layouts.map((layoutOption) => (
-              <button
-                key={layoutOption.type}
-                onClick={() => handleLayoutChange(layoutOption.type)}
-                className={`layout-toggle-button flex items-center justify-center w-8 h-7 border-none rounded-[4px] transition-[background-color,box-shadow,color] duration-200 ${
-                  layout === layoutOption.type
-                    ? "bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)] text-[#0B6333]"
-                    : "bg-transparent text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)]"
-                }`}
-                type="button"
-              >
-                <span className="w-4 h-4 flex items-center justify-center">
-                  {layoutOption.icon}
-                </span>
-              </button>
-            ))}
-          </div>
+          {/* Layout Toggle: show ONLY active; reveal others on hover */}
+          <LayoutToggle
+            layout={layout}
+            setLayout={handleLayoutChange}
+            layouts={layouts}
+            width={layoutToggleWidth}
+          />
 
           {/* Search Type Button */}
           {renderSearchTypeButton()}
