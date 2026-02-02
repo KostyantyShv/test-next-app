@@ -1,13 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import { SIDE_TABS_DESKTOP } from "./side-tabs.constant";
+import { useListingStickyHeader } from "@/store/use-listing-sticky-header";
 
 export const useTabsObserver = () => {
   const [activeTab, setActiveTab] = useState(
     SIDE_TABS_DESKTOP.MONTHLY_UPDATE_DESKTOP
   );
   const observerRef = useRef<IntersectionObserver>(null);
+  const isDesktopStickyHeaderVisible = useListingStickyHeader(
+    (s) => s.isDesktopStickyHeaderVisible
+  );
 
   useEffect(() => {
+    // Keep the active section aligned with the visible header stack.
+    // - global header stack: ~87px
+    // - plus listing sticky header when visible: ~112px
+    // - plus breathing room: 20px
+    const topOffsetPx = (isDesktopStickyHeaderVisible ? 112 : 87) + 20;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -18,7 +28,7 @@ export const useTabsObserver = () => {
       },
       {
         root: null,
-        rootMargin: "-100px 0px -50% 0px",
+        rootMargin: `-${topOffsetPx}px 0px -50% 0px`,
         threshold: 0.1,
       }
     );
@@ -58,7 +68,7 @@ export const useTabsObserver = () => {
         observerRef.current.disconnect();
       }
     };
-  }, []);
+  }, [isDesktopStickyHeaderVisible]);
 
   return { activeTab, setActiveTab };
 };

@@ -181,14 +181,17 @@
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  /* Important: `overflow-x: hidden` can break `position: sticky` (notably Safari).
+     `clip` prevents horizontal scroll without creating a scroll container. */
+  overflow-x: clip;
 }
 
 body {
   /* Prefer theme token (fixes dark theme readability) */
   color: var(--text-default, var(--foreground));
   background: var(--background-color, var(--background));
-  overflow-x: hidden;
+  /* See note above: avoid breaking sticky positioning. */
+  overflow-x: clip;
   min-height: 100vh;
   font-family: var(--font-inter), 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;

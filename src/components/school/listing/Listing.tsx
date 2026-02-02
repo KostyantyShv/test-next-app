@@ -34,18 +34,15 @@ const Listing: React.FC<ListingProps> = ({
   const [isFooterVisible, setIsFooterVisible] = useState(false);
   const [isDesktopStickyHeaderVisible, setIsDesktopStickyHeaderVisible] =
     useState(false);
-  const [desktopStickyBounds, setDesktopStickyBounds] = useState<{
-    left: number;
-    width: number;
-  } | null>(null);
   const schoolInfoRef = useRef<HTMLDivElement>(null);
   const desktopStickyTriggerRef = useRef<HTMLDivElement>(null);
-  const desktopStickyBoundsRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const setIsCollapsed = useLeftSidebar((s) => s.setIsCollapsed);
+  const isLeftSidebarCollapsed = useLeftSidebar((s) => s.isCollapsed);
   const setIsDesktopListingStickyHeaderVisible = useListingStickyHeader(
     (s) => s.setIsDesktopStickyHeaderVisible
   );
+  const rafRef = useRef<number | null>(null);
   
   // Get active school type from URL
   const getSchoolType = (): SchoolType => {
@@ -115,7 +112,18 @@ const Listing: React.FC<ListingProps> = ({
       (entries) => {
         const [entry] = entries;
         // When the trigger is NOT intersecting the viewport, it means we've scrolled past the hero.
-        setIsDesktopStickyHeaderVisible(!entry.isIntersecting);
+        const nextVisible = !entry.isIntersecting;
+
+        // Avoid "lag": batch updates to the next animation frame and only update on changes.
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        rafRef.current = requestAnimationFrame(() => {
+          setIsDesktopStickyHeaderVisible((prev) => {
+            if (prev === nextVisible) return prev;
+            // Sync to global layout immediately (no extra render cycle).
+            setIsDesktopListingStickyHeaderVisible(nextVisible);
+            return nextVisible;
+          });
+        });
       },
       {
         root: null,
@@ -127,38 +135,19 @@ const Listing: React.FC<ListingProps> = ({
     );
 
     observer.observe(triggerEl);
-    return () => observer.disconnect();
-  }, []);
-
-  // Keep fixed header aligned to the same content column as the page (between sidebars).
-  useEffect(() => {
-    const el = desktopStickyBoundsRef.current;
-    if (!el) return;
-
-    const update = () => {
-      const rect = el.getBoundingClientRect();
-      setDesktopStickyBounds({ left: rect.left, width: rect.width });
+    return () => {
+      observer.disconnect();
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+      setIsDesktopListingStickyHeaderVisible(false);
     };
-
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-
-  // Sync to global layout so we can hide the main desktop header.
-  useEffect(() => {
-    setIsDesktopListingStickyHeaderVisible(isDesktopStickyHeaderVisible);
-    return () => setIsDesktopListingStickyHeaderVisible(false);
-  }, [isDesktopStickyHeaderVisible, setIsDesktopListingStickyHeaderVisible]);
+  }, [setIsDesktopListingStickyHeaderVisible]);
 
   return (
     <div 
       className="min-h-screen w-full flex flex-col"
       style={{ backgroundColor: 'var(--background-color)' }}
     >
-      {/* Desktop bounds anchor for fixed header alignment */}
-      <div ref={desktopStickyBoundsRef} className="hidden md:block w-full" />
-
       {/* School Info Section with ref for mobile footer visibility */}
       <div ref={schoolInfoRef} className="w-full max-w-[1077px] mx-auto">
         {/* Mobile - separate components */}
@@ -188,7 +177,7 @@ const Listing: React.FC<ListingProps> = ({
           appears when the main (school info) section is no longer visible,
           then sticks under the global header while scrolling */}
       <div
-        className={`hidden md:block transition-opacity duration-200 ${
+        className={`hidden md:block w-full ${
           isDesktopStickyHeaderVisible
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
@@ -196,13 +185,16 @@ const Listing: React.FC<ListingProps> = ({
         // No layout shifts: fixed header overlay, aligned to content column.
         style={{
           position: "fixed",
+          // Anchor at the top of the viewport.
           top: 0,
-          left: desktopStickyBounds?.left ?? 0,
-          width: desktopStickyBounds?.width ?? "100%",
-          zIndex: 6000,
+          // Don't sit under the main app sidebar; align to content area.
+          left: isLeftSidebarCollapsed ? 80 : 256,
+          width: `calc(100% - ${isLeftSidebarCollapsed ? 80 : 256}px)`,
+          // Keep below the main (left) sidebar so it never covers it.
+          zIndex: 900,
         }}
       >
-        <Header position="fixed" topOffsetPx={0} />
+        <Header position="fixed" topOffsetPx={0} classes="transition-none" />
       </div>
       
       {/* Photo Gallery */}

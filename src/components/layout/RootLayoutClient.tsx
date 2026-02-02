@@ -77,7 +77,7 @@ export const RootLayoutClient = ({
             </div>
           )}
           
-          {/* Desktop Header - hidden when listing sticky header is visible */}
+          {/* Desktop Header (hide on listing when listing sticky header is visible) */}
           {!(isTeamMembersPage) &&
             !(isListingPage && isDesktopListingStickyHeaderVisible) && (
             <div className="hidden md:block">

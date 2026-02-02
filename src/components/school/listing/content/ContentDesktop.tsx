@@ -3,6 +3,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { SIDE_TABS_DESKTOP } from "./side-tabs.constant";
 import { useTabsObserver } from "./tabs-observer.hook";
+import { useListingStickyHeader } from "@/store/use-listing-sticky-header";
 import AdmissionsScatterPlotCard from "../cards/scatter-plot-card/ScatterPlotCard";
 import ReviewHighlightsCard from "../cards/review-highlights-card/review-highlights-modal/ReviewHighlightsCard";
 import TestimonialsCard from "../cards/testimonials-card/TestimonialsCard";
@@ -44,11 +45,13 @@ interface ContentDesktopProps {
 
 const ContentDesktop: React.FC<ContentDesktopProps> = ({ schoolType = "college" }) => {
   const { activeTab, setActiveTab } = useTabsObserver();
+  const isDesktopStickyHeaderVisible = useListingStickyHeader(
+    (s) => s.isDesktopStickyHeaderVisible
+  );
 
   const scrollToSection = (tabId: string) => {
-    // Listing replacement header (desktop): fixed at top (0px),
-    // listing header ~112px + 20px padding => ~132px total.
-    const headerOffset = 132;
+    // Align scroll position below visible header stack.
+    const headerOffset = (isDesktopStickyHeaderVisible ? 112 : 87) + 20;
 
     const findElement = () =>
       (document.getElementById(tabId) ||
@@ -90,40 +93,63 @@ const ContentDesktop: React.FC<ContentDesktopProps> = ({ schoolType = "college" 
   
   // Render different content based on school type
   const renderContent = () => {
+    const ListingSideNav = () => {
+      // Revert sidebar nav styling to the previous list-based version,
+      // while keeping it sticky under the header stack.
+      const headerStackPx = isDesktopStickyHeaderVisible ? 112 : 87;
+      const topPx = headerStackPx + 16;
+      const heightPx = `calc(100vh - ${topPx + 16}px)`;
+
+      return (
+        <aside
+          className="hidden md:block w-64 flex-shrink-0 self-start max-sm:hidden"
+          style={{
+            position: "sticky",
+            top: topPx,
+            height: heightPx,
+            overflowY: "auto",
+            scrollbarGutter: "stable",
+          }}
+        >
+          <ul className="flex flex-col pl-[40px] overflow-y-auto h-full scrollbar-hide">
+            {Object.values(SIDE_TABS_DESKTOP).map((value) => {
+              const formattedValue = removeLastWord(value);
+              const isActive = activeTab === value;
+              return (
+                <li
+                  key={value}
+                  onClick={() => {
+                    setActiveTab(value);
+                    scrollToSection(value);
+                  }}
+                  className={`py-2 cursor-pointer relative flex items-center text-[#5F5F5F] text-sm sm:text-base transition-colors hover:text-[#0B6333] ${
+                    isActive
+                      ? 'text-[#0B6333] font-semibold before:content-[""] before:w-2 before:h-2 before:bg-[#0B6333] before:rounded-full before:absolute before:left-[-20px] before:top-1/2 before:transform before:-translate-y-1/2 md:before:block before:hidden'
+                      : ""
+                  }`}
+                >
+                  <a
+                    href={`#${value}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                    }}
+                    className="block w-full"
+                  >
+                    {formattedValue}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </aside>
+      );
+    };
+
     switch (schoolType) {
       case "k12":
         return (
           <div className="py-5 flex flex-col md:flex-row gap-14">
-            <aside className="w-full md:w-64 flex-shrink-0 md:sticky md:top-20 self-start max-sm:hidden h-[calc(100vh-5rem)]">
-              <ul className="flex flex-col pl-[40px] overflow-y-auto h-full scrollbar-hide">
-                {Object.values(SIDE_TABS_DESKTOP).map((value, index) => {
-                  const formattedValue = removeLastWord(value);
-                  return (
-                    <li
-                      key={index}
-                      onClick={() => {
-                        setActiveTab(value);
-                        scrollToSection(value);
-                      }}
-                      className={`py-2 cursor-pointer relative flex items-center text-[#5F5F5F] text-sm sm:text-base ${
-                        activeTab === value
-                          ? 'text-[#0B6333] font-semibold before:content-[""] before:w-2 before:h-2 before:bg-[#0B6333] before:rounded-full before:absolute before:left-[-20px] before:top-1/2 before:transform before:-translate-y-1/2 md:before:block before:hidden'
-                          : ""
-                      }`}
-                    >
-                      <a
-                        href={`#${value}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                        }}
-                      >
-                        {formattedValue}
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            </aside>
+            <ListingSideNav />
             <div className="flex-1 max-w-[760px] font-['Inter',-apple-system,BlinkMacSystemFont,sans-serif]">
               {/* K-12 specific content - placeholder for now */}
               <div className="p-8 text-center text-gray-500">
@@ -136,36 +162,7 @@ const ContentDesktop: React.FC<ContentDesktopProps> = ({ schoolType = "college" 
       case "grad":
         return (
           <div className="py-5 flex flex-col md:flex-row gap-14">
-            <aside className="w-full md:w-64 flex-shrink-0 md:sticky md:top-20 self-start max-sm:hidden h-[calc(100vh-5rem)]">
-              <ul className="flex flex-col pl-[40px] overflow-y-auto h-full scrollbar-hide">
-                {Object.values(SIDE_TABS_DESKTOP).map((value, index) => {
-                  const formattedValue = removeLastWord(value);
-                  return (
-                    <li
-                      key={index}
-                      onClick={() => {
-                        setActiveTab(value);
-                        scrollToSection(value);
-                      }}
-                      className={`py-2 cursor-pointer relative flex items-center text-[#5F5F5F] text-sm sm:text-base ${
-                        activeTab === value
-                          ? 'text-[#0B6333] font-semibold before:content-[""] before:w-2 before:h-2 before:bg-[#0B6333] before:rounded-full before:absolute before:left-[-20px] before:top-1/2 before:transform before:-translate-y-1/2 md:before:block before:hidden'
-                          : ""
-                      }`}
-                    >
-                      <a
-                        href={`#${value}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                        }}
-                      >
-                        {formattedValue}
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            </aside>
+            <ListingSideNav />
             <div className="flex-1 max-w-[760px] font-['Inter',-apple-system,BlinkMacSystemFont,sans-serif]">
               {/* Grad School specific content - placeholder for now */}
               <div className="p-8 text-center text-gray-500">
@@ -181,36 +178,7 @@ const ContentDesktop: React.FC<ContentDesktopProps> = ({ schoolType = "college" 
         return (
           <div className="w-full max-w-[1077px] mx-auto">
             <div className="py-5 flex flex-col md:flex-row gap-14">
-              <aside className="w-full md:w-64 flex-shrink-0 md:sticky md:top-20 self-start max-sm:hidden h-[calc(100vh-5rem)]">
-                <ul className="flex flex-col pl-[40px] overflow-y-auto h-full scrollbar-hide">
-                  {Object.values(SIDE_TABS_DESKTOP).map((value, index) => {
-                    const formattedValue = removeLastWord(value);
-                    return (
-                      <li
-                        key={index}
-                        onClick={() => {
-                          setActiveTab(value);
-                          scrollToSection(value);
-                        }}
-                        className={`py-2 cursor-pointer relative flex items-center text-[#5F5F5F] text-sm sm:text-base ${
-                          activeTab === value
-                            ? 'text-[#0B6333] font-semibold before:content-[""] before:w-2 before:h-2 before:bg-[#0B6333] before:rounded-full before:absolute before:left-[-20px] before:top-1/2 before:transform before:-translate-y-1/2 md:before:block before:hidden'
-                            : ""
-                        }`}
-                      >
-                        <a
-                          href={`#${value}`}
-                          onClick={(e) => {
-                            e.preventDefault();
-                          }}
-                        >
-                          {formattedValue}
-                        </a>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </aside>
+              <ListingSideNav />
               <div className="flex-1 max-w-[760px] font-['Inter',-apple-system,BlinkMacSystemFont,sans-serif]">
                 <Announcements id={SIDE_TABS_DESKTOP.MONTHLY_UPDATE_DESKTOP} />
                 <ReportCard id={SIDE_TABS_DESKTOP.REPORT_CARD_DESKTOP} />
