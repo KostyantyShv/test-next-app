@@ -1,5 +1,3 @@
-import { DesktopModal } from "@/components/ui/DesktopModal/DesktopModal";
-import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 import React from "react";
 import { Link } from "./types/link";
 import { LinkModalContent } from "./LinkModalContent";
@@ -18,18 +16,18 @@ const LinkModal: React.FC<LinkModalProps> = ({
   link,
 }) => {
   return (
-    <>
-      <div className={`max-md:block hidden ${!isOpen ? "w-0 h-0" : ""}`}>
-        <MobileDrawer isOpen={isOpen} onClose={onClose}>
-          <LinkModalContent onClose={onClose} onSave={onSave} link={link} />
-        </MobileDrawer>
+    <div
+      className={`modal ${isOpen ? "active" : ""}`}
+      id="linkModal"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      aria-hidden={!isOpen}
+    >
+      <div className="modal-content" onMouseDown={(e) => e.stopPropagation()}>
+        <LinkModalContent onClose={onClose} onSave={onSave} link={link} />
       </div>
-      <div className={`max-md:hidden block ${!isOpen ? "w-0 h-0" : ""}`}>
-        <DesktopModal isOpen={isOpen} onClose={onClose} className="max-w-[500px] w-[90%] max-h-[90vh]">
-          <LinkModalContent onClose={onClose} onSave={onSave} link={link} />
-        </DesktopModal>
-      </div>
-    </>
+    </div>
   );
 };
 

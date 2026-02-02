@@ -392,8 +392,10 @@ export const CheckListSection: React.FC = () => {
         expandParam as "all" | "incomplete" | "issues" | "completed"
       );
     }
-    if (optionsParam === "true") setShowIncomplete(true);
-    if (issuesParam === "true") setShowIssues(true);
+
+    // Respect persisted toggle state from URL params
+    if (optionsParam !== null) setShowIncomplete(optionsParam === "true");
+    if (issuesParam !== null) setShowIssues(issuesParam === "true");
   }, []);
 
   useEffect(() => {
@@ -406,18 +408,19 @@ export const CheckListSection: React.FC = () => {
   }, [expandMode, showIncomplete, showIssues]);
 
   return (
-    <div className="max-w-[1150px] mx-auto py-10 max-md:py-0 max-md:w-full max-md:mx-0">
-      <div className="bg-white max-md:bg-transparent rounded-lg max-md:rounded-none shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:shadow-none pb-4 max-md:pb-0">
-        <Header
-          showIncomplete={showIncomplete}
-          setShowIncomplete={setShowIncomplete}
-          showIssues={showIssues}
-          setShowIssues={setShowIssues}
-          expandMode={expandMode}
-          handleExpand={handleExpand}
-          items={items}
-        />
-        <div className="max-md:px-0">
+    <section className="school-edit-checklist">
+      <div className="container">
+        <div className="listing-content">
+          <Header
+            showIncomplete={showIncomplete}
+            setShowIncomplete={setShowIncomplete}
+            showIssues={showIssues}
+            setShowIssues={setShowIssues}
+            expandMode={expandMode}
+            handleExpand={handleExpand}
+            items={items}
+          />
+
           {items.map((section) => {
             const visibleItems = section.items.filter((item) => {
               const isOption = item.button?.type === "add";
@@ -429,7 +432,9 @@ export const CheckListSection: React.FC = () => {
               if (showIssues) return isIssue;
               return true;
             });
+
             if (visibleItems.length === 0) return null;
+
             return (
               <Section
                 key={section.title}
@@ -447,6 +452,6 @@ export const CheckListSection: React.FC = () => {
           })}
         </div>
       </div>
-    </div>
+    </section>
   );
 };

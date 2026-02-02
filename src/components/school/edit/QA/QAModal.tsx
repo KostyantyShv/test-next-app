@@ -33,7 +33,7 @@ const QAModal: React.FC<QAModalProps> = ({
         </MobileDrawer>
       </div>
       <div className="max-md:hidden block">
-        <DesktopModal onClose={onClose} isOpen={isOpen}>
+        <DesktopModal onClose={onClose} isOpen={isOpen} className="w-full max-w-[600px]">
           <QAModalContent
             isOpen={isOpen}
             currentQuestion={currentQuestion}

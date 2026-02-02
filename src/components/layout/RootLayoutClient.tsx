@@ -11,6 +11,7 @@ import { AudioPlayer } from "@/components/player/AudioPlayer";
 import { Playlist } from "@/components/player/Playlist/Playlist";
 import { useAudioPlayer } from "@/store/use-audio-player";
 import { useListingStickyHeader } from "@/store/use-listing-sticky-header";
+import { useLeftSidebar } from "@/store/use-left-sidebar";
 import { cn } from "@/lib/utils";
 import PageContainer from "./PageContainer";
 
@@ -24,6 +25,7 @@ export const RootLayoutClient = ({
 }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const { isPlayerVisible, isPlaylistVisible } = useAudioPlayer();
+  const isLeftSidebarCollapsed = useLeftSidebar((s) => s.isCollapsed);
   const isDesktopListingStickyHeaderVisible = useListingStickyHeader(
     (s) => s.isDesktopStickyHeaderVisible
   );
@@ -54,8 +56,15 @@ export const RootLayoutClient = ({
       {isPlaylistVisible && <Playlist />}
 
       <div className="flex h-full">
-        {/* Desktop Sidebar */}
-        <div className="hidden md:block z-[100]">
+        {/* Desktop Sidebar: keep always visible (fixed) */}
+        <div
+          className={cn(
+            "hidden md:block shrink-0",
+            isLeftSidebarCollapsed ? "w-20" : "w-64"
+          )}
+          aria-hidden="true"
+        />
+        <div className="hidden md:block fixed top-0 left-0 h-screen z-[1000]">
           <LeftSidebar />
         </div>
 

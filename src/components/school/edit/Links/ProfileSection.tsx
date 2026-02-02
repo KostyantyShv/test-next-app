@@ -26,23 +26,20 @@ export const ProfileSection = () => {
   };
 
   return (
-    <div className="w-[350px] max-md:hidden block bg-white rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
-      <h1 className="text-[#262B3D] text-2xl font-semibold mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>Profile</h1>
-      <p className="text-[#5F5F5F] text-base leading-6 w-[350px] mb-6">
+    <div className="profile-section max-md:hidden block">
+      <h1 className="section-title">Profile</h1>
+      <p className="section-description">
         Customize your profile appearance and manage your bio links.
       </p>
-      <div className="mb-6">
-        <div className="w-full h-[120px] rounded-xl overflow-hidden bg-[#F7FAFC] relative mb-4">
-          <img
-            src={bannerSrc}
-            alt="Banner preview"
-            className="w-full h-full object-cover"
-          />
+
+      <div className="profile-upload">
+        <div className="banner-preview" id="bannerPreview">
+          <img src={bannerSrc} alt="Banner preview" />
           <div
-            className="absolute inset-0 bg-[rgba(0,0,0,0.5)] flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 cursor-pointer"
+            className="upload-overlay"
             onClick={() => bannerInputRef.current?.click()}
           >
-            <span className="text-white text-2xl">📷</span>
+            <span className="upload-icon">📷</span>
           </div>
         </div>
         <input
@@ -52,17 +49,14 @@ export const ProfileSection = () => {
           accept="image/*"
           onChange={(e) => handleFileUpload(e, setBannerSrc)}
         />
-        <div className="w-[100px] h-[100px] rounded-full overflow-hidden -mt-[50px] mx-auto mb-4 bg-white border-4 border-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] relative">
-          <img
-            src={avatarSrc}
-            alt="Avatar preview"
-            className="w-full h-full object-cover"
-          />
+
+        <div className="avatar-preview" id="avatarPreview">
+          <img src={avatarSrc} alt="Avatar preview" />
           <div
-            className="absolute inset-0 bg-[rgba(0,0,0,0.5)] flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 cursor-pointer"
+            className="upload-overlay"
             onClick={() => avatarInputRef.current?.click()}
           >
-            <span className="text-white text-2xl">📷</span>
+            <span className="upload-icon">📷</span>
           </div>
         </div>
         <input

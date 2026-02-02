@@ -23,16 +23,22 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({
     <>
       <div className="max-md:block hidden">
         <MobileDrawer isOpen={isOpen} onClose={onClose}>
-          <SpotlightModalContent
-            onClose={onClose}
-            onDelete={onDelete}
-            onSave={onSave}
-            spotlight={spotlight}
-          />
+          <div className="h-[70vh] max-h-[70vh] overflow-hidden flex flex-col">
+            <SpotlightModalContent
+              onClose={onClose}
+              onDelete={onDelete}
+              onSave={onSave}
+              spotlight={spotlight}
+            />
+          </div>
         </MobileDrawer>
       </div>
       <div className="max-md:hidden block">
-        <DesktopModal isOpen={isOpen} onClose={onClose} className="max-w-[850px] w-[90%] max-h-[90vh]">
+        <DesktopModal
+          isOpen={isOpen}
+          onClose={onClose}
+          className="max-w-[850px] w-[90%] h-[90vh] overflow-hidden"
+        >
           <SpotlightModalContent
             onClose={onClose}
             onDelete={onDelete}

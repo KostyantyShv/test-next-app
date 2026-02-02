@@ -150,7 +150,7 @@ const Header = ({
     <>
       <header
         className={`${
-          position === "fixed" ? "w-full rounded-b-lg" : "sticky top-[8px]"
+          position === "fixed" ? "w-full rounded-b-lg" : "sticky top-[83px]"
         } z-[1001] transition-all duration-300 min-h-[5.8rem] bg-white border-b shadow-[0_2px_8px_rgba(0,0,0,0.06)] ${classes || ""}`}
         style={{
           borderColor: "rgba(223, 221, 219, 0.4)",

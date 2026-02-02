@@ -16,11 +16,10 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [activeReview, setActiveReview] = useState<Review | null>(null);
+  const [activeReviewId, setActiveReviewId] = useState<string | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
   const [isActionsDrawerOpen, setIsActionsDrawerOpen] = useState(false);
-  const [actionsReview, setActionsReview] = useState<Review | null>(null);
+  const [actionsReviewId, setActionsReviewId] = useState<string | null>(null);
 
   const totalPages = Math.ceil(reviews.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -50,8 +49,7 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
 
   const handleReplyClick = useCallback((review: Review, isMobile: boolean) => {
     if (isMobile) {
-      setActiveReview(review);
-      setIsEditMode(!!review.reply);
+      setActiveReviewId(review.id);
       setIsDrawerOpen(true);
       setActiveDropdown(null);
     } else {
@@ -89,7 +87,7 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
     );
     // Don't close the expanded row - let user see the saved reply
     setIsDrawerOpen(false);
-    setActiveReview(null);
+    setActiveReviewId(null);
   }, []);
 
   const handleDelete = useCallback((reviewId: string) => {
@@ -117,7 +115,7 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
     setExpandedRow(null);
     setActiveDropdown(null);
     setIsDrawerOpen(false);
-    setActiveReview(null);
+    setActiveReviewId(null);
   }, []);
 
   const handleItemsPerPageChange = useCallback((value: number) => {
@@ -126,8 +124,15 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
     setExpandedRow(null);
     setActiveDropdown(null);
     setIsDrawerOpen(false);
-    setActiveReview(null);
+    setActiveReviewId(null);
   }, []);
+
+  const activeReview = activeReviewId
+    ? reviews.find((r) => r.id === activeReviewId) ?? null
+    : null;
+  const actionsReview = actionsReviewId
+    ? reviews.find((r) => r.id === actionsReviewId) ?? null
+    : null;
 
   return (
     <div>
@@ -186,18 +191,20 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
       </div>
 
       {/* Mobile Card Layout */}
-      <div className="block md:hidden space-y-4">
+      <div className="reviews-mobile-list block md:hidden">
         {paginatedReviews.map((review) => (
           <div
             key={review.id}
-            className="bg-white rounded-xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
+            className="review-card"
             data-review-id={review.id}
             data-has-reply={review.reply ? "true" : "false"}
           >
-            <div className="flex items-center gap-3 mb-4 relative">
+            <div className="card-header">
               <button
-                className="w-7 h-7 rounded-md bg-[#F1F3F6] border-none cursor-pointer flex items-center justify-center flex-shrink-0"
+                type="button"
+                className="expand-button"
                 onClick={() => handleReplyClick(review, true)}
+                aria-label="Open reply drawer"
               >
                 <svg
                   height="16"
@@ -206,9 +213,7 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
-                  className={`transition-transform ${
-                    expandedRow === review.id ? "rotate-180" : ""
-                  }`}
+                  className="expand-icon"
                 >
                   <path
                     d="M19 9l-7 7-7-7"
@@ -217,72 +222,61 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
                   />
                 </svg>
               </button>
-              <div className="flex-grow">
-                <span className="font-semibold text-[#016853] text-sm">
-                  {(() => {
-                    const parts = review.author.fullName.trim().split(/\s+/);
-                    if (parts.length >= 2) {
-                      return `${parts[0]} ${parts[1][0]}.`;
-                    }
-                    return review.author.fullName;
-                  })()}
-                </span>
+              <div className="author-name">
+                {(() => {
+                  const parts = review.author.fullName.trim().split(/\s+/);
+                  if (parts.length >= 2) {
+                    return `${parts[0]} ${parts[1][0]}.`;
+                  }
+                  return review.author.fullName;
+                })()}
               </div>
-              <div className="w-7 h-7 flex items-center justify-center text-[#5F5F5F] cursor-pointer"
+              <button
+                type="button"
+                className="more-options"
                 onClick={() => {
-                  setActionsReview(review);
+                  setActionsReviewId(review.id);
                   setIsActionsDrawerOpen(true);
                 }}
+                aria-label="Review actions"
               >
                 ⋮
-              </div>
+              </button>
             </div>
-            <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-3 text-sm">
-              <span className="text-xs uppercase text-[#5F5F5F] tracking-[0.05em]">Title</span>
-              <div className="text-[#4A4A4A] text-sm">
-                {review.title.short}
-              </div>
-              <span className="text-xs uppercase text-[#5F5F5F] tracking-[0.05em]">Rating</span>
-              <div className="flex items-center gap-1 font-semibold text-[#089E68]">
-                <span className="text-[#00DF8B]">★</span>
+            <div className="card-content">
+              <div className="card-label">Title</div>
+              <div>{review.title.short}</div>
+
+              <div className="card-label">Rating</div>
+              <div className="rating">
+                <span className="star">★</span>
                 <span>{review.rating}</span>
               </div>
-              <span className="text-xs uppercase text-[#5F5F5F] tracking-[0.05em]">Published</span>
-              <div className="text-[#4A4A4A] text-sm">
-                {review.published.short}
-              </div>
-              <span className="text-xs uppercase text-[#5F5F5F] tracking-[0.05em]">Votes</span>
-              <div className="flex items-center gap-1.5 text-[#5F5F5F] font-medium">
+
+              <div className="card-label">Published</div>
+              <div className="published-date">{review.published.short}</div>
+
+              <div className="card-label">Votes</div>
+              <div className="votes">
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   width="18"
                   height="18"
-                  className="text-[#5F5F5F]"
                 >
                   <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
                 </svg>
-                {review.votes}
+                <span>{review.votes}</span>
               </div>
-              <span className="text-xs uppercase text-[#5F5F5F] tracking-[0.05em]">Featured</span>
-              <label className="relative inline-block w-9 h-5">
+              <div className="card-label">Featured</div>
+              <label className="toggle-switch">
                 <input
                   type="checkbox"
                   checked={review.featured}
                   onChange={() => handleToggleFeatured(review.id)}
-                  className="opacity-0 w-0 h-0"
                 />
-                <span
-                  className={`absolute cursor-pointer inset-0 rounded-full transition-colors ${
-                    review.featured ? "bg-[#0B6333]" : "bg-[#E5E7EB]"
-                  }`}
-                ></span>
-                <span
-                  className={`absolute h-4 w-4 left-0.5 bottom-0.5 bg-white rounded-full transition-transform ${
-                    review.featured ? "translate-x-4" : ""
-                  }`}
-                ></span>
+                <span className="toggle-slider" />
               </label>
             </div>
           </div>
@@ -303,7 +297,7 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
         isOpen={isActionsDrawerOpen}
         onClose={() => {
           setIsActionsDrawerOpen(false);
-          setActionsReview(null);
+          setActionsReviewId(null);
         }}
         onReply={() => {
           if (actionsReview) {
@@ -323,8 +317,11 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
       <ReplyDrawer
         review={activeReview}
         isOpen={isDrawerOpen}
-        isEditMode={isEditMode}
-        onClose={() => setIsDrawerOpen(false)}
+        isEditMode={false}
+        onClose={() => {
+          setIsDrawerOpen(false);
+          setActiveReviewId(null);
+        }}
         onSave={handleSave}
         onDelete={handleDelete}
       />

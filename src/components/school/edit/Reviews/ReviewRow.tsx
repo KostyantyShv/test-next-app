@@ -92,9 +92,9 @@ function ReviewRow({
 
   return (
     <tr className={`main-row relative ${isExpanded ? "expanded" : ""}`}>
-      <td className="px-4 py-4 bg-surface border-b border-theme align-middle">
+      <td className="px-4 py-4 bg-white border-b border-[#E5E7EB] align-middle">
         <button
-          className="w-8 h-8 rounded-md bg-[#F1F3F6] border-none cursor-pointer flex items-center justify-center hover:bg-[var(--gray-200)] transition-colors"
+          className="w-8 h-8 rounded-md bg-[#F1F3F6] border-none cursor-pointer flex items-center justify-center hover:bg-[#E5E7EB] transition-colors"
           onClick={() => onToggleRow(review.id)}
         >
           <span
@@ -104,7 +104,7 @@ function ReviewRow({
           </span>
         </button>
       </td>
-      <td className="px-4 py-4 bg-surface border-b border-theme align-middle">
+      <td className="px-4 py-4 bg-white border-b border-[#E5E7EB] align-middle">
         <div className="relative group inline-block">
           <span className="text-[0.95rem] font-semibold text-header-green tracking-[-0.01em]">
             {formattedAuthorName}
@@ -115,9 +115,9 @@ function ReviewRow({
           </span>
         </div>
       </td>
-      <td className="py-4 px-1 bg-surface border-b border-theme max-w-[78px] align-middle">
+      <td className="py-4 px-1 bg-white border-b border-[#E5E7EB] max-w-[78px] align-middle">
         <div className="relative group inline-block max-w-full">
-          <span className="text-xs text-default tracking-[-0.01em] line-clamp-3 block overflow-hidden">
+          <span className="text-xs text-[#4A4A4A] tracking-[-0.01em] line-clamp-3 block overflow-hidden">
             {review.title.short}
           </span>
           <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-[var(--bold-text)] text-white text-center rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap text-xs font-normal transition-opacity">
@@ -126,15 +126,15 @@ function ReviewRow({
           </span>
         </div>
       </td>
-      <td className="px-4 py-4 bg-surface border-b border-theme align-middle">
+      <td className="px-4 py-4 bg-white border-b border-[#E5E7EB] align-middle">
         <div className="flex items-center gap-1 font-semibold text-success-green">
           <span className="text-[var(--grade-badge)] pb-[5px]">★</span>
           <span>{review.rating}</span>
         </div>
       </td>
-      <td className="px-4 py-4 bg-surface border-b border-theme align-middle">
+      <td className="px-4 py-4 bg-white border-b border-[#E5E7EB] align-middle">
         <div className="relative group inline-block">
-          <span className="text-sm text-subtle">
+          <span className="text-sm text-[#5F5F5F]">
             {review.published.short}
           </span>
           <span className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute bottom-[125%] left-1/2 -translate-x-1/2 bg-[var(--bold-text)] text-white text-center rounded-md py-2 px-3 z-10 min-w-[120px] whitespace-nowrap text-xs font-normal transition-opacity">
@@ -143,15 +143,15 @@ function ReviewRow({
           </span>
         </div>
       </td>
-      <td className="px-4 py-4 bg-surface border-b border-theme align-middle">
-        <div className="flex items-center gap-[6px] text-subtle font-medium">
-          <span className="text-subtle">
+      <td className="px-4 py-4 bg-white border-b border-[#E5E7EB] align-middle">
+        <div className="flex items-center gap-[6px] text-[#5F5F5F] font-medium">
+          <span className="text-[#5F5F5F]">
           {ICONS.thumbsUp}
           </span>
           {review.votes}
         </div>
       </td>
-      <td className="px-4 py-4 bg-surface border-b border-theme align-middle">
+      <td className="px-4 py-4 bg-white border-b border-[#E5E7EB] align-middle">
         <label className="relative inline-block w-9 h-5">
           <input
             type="checkbox"
@@ -161,20 +161,20 @@ function ReviewRow({
           />
           <span
             className={`absolute cursor-pointer inset-0 rounded-full transition-colors ${
-              review.featured ? "bg-[var(--active-green)]" : "bg-[var(--gray-200)]"
+              review.featured ? "bg-[var(--active-green)]" : "bg-[#E5E7EB]"
             }`}
           ></span>
           <span
-            className={`absolute h-4 w-4 left-0.5 bottom-0.5 bg-surface rounded-full transition-transform ${
+            className={`absolute h-4 w-4 left-0.5 bottom-0.5 bg-white rounded-full transition-transform ${
               review.featured ? "translate-x-4" : ""
             }`}
           ></span>
         </label>
       </td>
-      <td className="px-4 py-4 bg-surface border-b border-theme align-middle">
+      <td className="px-4 py-4 bg-white border-b border-[#E5E7EB] align-middle">
         <div className="relative">
           <div
-            className="cursor-pointer p-2 rounded-md font-bold text-default hover:bg-surface-secondary transition-colors"
+            className="cursor-pointer p-2 rounded-md font-bold text-[#4A4A4A] hover:bg-[#F9FAFB] transition-colors"
             onClick={(e) => {
               e.stopPropagation();
               onToggleDropdown(review.id);
@@ -183,21 +183,21 @@ function ReviewRow({
             ⋮
           </div>
           <div
-            className={`absolute right-0 top-full bg-surface border border-theme rounded-lg shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] min-w-[200px] z-[1000] ${
+            className={`absolute right-0 top-full bg-white border border-[#E5E7EB] rounded-lg shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] min-w-[200px] z-[1000] ${
               isDropdownActive ? "block" : "hidden"
             }`}
           >
             <button
-              className="w-full text-left px-4 py-3 text-default text-sm hover:bg-surface-secondary flex items-center gap-3 transition-colors"
+              className="w-full text-left px-4 py-3 text-[#4A4A4A] text-sm hover:bg-[#F9FAFB] flex items-center gap-3 transition-colors"
               onClick={() => onReplyClick(review)}
             >
-              <span className="text-subtle">
+              <span className="text-[#5F5F5F]">
               {ICONS.reply}
               </span>
               Reply to Review
             </button>
-            <button className="w-full text-left px-4 py-3 text-default text-sm hover:bg-surface-secondary flex items-center gap-3 transition-colors">
-              <span className="text-subtle">
+            <button className="w-full text-left px-4 py-3 text-[#4A4A4A] text-sm hover:bg-[#F9FAFB] flex items-center gap-3 transition-colors">
+              <span className="text-[#5F5F5F]">
               {ICONS.view}
               </span>
               View Review

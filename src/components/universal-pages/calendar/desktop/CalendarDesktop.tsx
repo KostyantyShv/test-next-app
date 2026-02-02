@@ -24,7 +24,7 @@ const CalendarDesktop: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedEventId, setSelectedEventId] = useState<string | undefined>(undefined);
-  const { refreshEvents } = useCalendarEvents();
+  const { events, refreshEvents } = useCalendarEvents();
 
   const handlePrevMonth = () => {
     setCurrentDate(
@@ -45,7 +45,8 @@ const CalendarDesktop: React.FC = () => {
   const { calendarData, listData } = useCalendarData(
     currentDate,
     today,
-    filter
+    filter,
+    events
   );
 
   const currentMonthDisplay = `${

@@ -3,12 +3,11 @@ import { ProfileSection } from "./ProfileSection";
 
 export default function Links() {
   return (
-    <div className="text-[#4A4A4A] my-6 max-md:my-0">
-      
-      <div className="w-full flex max-md:flex-col gap-6">
+    <section className="school-edit-links">
+      <div className="links-container">
         <ProfileSection />
         <LinksSection />
       </div>
-    </div>
+    </section>
   );
 }

@@ -21,10 +21,10 @@ export default function TestimonialSection({
           type="text"
           value={formData.testimonial.label}
           onChange={(e) =>
-            setFormData({
-              ...formData,
-              testimonial: { ...formData.testimonial, label: e.target.value },
-            })
+            setFormData((prev) => ({
+              ...prev,
+              testimonial: { ...prev.testimonial, label: e.target.value },
+            }))
           }
           className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
           placeholder="e.g., TESTIMONIALS"
@@ -38,10 +38,10 @@ export default function TestimonialSection({
           type="text"
           value={formData.testimonial.title}
           onChange={(e) =>
-            setFormData({
-              ...formData,
-              testimonial: { ...formData.testimonial, title: e.target.value },
-            })
+            setFormData((prev) => ({
+              ...prev,
+              testimonial: { ...prev.testimonial, title: e.target.value },
+            }))
           }
           className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
           placeholder="e.g., What Our Clients Say"
@@ -54,10 +54,10 @@ export default function TestimonialSection({
         <textarea
           value={formData.testimonial.text}
           onChange={(e) =>
-            setFormData({
-              ...formData,
-              testimonial: { ...formData.testimonial, text: e.target.value },
-            })
+            setFormData((prev) => ({
+              ...prev,
+              testimonial: { ...prev.testimonial, text: e.target.value },
+            }))
           }
           className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
           rows={4}
@@ -72,16 +72,16 @@ export default function TestimonialSection({
           type="text"
           value={formData.testimonial.author.name}
           onChange={(e) =>
-            setFormData({
-              ...formData,
+            setFormData((prev) => ({
+              ...prev,
               testimonial: {
-                ...formData.testimonial,
+                ...prev.testimonial,
                 author: {
-                  ...formData.testimonial.author,
+                  ...prev.testimonial.author,
                   name: e.target.value,
                 },
               },
-            })
+            }))
           }
           className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
           placeholder="e.g., John Smith"
@@ -95,16 +95,16 @@ export default function TestimonialSection({
           type="text"
           value={formData.testimonial.author.title}
           onChange={(e) =>
-            setFormData({
-              ...formData,
+            setFormData((prev) => ({
+              ...prev,
               testimonial: {
-                ...formData.testimonial,
+                ...prev.testimonial,
                 author: {
-                  ...formData.testimonial.author,
+                  ...prev.testimonial.author,
                   title: e.target.value,
                 },
               },
-            })
+            }))
           }
           className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
           placeholder="e.g., Director of Digital Strategy, Aecon"
@@ -156,16 +156,16 @@ export default function TestimonialSection({
                 if (file) {
                   const reader = new FileReader();
                   reader.onload = () =>
-                    setFormData({
-                      ...formData,
+                    setFormData((prev) => ({
+                      ...prev,
                       testimonial: {
-                        ...formData.testimonial,
+                        ...prev.testimonial,
                         author: {
-                          ...formData.testimonial.author,
+                          ...prev.testimonial.author,
                           image: reader.result as string,
                         },
                       },
-                    });
+                    }));
                   reader.readAsDataURL(file);
                 }
               }}
@@ -184,16 +184,16 @@ export default function TestimonialSection({
           type="text"
           value={formData.testimonial.video.buttonText}
           onChange={(e) =>
-            setFormData({
-              ...formData,
+            setFormData((prev) => ({
+              ...prev,
               testimonial: {
-                ...formData.testimonial,
+                ...prev.testimonial,
                 video: {
-                  ...formData.testimonial.video,
+                  ...prev.testimonial.video,
                   buttonText: e.target.value,
                 },
               },
-            })
+            }))
           }
           className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
           placeholder="e.g., Watch Interview"
@@ -238,16 +238,16 @@ export default function TestimonialSection({
               if (file) {
                 const reader = new FileReader();
                 reader.onload = () =>
-                  setFormData({
-                    ...formData,
+                  setFormData((prev) => ({
+                    ...prev,
                     testimonial: {
-                      ...formData.testimonial,
+                      ...prev.testimonial,
                       video: {
-                        ...formData.testimonial.video,
+                        ...prev.testimonial.video,
                         image: reader.result as string,
                       },
                     },
-                  });
+                  }));
                 reader.readAsDataURL(file);
               }
             }}

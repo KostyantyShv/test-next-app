@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CloseIcon } from "./Icons";
 import { Link } from "./types/link";
 
@@ -17,7 +17,6 @@ export const LinkModalContent = ({ link, onSave, onClose }: LinkModalProps) => {
   );
   const [selectedColor, setSelectedColor] = useState(link?.color || "#EDF2F7");
   const iconInputRef = useRef<HTMLInputElement>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
 
   const colorOptions = [
     "#EDF2F7",
@@ -83,127 +82,109 @@ export const LinkModalContent = ({ link, onSave, onClose }: LinkModalProps) => {
     }
   }, [link]);
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        onClose();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [onClose]);
-
   return (
     <>
-      <div className="p-6 border-b border-theme flex items-center justify-between">
-        <h3 className="text-xl font-semibold text-dark">
+      <div className="modal-header">
+        <h3 className="modal-title" id="modalTitle">
           {link ? "Edit Link" : "Add New Link"}
         </h3>
         <button
-          className="w-8 h-8 flex items-center justify-center rounded-md border border-theme bg-surface text-subtle hover:bg-background transition-colors"
+          className="btn-icon"
+          type="button"
           onClick={onClose}
+          aria-label="Close"
         >
           <CloseIcon />
         </button>
       </div>
-      <form className="p-6" onSubmit={handleSave}>
-        <div className="mb-5">
-          <label
-            className="block text-sm font-medium text-dark mb-2"
-            htmlFor="linkTitle"
-          >
+
+      <form id="linkForm" className="modal-body" onSubmit={handleSave}>
+        <div className="form-group">
+          <label className="form-label" htmlFor="linkTitle">
             Link Title
           </label>
           <input
             type="text"
             id="linkTitle"
-            className="w-full p-2 border border-theme rounded-md text-sm text-default bg-surface focus:outline-none transition"
-            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
-            onFocus={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
-            }}
-            onBlur={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
-            }}
+            className="form-control"
             required
             placeholder="Enter link title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
         </div>
-        <div className="mb-5">
-          <label
-            className="block text-sm font-medium text-dark mb-2"
-            htmlFor="linkUrl"
-          >
+
+        <div className="form-group">
+          <label className="form-label" htmlFor="linkUrl">
             URL
           </label>
           <input
             type="url"
             id="linkUrl"
-            className="w-full p-2 border border-theme rounded-md text-sm text-default bg-surface focus:outline-none transition"
-            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
-            onFocus={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
-            }}
-            onBlur={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
-            }}
+            className="form-control"
             required
             placeholder="https://example.com"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
           />
         </div>
-        <div className="mb-5">
-          <label className="block text-sm font-medium text-dark mb-2">
-            Background Color
-          </label>
-          <div className="flex flex-col gap-4">
-            <div className="border-b border-theme pb-4">
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(36px,1fr))] gap-2">
+
+        <div className="form-group">
+          <label className="form-label">Background Color</label>
+          <div className="color-selector">
+            <div className="color-presets">
+              <div className="color-options">
                 {colorOptions.map((color) => (
                   <div
                     key={color}
-                    className={`w-9 h-9 rounded-md cursor-pointer border-2 transition-transform ${
-                      selectedColor === color
-                        ? "scale-110 border-[#02C5AF]"
-                        : "border-transparent"
-                    } hover:scale-110`}
-                    style={{ 
-                      backgroundColor: color,
-                    }}
+                    className={`color-option ${
+                      selectedColor === color ? "active" : ""
+                    }`}
+                    style={{ background: color }}
+                    data-color={color}
                     onClick={() => setSelectedColor(color)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Select color ${color}`}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedColor(color);
+                      }
+                    }}
                   />
                 ))}
               </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-dark mb-2">
-                Custom Color
-              </label>
+            <div className="custom-color">
+              <label className="form-label">Custom Color</label>
               <input
                 type="color"
-                className="w-full h-10 p-1 border border-theme rounded-md cursor-pointer"
+                className="color-picker-input"
                 value={selectedColor}
                 onChange={(e) => setSelectedColor(e.target.value)}
               />
             </div>
           </div>
         </div>
-        <div className="mb-5">
-          <label className="block text-sm font-medium text-dark mb-2">
-            Link Icon
-          </label>
+
+        <div className="form-group">
+          <label className="form-label">Link Icon</label>
           <div
-            className="w-full h-[200px] rounded-lg border-2 border-dashed border-theme flex items-center justify-center cursor-pointer transition hover:border-[#02C5AF] hover:bg-[#F9FAFB]"
+            className="upload-preview"
+            id="iconPreview"
             onClick={() => iconInputRef.current?.click()}
+            role="button"
+            tabIndex={0}
+            aria-label="Upload icon"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                iconInputRef.current?.click();
+              }
+            }}
           >
-            <img
-              src={iconSrc}
-              alt="Icon preview"
-              className="max-w-full max-h-full object-contain"
-            />
+            <img src={iconSrc} alt="Icon preview" />
           </div>
           <input
             type="file"
@@ -213,23 +194,16 @@ export const LinkModalContent = ({ link, onSave, onClose }: LinkModalProps) => {
             onChange={handleFileUpload}
           />
         </div>
-        <div className="p-6 border-t border-theme flex justify-end gap-3">
-          <button
-            type="button"
-            className="px-6 py-3 rounded-lg border border-theme bg-surface-secondary text-default text-sm font-semibold hover:opacity-90 transition-opacity"
-            onClick={onClose}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-6 py-3 rounded-lg text-white text-sm font-semibold hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: 'var(--brand-teal)' }}
-          >
-            Save Link
-          </button>
-        </div>
       </form>
+
+      <div className="modal-footer">
+        <button className="btn btn-secondary" type="button" onClick={onClose}>
+          Cancel
+        </button>
+        <button className="btn btn-primary" type="submit" form="linkForm">
+          Save Link
+        </button>
+      </div>
     </>
   );
 };

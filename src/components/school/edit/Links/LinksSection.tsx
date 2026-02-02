@@ -163,13 +163,14 @@ const LinksSection = () => {
 
   return (
     <>
+      <LinkModal
+        isOpen={isModalOpen}
+        link={links.find((l) => l.id === currentEditId)}
+        onSave={saveLink}
+        onClose={closeModal}
+      />
+
       <div className="max-md:block hidden w-full">
-        <LinkModal
-          isOpen={isModalOpen}
-          link={links.find((l) => l.id === currentEditId)}
-          onSave={saveLink}
-          onClose={closeModal}
-        />
         <LinksSectionMobile
           links={links}
           setLinks={setLinks}
@@ -183,13 +184,7 @@ const LinksSection = () => {
           onDrop={handleDrop}
         />
       </div>
-      <div className="max-md:hidden block w-full">
-        <LinkModal
-          isOpen={isModalOpen}
-          link={links.find((l) => l.id === currentEditId)}
-          onSave={saveLink}
-          onClose={closeModal}
-        />
+      <div className="max-md:hidden block w-full h-full">
         <LinksSectionDesktop
           links={links}
           setLinks={setLinks}

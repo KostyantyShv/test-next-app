@@ -13,6 +13,7 @@ export default function RichTextEditor({
 }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const isInternalUpdate = useRef(false);
+  const selectionRef = useRef<Range | null>(null);
 
   useEffect(() => {
     if (editorRef.current && !isInternalUpdate.current) {
@@ -24,25 +25,95 @@ export default function RichTextEditor({
     isInternalUpdate.current = false;
   }, [content]);
 
-  const handleCommand = (e: React.MouseEvent, command: string) => {
-    e.preventDefault();
-    if (!editorRef.current) return;
-    
-    // Simple implementation like in the reference HTML
-    document.execCommand(command, false, undefined);
-    editorRef.current.focus();
-    
-    // Update content after command execution
-    isInternalUpdate.current = true;
-    onChange(editorRef.current.innerHTML || "");
+  const ensureSelectionInEditor = () => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    const selection = document.getSelection();
+    if (!selection) return;
+
+    const anchorNode = selection.anchorNode;
+    const isInside =
+      anchorNode && (anchorNode === editor || editor.contains(anchorNode));
+
+    if (selection.rangeCount > 0 && isInside) return;
+
+    // Put caret at the end of the editor.
+    const range = document.createRange();
+    range.selectNodeContents(editor);
+    range.collapse(false);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    selectionRef.current = range.cloneRange();
   };
 
+  const saveSelection = () => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    const selection = document.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    const anchorNode = selection.anchorNode;
+    if (!anchorNode) return;
+
+    // Only save selection if it's inside this editor.
+    if (!editor.contains(anchorNode)) return;
+
+    selectionRef.current = range.cloneRange();
+  };
+
+  const restoreSelection = () => {
+    const selection = document.getSelection();
+    if (!selection) return;
+
+    const range = selectionRef.current;
+    if (!range) {
+      ensureSelectionInEditor();
+      return;
+    }
+
+    selection.removeAllRanges();
+    selection.addRange(range);
+  };
+
+  const applyCommand = (command: string) => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    // Ensure we have a valid caret/selection inside the editor, then apply.
+    ensureSelectionInEditor();
+    restoreSelection();
+    editor.focus();
+
+    document.execCommand(command, false, undefined);
+
+    isInternalUpdate.current = true;
+    onChange(editor.innerHTML || "");
+    saveSelection();
+  };
+
+  const makeToolbarHandler =
+    (command: string) => (e: React.MouseEvent | React.TouchEvent) => {
+      // Prevent focus from moving to the toolbar button (important for execCommand).
+      e.preventDefault();
+      applyCommand(command);
+    };
+
   return (
-    <div className="border border-theme max-md:border-[#E5E5E5] rounded-lg max-md:rounded-lg overflow-hidden" style={{ borderColor: 'var(--border-color)' }}>
-      <div className="flex p-2 max-md:p-2 border-b border-theme max-md:border-b max-md:border-[#E5E5E5] bg-surface-secondary max-md:bg-[#f8f9fa] overflow-x-auto max-md:overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--surface-secondary)' }}>
+    <div
+      className="spotlight-richtext border border-theme max-md:border-[#E5E5E5] rounded-lg max-md:rounded-lg overflow-hidden"
+      style={{ borderColor: "var(--border-color)" }}
+    >
+      <div
+        className="flex p-2 max-md:p-2 border-b border-theme max-md:border-b max-md:border-[#E5E5E5] bg-surface-secondary max-md:bg-[#f8f9fa] overflow-x-auto max-md:overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--surface-secondary)' }}
+      >
         <button
           type="button"
-          onClick={(e) => handleCommand(e, "bold")}
+          onMouseDown={makeToolbarHandler("bold")}
+          onTouchStart={makeToolbarHandler("bold")}
           className="w-8 h-8 max-md:w-8 max-md:h-8 rounded max-md:rounded flex items-center justify-center flex-shrink-0"
           style={{ color: 'var(--text-default)' }}
           onMouseEnter={(e) => {
@@ -61,7 +132,8 @@ export default function RichTextEditor({
         </button>
         <button
           type="button"
-          onClick={(e) => handleCommand(e, "italic")}
+          onMouseDown={makeToolbarHandler("italic")}
+          onTouchStart={makeToolbarHandler("italic")}
           className="w-8 h-8 rounded flex items-center justify-center"
           style={{ color: 'var(--text-default)' }}
           onMouseEnter={(e) => {
@@ -80,7 +152,8 @@ export default function RichTextEditor({
         </button>
         <button
           type="button"
-          onClick={(e) => handleCommand(e, "underline")}
+          onMouseDown={makeToolbarHandler("underline")}
+          onTouchStart={makeToolbarHandler("underline")}
           className="w-8 h-8 rounded flex items-center justify-center"
           style={{ color: 'var(--text-default)' }}
           onMouseEnter={(e) => {
@@ -100,7 +173,8 @@ export default function RichTextEditor({
         <div className="w-[1px] h-6 max-md:h-6 mx-2 max-md:mx-2 flex-shrink-0" style={{ backgroundColor: 'var(--border-color)' }} />
         <button
           type="button"
-          onClick={(e) => handleCommand(e, "insertUnorderedList")}
+          onMouseDown={makeToolbarHandler("insertUnorderedList")}
+          onTouchStart={makeToolbarHandler("insertUnorderedList")}
           className="w-8 h-8 rounded flex items-center justify-center"
           style={{ color: 'var(--text-default)' }}
           onMouseEnter={(e) => {
@@ -119,7 +193,8 @@ export default function RichTextEditor({
         </button>
         <button
           type="button"
-          onClick={(e) => handleCommand(e, "insertOrderedList")}
+          onMouseDown={makeToolbarHandler("insertOrderedList")}
+          onTouchStart={makeToolbarHandler("insertOrderedList")}
           className="w-8 h-8 rounded flex items-center justify-center"
           style={{ color: 'var(--text-default)' }}
           onMouseEnter={(e) => {
@@ -139,7 +214,8 @@ export default function RichTextEditor({
         <div className="w-[1px] h-6 max-md:h-6 mx-2 max-md:mx-2 flex-shrink-0" style={{ backgroundColor: 'var(--border-color)' }} />
         <button
           type="button"
-          onClick={(e) => handleCommand(e, "justifyLeft")}
+          onMouseDown={makeToolbarHandler("justifyLeft")}
+          onTouchStart={makeToolbarHandler("justifyLeft")}
           className="w-8 h-8 rounded flex items-center justify-center"
           style={{ color: 'var(--text-default)' }}
           onMouseEnter={(e) => {
@@ -158,7 +234,8 @@ export default function RichTextEditor({
         </button>
         <button
           type="button"
-          onClick={(e) => handleCommand(e, "justifyCenter")}
+          onMouseDown={makeToolbarHandler("justifyCenter")}
+          onTouchStart={makeToolbarHandler("justifyCenter")}
           className="w-8 h-8 rounded flex items-center justify-center"
           style={{ color: 'var(--text-default)' }}
           onMouseEnter={(e) => {
@@ -178,7 +255,7 @@ export default function RichTextEditor({
       </div>
       <div
         ref={editorRef}
-        className="p-3 max-md:p-3 min-h-[200px] max-md:min-h-[120px] max-h-[400px] max-md:max-h-[200px] overflow-y-auto max-md:overflow-y-auto focus:outline-none"
+        className="spotlight-richtext__content p-3 max-md:p-3 min-h-[200px] max-md:min-h-[120px] max-h-[400px] max-md:max-h-[200px] overflow-y-auto max-md:overflow-y-auto focus:outline-none"
         style={{ 
           color: 'var(--text-default)',
           backgroundColor: 'var(--surface-color)',
@@ -186,13 +263,18 @@ export default function RichTextEditor({
           fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
         }}
         contentEditable
+        onKeyUp={saveSelection}
+        onMouseUp={saveSelection}
+        onTouchEnd={saveSelection}
         onInput={() => {
           if (editorRef.current) {
             isInternalUpdate.current = true;
             onChange(editorRef.current.innerHTML || "");
+            saveSelection();
           }
         }}
         onFocus={(e) => {
+          saveSelection();
           const container = e.currentTarget.parentElement;
           if (container) {
             (container as HTMLDivElement).style.borderColor = '#02C5AF';

@@ -13,15 +13,17 @@ import Offers from "./tabs/Offers";
 const EditPage = () => {
   const [activeTab, setActiveTab] = useState<ActiveType>("general");
   return (
-    <div className="mb-14 w-[1080px] max-md:w-full max-md:mx-0 mx-auto max-md:flex max-md:flex-col max-md:gap-6">
+    <div className="min-h-screen bg-[#E1E7EE] text-[#4A4A4A]">
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
-      {activeTab === "general" && <General />}
-      {activeTab === "reviews" && <Reviews />}
-      {activeTab === "case-studies" && <CaseStudies />}
-      {activeTab === "checklist" && <CheckList />}
-      {activeTab === "forms" && <Forms />}
-      {activeTab === "spotlight" && <Spotlight />}
-      {activeTab === "offers" && <Offers />}
+      <main className="mx-auto w-[1150px] max-w-full px-8 pb-14 max-[1200px]:w-auto max-[1200px]:mx-6 max-[1200px]:px-0 max-md:mx-4 max-md:px-0">
+        {activeTab === "general" && <General />}
+        {activeTab === "reviews" && <Reviews />}
+        {activeTab === "case-studies" && <CaseStudies />}
+        {activeTab === "checklist" && <CheckList />}
+        {activeTab === "forms" && <Forms />}
+        {activeTab === "spotlight" && <Spotlight />}
+        {activeTab === "offers" && <Offers />}
+      </main>
     </div>
   );
 };

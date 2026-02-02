@@ -81,7 +81,7 @@ function ExpandedRow({ review, onCancel, onSave, onDelete }: ExpandedRowProps) {
   return (
     <tr className="expanded-content">
       <td colSpan={8} className="p-0 bg-transparent border-b border-[#E5E7EB]">
-        <div className="p-6 bg-apply-button-bg">
+        <div className="bg-[#EBFCF4] p-6 rounded-lg mx-4 mb-4">
           {/* Original Review */}
           <div className="mb-5 p-4 bg-[#F8F9FA] rounded-[10px] border border-[#E5E7EB]">
                 <div className="flex items-center gap-3 mb-3">

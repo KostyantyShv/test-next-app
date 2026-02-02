@@ -1,8 +1,6 @@
-import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 import React from "react";
 import { Announcement } from "./types/announcement";
 import AnnouncementModalContent from "./AnnpuncementModalContent";
-import { DesktopModal } from "@/components/ui/DesktopModal/DesktopModal";
 
 interface AnnouncementModalProps {
   onClose: () => void;
@@ -22,30 +20,24 @@ const AnnouncementsModal: React.FC<AnnouncementModalProps> = ({
   announcements,
 }) => {
   return (
-    <>
-      <div className="max-md:block hidden">
-        <MobileDrawer onClose={onClose} isOpen={isModalOpen}>
-          <AnnouncementModalContent
-            onClose={onClose}
-            announcements={announcements}
-            editId={editId}
-            onDelete={onDelete}
-            onSubmit={onSubmit}
-          />
-        </MobileDrawer>
+    <div
+      className={`modal ${isModalOpen ? "active" : ""}`}
+      id="announcementModal"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      aria-hidden={!isModalOpen}
+    >
+      <div className="modal-content" onMouseDown={(e) => e.stopPropagation()}>
+        <AnnouncementModalContent
+          onClose={onClose}
+          announcements={announcements}
+          editId={editId}
+          onDelete={onDelete}
+          onSubmit={onSubmit}
+        />
       </div>
-      <div className="max-md:hidden block">
-        <DesktopModal onClose={onClose} isOpen={isModalOpen}>
-          <AnnouncementModalContent
-            onClose={onClose}
-            announcements={announcements}
-            editId={editId}
-            onDelete={onDelete}
-            onSubmit={onSubmit}
-          />
-        </DesktopModal>
-      </div>
-    </>
+    </div>
   );
 };
 

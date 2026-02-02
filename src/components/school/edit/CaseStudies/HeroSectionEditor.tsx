@@ -57,10 +57,10 @@ export default function HeroSection({
             type="text"
             value={formData.hero.subtitle}
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                hero: { ...formData.hero, subtitle: e.target.value },
-              })
+              setFormData((prev) => ({
+                ...prev,
+                hero: { ...prev.hero, subtitle: e.target.value },
+              }))
             }
             className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
             placeholder="e.g., Web Design for Construction Firms"
@@ -74,10 +74,10 @@ export default function HeroSection({
             type="text"
             value={formData.hero.title}
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                hero: { ...formData.hero, title: e.target.value },
-              })
+              setFormData((prev) => ({
+                ...prev,
+                hero: { ...prev.hero, title: e.target.value },
+              }))
             }
             className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
             placeholder="e.g., Aecon Green Energy Solutions"
@@ -91,10 +91,10 @@ export default function HeroSection({
             type="text"
             value={formData.hero.buttonText}
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                hero: { ...formData.hero, buttonText: e.target.value },
-              })
+              setFormData((prev) => ({
+                ...prev,
+                hero: { ...prev.hero, buttonText: e.target.value },
+              }))
             }
             className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
             placeholder="e.g., Launch Website"
@@ -108,10 +108,10 @@ export default function HeroSection({
             type="text"
             value={formData.hero.buttonUrl}
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                hero: { ...formData.hero, buttonUrl: e.target.value },
-              })
+              setFormData((prev) => ({
+                ...prev,
+                hero: { ...prev.hero, buttonUrl: e.target.value },
+              }))
             }
             className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
             placeholder="e.g., https://example.com"
@@ -145,13 +145,13 @@ export default function HeroSection({
                 if (file) {
                   const reader = new FileReader();
                   reader.onload = () =>
-                    setFormData({
-                      ...formData,
+                    setFormData((prev) => ({
+                      ...prev,
                       hero: {
-                        ...formData.hero,
+                        ...prev.hero,
                         image: reader.result as string,
                       },
-                    });
+                    }));
                   reader.readAsDataURL(file);
                 }
               }}
@@ -170,16 +170,16 @@ export default function HeroSection({
                 type="text"
                 value={formData.infoColumns[column].title}
                 onChange={(e) =>
-                  setFormData({
-                    ...formData,
+                  setFormData((prev) => ({
+                    ...prev,
                     infoColumns: {
-                      ...formData.infoColumns,
+                      ...prev.infoColumns,
                       [column]: {
-                        ...formData.infoColumns[column],
+                        ...prev.infoColumns[column],
                         title: e.target.value,
                       },
                     },
-                  })
+                  }))
                 }
                 className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
                 placeholder={
@@ -199,17 +199,19 @@ export default function HeroSection({
                     type="text"
                     value={item}
                     onChange={(e) => {
-                      const newItems = [...formData.infoColumns[column].items];
-                      newItems[index] = e.target.value;
-                      setFormData({
-                        ...formData,
-                        infoColumns: {
-                          ...formData.infoColumns,
-                          [column]: {
-                            ...formData.infoColumns[column],
-                            items: newItems,
+                      setFormData((prev) => {
+                        const newItems = [...prev.infoColumns[column].items];
+                        newItems[index] = e.target.value;
+                        return {
+                          ...prev,
+                          infoColumns: {
+                            ...prev.infoColumns,
+                            [column]: {
+                              ...prev.infoColumns[column],
+                              items: newItems,
+                            },
                           },
-                        },
+                        };
                       });
                     }}
                     className="flex-1 px-3 py-2 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
@@ -252,10 +254,10 @@ export default function HeroSection({
             type="text"
             value={formData.overview.title}
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                overview: { ...formData.overview, title: e.target.value },
-              })
+              setFormData((prev) => ({
+                ...prev,
+                overview: { ...prev.overview, title: e.target.value },
+              }))
             }
             className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-[var(--surface-color)] focus:outline-none focus:border-[var(--brand-teal)]"
             placeholder="e.g., Project Overview"
@@ -268,10 +270,10 @@ export default function HeroSection({
           <textarea
             value={formData.overview.text}
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                overview: { ...formData.overview, text: e.target.value },
-              })
+              setFormData((prev) => ({
+                ...prev,
+                overview: { ...prev.overview, text: e.target.value },
+              }))
             }
             className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-[var(--surface-color)] focus:outline-none focus:border-[var(--brand-teal)]"
             rows={4}

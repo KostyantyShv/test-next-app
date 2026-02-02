@@ -52,25 +52,28 @@ export default function Events() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentEditId, setCurrentEditId] = useState<number | null>(null);
 
-  const updateEventStatus = () => {
-    let needsUpdate = false;
-    const updatedEvents = events.map((event) => {
-      const newStatus = getEventStatus(event.startDate, event.endDate);
-      if (newStatus !== event.status) {
-        needsUpdate = true;
-        return { ...event, status: newStatus };
-      }
-      return event;
-    });
-    if (needsUpdate) {
-      setEvents(updatedEvents);
-    }
-  };
-
   useEffect(() => {
+    // Keep statuses fresh without overwriting other edits (e.g. title changes)
+    const updateEventStatus = () => {
+      setEvents((prev) => {
+        let needsUpdate = false;
+        const updated = prev.map((event) => {
+          const newStatus = getEventStatus(event.startDate, event.endDate);
+          if (newStatus !== event.status) {
+            needsUpdate = true;
+            return { ...event, status: newStatus };
+          }
+          return event;
+        });
+        return needsUpdate ? updated : prev;
+      });
+    };
+
+    // Run once on mount (initial data may have stale statuses)
+    updateEventStatus();
     const interval = setInterval(updateEventStatus, 60000);
     return () => clearInterval(interval);
-  }, [events]);
+  }, []);
 
   const getEventStatus = (
     startDate: string,

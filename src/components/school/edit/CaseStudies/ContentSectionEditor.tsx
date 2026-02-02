@@ -177,12 +177,14 @@ export default function ContentSections({
                   type="text"
                   value={section.label}
                   onChange={(e) => {
-                    const newSections = [...formData.sections];
-                    newSections[index] = {
-                      ...newSections[index],
-                      label: e.target.value,
-                    };
-                    setFormData({ ...formData, sections: newSections });
+                    setFormData((prev) => {
+                      const newSections = [...prev.sections];
+                      newSections[index] = {
+                        ...newSections[index],
+                        label: e.target.value,
+                      };
+                      return { ...prev, sections: newSections };
+                    });
                   }}
                   className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
                   placeholder="e.g., Web Design Process"
@@ -196,12 +198,14 @@ export default function ContentSections({
                   type="text"
                   value={section.title}
                   onChange={(e) => {
-                    const newSections = [...formData.sections];
-                    newSections[index] = {
-                      ...newSections[index],
-                      title: e.target.value,
-                    };
-                    setFormData({ ...formData, sections: newSections });
+                    setFormData((prev) => {
+                      const newSections = [...prev.sections];
+                      newSections[index] = {
+                        ...newSections[index],
+                        title: e.target.value,
+                      };
+                      return { ...prev, sections: newSections };
+                    });
                   }}
                   className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
                   placeholder="e.g., Building a Sustainable Digital Presence"
@@ -214,12 +218,14 @@ export default function ContentSections({
                 <textarea
                   value={section.description}
                   onChange={(e) => {
-                    const newSections = [...formData.sections];
-                    newSections[index] = {
-                      ...newSections[index],
-                      description: e.target.value,
-                    };
-                    setFormData({ ...formData, sections: newSections });
+                    setFormData((prev) => {
+                      const newSections = [...prev.sections];
+                      newSections[index] = {
+                        ...newSections[index],
+                        description: e.target.value,
+                      };
+                      return { ...prev, sections: newSections };
+                    });
                   }}
                   className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
                   rows={3}
@@ -236,9 +242,11 @@ export default function ContentSections({
                       type="text"
                       value={feature}
                       onChange={(e) => {
-                        const newSections = [...formData.sections];
-                        newSections[index].features[fIndex] = e.target.value;
-                        setFormData({ ...formData, sections: newSections });
+                        setFormData((prev) => {
+                          const newSections = [...prev.sections];
+                          newSections[index].features[fIndex] = e.target.value;
+                          return { ...prev, sections: newSections };
+                        });
                       }}
                       className="flex-1 px-3 py-2 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
                       placeholder="Enter feature"
@@ -276,12 +284,14 @@ export default function ContentSections({
                   type="text"
                   value={section.buttonText}
                   onChange={(e) => {
-                    const newSections = [...formData.sections];
-                    newSections[index] = {
-                      ...newSections[index],
-                      buttonText: e.target.value,
-                    };
-                    setFormData({ ...formData, sections: newSections });
+                    setFormData((prev) => {
+                      const newSections = [...prev.sections];
+                      newSections[index] = {
+                        ...newSections[index],
+                        buttonText: e.target.value,
+                      };
+                      return { ...prev, sections: newSections };
+                    });
                   }}
                   className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
                   placeholder="e.g., View Technical Details"
@@ -324,12 +334,14 @@ export default function ContentSections({
                       if (file) {
                         const reader = new FileReader();
                         reader.onload = () => {
-                          const newSections = [...formData.sections];
-                          newSections[index] = {
-                            ...newSections[index],
-                            image: reader.result as string,
-                          };
-                          setFormData({ ...formData, sections: newSections });
+                          setFormData((prev) => {
+                            const newSections = [...prev.sections];
+                            newSections[index] = {
+                              ...newSections[index],
+                              image: reader.result as string,
+                            };
+                            return { ...prev, sections: newSections };
+                          });
                         };
                         reader.readAsDataURL(file);
                       }
@@ -368,10 +380,10 @@ export default function ContentSections({
             type="text"
             value={formData.keyFeatures.label}
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                keyFeatures: { ...formData.keyFeatures, label: e.target.value },
-              })
+              setFormData((prev) => ({
+                ...prev,
+                keyFeatures: { ...prev.keyFeatures, label: e.target.value },
+              }))
             }
             className="w-full p-3 border border-theme rounded-lg text-sm text-default focus:outline-none focus:border-[var(--brand-teal)]"
             placeholder="e.g., Key Features"
@@ -385,10 +397,10 @@ export default function ContentSections({
             type="text"
             value={formData.keyFeatures.title}
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                keyFeatures: { ...formData.keyFeatures, title: e.target.value },
-              })
+              setFormData((prev) => ({
+                ...prev,
+                keyFeatures: { ...prev.keyFeatures, title: e.target.value },
+              }))
             }
             className="w-full p-3 border border-theme rounded-lg text-sm text-default focus:outline-none focus:border-[var(--brand-teal)]"
             placeholder="e.g., Advanced Functionality"
@@ -418,17 +430,19 @@ export default function ContentSections({
                   type="text"
                   value={feature.title}
                   onChange={(e) => {
-                    const newFeatures = [...formData.keyFeatures.features];
-                    newFeatures[index] = {
-                      ...newFeatures[index],
-                      title: e.target.value,
-                    };
-                    setFormData({
-                      ...formData,
-                      keyFeatures: {
-                        ...formData.keyFeatures,
-                        features: newFeatures,
-                      },
+                    setFormData((prev) => {
+                      const newFeatures = [...prev.keyFeatures.features];
+                      newFeatures[index] = {
+                        ...newFeatures[index],
+                        title: e.target.value,
+                      };
+                      return {
+                        ...prev,
+                        keyFeatures: {
+                          ...prev.keyFeatures,
+                          features: newFeatures,
+                        },
+                      };
                     });
                   }}
                   className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"
@@ -439,17 +453,19 @@ export default function ContentSections({
                 <textarea
                   value={feature.description}
                   onChange={(e) => {
-                    const newFeatures = [...formData.keyFeatures.features];
-                    newFeatures[index] = {
-                      ...newFeatures[index],
-                      description: e.target.value,
-                    };
-                    setFormData({
-                      ...formData,
-                      keyFeatures: {
-                        ...formData.keyFeatures,
-                        features: newFeatures,
-                      },
+                    setFormData((prev) => {
+                      const newFeatures = [...prev.keyFeatures.features];
+                      newFeatures[index] = {
+                        ...newFeatures[index],
+                        description: e.target.value,
+                      };
+                      return {
+                        ...prev,
+                        keyFeatures: {
+                          ...prev.keyFeatures,
+                          features: newFeatures,
+                        },
+                      };
                     });
                   }}
                   className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default bg-surface focus:outline-none focus:border-[var(--brand-teal)]"

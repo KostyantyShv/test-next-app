@@ -113,124 +113,93 @@ export default function AnnouncementModalContent({
   };
 
   return (
-    <div className="flex flex-col h-full max-h-[90vh] max-md:max-h-[90vh]">
-      {/* Drawer Header */}
-      <div className="sticky top-0 bg-white z-10 px-5 py-4 max-md:px-5 max-md:py-4 border-b border-gray-200 max-md:border-gray-200 flex justify-between items-center flex-shrink-0">
-        <h2 className="text-lg max-md:text-lg font-semibold" style={{ color: 'var(--bold-text)' }}>
+    <>
+      <div className="modal-header">
+        <h2 className="modal-title" id="modalTitle">
           {editId ? "Edit Announcement" : "Create Announcement"}
         </h2>
-        <button
-          className="w-8 h-8 max-md:w-8 max-md:h-8 flex items-center justify-center border-none bg-transparent cursor-pointer rounded-full active:bg-gray-100 max-md:active:bg-gray-100 transition-colors"
-          onClick={onClose}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18" style={{ color: 'var(--subtle-text)' }}>
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
+        <button type="button" className="close-button" onClick={onClose} aria-label="Close">
+          <svg fill="none" viewBox="0 0 12 12" width="12" height="12">
+            <path
+              fill="#646464"
+              d="M7.46875 6L10.8438 2.65625C11.0312 2.46875 11.0312 2.125 10.8438 1.9375L10.0625 1.15625C9.875 0.96875 9.53125 0.96875 9.34375 1.15625L6 4.53125L2.625 1.15625C2.4375 0.96875 2.09375 0.96875 1.90625 1.15625L1.125 1.9375C0.9375 2.125 0.9375 2.46875 1.125 2.65625L4.5 6L1.125 9.375C0.9375 9.5625 0.9375 9.90625 1.125 10.0938L1.90625 10.875C2.09375 11.0625 2.4375 11.0625 2.625 10.875L6 7.5L9.34375 10.875C9.53125 11.0625 9.875 11.0625 10.0625 10.875L10.8438 10.0938C11.0312 9.90625 11.0312 9.5625 10.8438 9.375L7.46875 6Z"
+            ></path>
           </svg>
         </button>
       </div>
-      
-      {/* Drawer Body */}
-      <form id="announcementForm" onSubmit={handleSubmit} className="px-5 py-4 max-md:px-5 max-md:py-4 overflow-y-auto flex-grow">
-        <div className="mb-[18px] max-md:mb-[18px]">
-          <label className="block font-semibold text-sm max-md:text-sm mb-1.5 max-md:mb-1.5" style={{ color: 'var(--text-default)' }}>
+
+      <form id="announcementForm" className="modal-body" onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label className="form-label" htmlFor="title">
             Title
           </label>
-          <div className="flex items-center gap-2 max-md:gap-2">
+          <div className="input-group">
             <input
               type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              id="title"
               placeholder="Announcement Title"
               required
-              className="flex-1 px-3 py-3 max-md:px-3 max-md:py-3 border rounded-lg text-sm max-md:text-sm focus:outline-none"
-              style={{ 
-                borderColor: 'var(--border-color)',
-                color: 'var(--text-default)',
-                backgroundColor: 'white'
-              }}
-              onFocus={(e) => {
-                (e.target as HTMLInputElement).style.borderColor = 'var(--brand-teal)';
-              }}
-              onBlur={(e) => {
-                (e.target as HTMLInputElement).style.borderColor = 'var(--border-color)';
-              }}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
             />
-            <button
-              type="button"
-              className="w-9 h-9 max-md:w-9 max-md:h-9 flex items-center justify-center border rounded-full bg-white active:bg-gray-100 max-md:active:bg-gray-100 transition-colors flex-shrink-0"
-              style={{ borderColor: 'var(--border-color)' }}
-              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-            >
-              <span className="text-lg max-md:text-lg">{emoji}</span>
+            <button type="button" className="emoji-button" id="emojiButton" onClick={() => setShowEmojiPicker((v) => !v)}>
+              <span className="announcement-emoji">{emoji}</span>
             </button>
-            {showEmojiPicker && (
-              <div className="fixed inset-0 z-[4000] max-md:z-[4000]" onClick={() => setShowEmojiPicker(false)}>
-                <div className="absolute bottom-0 left-0 w-full max-h-[70%] bg-white rounded-t-[20px] shadow-[0_-2px_10px_rgba(0,0,0,0.15)]" onClick={(e) => e.stopPropagation()}>
-                  <div className="sticky top-0 bg-white px-5 py-4 border-b border-gray-200 flex items-center justify-between">
-                    <button
-                      className="w-8 h-8 flex items-center justify-center border-none bg-transparent cursor-pointer rounded-full active:bg-gray-100"
-                      onClick={() => setShowEmojiPicker(false)}
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18" style={{ color: 'var(--subtle-text)' }}>
-                        <path d="M15 18l-6-6 6-6"></path>
-                      </svg>
-                    </button>
-                    <h3 className="text-lg font-semibold" style={{ color: 'var(--bold-text)' }}>Choose Emoji</h3>
-                    <div style={{ width: '32px' }}></div>
-                  </div>
-                  <div className="p-5">
-                    <div className="grid grid-cols-6 gap-3">
-                      {['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '👋', '👍', '👏', '🙌', '🤝', '🔥', '⭐', '🎉', '🎊', '🎯', '🚀', '💡', '📣', '📢', '🔔', '🔊', '📝', '📌', '🔧', '🔨'].map((emojiOption) => (
-                        <div
-                          key={emojiOption}
-                          className="text-2xl w-11 h-11 max-md:w-11 max-md:h-11 flex items-center justify-center rounded-lg cursor-pointer active:bg-gray-100 max-md:active:bg-gray-100 transition-colors"
-                          onClick={() => {
-                            setEmoji(emojiOption);
-                            setShowEmojiPicker(false);
-                          }}
-                        >
-                          {emojiOption}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
-        <div className="mb-[18px] max-md:mb-[18px]">
-          <label className="block font-semibold text-sm max-md:text-sm mb-1.5 max-md:mb-1.5" style={{ color: 'var(--text-default)' }}>
+
+        {/* simple picker (not in HTML CSS; kept minimal) */}
+        {showEmojiPicker ? (
+          <div
+            className="form-group"
+            style={{ marginTop: "-12px" }}
+          >
+            <div className="input-group" style={{ flexWrap: "wrap" }}>
+              {["👋", "🔧", "🎉", "📣", "🔔", "🔥", "⭐", "💡"].map((e) => (
+                <button
+                  key={e}
+                  type="button"
+                  className="emoji-button"
+                  onClick={() => {
+                    setEmoji(e);
+                    setShowEmojiPicker(false);
+                  }}
+                  aria-label={`Emoji ${e}`}
+                >
+                  <span className="announcement-emoji">{e}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        <div className="form-group">
+          <label className="form-label" htmlFor="authorAvatar">
             Avatar
           </label>
-          <div className="border rounded-lg overflow-hidden" style={{ borderColor: 'var(--border-color)' }}>
-            <div className="flex items-center gap-4 max-md:gap-4 p-4 max-md:p-4">
-              <div className="w-20 h-20 max-md:w-20 max-md:h-20 rounded-full overflow-hidden flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#F7FAFC' }}>
-                <img
-                  src={avatar}
-                  alt="Author avatar"
-                  className="w-full h-full object-cover"
-                />
+          <div className="upload-section">
+            <div className="upload-preview">
+              <div className="upload-thumbnail" id="avatarPreview">
+                <img src={avatar} alt="Author avatar" />
               </div>
-              <div className="flex-1">
-                <div className="text-[13px] max-md:text-[13px] mb-2 max-md:mb-2" style={{ color: 'var(--text-default)' }}>
+              <div className="upload-info">
+                <div className="upload-dimensions">
                   Recommended dimensions of <strong>400×400</strong>
                 </div>
                 <button
                   type="button"
-                  className="inline-flex items-center gap-2 max-md:gap-2 px-4 py-1.5 max-md:px-4 max-md:py-1.5 border rounded-full text-sm max-md:text-sm active:bg-gray-100 max-md:active:bg-gray-100 transition-colors"
-                  style={{ borderColor: 'var(--border-color)', color: 'var(--text-default)' }}
+                  className="upload-button"
+                  id="avatarUploadButton"
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <svg fill="none" viewBox="0 0 48 48" width="24" height="24">
-                    <rect fill="#F0F9FF" rx="24" height="48" width="48" />
+                    <rect fill="#F0F9FF" rx="24" height="48" width="48"></rect>
                     <path
                       fill="#283593"
                       d="M17.3307 13C16.8887 13 16.4648 13.1756 16.1522 13.4882C15.8397 13.8007 15.6641 14.2246 15.6641 14.6667V33.3333C15.6641 33.7754 15.8397 34.1993 16.1522 34.5118C16.4648 34.8244 16.8887 35 17.3307 35H30.6641C31.1061 35 31.53 34.8244 31.8426 34.5118C32.1551 34.1993 32.3307 33.7754 32.3307 33.3333V19.6667H27.9974C27.3786 19.6667 26.7851 19.4208 26.3475 18.9832C25.9099 18.5457 25.6641 17.9522 25.6641 17.3333V13H17.3307ZM27.6641 14.4142L30.9165 17.6667H27.9974C27.909 17.6667 27.8242 17.6315 27.7617 17.569C27.6992 17.5065 27.6641 17.4217 27.6641 17.3333V14.4142Z"
                       clipRule="evenodd"
                       fillRule="evenodd"
-                    />
+                    ></path>
                   </svg>
                   Choose Avatar
                 </button>
@@ -238,183 +207,119 @@ export default function AnnouncementModalContent({
             </div>
             <input
               type="file"
-              ref={fileInputRef}
+              id="avatarInput"
               accept="image/*"
               className="hidden"
+              ref={fileInputRef}
               onChange={handleFileChange}
             />
           </div>
         </div>
-        <div className="mb-[18px] max-md:mb-[18px]">
-          <label className="block font-semibold text-sm max-md:text-sm mb-1.5 max-md:mb-1.5" style={{ color: 'var(--text-default)' }}>
+
+        <div className="form-group">
+          <label className="form-label" htmlFor="authorName">
             Author Name
           </label>
           <input
             type="text"
-            value={authorName}
-            onChange={(e) => setAuthorName(e.target.value)}
+            id="authorName"
             placeholder="Enter author name"
             required
-            className="w-full px-3 py-3 max-md:px-3 max-md:py-3 border rounded-lg text-sm max-md:text-sm focus:outline-none"
-            style={{ 
-              borderColor: 'var(--border-color)',
-              color: 'var(--text-default)',
-              backgroundColor: 'white'
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = 'var(--brand-teal)';
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = 'var(--border-color)';
-            }}
+            value={authorName}
+            onChange={(e) => setAuthorName(e.target.value)}
           />
         </div>
-        <div className="mb-[18px] max-md:mb-[18px]">
-          <label className="block font-semibold text-sm max-md:text-sm mb-1.5 max-md:mb-1.5" style={{ color: 'var(--text-default)' }}>
+
+        <div className="form-group">
+          <label className="form-label" htmlFor="authorRole">
             Author Role
           </label>
           <input
             type="text"
-            value={authorRole}
-            onChange={(e) => setAuthorRole(e.target.value)}
+            id="authorRole"
             placeholder="Enter author role"
             required
-            className="w-full px-3 py-3 max-md:px-3 max-md:py-3 border rounded-lg text-sm max-md:text-sm focus:outline-none"
-            style={{ 
-              borderColor: 'var(--border-color)',
-              color: 'var(--text-default)',
-              backgroundColor: 'white'
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = 'var(--brand-teal)';
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = 'var(--border-color)';
-            }}
+            value={authorRole}
+            onChange={(e) => setAuthorRole(e.target.value)}
           />
         </div>
-        <div className="mb-[18px] max-md:mb-[18px]">
-          <label className="block font-semibold text-sm max-md:text-sm mb-1.5 max-md:mb-1.5" style={{ color: 'var(--text-default)' }}>
+
+        <div className="form-group">
+          <label className="form-label" htmlFor="announcement">
             Announcement
           </label>
           <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+            id="announcement"
             rows={4}
             placeholder="Write your announcement here..."
             required
-            className="w-full px-3 py-3 max-md:px-3 max-md:py-3 border rounded-lg text-sm max-md:text-sm focus:outline-none"
-            style={{ 
-              borderColor: 'var(--border-color)',
-              color: 'var(--text-default)',
-              backgroundColor: 'white'
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = 'var(--brand-teal)';
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = 'var(--border-color)';
-            }}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
           />
         </div>
-        <div className="mb-[18px] max-md:mb-[18px]">
-          <label className="block font-semibold text-sm max-md:text-sm mb-1.5 max-md:mb-1.5" style={{ color: 'var(--text-default)' }}>
-            Schedule
-          </label>
-          <div className="flex flex-col gap-4 max-md:flex-col max-md:gap-4">
-            <div className="flex-1">
-              <label className="block font-semibold text-sm max-md:text-sm mb-1.5 max-md:mb-1.5" style={{ color: 'var(--text-default)' }}>
-                Start Date & Time
-              </label>
-              <input
-                type="datetime-local"
-                value={startDate}
-                onChange={handleStartDateChange}
-                required
-                step="900"
-                className="w-full px-3 py-3 max-md:px-3 max-md:py-3 border rounded-lg text-sm max-md:text-sm cursor-pointer focus:outline-none"
-                style={{
-                  color: 'var(--text-default)',
-                  backgroundColor: 'white',
-                  borderColor: 'var(--border-color)',
-                }}
-                onFocus={(e) => {
-                  const target = e.target as HTMLInputElement;
-                  target.style.borderColor = 'var(--brand-teal)';
-                }}
-                onBlur={(e) => {
-                  const target = e.target as HTMLInputElement;
-                  target.style.borderColor = 'var(--border-color)';
-                }}
-              />
+
+        <div className="form-group">
+          <label className="form-label">Schedule</label>
+          <div className="datetime-group">
+            <div className="datetime-input">
+              <label className="form-label">Start Date & Time</label>
+              <div className="datetime-wrapper">
+                <input
+                  type="datetime-local"
+                  id="startDateTime"
+                  className="datetime-field"
+                  required
+                  step="900"
+                  value={startDate}
+                  onChange={handleStartDateChange}
+                />
+                <div className="datetime-icon"></div>
+              </div>
             </div>
-            <div className="flex-1">
-              <label className="block font-semibold text-sm max-md:text-sm mb-1.5 max-md:mb-1.5" style={{ color: 'var(--text-default)' }}>
-                End Date & Time
-              </label>
-              <input
-                type="datetime-local"
-                value={endDate}
-                onChange={handleEndDateChange}
-                required
-                step="900"
-                className="w-full px-3 py-3 max-md:px-3 max-md:py-3 border rounded-lg text-sm max-md:text-sm cursor-pointer focus:outline-none"
-                style={{
-                  color: 'var(--text-default)',
-                  backgroundColor: 'white',
-                  borderColor: 'var(--border-color)',
-                }}
-                onFocus={(e) => {
-                  const target = e.target as HTMLInputElement;
-                  target.style.borderColor = 'var(--brand-teal)';
-                }}
-                onBlur={(e) => {
-                  const target = e.target as HTMLInputElement;
-                  target.style.borderColor = 'var(--border-color)';
-                }}
-              />
+            <div className="datetime-input">
+              <label className="form-label">End Date & Time</label>
+              <div className="datetime-wrapper">
+                <input
+                  type="datetime-local"
+                  id="endDateTime"
+                  className="datetime-field"
+                  required
+                  step="900"
+                  value={endDate}
+                  onChange={handleEndDateChange}
+                />
+                <div className="datetime-icon"></div>
+              </div>
             </div>
           </div>
         </div>
       </form>
-      
-      {/* Drawer Footer */}
-      <div className="sticky bottom-0 bg-white border-t border-gray-200 max-md:border-gray-200 px-5 py-4 max-md:px-5 max-md:py-4 flex flex-col gap-4 max-md:gap-4 flex-shrink-0">
-        {editId && (
-          <button
-            className="flex items-center justify-center gap-2 max-md:gap-2 text-sm max-md:text-sm font-medium max-md:font-medium py-3 max-md:py-3 cursor-pointer border-none bg-transparent w-full"
-            style={{ color: '#f93a37' }}
-            onClick={onDelete}
-          >
-            <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <path fill="#f93a37" d="M10.5555 4C10.099 4 9.70052 4.30906 9.58693 4.75114L9.29382 5.8919H14.715L14.4219 4.75114C14.3083 4.30906 13.9098 4 13.4533 4H10.5555ZM16.7799 5.8919L16.3589 4.25342C16.0182 2.92719 14.8226 2 13.4533 2H10.5555C9.18616 2 7.99062 2.92719 7.64985 4.25342L7.22886 5.8919H4C3.44772 5.8919 3 6.33961 3 6.8919C3 7.44418 3.44772 7.8919 4 7.8919H4.10069L5.31544 19.3172C5.47763 20.8427 6.76455 22 8.29863 22H15.7014C17.2354 22 18.5224 20.8427 18.6846 19.3172L19.8993 7.8919H20C20.5523 7.8919 21 7.44418 21 6.8919C21 6.33961 20.5523 5.8919 20 5.8919H16.7799ZM17.888 7.8919H6.11196L7.30423 19.1057C7.3583 19.6142 7.78727 20 8.29863 20H15.7014C16.2127 20 16.6417 19.6142 16.6958 19.1057L17.888 7.8919ZM10 10C10.5523 10 11 10.4477 11 11V16C11 16.5523 10.5523 17 10 17C9.44772 17 9 16.5523 9 16V11C9 10.4477 9.44772 10 10 10ZM14 10C14.5523 10 15 10.4477 15 11V16C15 16.5523 14.5523 17 14 17C13.4477 17 13 16.5523 13 16V11C13 10.4477 13.4477 10 14 10Z" clipRule="evenodd" fillRule="evenodd"></path>
+
+      <div className="modal-footer">
+        {editId ? (
+          <button type="button" className="delete-button" onClick={onDelete}>
+            <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path
+                fill="#f93a37"
+                d="M10.5555 4C10.099 4 9.70052 4.30906 9.58693 4.75114L9.29382 5.8919H14.715L14.4219 4.75114C14.3083 4.30906 13.9098 4 13.4533 4H10.5555ZM16.7799 5.8919L16.3589 4.25342C16.0182 2.92719 14.8226 2 13.4533 2H10.5555C9.18616 2 7.99062 2.92719 7.64985 4.25342L7.22886 5.8919H4C3.44772 5.8919 3 6.33961 3 6.8919C3 7.44418 3.44772 7.8919 4 7.8919H4.10069L5.31544 19.3172C5.47763 20.8427 6.76455 22 8.29863 22H15.7014C17.2354 22 18.5224 20.8427 18.6846 19.3172L19.8993 7.8919H20C20.5523 7.8919 21 7.44418 21 6.8919C21 6.33961 20.5523 5.8919 20 5.8919H16.7799ZM17.888 7.8919H6.11196L7.30423 19.1057C7.3583 19.6142 7.78727 20 8.29863 20H15.7014C16.2127 20 16.6417 19.6142 16.6958 19.1057L17.888 7.8919ZM10 10C10.5523 10 11 10.4477 11 11V16C11 16.5523 10.5523 17 10 17C9.44772 17 9 16.5523 9 16V11C9 10.4477 9.44772 10 10 10ZM14 10C14.5523 10 15 10.4477 15 11V16C15 16.5523 14.5523 17 14 17C13.4477 17 13 16.5523 13 16V11C13 10.4477 13.4477 10 14 10Z"
+                clipRule="evenodd"
+                fillRule="evenodd"
+              ></path>
             </svg>
             Delete
           </button>
+        ) : (
+          <div />
         )}
-        <div className="flex gap-2.5 max-md:gap-2.5 w-full">
-          <button
-            type="button"
-            className="flex-1 max-md:flex-1 px-0 py-3 max-md:py-3 rounded-lg font-semibold text-base max-md:text-base active:opacity-90 border"
-            style={{ 
-              backgroundColor: '#F8F9FA',
-              borderColor: 'var(--border-color)',
-              color: 'var(--text-default)'
-            }}
-            onClick={onClose}
-          >
+        <div className="action-buttons">
+          <button type="button" className="btn btn-secondary" onClick={onClose}>
             Cancel
           </button>
-          <button
-            type="submit"
-            form="announcementForm"
-            className="flex-1 max-md:flex-1 px-0 py-3 max-md:py-3 rounded-lg font-semibold text-base max-md:text-base active:opacity-90 text-white"
-            style={{ backgroundColor: 'var(--brand-teal)', boxShadow: '0 2px 4px rgba(2, 197, 175, 0.2)' }}
-          >
+          <button type="submit" form="announcementForm" className="btn btn-primary">
             Save
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 }

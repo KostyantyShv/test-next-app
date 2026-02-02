@@ -35,7 +35,10 @@ export default function ReplyDrawer({
   useEffect(() => {
     if (review) {
       setReplyText(review.reply?.content || "");
-      setIsEditing(!!review.reply);
+      // Match provided HTML:
+      // - if reply exists: open in "view" mode (disabled textarea + Edit/Delete actions)
+      // - if no reply: show editable textarea + buttons (still "Reply to Review" title)
+      setIsEditing(Boolean(isEditMode));
       setShowDeleteConfirmation(false);
     }
   }, [isOpen, review]);
@@ -84,10 +87,10 @@ export default function ReplyDrawer({
     if (onDelete) {
       onDelete(review.id);
     }
+    // Keep drawer open and reset to "new reply" state (matches provided HTML).
     setShowDeleteConfirmation(false);
     setReplyText("");
     setIsEditing(false);
-    onClose();
   };
 
   const handleCancelDelete = () => {
@@ -96,173 +99,110 @@ export default function ReplyDrawer({
 
   return (
     <>
-      {/* Overlay */}
       <div
-        className={`fixed inset-0 bg-black/50 transition-opacity duration-300 z-[100] ${
-          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
+        className={`drawer-overlay ${isOpen ? "active" : ""}`}
         onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            onClose();
-          }
+          if (e.target === e.currentTarget) onClose();
         }}
-      />
-      
-      {/* Drawer */}
-      <div
-        className={`fixed bottom-0 left-0 right-0 bg-white rounded-t-[20px] max-h-[90vh] overflow-y-auto transition-transform duration-300 z-[101] ${
-          isOpen ? "translate-y-0" : "translate-y-full"
-        }`}
       >
-        {/* Header */}
-        <div className="p-5 border-b border-[#E5E7EB] flex justify-between items-center">
-          <div className="text-lg font-semibold text-[#016853]">Reply to Review</div>
-          <button
-            onClick={onClose}
-            className="w-6 h-6 flex items-center justify-center bg-none border-none cursor-pointer text-[#5F5F5F]"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className="p-5">
-          {/* Original Review */}
-          <div className="mb-5 p-4 bg-[#F8F9FA] rounded-[10px] border border-[#E5E7EB]">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#089E68] to-[#016853] flex items-center justify-center text-white font-semibold text-sm">
-                {getInitials(review.author.fullName)}
-              </div>
-              <div className="flex-1">
-                <div className="text-[#016853] font-semibold text-sm mb-1">
-                  {(() => {
-                    const parts = review.author.fullName.trim().split(/\s+/);
-                    if (parts.length >= 2) {
-                      return `${parts[0]} ${parts[1][0]}.`;
-                    }
-                    return review.author.fullName;
-                  })()}
-                </div>
-                <div className="text-[#5F5F5F] text-xs">
-                  Reviewed on {review.published.short}
-                </div>
-              </div>
-            </div>
-            <div className="text-[#4A4A4A] text-sm leading-relaxed">
-              This course was absolutely fantastic! The instructor explained complex concepts in a clear and engaging way. The hands-on projects really helped solidify my understanding of Python and data visualization. Highly recommend to anyone looking to get started in data analysis.
-            </div>
+        <div className={`drawer ${isOpen ? "active" : ""}`}>
+          <div className="drawer-header">
+            <div className="drawer-title">Reply to Review</div>
+            <button type="button" className="drawer-close" onClick={onClose} aria-label="Close">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
           </div>
 
-          {/* Reply Section Title */}
-          <div className="mb-4">
-            <span className="text-[#016853] font-semibold text-sm">
+          <div className="drawer-content">
+            <div className="original-review">
+              <div className="original-review-header">
+                <div className="original-review-avatar">{getInitials(review.author.fullName)}</div>
+                <div className="original-review-meta">
+                  <div className="original-review-author">
+                    {(() => {
+                      const parts = review.author.fullName.trim().split(/\s+/);
+                      if (parts.length >= 2) return `${parts[0]} ${parts[1][0]}.`;
+                      return review.author.fullName;
+                    })()}
+                  </div>
+                  <div className="original-review-date">Reviewed on {review.published.short}</div>
+                </div>
+              </div>
+              <div className="original-review-content">
+                This course was absolutely fantastic! The instructor explained complex concepts in a clear and engaging way. The hands-on projects really helped solidify my understanding of Python and data visualization. Highly recommend to anyone looking to get started in data analysis.
+              </div>
+            </div>
+
+            <div className="reply-section-title">
               {isEditing ? "Edit Your Reply" : "Reply to Review"}
-            </span>
-          </div>
-
-          {/* Delete Confirmation */}
-          {showDeleteConfirmation && (
-            <div className="p-4 bg-[#FFF1F1] rounded-md mb-4 border border-[#FFD6D6]">
-              <div className="text-[#4A4A4A] text-sm mb-4">
-                Are you sure you want to delete your reply?
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  className="py-3 bg-white border border-[#E5E7EB] text-[#5F5F5F] rounded-lg text-sm font-medium"
-                  onClick={handleCancelDelete}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="py-3 bg-[#FF4D4D] border-none text-white rounded-lg text-sm font-medium"
-                  onClick={handleConfirmDelete}
-                >
-                  Delete Reply
-                </button>
-              </div>
             </div>
-          )}
 
-          {/* Reply Content Section */}
-          {!showDeleteConfirmation && (
-            <div>
-              <div className="bg-white border border-[#E5E7EB] rounded-lg mb-6 relative overflow-hidden focus-within:border-[#089E68] focus-within:shadow-[0_0_0_2px_rgba(8,158,104,0.1)]">
-                {/* School Reply Header */}
-                {hasReply && !isEditing && (
-                  <div className="flex items-center gap-3 p-3 bg-[#F8F9FA]">
+            {showDeleteConfirmation && (
+              <div className="delete-confirmation">
+                <div className="delete-confirmation-text">
+                  Are you sure you want to delete your reply?
+                </div>
+                <div className="delete-confirmation-buttons">
+                  <button type="button" className="btn-cancel-delete" onClick={handleCancelDelete}>
+                    Cancel
+                  </button>
+                  <button type="button" className="btn-confirm-delete" onClick={handleConfirmDelete}>
+                    Delete Reply
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {!showDeleteConfirmation && (
+              <div className="reply-content-section">
+                <div className="reply-box-container">
+                  <div className={`school-reply-header ${hasReply && !isEditing ? "" : "hidden"}`}>
                     <img
                       src="https://i.ibb.co/KpsVRD83/AVATAR-midtone-ux-instrgram.jpg"
                       alt="Lincoln Academy"
-                      className="w-8 h-8 rounded-full object-cover"
+                      className="school-reply-avatar"
                     />
-                    <div className="flex-1">
-                      <div className="text-[#016853] font-semibold text-sm mb-1">
-                        Lincoln Academy
-                      </div>
-                      <div className="text-[#5F5F5F] text-xs">
-                        Replied on {review.reply?.date}
-                      </div>
+                    <div className="school-reply-meta">
+                      <div className="school-reply-author">Lincoln Academy</div>
+                      <div className="school-reply-date">Replied on {review.reply?.date}</div>
                     </div>
                   </div>
-                )}
 
-                {/* Textarea Wrapper */}
-                <div className="relative">
-                  {/* Reply Actions */}
-                  {hasReply && !isEditing && (
-                    <div className="absolute top-3.5 right-3 flex gap-3 items-start z-10">
-                      <button
-                        className="text-[#089E68] text-xs font-medium cursor-pointer bg-none border-none p-0 hover:underline"
-                        onClick={handleEdit}
-                      >
+                  <div className="textarea-wrapper">
+                    <div className={`reply-actions ${hasReply && !isEditing ? "" : "hidden"}`}>
+                      <button type="button" className="reply-action-btn edit-btn" onClick={handleEdit}>
                         Edit
                       </button>
-                      <button
-                        className="text-[#089E68] text-xs font-medium cursor-pointer bg-none border-none p-0 hover:underline"
-                        onClick={handleDeleteClick}
-                      >
+                      <button type="button" className="reply-action-btn delete-btn" onClick={handleDeleteClick}>
                         Delete
                       </button>
                     </div>
-                  )}
-
-                  <textarea
-                    ref={textareaRef}
-                    className={`w-full border-none rounded-lg text-sm text-[#4A4A4A] resize-y min-h-[120px] bg-white font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif leading-relaxed ${
-                      isDisabled
-                        ? "cursor-default pr-[100px] pt-3.5 pb-3 px-4"
-                        : "pt-3 pb-3 px-4"
-                    } ${hasReply && !isEditing ? "has-actions" : ""}`}
-                    placeholder="Enter your reply..."
-                    value={replyText}
-                    onChange={(e) => setReplyText(e.target.value)}
-                    disabled={isDisabled}
-                    style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}
-                  />
+                    <textarea
+                      ref={textareaRef}
+                      className={`review-textarea ${hasReply && !isEditing ? "has-actions" : ""}`}
+                      placeholder="Enter your reply..."
+                      value={replyText}
+                      onChange={(e) => setReplyText(e.target.value)}
+                      disabled={isDisabled}
+                    />
+                  </div>
                 </div>
+
+                {(!hasReply || isEditing) && (
+                  <div className="drawer-buttons">
+                    <button type="button" className="btn btn-cancel" onClick={handleCancel}>
+                      Cancel
+                    </button>
+                    <button type="button" className="btn btn-save" onClick={handleSave}>
+                      Save Reply
+                    </button>
+                  </div>
+                )}
               </div>
-
-              {/* Drawer Buttons */}
-              {(!hasReply || isEditing) && (
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    className="py-3 bg-[#F2F2F2] border border-[#E5E7EB] text-[#5F5F5F] rounded-lg text-sm font-medium"
-                    onClick={handleCancel}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="py-3 bg-[#089E68] border-none text-white rounded-lg text-sm font-medium"
-                    onClick={handleSave}
-                  >
-                    Save Reply
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </>

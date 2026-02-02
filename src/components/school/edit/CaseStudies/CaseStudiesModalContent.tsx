@@ -57,7 +57,10 @@ export default function CaseStudyModalContent({
 
   useEffect(() => {
     if (caseStudy) {
-      setFormData(caseStudy);
+      // Strip non-form fields.
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { id, pinned, ...rest } = caseStudy;
+      setFormData(rest);
     }
   }, [caseStudy]);
 
@@ -103,20 +106,15 @@ export default function CaseStudyModalContent({
               type="checkbox"
               checked={formData.status === "published"}
               onChange={(e) =>
-                setFormData({
-                  ...formData,
+                setFormData((prev) => ({
+                  ...prev,
                   status: e.target.checked ? "published" : "draft",
-                })
+                }))
               }
-              className="opacity-0 w-0 h-0"
+              className="peer sr-only"
             />
-            <span
-              className={`absolute cursor-pointer inset-0 bg-[var(--gray-300)] transition-all duration-400 rounded-[34px] before:absolute before:content-[''] before:h-[18px] before:w-[18px] before:left-1 before:bottom-1 before:bg-surface before:transition-all before:duration-400 before:rounded-full ${
-                formData.status === "published"
-                  ? "bg-[var(--active-green)] before:translate-x-6"
-                  : ""
-              }`}
-            />
+            <span className="absolute inset-0 cursor-pointer rounded-[34px] bg-[#E5E7EB] transition-colors peer-checked:bg-[#0B6333]" />
+            <span className="absolute left-1 bottom-1 h-[18px] w-[18px] rounded-full bg-white transition-transform peer-checked:translate-x-6" />
           </label>
           <span className="text-sm font-medium">
             {formData.status === "published" ? "Published" : "Draft"}
@@ -135,7 +133,7 @@ export default function CaseStudyModalContent({
                 type="text"
                 value={formData.title}
                 onChange={(e) =>
-                  setFormData({ ...formData, title: e.target.value })
+                  setFormData((prev) => ({ ...prev, title: e.target.value }))
                 }
                 className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default focus:outline-none focus:border-[var(--brand-teal)] bg-surface"
                 placeholder="Enter the main title"
@@ -150,7 +148,7 @@ export default function CaseStudyModalContent({
                 type="text"
                 value={formData.category}
                 onChange={(e) =>
-                  setFormData({ ...formData, category: e.target.value })
+                  setFormData((prev) => ({ ...prev, category: e.target.value }))
                 }
                 className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default focus:outline-none focus:border-[var(--brand-teal)] bg-surface"
                 placeholder="e.g., Web Design, App Development"
@@ -165,7 +163,7 @@ export default function CaseStudyModalContent({
             <textarea
               value={formData.description}
               onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
+                setFormData((prev) => ({ ...prev, description: e.target.value }))
               }
               className="w-full px-3 py-3 border border-theme rounded-lg text-sm text-default focus:outline-none focus:border-[var(--brand-teal)] bg-surface"
               rows={3}
@@ -218,10 +216,10 @@ export default function CaseStudyModalContent({
                     if (file) {
                       const reader = new FileReader();
                       reader.onload = () =>
-                        setFormData({
-                          ...formData,
+                        setFormData((prev) => ({
+                          ...prev,
                           thumbnail: reader.result as string,
-                        });
+                        }));
                       reader.readAsDataURL(file);
                     }
                   }}

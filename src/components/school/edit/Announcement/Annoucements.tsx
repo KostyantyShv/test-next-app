@@ -88,9 +88,16 @@ export default function Announcements() {
   };
 
   const handleSubmit = (formData: Omit<Announcement, "id" | "pinned">) => {
+    // Validate dates (keep "End date must be after start date" behavior)
+    const start = new Date(formData.startDate);
+    const end = new Date(formData.endDate);
+    if (end <= start) {
+      alert("End date must be after start date");
+      return;
+    }
+
     // Ensure status is calculated based on current date and start date
     const now = new Date();
-    const start = new Date(formData.startDate);
     const calculatedStatus: "live" | "scheduled" | "paused" = 
       start > now ? "scheduled" : "live";
     
@@ -156,44 +163,23 @@ export default function Announcements() {
 
   return (
     <>
-      <div className="flex max-md:flex-col gap-6">
-        {/* Desktop Header */}
-        <div className="max-w-[350px] max-md:hidden">
-          <h1 className="text-[#1a1a19] text-2xl font-semibold mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
-            Announcements
-          </h1>
-          <p className="text-[#5F5F5F] text-base leading-6 w-[350px]">
-            Share important updates and news with your community. Schedule
-            announcements and manage their visibility.
-          </p>
-        </div>
-        
-        {/* Mobile Header */}
-        <div className="hidden max-md:block px-4 pt-[18px] pb-4">
-          <h1 className="text-2xl font-semibold mb-2" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', color: 'var(--bold-text)' }}>
-            Announcements
-          </h1>
-          <p className="text-sm leading-6" style={{ color: 'var(--subtle-text)' }}>
-            Share important updates and news with your community. Schedule
-            announcements and manage their visibility.
-          </p>
-        </div>
-        
-        <div className="w-full bg-white rounded-lg p-6 max-md:p-0 max-md:bg-transparent max-md:rounded-none shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:shadow-none relative">
-          {/* Desktop Count Badge */}
-          <div className="absolute top-6 right-6 max-md:hidden text-sm font-semibold text-[var(--text-color)] py-1 px-3 bg-[#F8F9FA] rounded-2xl">
-            {announcements.length}/{MAX_ANNOUNCEMENTS}
+      <div className="school-edit-announcements">
+        <div className="announcements-container">
+          <div className="announcements-left">
+            <h1 className="section-title">Announcements</h1>
+            <p className="section-description">
+              Share important updates and news with your community. Schedule announcements and manage their visibility.
+            </p>
           </div>
-          
-          {/* Mobile Content */}
-          <div className="max-md:px-4 max-md:pb-4">
-            {/* Mobile Count */}
-            <div className="hidden max-md:block text-right text-sm font-semibold mb-4" style={{ color: 'var(--text-default)' }}>
+
+          <div className="announcements-right">
+            <div className="announcements-count">
               {announcements.length}/{MAX_ANNOUNCEMENTS}
             </div>
-            
-            <div className="mt-6 max-md:mt-0 pt-2.5 max-md:pt-0 flex flex-col gap-3 max-md:gap-3 mb-4 max-md:mb-4">
+
+            <div className="announcement-list" id="announcementList">
               {announcements
+                .slice()
                 .sort((a, b) => {
                   // Sort: pinned items first, then by id
                   if (a.pinned && !b.pinned) return -1;
@@ -209,25 +195,23 @@ export default function Announcements() {
                   />
                 ))}
             </div>
-            
-            <button
-              className="bg-[#02C5AF] max-md:w-full text-white px-6 py-3 max-md:py-3 max-md:px-0 rounded-lg font-semibold text-sm max-md:text-base hover:opacity-90 max-md:shadow-[0_2px_4px_rgba(2,197,175,0.2)]"
-              onClick={() => openModal()}
-            >
+
+            <button className="btn btn-primary" type="button" onClick={() => openModal()}>
               Add Announcement
             </button>
           </div>
         </div>
-      </div>
 
-      <AnnouncementsModal
-        isModalOpen={isModalOpen}
-        onClose={closeModal}
-        onSubmit={handleSubmit}
-        onDelete={deleteAnnouncement}
-        editId={currentEditId}
-        announcements={announcements}
-      />
+        {/* Keep modal inside scope so `.school-edit-announcements .modal` CSS applies */}
+        <AnnouncementsModal
+          isModalOpen={isModalOpen}
+          onClose={closeModal}
+          onSubmit={handleSubmit}
+          onDelete={deleteAnnouncement}
+          editId={currentEditId}
+          announcements={announcements}
+        />
+      </div>
     </>
   );
 }

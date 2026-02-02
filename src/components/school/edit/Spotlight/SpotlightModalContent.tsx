@@ -183,7 +183,7 @@ export default function SpotlightModalContent({
   };
 
   return (
-    <>
+    <div className="h-full flex flex-col">
       <div className="sticky top-0 bg-white z-10 flex justify-between items-center px-6 max-md:px-4 py-6 max-md:py-4 border-b border-theme max-md:border-[#E5E7EB]">
         <h2 className="text-2xl max-md:text-lg font-bold max-md:font-semibold text-[#262B3D] max-md:text-[#262B3D]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
           {spotlight ? "Edit Spotlight" : "Create Spotlight"}
@@ -203,9 +203,17 @@ export default function SpotlightModalContent({
           </svg>
         </button>
       </div>
-      <form onSubmit={handleSubmit} className="px-6 max-md:px-4 py-6 max-md:py-4 overflow-y-auto max-md:flex-grow" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
-        {/* Author Information */}
-        <div className="border-b border-[#eee] max-md:border-[#eee] pb-6 max-md:pb-5 mb-6 max-md:mb-5">
+      <form
+        onSubmit={handleSubmit}
+        className="flex-1 min-h-0 flex flex-col"
+        style={{
+          fontFamily:
+            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+        }}
+      >
+        <div className="flex-1 min-h-0 overflow-y-auto px-6 max-md:px-4 py-6 max-md:py-4">
+          {/* Author Information */}
+          <div className="border-b border-[#eee] max-md:border-[#eee] pb-6 max-md:pb-5 mb-6 max-md:mb-5">
           <h3 className="text-lg max-md:text-base font-semibold text-[#262B3D] max-md:text-[#262B3D] mb-4 max-md:mb-4">
             Author Information
           </h3>
@@ -403,8 +411,9 @@ export default function SpotlightModalContent({
           inputRef={sidebarBannerInputRef}
           onBannerUpload={handleSidebarBannerUpload}
         />
+        </div>
 
-        <div className="sticky max-md:sticky bottom-0 max-md:bottom-0 bg-white max-md:bg-white border-t max-md:border-t border-theme max-md:border-[#E5E7EB] px-6 max-md:px-4 py-6 max-md:py-4 max-md:z-10">
+        <div className="sticky bottom-0 bg-white border-t border-theme max-md:border-[#E5E7EB] px-6 max-md:px-4 py-6 max-md:py-4 z-10">
           <div className="max-md:w-full">
             <button
               type="button"
@@ -439,6 +448,6 @@ export default function SpotlightModalContent({
           </div>
         </div>
       </form>
-    </>
+    </div>
   );
 }
