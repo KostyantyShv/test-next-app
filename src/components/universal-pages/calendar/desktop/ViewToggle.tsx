@@ -7,7 +7,7 @@ export const ViewControls: React.FC<{
 }> = ({ view, setView, onJumpToToday }) => (
   <div className="flex gap-3 items-center">
     <button
-      className="px-4 py-2 border border-[#E0E0E0] rounded text-sm font-medium text-[#5F6368] cursor-pointer bg-white hover:bg-[#5F63681A]"
+      className="px-4 py-2 border border-[#E0E0E0] rounded text-sm font-medium text-[#5F6368] cursor-pointer bg-white hover:bg-[rgba(95,99,104,0.1)]"
       onClick={onJumpToToday}
     >
       Today
@@ -15,7 +15,7 @@ export const ViewControls: React.FC<{
     <div className="flex bg-[#F1F3F4] rounded p-0.5">
       <button
         className={`px-3 py-1.5 rounded flex items-center gap-1 ${
-          view === "list" ? "bg-white shadow-sm" : ""
+          view === "list" ? "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.1)]" : ""
         }`}
         onClick={() => setView("list")}
       >
@@ -30,7 +30,9 @@ export const ViewControls: React.FC<{
       </button>
       <button
         className={`px-3 py-1.5 rounded flex items-center gap-1 ${
-          view === "calendar" ? "bg-white shadow-sm" : ""
+          view === "calendar"
+            ? "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.1)]"
+            : ""
         }`}
         onClick={() => setView("calendar")}
       >

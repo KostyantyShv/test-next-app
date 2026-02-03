@@ -10,7 +10,7 @@ const CollectionsPage = () => {
 
   return (
     <div
-      className="transition-all duration-300 ease-in-out mx-auto px-3 sm:px-4 md:px-6 w-full"
+      className="mx-auto px-3 sm:px-4 md:px-6 w-full transition-all duration-300 ease-in-out"
       style={{ maxWidth: isContainerExpanded ? "1318.75px" : "1055px" }}
     >
       <FiltersSection />

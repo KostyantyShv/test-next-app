@@ -32,11 +32,14 @@ const EditMemberModal: React.FC<EditMemberModalProps> = ({
     member.listings.map((l) => l.id)
   );
 
-  // Update selected listings when member changes
+  // Sync form state when member changes (e.g. opening for a different member or refetch)
   useEffect(() => {
+    setFirstName(member.firstName);
+    setLastName(member.lastName);
+    setEmail(member.email);
     setSelectedListingIds(member.listings.map((l) => l.id));
     setIsAdmin(member.isAdmin);
-  }, [member.id, member.listings.length, member.isAdmin]);
+  }, [member.id, member.firstName, member.lastName, member.email, member.listings, member.isAdmin]);
 
   // Clear listings when isAdmin is toggled to true
   useEffect(() => {

@@ -12,7 +12,7 @@ const ExplorePage = () => {
       style={{ backgroundColor: "var(--background-color, var(--background))" }}
     >
       <div 
-        className="w-full"
+        className="w-full transition-all duration-300 ease-in-out"
         style={{ 
           maxWidth: isContainerExpanded ? '1318.75px' : '1055px' 
         }}

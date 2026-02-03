@@ -43,6 +43,73 @@ const NestedMenuItem: React.FC<MenuItemProps> = ({ icon, text, onClick }) => (
     </div>
 );
 
+/* Mobile drawer list items — match HTML/photo: 16px 20px padding, 22px icon, 16px font-medium */
+interface MobileDrawerItemProps {
+    icon: React.ReactNode;
+    text: string;
+    onClick?: () => void;
+    className?: string;
+    textClassName?: string;
+    iconClassName?: string;
+    hasArrow?: boolean;
+}
+
+const MobileDrawerMenuItem: React.FC<MobileDrawerItemProps> = ({
+    icon,
+    text,
+    onClick,
+    className = "",
+    textClassName = "text-[#464646]",
+    iconClassName = "text-[#4A4A4A]",
+    hasArrow = false
+}) => (
+    <div
+        onClick={onClick}
+        className={`flex items-center px-5 py-4 cursor-pointer transition-colors active:bg-[#F7F9FC] ${className}`}
+    >
+        <div className={`mr-4 flex items-center justify-center w-[22px] h-[22px] flex-shrink-0 ${iconClassName}`}>
+            {icon}
+        </div>
+        <span className={`text-base font-medium flex-grow leading-[1.4] ${textClassName}`}>
+            {text}
+        </span>
+        {hasArrow && (
+            <div className="w-5 h-5 text-[#5F5F5F] flex-shrink-0">
+                <ContextMenuIcons.Arrow />
+            </div>
+        )}
+    </div>
+);
+
+interface MobileDrawerMultiSelectProps extends Omit<MobileDrawerItemProps, 'hasArrow'> {
+    isSelected: boolean;
+}
+
+const MobileDrawerMultiSelectItem: React.FC<MobileDrawerMultiSelectProps> = ({ icon, text, isSelected, onClick }) => (
+    <div
+        onClick={(e) => {
+            e.stopPropagation();
+            onClick?.();
+        }}
+        className="flex items-center px-5 py-4 cursor-pointer transition-colors active:bg-[#F7F9FC] group"
+    >
+        <div className="mr-4 flex items-center justify-center w-[22px] h-[22px] flex-shrink-0 text-[#4A4A4A]">
+            {icon}
+        </div>
+        <span className="text-base font-medium text-[#464646] flex-grow">
+            {text}
+        </span>
+        <div className={`ml-auto w-6 h-6 flex items-center justify-center transition-opacity duration-200 ${isSelected ? 'opacity-100' : 'opacity-0'}`}>
+            {isSelected && (
+                <>
+                    <div className="group-active:hidden"><ContextMenuIcons.Check /></div>
+                    <div className="hidden group-active:block"><ContextMenuIcons.Remove /></div>
+                </>
+            )}
+        </div>
+    </div>
+);
+
 interface MultiSelectProps extends MenuItemProps {
     isSelected: boolean;
 }
@@ -92,6 +159,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
     const [isMoveToOpenMobile, setIsMoveToOpenMobile] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
+    const triggeredByPointerDownRef = useRef(false);
     const isMobile = useIsMobile();
     const moveToItemRef = useRef<HTMLDivElement>(null);
     const moveToDropdownRef = useRef<HTMLDivElement>(null);
@@ -352,6 +420,18 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                 onPointerDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
+                    (triggeredByPointerDownRef.current = true);
+                    toggleDropdown();
+                }}
+                onClick={(e) => {
+                    // Fallback for environments where pointer events are flaky/disabled.
+                    // Prevent double-toggle when both pointerdown and click fire.
+                    if (triggeredByPointerDownRef.current) {
+                        triggeredByPointerDownRef.current = false;
+                        return;
+                    }
+                    e.preventDefault();
+                    e.stopPropagation();
                     toggleDropdown();
                 }}
                 className={
@@ -369,80 +449,81 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
             {/* Mobile: render context actions as modal/drawer */}
             {isMobile && (
                 <MobileDrawer isOpen={isOpen} onClose={closeMenu}>
-                    <div className="sticky top-0 z-50 bg-white border-b border-black/10 px-5 py-4 flex items-center justify-between">
-                        <div className="text-[#016853] text-lg font-semibold">Actions</div>
+                    {/* Header — matches HTML/photo: title Actions #464646, close 32px circle */}
+                    <div className="sticky top-0 z-10 bg-white border-b border-[#E5E5E5] px-5 py-4 flex items-center justify-between shrink-0">
+                        <h2 className="text-lg font-semibold text-[#464646]">Actions</h2>
                         <button
                             type="button"
-                            className="bg-transparent border-none text-[#5F5F5F] cursor-pointer p-2 rounded-full hover:bg-black/5 transition-colors"
+                            className="w-8 h-8 flex items-center justify-center rounded-full text-[#5F5F5F] active:bg-[#F7F9FC] transition-colors touch-manipulation"
                             onClick={closeMenu}
+                            aria-label="Close"
                         >
-                            <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6 6l12 12m-12 0L18 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
                             </svg>
                         </button>
                     </div>
 
-                    <div className="p-2">
-                        <div className="px-3 pt-2 pb-1 text-xs font-semibold text-[#5F5F5F] uppercase tracking-[0.5px]">Actions</div>
-                        <MenuItem icon={<ContextMenuIcons.Compare />} text="Compare" onClick={() => handleAction('compare')} />
-                        <MenuItem icon={<ContextMenuIcons.ViewListing />} text="View Listing" onClick={() => handleAction('view-listing')} />
-                        <MenuItem icon={<ContextMenuIcons.Review />} text="Leave Review" onClick={() => handleAction('leave-review')} />
-                        <MenuItem icon={<ContextMenuIcons.Monitor />} text="Monitor" onClick={() => handleAction('monitor')} />
-                        <MenuItem icon={<ContextMenuIcons.Share />} text="Share" onClick={() => handleAction('share')} />
+                    <div className="py-2 flex-1 min-h-0">
+                        {/* List items — 16px 20px padding, 22px icon, 16px font-medium like HTML */}
+                        <MobileDrawerMenuItem icon={<ContextMenuIcons.Compare />} text="Compare" onClick={() => handleAction('compare')} />
+                        <MobileDrawerMenuItem icon={<ContextMenuIcons.ViewListing />} text="View Listing" onClick={() => handleAction('view-listing')} />
+                        <MobileDrawerMenuItem icon={<ContextMenuIcons.Review />} text="Leave Review" onClick={() => handleAction('leave-review')} />
+                        <MobileDrawerMenuItem icon={<ContextMenuIcons.Monitor />} text="Monitor" onClick={() => handleAction('monitor')} />
+                        <MobileDrawerMenuItem icon={<ContextMenuIcons.Share />} text="Share" onClick={() => handleAction('share')} />
 
-                        <MenuItem
+                        <MobileDrawerMenuItem
                             icon={<ContextMenuIcons.Apply />}
                             text="Apply Now"
-                            className="bg-[#EBFCF4] hover:bg-[#D7F7E9] text-[#016853] mt-0.5"
+                            className="bg-[#EBFCF4] active:bg-[#D7F7E9]"
                             textClassName="text-[#016853]"
+                            iconClassName="text-[#016853]"
                             onClick={() => handleAction('apply-now')}
                         />
-                        <MenuItem
+                        <MobileDrawerMenuItem
                             icon={<ContextMenuIcons.ViewOffers />}
                             text="View Offers"
-                            className="bg-[#EBFCF4] hover:bg-[#D7F7E9] text-[#016853] mt-0.5"
+                            className="bg-[#EBFCF4] active:bg-[#D7F7E9]"
                             textClassName="text-[#016853]"
+                            iconClassName="text-[#016853]"
                             onClick={() => handleAction('view-offers')}
                         />
 
-                        <MenuItem icon={<ContextMenuIcons.VirtualTour />} text="Virtual Tour" onClick={() => handleAction('virtual-tour')} />
-                        <MenuItem icon={<ContextMenuIcons.CopyLink />} text="Copy Link" onClick={() => handleAction('copy-link')} />
+                        <MobileDrawerMenuItem icon={<ContextMenuIcons.VirtualTour />} text="Virtual Tour" onClick={() => handleAction('virtual-tour')} />
+                        <MobileDrawerMenuItem icon={<ContextMenuIcons.CopyLink />} text="Copy Link" onClick={() => handleAction('copy-link')} />
 
-                        <MenuItem
+                        <MobileDrawerMenuItem
                             icon={<ContextMenuIcons.AddTo />}
-                            text="Save to collection"
+                            text="Add To"
+                            hasArrow
                             onClick={() => {
                                 setIsCollectionModalOpen(true);
                                 closeMenu();
                             }}
                         />
 
-                        <div className="px-3 pt-3 pb-1 text-xs font-semibold text-[#5F5F5F] uppercase tracking-[0.5px]">Move To</div>
-                        <div
-                            className="flex items-center px-3 py-2.5 rounded-lg cursor-pointer hover:bg-[#F7F9FC] transition-colors duration-200"
+                        <MobileDrawerMenuItem
+                            icon={<ContextMenuIcons.MoveTo />}
+                            text="Move To"
+                            hasArrow
                             onClick={() => setIsMoveToOpenMobile(v => !v)}
-                        >
-                            <div className="mr-3 flex items-center justify-center"><ContextMenuIcons.MoveTo /></div>
-                            <span className="text-sm font-medium text-[#464646] flex-grow">Choose destinations</span>
-                            <div className={`transition-transform duration-200 ${isMoveToOpenMobile ? 'rotate-90' : ''}`}>
-                                <ContextMenuIcons.Arrow />
-                            </div>
-                        </div>
+                        />
                         {isMoveToOpenMobile && (
                             <div className="px-2 pb-1">
-                                <NestedMultiSelectItem
+                                <MobileDrawerMultiSelectItem
                                     icon={<ContextMenuIcons.NestedHome />}
                                     text="Home"
                                     isSelected={selectedMoveTo.includes('Home')}
                                     onClick={() => toggleMoveToSelection('Home')}
                                 />
-                                <NestedMultiSelectItem
+                                <MobileDrawerMultiSelectItem
                                     icon={<ContextMenuIcons.NestedArchive />}
                                     text="Archive"
                                     isSelected={selectedMoveTo.includes('Archive')}
                                     onClick={() => toggleMoveToSelection('Archive')}
                                 />
-                                <NestedMultiSelectItem
+                                <MobileDrawerMultiSelectItem
                                     icon={<ContextMenuIcons.NestedScheduled />}
                                     text="Scheduled"
                                     isSelected={selectedMoveTo.includes('Scheduled')}
@@ -451,10 +532,10 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                             </div>
                         )}
 
-                        <div className="px-3 pt-3 pb-1 text-xs font-semibold text-[#5F5F5F] uppercase tracking-[0.5px]">Vendor</div>
-                        <MenuItem icon={<ContextMenuIcons.NewAnnouncement />} text="New Announcement" onClick={() => handleAction('new-announcement')} />
-                        <MenuItem icon={<ContextMenuIcons.ViewAnalytics />} text="View Analytics" onClick={() => handleAction('view-analytics')} />
-                        <MenuItem icon={<ContextMenuIcons.ViewReports />} text="View Reports" onClick={() => handleAction('view-reports')} />
+                        <div className="px-5 pt-4 pb-2 text-[13px] font-semibold text-[#5F5F5F] uppercase tracking-[0.5px]">Vendor</div>
+                        <MobileDrawerMenuItem icon={<ContextMenuIcons.NewAnnouncement />} text="New Announcement" onClick={() => handleAction('new-announcement')} />
+                        <MobileDrawerMenuItem icon={<ContextMenuIcons.ViewAnalytics />} text="View Analytics" onClick={() => handleAction('view-analytics')} />
+                        <MobileDrawerMenuItem icon={<ContextMenuIcons.ViewReports />} text="View Reports" onClick={() => handleAction('view-reports')} />
                     </div>
                 </MobileDrawer>
             )}

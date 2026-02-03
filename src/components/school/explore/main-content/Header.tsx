@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, useMemo } from "react";
+import React, { ReactNode, useState, useMemo, useRef } from "react";
 import CategoryDropdown from "./CategoryDropdown";
 import SearchBox from "./SearchBox";
 import MapButton from "./MapButton";
@@ -11,6 +11,8 @@ import K12Filters from "../filter-sidebar/filters/k12-filters";
 import CollegesFilters from "../filter-sidebar/filters/colleges-filters";
 import { ESTABLISHMENT } from "@/store/enum";
 import { Portal } from "@/components/ui/Portal";
+import { useOpenMobileSidebar } from "@/context/OpenMobileSidebarContext";
+import { MobileActionsDrawer } from "./MobileActionsDrawer";
 import {
   FiltersType,
   FilterValue,
@@ -92,6 +94,10 @@ const Header: React.FC<HeaderProps> = ({
   const [isOptionsDrawerOpen, setIsOptionsDrawerOpen] = useState(false);
   const [isMapDrawerOpen, setIsMapDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const openMobileSidebar = useOpenMobileSidebar();
+  /** Ignore overlay clicks for a short time after opening a drawer (prevents same-tap close on touch) */
+  const drawerOpenedAtRef = useRef<number>(0);
+  const OVERLAY_CLOSE_GRACE_MS = 350;
 
   const currentFilters = useMemo(() => {
     switch (establishment) {
@@ -134,15 +140,29 @@ const Header: React.FC<HeaderProps> = ({
   const isOverlayVisible =
     isEstablishmentDrawerOpen ||
     isFilterDrawerOpen ||
-    isOptionsDrawerOpen ||
-    isMapDrawerOpen;
+    isMapDrawerOpen ||
+    isOptionsDrawerOpen;
 
   const closeAllMobileLayers = () => {
+    if (Date.now() - drawerOpenedAtRef.current < OVERLAY_CLOSE_GRACE_MS) return;
     setIsEstablishmentDrawerOpen(false);
     setIsFilterDrawerOpen(false);
     setIsOptionsDrawerOpen(false);
     setIsMapDrawerOpen(false);
     setIsMapActive(false);
+  };
+
+  const openOptionsDrawer = () => {
+    drawerOpenedAtRef.current = Date.now();
+    setIsOptionsDrawerOpen(true);
+  };
+  const openEstablishmentDrawer = () => {
+    drawerOpenedAtRef.current = Date.now();
+    setIsEstablishmentDrawerOpen(true);
+  };
+  const openFilterDrawer = () => {
+    drawerOpenedAtRef.current = Date.now();
+    setIsFilterDrawerOpen(true);
   };
 
   const getOnChangeHandler = (filterKey: keyof FiltersType) => {
@@ -272,7 +292,8 @@ const Header: React.FC<HeaderProps> = ({
 
   const handleMapToggle = () => {
     if (window.innerWidth < 768) {
-      // Mobile: open map drawer
+      // Mobile: open map drawer (use ref so overlay doesn't close it on same tap)
+      drawerOpenedAtRef.current = Date.now();
       setIsMapDrawerOpen(true);
       setIsMapActive(true);
     } else {
@@ -447,72 +468,99 @@ const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Mobile Header */}
-      <div className="md:hidden relative">
-        <div className="flex items-center justify-between px-4 py-3 bg-white shadow-sm border-b border-[rgba(0,0,0,0.08)]">
-          {/* Establishment Selector */}
-          <div
-            className="flex items-center gap-3 relative cursor-pointer px-3 py-2 rounded-full hover:bg-[#f5f5f7] transition-colors"
-            onClick={() => setIsEstablishmentDrawerOpen(true)}
-          >
-            <div className="w-7 h-7 flex items-center justify-center bg-[#F3F4F6] rounded-lg p-1">
-              {getEstablishmentIcon(dropdownValue)}
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="text-[15px] font-semibold text-[#464646]">{dropdownValue}</span>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="w-4 h-4 text-[#5F5F5F]">
-                <path fill="currentColor" d="M5.29289 9.29289C5.68342 8.90237 6.31658 8.90237 6.70711 9.29289L12 14.5858L17.2929 9.29289C17.6834 8.90237 18.3166 8.90237 18.7071 9.29289C19.0976 9.68342 19.0976 10.3166 18.7071 10.7071L12.7071 16.7071C12.5196 16.8946 12.2652 17 12 17C11.7348 17 11.4804 16.8946 11.2929 16.7071L5.29289 10.7071C4.90237 10.3166 4.90237 9.68342 5.29289 9.29289Z"></path>
-              </svg>
+      {/* Mobile Header — matches HTML layout/design (Explore & Collections mobile) */}
+      <div className="md:hidden relative z-[100]">
+        <div
+          className="flex items-center justify-between py-3 px-4 bg-white border-b border-[rgba(0,0,0,0.08)]"
+          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            {/* Menu (sidebar) — only when replacing app header */}
+            {openMobileSidebar && (
+              <button
+                type="button"
+                onClick={openMobileSidebar}
+                className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-[#464646] hover:bg-[#f5f5f7] transition-colors"
+                aria-label="Open menu"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="shrink-0">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M3 8C3 7.44772 3.44772 7 4 7H20C20.5523 7 21 7.44772 21 8C21 8.55228 20.5523 9 20 9H4C3.44772 9 3 8.55228 3 8ZM3 16C3 15.4477 3.44772 15 4 15H14C14.5523 15 15 15.4477 15 16C15 16.5523 14.5523 17 14 17H4C3.44772 17 3 16.5523 3 16Z" fill="currentColor" />
+                </svg>
+              </button>
+            )}
+            {/* Establishment / Category selector (header-left) */}
+            <div
+              className="flex items-center gap-3 cursor-pointer py-1.5 px-2.5 rounded-[20px] hover:bg-[#f5f5f7] transition-colors min-w-0"
+              onClick={openEstablishmentDrawer}
+            >
+              <div className="w-6 h-6 flex items-center justify-center bg-[#F3F4F6] rounded-lg shrink-0 p-1 text-[#464646]">
+                {getEstablishmentIcon(dropdownValue)}
+              </div>
+              <h1 className="text-base font-semibold text-[#464646] truncate">
+                {dropdownValue}
+              </h1>
+              <div className="w-4 h-4 shrink-0 text-[#4A4A4A] ml-0.5">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M5.29289 9.29289C5.68342 8.90237 6.31658 8.90237 6.70711 9.29289L12 14.5858L17.2929 9.29289C17.6834 8.90237 18.3166 8.90237 18.7071 9.29289C19.0976 9.68342 19.0976 10.3166 18.7071 10.7071L12.7071 16.7071C12.5196 16.8946 12.2652 17 12 17C11.7348 17 11.4804 16.8946 11.2929 16.7071L5.29289 10.7071C4.90237 10.3166 4.90237 9.68342 5.29289 9.29289Z" />
+                </svg>
+              </div>
             </div>
           </div>
 
-          {/* Right side buttons */}
-          <div className="flex items-center gap-2">
+          {/* Right: search, map, divider, filter, more (header-right) */}
+          <div className="flex items-center gap-2.5 shrink-0">
             <button
+              type="button"
               className="w-8 h-8 rounded-full flex items-center justify-center text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
               onClick={() => setIsSearchActive(!isSearchActive)}
+              aria-label="Search"
             >
               <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5">
-                <path d="M21.7,20.3l-3.3-2.9c1.5-1.7,2.3-3.8,2.3-6.1c0-5.1-4.2-9.3-9.3-9.3S2,6.2,2,11.3s4.2,9.3,9.3,9.3c2.1,0,4-0.7,5.7-1.9l3.4,3c0.2,0.2,0.4,0.2,0.6,0.2c0.3,0,0.5-0.1,0.7-0.3C22.1,21.3,22.1,20.7,21.7,20.3z M11.3,18.7c-4.1,0-7.4-3.3-7.4-7.4s3.3-7.4,7.4-7.4s7.4,3.3,7.4,7.4S15.4,18.7,11.3,18.7z"></path>
+                <path d="M21.7,20.3l-3.3-2.9c1.5-1.7,2.3-3.8,2.3-6.1c0-5.1-4.2-9.3-9.3-9.3S2,6.2,2,11.3s4.2,9.3,9.3,9.3c2.1,0,4-0.7,5.7-1.9l3.4,3c0.2,0.2,0.4,0.2,0.6,0.2c0.3,0,0.5-0.1,0.7-0.3C22.1,21.3,22.1,20.7,21.7,20.3z M11.3,18.7c-4.1,0-7.4-3.3-7.4-7.4s3.3-7.4,7.4-7.4s7.4,3.3,7.4,7.4S15.4,18.7,11.3,18.7z" />
               </svg>
             </button>
-
             <button
-              className={`w-9 h-9 rounded-full flex items-center justify-center border transition-colors ${isMapActive
-                ? "bg-[#EBFCF4] border-[#016853] text-[#016853]"
-                : "bg-[#f5f5f7] border-[rgba(0,0,0,0.1)] text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)]"
-                }`}
+              type="button"
+              className={`w-8 h-8 rounded-full flex items-center justify-center border transition-colors ${
+                isMapActive
+                  ? "bg-[#EBFCF4] border-[#016853] text-[#016853]"
+                  : "bg-[#f5f5f7] border-[rgba(0,0,0,0.1)] text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)]"
+              }`}
               onClick={handleMapToggle}
+              aria-label="Map"
             >
               <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5">
-                <path d="M17.3 8.64003L21.54 10.86L21.55 10.85C21.83 11 22.01 11.28 22.01 11.6V21.13C22.01 21.43 21.86 21.7 21.61 21.86C21.47 21.94 21.32 21.99 21.16 21.99C21.02 21.99 20.9 21.96 20.78 21.9L14.79 18.89L9.64001 21.84C9.62001 21.85 9.54001 21.88 9.51001 21.88C9.46001 21.91 9.37001 21.95 9.28001 21.95H9.21001C9.06001 21.95 8.93001 21.92 8.81001 21.86L2.48001 18.69C2.20001 18.54 2.01001 18.25 2.01001 17.92V8.39003C2.01001 8.10003 2.17001 7.82003 2.42001 7.66003C2.67001 7.51003 3.00001 7.50003 3.26001 7.64003L6.83001 9.50003C6.78001 9.33003 6.74001 9.18003 6.71001 9.03003C6.28001 6.83003 6.82001 4.80003 8.21001 3.45003C10.24 1.48003 13.64 1.51003 15.64 3.51003C16.62 4.48003 17.22 5.83003 17.34 7.30003C17.38 7.72003 17.36 8.17003 17.3 8.64003ZM20.29 19.77V12.14L16.85 10.33C16.62 10.88 16.34 11.4 16 11.87L15.6 12.43V17.41L20.29 19.77ZM3.71001 17.41L8.33001 19.73V12.43L8.10001 12.11L3.71001 9.82003V17.41ZM10.04 19.66L13.89 17.44V14.77L12.84 16.21C12.44 16.78 11.48 16.78 11.07 16.21L10.04 14.78V19.66ZM11.96 14.54L14.62 10.87H14.63C15.37 9.83003 15.74 8.59003 15.64 7.45003C15.55 6.38003 15.1 5.38003 14.44 4.73003C13.78 4.08003 12.86 3.70003 11.9 3.70003C10.94 3.70003 10.04 4.06003 9.39001 4.70003C8.65001 5.41003 8.26001 6.44003 8.26001 7.60003C8.26001 7.96003 8.30001 8.34003 8.38001 8.72003C8.53001 9.53003 8.88001 10.31 9.47001 11.11L11.96 14.54Z"></path>
+                <path d="M17.3 8.64003L21.54 10.86L21.55 10.85C21.83 11 22.01 11.28 22.01 11.6V21.13C22.01 21.43 21.86 21.7 21.61 21.86C21.47 21.94 21.32 21.99 21.16 21.99C21.02 21.99 20.9 21.96 20.78 21.9L14.79 18.89L9.64001 21.84C9.62001 21.85 9.54001 21.88 9.51001 21.88C9.46001 21.91 9.37001 21.95 9.28001 21.95H9.21001C9.06001 21.95 8.93001 21.92 8.81001 21.86L2.48001 18.69C2.20001 18.54 2.01001 18.25 2.01001 17.92V8.39003C2.01001 8.10003 2.17001 7.82003 2.42001 7.66003C2.67001 7.51003 3.00001 7.50003 3.26001 7.64003L6.83001 9.50003C6.78001 9.33003 6.74001 9.18003 6.71001 9.03003C6.28001 6.83003 6.82001 4.80003 8.21001 3.45003C10.24 1.48003 13.64 1.51003 15.64 3.51003C16.62 4.48003 17.22 5.83003 17.34 7.30003C17.38 7.72003 17.36 8.17003 17.3 8.64003ZM20.29 19.77V12.14L16.85 10.33C16.62 10.88 16.34 11.4 16 11.87L15.6 12.43V17.41L20.29 19.77ZM3.71001 17.41L8.33001 19.73V12.43L8.10001 12.11L3.71001 9.82003V17.41ZM10.04 19.66L13.89 17.44V14.77L12.84 16.21C12.44 16.78 11.48 16.78 11.07 16.21L10.04 14.78V19.66ZM11.96 14.54L14.62 10.87H14.63C15.37 9.83003 15.74 8.59003 15.64 7.45003C15.55 6.38003 15.1 5.38003 14.44 4.73003C13.78 4.08003 12.86 3.70003 11.9 3.70003C10.94 3.70003 10.04 4.06003 9.39001 4.70003C8.65001 5.41003 8.26001 6.44003 8.26001 7.60003C8.26001 7.96003 8.30001 8.34003 8.38001 8.72003C8.53001 9.53003 8.88001 10.31 9.47001 11.11L11.96 14.54Z" />
               </svg>
             </button>
-
-            <div className="w-px h-6 bg-[rgba(0,0,0,0.1)] mx-1" />
-
+            <div className="w-px h-6 bg-[rgba(0,0,0,0.1)] mx-0.5" aria-hidden />
             <div className="relative">
               <button
-                className="w-9 h-9 rounded-full flex items-center justify-center text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
-                onClick={() => setIsFilterDrawerOpen(true)}
+                type="button"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+                onClick={openFilterDrawer}
+                aria-label="Filters"
               >
                 <svg viewBox="0 0 512 512" className="w-5 h-5">
-                  <path d="M0 416c0 13.3 10.7 24 24 24l59.7 0c10.2 32.5 40.5 56 76.3 56s66.1-23.5 76.3-56L488 440c13.3 0 24-10.7 24-24s-10.7-24-24-24l-251.7 0c-10.2-32.5-40.5-56-76.3-56s-66.1 23.5-76.3 56L24 392c-13.3 0-24 10.7-24 24zm128 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM320 256a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm32-80c-35.8 0-66.1 23.5-76.3 56L24 232c-13.3 0-24 10.7-24 24s10.7 24 24 24l251.7 0c10.2 32.5 40.5 56 76.3 56s66.1-23.5 76.3-56l59.7 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-59.7 0c-10.2-32.5-40.5-56-76.3-56zM192 128a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm76.3-56C258.1 39.5 227.8 16 192 16s-66.1 23.5-76.3 56L24 72C10.7 72 0 82.7 0 96s10.7 24 24 24l91.7 0c10.2 32.5 40.5 56 76.3 56s66.1-23.5 76.3-56L488 120c13.3 0 24-10.7 24-24s-10.7-24-24-24L268.3 72z" fill="currentColor"></path>
+                  <path d="M0 416c0 13.3 10.7 24 24 24l59.7 0c10.2 32.5 40.5 56 76.3 56s66.1-23.5 76.3-56L488 440c13.3 0 24-10.7 24-24s-10.7-24-24-24l-251.7 0c-10.2-32.5-40.5-56-76.3-56s-66.1 23.5-76.3 56L24 392c-13.3 0-24 10.7-24 24zm128 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM320 256a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm32-80c-35.8 0-66.1 23.5-76.3 56L24 232c-13.3 0-24 10.7-24 24s10.7 24 24 24l251.7 0c10.2 32.5 40.5 56 76.3 56s66.1-23.5 76.3-56l59.7 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-59.7 0c-10.2-32.5-40.5-56-76.3-56zM192 128a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm76.3-56C258.1 39.5 227.8 16 192 16s-66.1 23.5-76.3 56L24 72C10.7 72 0 82.7 0 96s10.7 24 24 24l91.7 0c10.2 32.5 40.5 56 76.3 56s66.1-23.5 76.3-56L488 120c13.3 0 24-10.7 24-24s-10.7-24-24-24L268.3 72z" fill="currentColor" />
                 </svg>
                 {filterCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#00DF8B] text-white text-[11px] rounded-full flex items-center justify-center border-2 border-white">
+                  <span
+                    className="absolute -top-1 -right-1 w-[18px] h-[18px] bg-[#00DF8B] text-white text-[11px] font-medium rounded-full flex items-center justify-center border-[1.5px] border-white"
+                  >
                     {filterCount}
                   </span>
                 )}
               </button>
             </div>
-
             <button
-              className="w-9 h-9 rounded-full flex items-center justify-center text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
-              onClick={() => setIsOptionsDrawerOpen(true)}
+              type="button"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+              onClick={openOptionsDrawer}
+              aria-label="More options"
             >
               <svg viewBox="0 0 24 24" className="w-5 h-5">
-                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="currentColor"></path>
+                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="currentColor" />
               </svg>
             </button>
           </div>
@@ -679,120 +727,14 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         )}
 
-        {/* Mobile Options Drawer */}
-        {isOptionsDrawerOpen && (
-          <div className="fixed inset-x-0 bottom-0 h-[80vh] max-w-[420px] mx-auto bg-white rounded-t-[20px] z-[1001] shadow-[0_-8px_18px_rgba(0,0,0,0.12)] overflow-hidden flex flex-col">
-            <div className="p-4 border-b border-[rgba(0,0,0,0.08)] flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-[#1B1B1B]">Options</h2>
-              <button
-                onClick={() => setIsOptionsDrawerOpen(false)}
-                className="w-9 h-9 rounded-full flex items-center justify-center text-[#5F5F5F] hover:bg-[rgba(0,0,0,0.05)]"
-              >
-                <svg viewBox="0 0 24 24" className="w-5 h-5">
-                  <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                </svg>
-              </button>
-            </div>
-            <div className="p-4 space-y-6 flex-1 overflow-y-auto">
-              {/* Sort By Section */}
-              <div className="space-y-3">
-                <h3 className="font-medium text-[#1B1B1B]">Sort By</h3>
-                <div className="space-y-2">
-                  {[
-                    { value: "best-match", label: "Best Match" },
-                    { value: "newest", label: "Newest" },
-                    { value: "highest-rated", label: "Highest Rated" },
-                    { value: "most-wished", label: "Most Wished" },
-                  ].map((option) => (
-                    <div
-                      key={option.value}
-                      className="flex items-center justify-between p-3 rounded-lg hover:bg-[#f5f5f7] cursor-pointer"
-                    >
-                      <span className="text-sm text-[#4A4A4A]">{option.label}</span>
-                      {option.value === "best-match" && (
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="w-5 h-5 text-[#0093B0]"
-                        >
-                          <path d="M20 6L9 17l-5-5" />
-                        </svg>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Search Type Section */}
-              <div className="space-y-3">
-                <h3 className="font-medium text-[#1B1B1B]">Search Type</h3>
-                <div className="space-y-2">
-                  {[
-                    { value: "trending", label: "Trending" },
-                    { value: "latest", label: "Latest" },
-                    { value: "highest-rated", label: "Highest Rated" },
-                  ].map((option) => (
-                    <div
-                      key={option.value}
-                      className="flex items-center justify-between p-3 rounded-lg hover:bg-[#f5f5f7] cursor-pointer"
-                    >
-                      <span className="text-sm text-[#4A4A4A]">{option.label}</span>
-                      {option.value === "trending" && (
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="w-5 h-5 text-[#0093B0]"
-                        >
-                          <path d="M20 6L9 17l-5-5" />
-                        </svg>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Layout Section */}
-              <div className="space-y-3">
-                <h3 className="font-medium text-[#1B1B1B]">Layout</h3>
-                <div className="grid grid-cols-2 gap-3">
-                  {layouts.map((layoutOption) => (
-                    <div
-                      key={layoutOption.type}
-                      onClick={() => handleLayoutChange(layoutOption.type)}
-                      className={`flex flex-col items-center justify-center p-4 border rounded-lg cursor-pointer transition-colors ${layout === layoutOption.type
-                        ? "border-[#0093B0] bg-[rgba(0,147,176,0.08)]"
-                        : "border-[rgba(0,0,0,0.1)] hover:bg-[#f5f5f7]"
-                        }`}
-                    >
-                      <div
-                        className={`w-6 h-6 mb-2 ${layout === layoutOption.type ? "text-[#0093B0]" : "text-[#4A4A4A]"
-                          }`}
-                      >
-                        {layoutOption.icon}
-                      </div>
-                      <span
-                        className={`text-xs ${layout === layoutOption.type
-                          ? "text-[#0093B0] font-semibold"
-                          : "text-[#4A4A4A]"
-                          }`}
-                      >
-                        {layoutOption.type.charAt(0).toUpperCase() + layoutOption.type.slice(1)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Mobile Options drawer (Sort, Search Type, Layout — matches HTML) */}
+        <MobileActionsDrawer
+          isOpen={isOptionsDrawerOpen}
+          onClose={() => setIsOptionsDrawerOpen(false)}
+          layout={layout}
+          setLayout={handleLayoutChange}
+          layouts={layouts}
+        />
 
         {/* Mobile Map Drawer */}
         {isMapDrawerOpen && (

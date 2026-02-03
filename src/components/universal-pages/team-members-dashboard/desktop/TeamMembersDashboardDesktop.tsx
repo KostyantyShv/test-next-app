@@ -21,7 +21,8 @@ import { usePagination } from "../hooks/usePagination";
 import { createClient } from "@/lib/supabase_utils/client";
 
 interface TeamMembersDashboardDesktopProps {
-  initialMembers?: TeamMember[];
+  members: TeamMember[];
+  setMembers: React.Dispatch<React.SetStateAction<TeamMember[]>>;
   ownerId: string;
 }
 
@@ -46,11 +47,8 @@ const AVAILABLE_LISTINGS: TeamMember["listings"] = [
 // Main component
 const TeamMembersDashboardDesktop: React.FC<
   TeamMembersDashboardDesktopProps
-> = ({ initialMembers, ownerId }) => {
-  // State
-  const [members, setMembers] = useState<TeamMember[]>(
-    initialMembers && initialMembers.length > 0 ? initialMembers : []
-  );
+> = ({ members, setMembers, ownerId }) => {
+  // State (members/setMembers come from parent so desktop and mobile stay in sync)
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [sortFilter, setSortFilter] = useState<string>("name");
   const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);

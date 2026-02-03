@@ -6,7 +6,13 @@ import { schools } from "../../explore/mock";
 import { establishmentTypes, layouts } from "../../explore/main-content/mock";
 import { useSchoolsExplore } from "@/store/use-schools-explore";
 
-const SearchMainContent: React.FC = () => {
+interface SearchMainContentProps {
+  onContainerExpandChange?: (isExpanded: boolean) => void;
+}
+
+const SearchMainContent: React.FC<SearchMainContentProps> = ({
+  onContainerExpandChange,
+}) => {
   const { establishment, setEstablishment } = useSchoolsExplore(
     (state) => state
   );
@@ -59,6 +65,7 @@ const SearchMainContent: React.FC = () => {
         layout={layout}
         setLayout={setLayout}
         layoutToggleWidth={134}
+        onContainerExpandChange={onContainerExpandChange}
       />
       <SearchContentArea
         isMapActive={isMapActive}

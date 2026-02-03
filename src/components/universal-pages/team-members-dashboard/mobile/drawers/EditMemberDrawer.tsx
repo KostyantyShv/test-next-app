@@ -14,6 +14,8 @@ interface EditMemberDrawerProps {
     isAdmin: boolean;
   }) => void;
   availableListings?: TeamMember["listings"];
+  isSubmitting?: boolean;
+  error?: string | null;
 }
 
 export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
@@ -22,6 +24,8 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
   onClose,
   onSaveChanges,
   availableListings = [],
+  isSubmitting = false,
+  error = null,
 }) => {
   // Initialize state exactly like desktop version
   const [firstName, setFirstName] = useState(() => {
@@ -54,7 +58,7 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
       setSelectedListingIds(member.listings.map((l) => l.id));
       setIsAdmin(member.isAdmin);
     }
-  }, [member?.id, member?.listings?.length, member?.isAdmin]);
+  }, [member?.id, member?.firstName, member?.lastName, member?.email, member?.listings, member?.isAdmin]);
 
   // Clear listings when isAdmin is toggled to true - exactly like desktop
   useEffect(() => {
@@ -79,9 +83,15 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
       title="Edit Team Member"
       footer={
         <>
+          {error && (
+            <p className="text-sm text-red-600 mb-2 w-full" role="alert">
+              {error}
+            </p>
+          )}
           <button
-            className="px-5 py-3 rounded-lg border border-gray-300 bg-white hover:bg-gray-100"
+            className="px-5 py-3 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-50"
             onClick={onClose}
+            disabled={isSubmitting}
             style={{
               fontSize: '15px',
               fontWeight: 500,
@@ -92,7 +102,7 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
             Cancel
           </button>
           <button
-            className="px-5 py-3 rounded-lg text-white bg-[#1B1B1B] hover:bg-black"
+            className="px-5 py-3 rounded-lg text-white bg-[#1B1B1B] hover:bg-black disabled:opacity-70"
             onClick={() => {
               if (!email.trim()) return;
               onSaveChanges({
@@ -103,14 +113,14 @@ export const EditMemberDrawer: React.FC<EditMemberDrawerProps> = ({
                 isAdmin,
               });
             }}
-            disabled={!email.trim()}
+            disabled={!email.trim() || isSubmitting}
             style={{
               fontSize: '15px',
               fontWeight: 500,
               fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
             }}
           >
-            Save Changes
+            {isSubmitting ? "Saving..." : "Save Changes"}
           </button>
         </>
       }

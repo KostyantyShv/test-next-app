@@ -11,26 +11,20 @@ export const FilterNav: React.FC<{
   ];
 
   return (
-    <nav className="flex gap-2">
+    <div className="flex gap-8">
       {options.map((option) => (
         <button
           key={option.value}
-          className={`px-4 py-2 rounded-full text-sm font-medium cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+          className={`text-sm font-medium cursor-pointer pb-2 border-b-2 transition-colors ${
             filter === option.value
-              ? "bg-[#262b3c] text-white"
-              : "bg-white text-[#5F6368] border border-[#E0E0E0]"
+              ? "text-[#202124] border-[#202124]"
+              : "text-[#5F6368] border-transparent hover:text-[#202124]"
           }`}
           onClick={() => setFilter(option.value)}
         >
-          {option.icon === "megaphone" && (
-            <span style={{ fontSize: '16px' }}>📢</span>
-          )}
-          {option.icon === "alert" && (
-            <span style={{ fontSize: '16px' }}>❗</span>
-          )}
-          <span>{option.label}</span>
+          {option.label}
         </button>
       ))}
-    </nav>
+    </div>
   );
 };

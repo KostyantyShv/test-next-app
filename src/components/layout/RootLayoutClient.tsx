@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { LeftSidebar } from "@/components/layout/Sidebar/Left";
@@ -14,9 +14,18 @@ import { useListingStickyHeader } from "@/store/use-listing-sticky-header";
 import { useLeftSidebar } from "@/store/use-left-sidebar";
 import { cn } from "@/lib/utils";
 import PageContainer from "./PageContainer";
+import { OpenMobileSidebarProvider } from "@/context/OpenMobileSidebarContext";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 // Routes where header and sidebars should be hidden
 const AUTH_ROUTES = ["/login", "/register", "/forgot-password", "/verification"];
+
+// Routes that use their own mobile header (Explore / Collections)
+const EXPLORE_COLLECTIONS_ROUTES = [
+  "/schools/explore",
+  "/schools/collections",
+  "/collections",
+];
 
 export const RootLayoutClient = ({
   children,
@@ -31,6 +40,11 @@ export const RootLayoutClient = ({
     (s) => s.isDesktopStickyHeaderVisible
   );
   const pathname = usePathname();
+  const isMobile = useIsMobile();
+  const openMobileSidebar = useCallback(
+    () => setIsMobileSidebarOpen(true),
+    []
+  );
 
   // Prevent hydration mismatches caused by client-only persisted UI state (e.g. sidebar collapsed).
   // First render (server + initial client) uses a stable default; then we sync after mount.
@@ -40,6 +54,14 @@ export const RootLayoutClient = ({
   
   // Check if current route is an auth route
   const isAuthRoute = AUTH_ROUTES.some(route => pathname?.startsWith(route));
+
+  // Routes that use their own mobile header (Explore / Collections) — hide default app header on mobile
+  const isExploreOrCollectionsPage = EXPLORE_COLLECTIONS_ROUTES.some(
+    (route) =>
+      pathname === route ||
+      (route !== "/collections" && pathname?.startsWith(route))
+  );
+  const hideDefaultMobileHeader = isMobile && isExploreOrCollectionsPage;
   
   // Check if current route is team-members-dashboard (hide header on mobile)
   const isTeamMembersPage = pathname?.startsWith("/team-members-dashboard");
@@ -52,6 +74,7 @@ export const RootLayoutClient = ({
   }
 
   return (
+    <OpenMobileSidebarProvider openSidebar={openMobileSidebar}>
     <div className="min-h-screen bg-background">
       {/* Mobile Sidebar */}
       <MobileLeftSidebar
@@ -76,8 +99,8 @@ export const RootLayoutClient = ({
         </div>
 
         <div className="flex-1 flex flex-col min-w-0">
-          {/* Mobile Header - hide while mobile sidebar is open */}
-          {!(isTeamMembersPage) && !isMobileSidebarOpen && (
+          {/* Mobile Header - hide on Explore/Collections (they use their own); hide while mobile sidebar is open */}
+          {!(isTeamMembersPage) && !isMobileSidebarOpen && !hideDefaultMobileHeader && (
             <div className="md:hidden">
               <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} />
               <div className="h-[12px] flex-shrink-0" />
@@ -126,5 +149,6 @@ export const RootLayoutClient = ({
         </aside>
       </div>
     </div>
+    </OpenMobileSidebarProvider>
   );
 };

@@ -74,10 +74,10 @@ const ContentArea: React.FC<ContentAreaProps> = ({
         className={`flex-1 min-w-0 md:p-6 transition-all duration-300 ${isMapExpanded ? "hidden" : ""}`}
         aria-hidden={isMapExpanded}
       >
-        {/* Mobile Layouts */}
+        {/* Mobile Layouts — grid matches School Finder Mobile (10) reference: padding 16px 12px, gap 16px */}
         <div className="md:hidden">
           {layout === "grid" && (
-            <div className="py-4 px-4 flex flex-col gap-4">
+            <div className="flex flex-col" style={{ padding: '16px 12px', gap: 16 }}>
               {renderCards()}
             </div>
           )}

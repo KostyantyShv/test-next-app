@@ -82,7 +82,10 @@ export const CalendarGrid: React.FC<{
   }, [calendarData]);
 
   return (
-    <div ref={gridRef} className="grid grid-cols-7 gap-[2px] bg-[#E0E0E0] border border-[#E0E0E0]">
+    <div
+      ref={gridRef}
+      className="grid grid-cols-7 gap-[1px] bg-[#E0E0E0] border border-[#E0E0E0]"
+    >
       {RENDER_WEEKDAYS.map((day) => (
         <div
           key={day}

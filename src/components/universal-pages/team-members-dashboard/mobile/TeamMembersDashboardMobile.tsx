@@ -38,18 +38,17 @@ const allListings = [
 ];
 
 interface TeamMembersMobileProps {
-  initialMembers?: TeamMember[];
+  members: TeamMember[];
+  setMembers: React.Dispatch<React.SetStateAction<TeamMember[]>>;
   ownerId: string;
 }
 
 const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
-  initialMembers,
+  members,
+  setMembers,
   ownerId,
 }) => {
-  // State
-  const [members, setMembers] = useState<TeamMember[]>(
-    initialMembers && initialMembers.length > 0 ? initialMembers : []
-  );
+  // State (members/setMembers come from parent so desktop and mobile stay in sync)
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [sortFilter, setSortFilter] = useState<string>("name");
   const [currentMemberId, setCurrentMemberId] = useState<number | null>(null);
@@ -147,6 +146,7 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
         setIsAddMemberDrawerOpen(true);
         break;
       case "editMember":
+        setSaveError(null);
         setIsEditMemberDrawerOpen(true);
         break;
       case "assignToListing":
@@ -172,7 +172,6 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
     setIsAssignToListingDrawerOpen(false);
     setIsDeleteConfirmationDrawerOpen(false);
     setIsOptionsDrawerOpen(false);
-    setCurrentMemberId(null);
   };
 
   const handleActionClick = (memberId: number) => {
@@ -411,56 +410,27 @@ const TeamMembersMobile: React.FC<TeamMembersMobileProps> = ({
         member={currentMemberId ? members.find((m) => m.id === currentMemberId) || null : null}
         onClose={closeDrawer}
         availableListings={allListings}
-        onSaveChanges={async (data) => {
-          if (currentMemberId) {
-            const existing = members.find((m) => m.id === currentMemberId);
-            if (!existing) {
-              closeDrawer();
-              return;
-            }
-
-            try {
-              const supabase = createClient();
-              const fullName = `${data.firstName} ${data.lastName}`.trim();
-              const selectedListings = data.listingIds 
-                ? allListings.filter((l) => data.listingIds!.includes(l.id))
-                : [];
-
-              const { error } = await supabase
-                .from("team_members")
-                .update({
-                  role: data.isAdmin ? "admin" : "member",
-                  name: fullName || data.email.split("@")[0] || "Member",
-                  permissions: selectedListings,
-                })
-                .eq("team_owner_id", ownerId)
-                .eq("email", existing.email);
-
-              if (error) {
-                console.error("Failed to update member in database:", error.message);
-              }
-            } catch (error) {
-              console.error("Error updating member:", error);
-            }
-
-            const selectedListings = data.listingIds 
-              ? allListings.filter((l) => data.listingIds!.includes(l.id))
-              : [];
-            setMembers((prev) =>
-              prev.map((member) =>
-                member.id === currentMemberId
-                  ? { 
-                      ...member, 
-                      firstName: data.firstName,
-                      lastName: data.lastName,
-                      email: data.email,
-                      listings: selectedListings, 
-                      isAdmin: data.isAdmin 
-                    }
-                  : member
-              )
-            );
-          }
+        isSubmitting={isSavingMember}
+        error={saveError}
+        onSaveChanges={(data) => {
+          if (!currentMemberId) return;
+          const listings = data.listingIds?.length
+            ? allListings.filter((l) => data.listingIds!.includes(l.id))
+            : [];
+          setMembers((prev) =>
+            prev.map((m) =>
+              m.id === currentMemberId
+                ? {
+                    ...m,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    email: data.email,
+                    isAdmin: data.isAdmin,
+                    listings,
+                  }
+                : m
+            )
+          );
           closeDrawer();
         }}
       />
