@@ -398,7 +398,7 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
     <>
       {typeof window !== 'undefined' && (
         <Portal containerId="ai-assistant-platform-desktop-portal">
-          <div className="fixed inset-0 z-[1001] pointer-events-none">
+          <div className="fixed inset-0 z-[7000] pointer-events-none">
             {/* Backdrop - invisible, only for click outside */}
             <div 
               className="fixed inset-0 cursor-pointer pointer-events-auto" 
@@ -409,7 +409,7 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
             <div 
               ref={panelRef}
               className={cn(
-                "fixed top-0 right-0 w-[450px] bg-white shadow-2xl flex pointer-events-auto",
+                "ai-assistant-panel fixed top-0 right-0 w-[450px] bg-white shadow-2xl flex pointer-events-auto",
                 "transform transition-all duration-300 ease-in-out",
                 "border-l border-gray-200",
                 styles.aiPanel,
@@ -418,8 +418,8 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                 className
               )}
               style={{
-                backgroundColor: 'white !important',
-                boxShadow: '-4px 0 20px rgba(0, 0, 0, 0.1)',
+                backgroundColor: 'var(--surface-color)',
+                boxShadow: '-4px 0 20px var(--shadow-color)',
                 overflow: 'hidden',
                 height: '100vh',
                 minHeight: '100vh',
@@ -428,9 +428,9 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
               onClick={(e) => e.stopPropagation()}
             >
         {/* Left Column */}
-        <div className="flex-1 flex flex-col bg-white overflow-hidden" style={{ height: '100%', maxHeight: '100%', minHeight: 0 }}>
+        <div className="ai-assistant-body flex-1 flex flex-col bg-white overflow-hidden" style={{ height: '100%', maxHeight: '100%', minHeight: 0 }}>
           {/* Header */}
-          <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+          <div className="ai-assistant-header p-4 border-b border-gray-200 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-[var(--bold-text)] font-inter">Assistant</h2>
             <button
               onClick={onClose}

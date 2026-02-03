@@ -310,13 +310,13 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
         <div
           className={
             mode === "mobileDrawer"
-              ? `bg-white rounded-xl overflow-hidden transition-all duration-300 flex flex-col min-w-0 ${isMapActive ? "flex-1 m-4 border border-[rgba(0,0,0,0.1)]" : "h-0 overflow-hidden"}`
-              : `bg-white rounded-xl overflow-hidden transition-all duration-300 ${isMapActive
+              ? `bg-[var(--surface-color)] rounded-xl overflow-hidden transition-all duration-300 flex flex-col min-w-0 ${isMapActive ? "flex-1 m-4 border border-[var(--border-color)]" : "h-0 overflow-hidden"}`
+              : `bg-[var(--surface-color)] rounded-xl overflow-hidden transition-all duration-300 ${isMapActive
                   ? isExpanded
-                    ? "flex-1 m-6 border border-[rgba(0,0,0,0.1)]"
+                    ? "flex-1 m-6 border border-[var(--border-color)]"
                     : layout === "list" || layout === "magazine"
-                      ? "w-[340px] mr-6 mt-6 mb-6 border border-[rgba(0,0,0,0.1)]"
-                      : "w-[400px] mr-6 mt-6 mb-6 border border-[rgba(0,0,0,0.1)]"
+                      ? "w-[340px] mr-6 mt-6 mb-6 border border-[var(--border-color)]"
+                      : "w-[400px] mr-6 mt-6 mb-6 border border-[var(--border-color)]"
                   : "w-0 overflow-hidden"
                 } ${isExpanded ? "min-w-0" : "shrink-0"}`
           }

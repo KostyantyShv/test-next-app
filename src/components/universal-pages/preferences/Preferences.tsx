@@ -7,8 +7,10 @@ import { GeneralPreferences, PrivacySettings, NotificationPreferences } from './
 import { STUDENT_NOTIFICATIONS, VENDOR_NOTIFICATIONS, SYSTEM_NOTIFICATIONS } from './constants';
 import { Preferences as PreferencesType, Theme } from './types';
 
+const ALLOWED_THEMES: Theme[] = ['midnight', 'light', 'mint', 'teal', 'oceanic'];
+
 export const Preferences: FC = () => {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -36,19 +38,13 @@ export const Preferences: FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [userRole] = useState<'user' | 'admin'>('user'); // Change to 'admin' to see vendor notifications
 
-  // Sync theme changes with next-themes
+  // Keep preferences in sync with the active theme (handles initial load and external changes)
   useEffect(() => {
     if (!mounted) return;
-
-    if (preferences.autoTheme && typeof window !== 'undefined') {
-      const prefersDark =
-        window.matchMedia &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme((prefersDark ? 'midnight' : 'light') as string);
-    } else if (!preferences.autoTheme) {
-      setTheme(preferences.theme as string);
-    }
-  }, [preferences.theme, preferences.autoTheme, mounted, setTheme]);
+    const activeTheme = (resolvedTheme || theme) as Theme | undefined;
+    if (!activeTheme || !ALLOWED_THEMES.includes(activeTheme)) return;
+    setPreferences((prev) => (prev.theme === activeTheme ? prev : { ...prev, theme: activeTheme }));
+  }, [resolvedTheme, theme, mounted]);
 
   // Listen to system theme changes when autoTheme is enabled
   useEffect(() => {
@@ -75,6 +71,26 @@ export const Preferences: FC = () => {
 
   const updatePreference = <K extends keyof PreferencesType>(key: K, value: PreferencesType[K]) => {
     setPreferences(prev => ({ ...prev, [key]: value }));
+
+    if (!mounted) return;
+
+    if (key === 'theme') {
+      if (!preferences.autoTheme) {
+        setTheme(value as string);
+      }
+    }
+
+    if (key === 'autoTheme') {
+      const enabled = value as boolean;
+      if (enabled && typeof window !== 'undefined') {
+        const prefersDark =
+          window.matchMedia &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setTheme((prefersDark ? 'midnight' : 'light') as string);
+      } else if (!enabled) {
+        setTheme(preferences.theme as string);
+      }
+    }
   };
 
   const updateNotification = (id: string, type: 'email' | 'onSite', value: boolean) => {
@@ -95,7 +111,7 @@ export const Preferences: FC = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen preferences-page">
       <div className="w-full md:max-w-[1220px] mx-auto px-4 md:px-5 py-5 md:py-10 pb-24 md:pb-10 overflow-x-hidden">
         <h1 className="text-[20px] md:text-[28px] font-semibold md:font-bold mb-5 md:mb-10" style={{ color: 'var(--bold-text)' }}>Preferences</h1>
 
@@ -141,4 +157,3 @@ export const Preferences: FC = () => {
     </div>
   );
 };
-

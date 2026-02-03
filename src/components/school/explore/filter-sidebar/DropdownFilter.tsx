@@ -25,7 +25,7 @@ export const DropdownFilter: React.FC<DropdownFilterProps> = ({
     <div className="relative w-full">
       <button
         onClick={handleOpenDropdown}
-        className="w-full p-2 bg-white border border-[rgba(0,0,0,0.15)] rounded text-left text-sm cursor-pointer flex justify-between items-center"
+        className="w-full p-2 bg-[var(--surface-secondary)] border border-[var(--border-color)] rounded text-left text-sm cursor-pointer flex justify-between items-center text-[var(--text-default)]"
       >
         <span>
           {options.find((opt) => opt.value === selectedValue)?.label || "Any"}
@@ -45,7 +45,7 @@ export const DropdownFilter: React.FC<DropdownFilterProps> = ({
         </svg>
       </button>
       <div
-        className={`absolute top-full left-0 w-full bg-white border border-[rgba(0,0,0,0.1)] rounded-b shadow-[0_4px_12px_rgba(0,0,0,0.1)] max-h-[300px] overflow-y-auto z-[1001] ${
+        className={`absolute top-full left-0 w-full bg-[var(--surface-secondary)] border border-[var(--border-color)] rounded-b shadow-[0_4px_12px_var(--shadow-color)] max-h-[300px] overflow-y-auto z-[1001] ${
           isOpened ? "block" : "hidden"
         }`}
       >
@@ -53,16 +53,16 @@ export const DropdownFilter: React.FC<DropdownFilterProps> = ({
           <div
             key={option.value}
             onClick={() => handleOptionSelect(option.value)} // Added click handler
-            className={`p-2 cursor-pointer text-sm ${
+            className={`p-2 cursor-pointer text-sm text-[var(--text-default)] ${
               option.value === selectedValue
-                ? "bg-[#EBFCF4] text-[#016853]"
-                : "hover:bg-[#f5f5f7]"
+                ? "bg-[var(--apply-button-bg)] text-[var(--header-green)]"
+                : "hover:bg-[var(--hover-bg)]"
             } relative`}
             data-value={option.value}
           >
             {option.label}
             {option.value === selectedValue && (
-              <span className="absolute right-3 text-header-green">✓</span>
+              <span className="absolute right-3 text-[var(--header-green)]">✓</span>
             )}
           </div>
         ))}

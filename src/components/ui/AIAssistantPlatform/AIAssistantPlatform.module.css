@@ -1,5 +1,5 @@
 .aiPanel {
-  background-color: white !important;
+  background-color: var(--surface-color) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   height: 100vh !important;
@@ -18,16 +18,16 @@
 }
 
 .aiPanel ::-webkit-scrollbar-track {
-  background: #f5f5f5;
+  background: var(--surface-color);
 }
 
 .aiPanel ::-webkit-scrollbar-thumb {
-  background: #ccc;
+  background: var(--surface-secondary);
   border-radius: 3px;
 }
 
 .aiPanel ::-webkit-scrollbar-thumb:hover {
-  background: #999;
+  background: var(--subtle-text);
 }
 
 /* Modal Animation */

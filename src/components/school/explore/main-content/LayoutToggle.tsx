@@ -17,15 +17,15 @@ const LayoutToggle: React.FC<LayoutToggleProps> = ({
     <div
       // Use a CSS variable so Tailwind can generate the class (avoids dynamic `hover:w-[${width}px]`).
       style={{ ["--expanded-width" as never]: `${width}px` } as React.CSSProperties}
-      className="flex items-center gap-[4px] bg-[#f5f5f7] rounded-md p-[3px] w-10 overflow-hidden transition-all duration-300 hover:w-[var(--expanded-width)] group"
+      className="explore-layout-toggle flex items-center gap-[4px] bg-[var(--surface-secondary)] rounded-md p-[3px] w-10 overflow-hidden transition-all duration-300 hover:w-[var(--expanded-width)] group border border-[var(--border-color)]"
     >
       {layouts.map(({ type, icon }, index) => (
         <button
           key={type}
-          className={`w-8 h-7 flex items-center justify-center rounded transition-all duration-200 ${
+          className={`layout-toggle-button w-8 h-7 flex items-center justify-center rounded transition-all duration-200 ${
             layout === type
-              ? "bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
-              : "hidden group-hover:flex hover:bg-[rgba(0,0,0,0.05)]"
+              ? "is-active bg-[var(--surface-color)] shadow-[0_1px_3px_var(--shadow-color)]"
+              : "hidden group-hover:flex hover:bg-[var(--hover-bg)]"
           }`}
           style={{ order: index }}
           onClick={() => {
@@ -34,8 +34,8 @@ const LayoutToggle: React.FC<LayoutToggleProps> = ({
           }}
         >
           <span
-            className={`w-5 h-5 flex items-center justify-center ${
-              layout === type ? "text-[#0093B0]" : "text-[#6B7280]"
+            className={`layout-toggle-icon w-5 h-5 flex items-center justify-center ${
+              layout === type ? "text-[var(--verification-blue)]" : "text-[var(--subtle-text)]"
             }`}
           >
             {icon}

@@ -67,19 +67,19 @@ const CalendarDesktop: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F2F2] flex justify-center px-5 py-5 font-sans">
-      <div className="w-full max-w-[1075px] bg-white rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.1)] p-6 relative overflow-hidden">
-        <header className="flex items-center mb-6 relative z-10 bg-white">
-          <h1 className="text-[24px] font-semibold text-[#202124]">
+    <div className="calendar-page min-h-screen bg-[var(--background-color)] flex justify-center px-5 py-5 font-sans">
+      <div className="calendar-shell w-full max-w-[1075px] bg-[var(--surface-color)] rounded-xl shadow-[0_2px_4px_var(--shadow-color)] p-6 relative overflow-hidden border border-[var(--border-color)]">
+        <header className="calendar-header flex items-center mb-6 relative z-10 bg-[var(--surface-color)]">
+          <h1 className="text-[24px] font-semibold text-[var(--bold-text)]">
             What&#39;s on this month?
           </h1>
         </header>
 
-        <nav className="flex gap-8 border-b border-[#E0E0E0] mb-6 pb-2 relative z-10 bg-white">
+        <nav className="calendar-filter-nav flex gap-8 border-b border-[var(--border-color)] mb-6 pb-2 relative z-10 bg-[var(--surface-color)]">
           <FilterNav filter={filter} setFilter={setFilter} />
         </nav>
 
-        <div className="flex justify-between items-center mb-6 relative z-10 bg-white">
+        <div className="calendar-toolbar flex justify-between items-center mb-6 relative z-10 bg-[var(--surface-color)]">
           <CalendarHeader
             currentMonth={currentMonthDisplay}
             onPrevMonth={handlePrevMonth}

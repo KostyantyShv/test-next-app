@@ -151,7 +151,7 @@ const FiltersSection = () => {
   };
 
   const renderFilterButtons = () => (
-    <div className="flex items-center gap-3 text-gray-600">
+    <div className="flex items-center gap-3 text-[var(--subtle-text)]">
       {FILTER_CONFIG[establishment]?.map(
         ({
           category,
@@ -193,13 +193,13 @@ const FiltersSection = () => {
   );
   
   return (
-    <div className="w-full mb-5 bg-white p-4 md:p-8 rounded-xl shadow-sm border border-gray-200">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
+    <div className="explore-filters w-full mb-5 bg-[var(--surface-color)] p-4 md:p-8 rounded-xl shadow-[0_2px_12px_var(--shadow-color)] border border-[var(--border-color)]">
+      <div className="flex items-center justify-between gap-4 flex-wrap text-[var(--text-default)]">
         <div className="flex items-center gap-3 flex-wrap flex-1">
           {renderFilterButtons()}
           <FiltersButton filtersFlat={getActiveFilters} onClick={toggleSidebar} />
         </div>
-        <div className="flex items-center gap-4 pl-6 border-l border-gray-200">
+        <div className="flex items-center gap-4 pl-6 border-l border-[var(--border-color)]">
           {renderSortButton()}
         </div>
       </div>

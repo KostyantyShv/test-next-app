@@ -240,7 +240,7 @@ export const Avatar: React.FC<AvatarProps> = ({
         <div 
           data-avatar-dropdown
           className={cn(
-            "hidden md:block w-70 bg-white rounded-xl shadow-lg border border-gray-100 z-[10001] transition-all duration-300",
+            "avatar-dropdown hidden md:block w-70 bg-white rounded-xl shadow-lg border border-gray-100 z-[10001] transition-all duration-300",
             dropdownPosition === 'left' 
               ? (sidebarCollapsed ? 'fixed left-[100px] bottom-[17px] opacity-100 translate-x-0' : 'fixed left-[272px] bottom-[17px] opacity-100 translate-x-0')
               : 'absolute top-12 right-0 animate-in fade-in-0 zoom-in-95 duration-200'
@@ -254,9 +254,9 @@ export const Avatar: React.FC<AvatarProps> = ({
         >
           {/* Arrow */}
           {dropdownPosition === 'left' ? (
-            <div className="absolute -left-2 bottom-[27px] w-3 h-3 bg-[#E1E7EE] transform rotate-45 shadow-[-2px_2px_5px_rgba(0,0,0,0.12)]"></div>
+            <div className="avatar-dropdown-arrow absolute -left-2 bottom-[27px] w-3 h-3 bg-[#E1E7EE] transform rotate-45 shadow-[-2px_2px_5px_rgba(0,0,0,0.12)]"></div>
           ) : (
-            <div className="absolute -top-2 right-4 w-4 h-4 bg-white border-l border-t border-gray-100 transform rotate-45"></div>
+            <div className="avatar-dropdown-arrow absolute -top-2 right-4 w-4 h-4 bg-white border-l border-t border-gray-100 transform rotate-45"></div>
           )}
           
           {/* Top Section */}

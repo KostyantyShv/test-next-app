@@ -69,7 +69,7 @@ const MainContent: React.FC<MainContentProps> = ({ onContainerExpandChange }) =>
   }
 
   return (
-    <div className="w-full bg-white rounded-xl border border-[rgba(0,0,0,0.1)] shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-hidden">
+    <div className="w-full bg-[var(--surface-color)] rounded-xl border border-[var(--border-color)] shadow-[0_2px_12px_var(--shadow-color)] overflow-hidden">
       <Header
         dropdownValue={establishment}
         schools={schools}

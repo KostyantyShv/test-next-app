@@ -12,7 +12,7 @@ const ResetButton: React.FC<ResetButtonProps> = ({ filters, onClick }) => {
     <>
       {filters().length ? (
         <button
-          className="items-center flex gap-1.5 w-fit bg-transparent border-none text-textDefault text-xs cursor-pointer px-2 py-1 rounded hover:bg-[rgba(0,0,0,0.05)] transition-all"
+          className="items-center flex gap-1.5 w-fit bg-transparent border-none text-[var(--text-default)] text-xs cursor-pointer px-2 py-1 rounded hover:bg-[var(--hover-bg)] transition-all"
           id="resetAllBtn"
           onClick={onClick}
         >

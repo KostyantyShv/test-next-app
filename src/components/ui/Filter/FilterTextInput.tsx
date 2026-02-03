@@ -7,7 +7,7 @@ export const FilterTextInput: React.FC<{
     <input
       type="text"
       placeholder={`${inputPlaceholder}`}
-      className="w-full px-[10px] py-[12px] border border-[1px_solid_rgba(0,_0,_0,_0.15)] rounded-[4px] text-sm outline-none"
+      className="w-full px-[10px] py-[12px] border border-[var(--border-color)] rounded-[4px] text-sm outline-none bg-[var(--surface-color)] text-[var(--text-default)] placeholder:text-[var(--subtle-text)]"
     />
   );
 };

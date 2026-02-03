@@ -49,7 +49,7 @@ export const FilterOption: React.FC<FilterOptionProps> = ({
   return (
     <div className="filter-option-wrapper">
       <label
-        className="filter-option flex items-center gap-2 px-3 py-2 rounded hover:bg-[#f8fafc] cursor-pointer text-sm"
+        className="filter-option flex items-center gap-2 px-3 py-2 rounded hover:bg-[var(--hover-bg)] cursor-pointer text-sm text-[var(--text-default)]"
         style={{ paddingLeft: `${level * 16 + 12}px` }}
       >
         <input
@@ -57,7 +57,7 @@ export const FilterOption: React.FC<FilterOptionProps> = ({
           data-filter={filter}
           data-value={valueForInput}
           checked={finalChecked}
-          className="w-4 h-4 border-2 border-[#cbd5e0] rounded cursor-pointer"
+          className="w-4 h-4 border-2 border-[var(--border-color)] rounded cursor-pointer accent-[var(--header-green)]"
           onChange={handleChange}
         />
         {label}

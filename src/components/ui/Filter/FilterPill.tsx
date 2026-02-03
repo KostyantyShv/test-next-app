@@ -14,8 +14,8 @@ const FilterPill = ({
   const handleRemoveFilter = () => removeFilter(filterType, value);
 
   return (
-    <div className="flex flex-row rounded-2xl bg-[#F2F2F2] py-1 px-2 w-fit items-center justify-center gap-2">
-      <span className="border-r-2 pr-2">{value}</span>
+    <div className="flex flex-row rounded-2xl bg-[var(--surface-secondary)] py-1 px-2 w-fit items-center justify-center gap-2 text-[var(--text-default)] border border-[var(--border-color)]">
+      <span className="border-r border-[var(--border-color)] pr-2">{value}</span>
       <span>
         <button
           className="flex items-center justify-center"

@@ -21,7 +21,7 @@ export const RatingFilter: React.FC<RatingFilterProps> = ({
           <span
             key={star}
             className={`text-lg cursor-pointer mr-[2px] ${
-              star <= rating ? "text-[#00DF8B] filled" : "text-[#D1D5DB]"
+              star <= rating ? "text-[#00DF8B] filled" : "text-[var(--subtle-text)]"
             }`}
             onClick={() => handleRatingClick(star)}
           >
@@ -29,7 +29,7 @@ export const RatingFilter: React.FC<RatingFilterProps> = ({
           </span>
         ))}
       </div>
-      <span className="rating-text text-[13px] text-text-default ml-2">
+      <span className="rating-text text-[13px] text-[var(--text-default)] ml-2">
         {rating > 0 ? `${rating}+ Rating` : "Any"}
       </span>
     </div>

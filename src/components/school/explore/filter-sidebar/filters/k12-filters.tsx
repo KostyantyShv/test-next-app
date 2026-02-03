@@ -137,19 +137,19 @@ const K12Filters: React.FC<K12FiltersProps> = ({
       <FilterSection title="Coed status" sectionId="coed">
         <div className="flex border border-[rgba(0,0,0,0.1)] rounded-3xl overflow-hidden w-fit">
           <button
-            className="p-2 bg-none border-none cursor-pointer text-sm text-text-default transition-all hover:bg-[#f5f5f7] border-r border-[rgba(0,0,0,0.1)]"
+            className="p-2 bg-none border-none cursor-pointer text-sm text-[var(--text-default)] transition-all hover:bg-[var(--hover-bg)] border-r border-[var(--border-color)]"
             data-value="coed"
           >
             Coed
           </button>
           <button
-            className="p-2 bg-none border-none cursor-pointer text-sm text-text-default transition-all hover:bg-[#f5f5f7] border-r border-[rgba(0,0,0,0.1)]"
+            className="p-2 bg-none border-none cursor-pointer text-sm text-[var(--text-default)] transition-all hover:bg-[var(--hover-bg)] border-r border-[var(--border-color)]"
             data-value="girls"
           >
             All-girls
           </button>
           <button
-            className="p-2 bg-none border-none cursor-pointer text-sm text-text-default transition-all hover:bg-[#f5f5f7]"
+            className="p-2 bg-none border-none cursor-pointer text-sm text-[var(--text-default)] transition-all hover:bg-[var(--hover-bg)]"
             data-value="boys"
           >
             All-boys
@@ -237,7 +237,7 @@ const K12Filters: React.FC<K12FiltersProps> = ({
         <div className="grid gap-4">
           {["Academics", "Teachers", "Diversity", "Sports"].map((category) => (
             <div key={category} className="mb-4">
-              <div className="text-sm font-medium mb-2 text-bold-text">
+              <div className="text-sm font-medium mb-2 text-[var(--bold-text)]">
                 {category}
               </div>
               <div className="grid grid-cols-4 gap-2">
@@ -252,8 +252,8 @@ const K12Filters: React.FC<K12FiltersProps> = ({
                       key={grade}
                       className={`w-9 h-9 flex items-center justify-center border border-[rgba(0,0,0,0.1)] rounded-full cursor-pointer text-sm font-medium transition-all ${
                         isSelected
-                          ? "bg-[#00DF8B] text-[white] text-bold-text"
-                          : "bg-white hover:bg-[#f5f5f7] text-text-default"
+                          ? "bg-[#00DF8B] text-white text-[var(--bold-text)]"
+                          : "bg-[var(--surface-secondary)] hover:bg-[var(--hover-bg)] text-[var(--text-default)]"
                       }`}
                       data-category={categoryLower}
                       data-grade={grade}

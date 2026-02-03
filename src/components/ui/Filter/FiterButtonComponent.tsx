@@ -182,8 +182,8 @@ export const FilterButtonComponent = ({
         tooltip={tooltip}
         className={
           isOpened
-            ? "bg-[#EBFCF4] border-[#EBFCF4] text-[#016853]"
-            : "bg-white border border-[rgba(0,0,0,0.1)]"
+            ? "bg-[var(--apply-button-bg)] border border-[var(--apply-button-bg)] text-[var(--header-green)]"
+            : "bg-[var(--surface-secondary)] border border-[var(--border-color)]"
         }
       />
       <Filter.Dropdown isOpened={isOpened}>

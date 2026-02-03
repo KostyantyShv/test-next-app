@@ -77,52 +77,56 @@ export const GeneralPreferences: FC<GeneralPreferencesProps> = ({
               <Tooltip text="Choose how the site looks to you. 'System' will match your current device's theme setting." />
             </div>
             
-            <div className="bg-white rounded-lg p-3 md:p-5 mt-3 border border-[#DFDDDB]">
-              {/* Quick theme selector */}
-              <div className="flex gap-2.5 md:gap-3 mb-5 flex-wrap justify-center md:justify-start">
-                {THEMES.map((theme) => (
-                  <div
-                    key={theme.id}
-                    onClick={() => onUpdatePreference('theme', theme.id)}
-                    className={cn(
-                      "w-11 h-11 md:w-10 md:h-10 rounded-lg md:rounded-md cursor-pointer border-2 md:border-2 transition-all active:scale-95 md:hover:scale-105",
-                      preferences.theme === theme.id ? "border-[#0B6333] shadow-[0_0_0_2px_rgba(11,99,51,0.2)] md:shadow-[0_0_0_2px_rgba(11,99,51,0.15)]" : "border-transparent",
-                      theme.id === 'midnight' && "bg-gradient-to-br from-[#0E1525] to-[#2B3245]",
-                      theme.id === 'light' && "bg-gradient-to-br from-white to-[#F8F9FA] border-[#EBEDEF]",
-                      theme.id === 'mint' && "bg-gradient-to-br from-[#F1F6F4] to-[#E9F1EE]",
-                      theme.id === 'teal' && "bg-gradient-to-br from-[#F0F7F9] to-[#E6F3F7]",
-                      theme.id === 'oceanic' && "bg-gradient-to-br from-[#F4F9FC] to-[#E1E7EE]"
-                    )}
-                    title={theme.name}
-                  />
-                ))}
-              </div>
+            <div className="preferences-theme-preview-container bg-white rounded-lg p-3 md:p-5 mt-3 border border-[#DFDDDB]">
+              <div className="preferences-theme-preview">
+                {/* Quick theme selector */}
+                <div className="flex gap-2.5 md:gap-3 mb-5 flex-wrap justify-center md:justify-start">
+                  {THEMES.map((theme) => (
+                    <div
+                      key={theme.id}
+                      onClick={() => onUpdatePreference('theme', theme.id)}
+                      className={cn(
+                        "w-11 h-11 md:w-10 md:h-10 rounded-lg md:rounded-md cursor-pointer border-2 md:border-2 transition-all active:scale-95 md:hover:scale-105",
+                        preferences.theme === theme.id ? "border-[#0B6333] shadow-[0_0_0_2px_rgba(11,99,51,0.2)] md:shadow-[0_0_0_2px_rgba(11,99,51,0.15)]" : "border-transparent",
+                        theme.id === 'midnight' && "bg-gradient-to-br from-[#0E1525] to-[#2B3245]",
+                        theme.id === 'light' && "bg-gradient-to-br from-white to-[#F8F9FA] border-[#EBEDEF]",
+                        theme.id === 'mint' && "bg-gradient-to-br from-[#F1F6F4] to-[#E9F1EE]",
+                        theme.id === 'teal' && "bg-gradient-to-br from-[#F0F7F9] to-[#E6F3F7]",
+                        theme.id === 'oceanic' && "bg-gradient-to-br from-[#F4F9FC] to-[#E1E7EE]"
+                      )}
+                      title={theme.name}
+                    />
+                  ))}
+                </div>
 
-              {/* Theme grid */}
-              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 mb-5">
-                {THEMES.map((theme) => (
-                  <div
-                    key={theme.id}
-                    onClick={() => onUpdatePreference('theme', theme.id)}
-                    className={cn(
-                      "bg-[#F8F9FA] border-2 rounded-lg p-3 md:p-4 cursor-pointer transition-all relative overflow-hidden active:scale-95 md:active:scale-100",
-                      preferences.theme === theme.id ? "border-[#0B6333] shadow-[0_0_0_2px_rgba(11,99,51,0.15)]" : "border-[#DFDDDB] md:hover:-translate-y-0.5 md:hover:shadow-[0_4px_15px_rgba(0,0,0,0.1)]"
-                    )}
-                  >
+                {/* Theme grid */}
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 mb-5">
+                  {THEMES.map((theme) => (
+                    <div
+                      key={theme.id}
+                      onClick={() => onUpdatePreference('theme', theme.id)}
+                      className={cn(
+                        "theme-preview-card bg-[#F8F9FA] border-2 rounded-lg p-3 md:p-4 cursor-pointer transition-all relative overflow-hidden active:scale-95 md:active:scale-100",
+                        preferences.theme === theme.id ? "border-[#0B6333] shadow-[0_0_0_2px_rgba(11,99,51,0.15)]" : "border-[#DFDDDB] md:hover:-translate-y-0.5 md:hover:shadow-[0_4px_15px_rgba(0,0,0,0.1)]"
+                      )}
+                    >
                     {preferences.theme === theme.id && (
                       <>
                         <div className="absolute top-2 right-2 md:top-3 md:right-3 w-4 h-4 md:w-[18px] md:h-[18px] bg-[#0B6333] rounded-full z-20" />
                         <div className="absolute top-2 right-2 md:top-3 md:right-3 w-4 h-4 md:w-[18px] md:h-[18px] text-white text-[10px] md:text-[11px] font-bold flex items-center justify-center z-30">✓</div>
                       </>
                     )}
-                    <div className={cn(
-                      "w-full h-[60px] md:h-20 rounded mb-2 md:mb-3 relative overflow-hidden border border-black/5",
+                    <div
+                      data-theme="light"
+                      className={cn(
+                        "theme-preview-viewport w-full h-[60px] md:h-20 rounded mb-2 md:mb-3 relative overflow-hidden border border-black/5",
                       theme.id === 'midnight' && "bg-[#0E1525]",
                       theme.id === 'light' && "bg-white",
                       theme.id === 'mint' && "bg-[#F1F6F4]",
                       theme.id === 'teal' && "bg-[#F0F7F9]",
                       theme.id === 'oceanic' && "bg-[#F4F9FC]"
-                    )}>
+                    )}
+                    >
                       <div 
                         className="h-full p-1.5 md:p-2 flex flex-col gap-0.5 md:gap-1"
                         style={{ 
@@ -170,6 +174,7 @@ export const GeneralPreferences: FC<GeneralPreferencesProps> = ({
                     <div className="text-[10px] md:text-[12px] text-[#5F5F5F] leading-tight md:leading-snug">{theme.description}</div>
                   </div>
                 ))}
+                </div>
               </div>
 
               {/* Auto theme toggle */}

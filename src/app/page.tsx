@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase_utils/client';
 
 export default function Home() {
-  const [isVisible, setIsVisible] = useState(true);
   const [isChecking, setIsChecking] = useState(true);
   const router = useRouter();
   const supabase = createClient();
@@ -26,25 +25,18 @@ export default function Home() {
     return null;
   }
 
-  if (!isVisible) {
-    return null;
-  }
-
   return (
     <main className="main-content">
-      <div className="welcome-widget" id="welcome-widget">
-        <h2>Welcome to TaskX</h2>
-        <p>
-          This is the TaskX interface with navigation sidebar and organized
-          sections. Click the menu icon to access the navigation.
+      <div className="content-header">
+        <h1 className="content-title">Task X Dashboard</h1>
+        <p className="content-subtitle">
+          <span className="subtitle-mint">
+            Welcome back! Here's what's happening with your tasks today.
+          </span>
+          <span className="subtitle-teal">
+            Welcome back! Here's your activity overview for today.
+          </span>
         </p>
-        <button
-          className="dismiss-btn"
-          id="dismiss-btn"
-          onClick={() => setIsVisible(false)}
-        >
-          ×
-        </button>
       </div>
     </main>
   );

@@ -8,7 +8,7 @@ const ExplorePage = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center py-4 md:py-5 px-3 md:px-5"
+      className="explore-page min-h-screen flex flex-col items-center py-4 md:py-5 px-3 md:px-5 text-[var(--text-default)]"
       style={{ backgroundColor: "var(--background-color, var(--background))" }}
     >
       <div 

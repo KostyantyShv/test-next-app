@@ -7,9 +7,9 @@ export const ListView: React.FC<{
   onDateClick?: (date: number) => void;
   onEventClick?: (eventId: string) => void;
 }> = ({ listData, onDateClick, onEventClick }) => (
-  <div className="bg-white border-none">
+  <div className="calendar-list bg-[var(--surface-color)] border-none">
     {listData.length === 0 ? (
-      <div className="text-center text-[#5F6368] py-6">
+      <div className="text-center text-[var(--subtle-text)] py-6">
         No events found for this filter.
       </div>
     ) : (

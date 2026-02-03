@@ -145,7 +145,7 @@ const Listing: React.FC<ListingProps> = ({
 
   return (
     <div 
-      className="min-h-screen w-full flex flex-col"
+      className="listing-page min-h-screen w-full flex flex-col"
       style={{ backgroundColor: 'var(--background-color)' }}
     >
       {/* School Info Section with ref for mobile footer visibility */}

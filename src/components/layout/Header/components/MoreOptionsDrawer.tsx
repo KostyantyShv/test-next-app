@@ -11,7 +11,7 @@ interface MoreOptionsDrawerProps {
 }
 
 export const MoreOptionsDrawer: FC<MoreOptionsDrawerProps> = ({ isOpen, onClose }) => {
-  const { theme, setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
 
   useEffect(() => {
     if (isOpen) {
@@ -25,7 +25,8 @@ export const MoreOptionsDrawer: FC<MoreOptionsDrawerProps> = ({ isOpen, onClose 
   }, [isOpen]);
 
   const handleThemeToggle = () => {
-    const isDarkish = theme === "midnight" || theme === "dark";
+    const activeTheme = resolvedTheme || theme;
+    const isDarkish = activeTheme === "midnight" || activeTheme === "dark";
     setTheme(isDarkish ? "light" : "midnight");
     onClose();
   };
@@ -131,4 +132,3 @@ export const MoreOptionsDrawer: FC<MoreOptionsDrawerProps> = ({ isOpen, onClose 
     </Portal>
   );
 };
-

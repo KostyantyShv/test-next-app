@@ -13,8 +13,8 @@ const SortOption: React.FC<SortOptionProps> = ({
 }) => {
   return (
     <div
-      className={`dropdown-item flex items-center gap-3 px-3 py-2 rounded hover:bg-[#f5f5f7] cursor-pointer text-sm ${
-        isSelected ? "text-[#0093b0] bg-[rgba(0,_147,_176,_0.1)]" : ""
+      className={`dropdown-item flex items-center gap-3 px-3 py-2 rounded hover:bg-[var(--hover-bg)] cursor-pointer text-sm ${
+        isSelected ? "text-[var(--verification-blue)] bg-[rgba(125,211,252,0.12)]" : ""
       }`}
       onClick={onClick}
     >

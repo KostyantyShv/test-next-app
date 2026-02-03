@@ -29,7 +29,7 @@ const mockNotifications: Notification[] = [
   {
     id: '1',
     category: 'student',
-    avatar: 'https://i.ibb.co/LXWbBrR/AVATAR-midtone-ux-instrgram.jpg',
+    avatar: '/images/avatar.png',
     text: (
       <>
         <strong>You</strong> earned a new badge <a href="#" className="text-[#346DC2] underline font-semibold">Active Member</a>
@@ -52,7 +52,7 @@ const mockNotifications: Notification[] = [
   {
     id: '2',
     category: 'student',
-    avatar: 'https://i.ibb.co/q3gjNwF/AVATAR-Kostis-Kapelonis.png',
+    avatar: '/images/avatar.png',
     text: (
       <>
         <strong>Jane D.</strong> just reviewed <a href="#" className="text-[#346DC2] underline font-semibold">Stanford University</a>
@@ -75,14 +75,14 @@ const mockNotifications: Notification[] = [
   {
     id: '3',
     category: 'student',
-    avatar: 'https://i.ibb.co/gLtx1DB/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg',
+    avatar: '/images/avatar.png',
     text: (
       <>
         <strong>Application Deadline Reminder:</strong> The deadline for <a href="#" className="text-[#346DC2] underline font-semibold">Duke University</a> is approaching
       </>
     ),
     content: (
-      <div className="bg-[#FEF3E2] p-3 rounded-lg border-l-[3px] border-[#F59E0B]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+      <div className="bg-[var(--state-warning-bg)] p-3 rounded-lg border-l-[3px] border-[var(--state-warning-text)]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
         <div className="text-[var(--text-default)]" style={{ fontWeight: 600, fontSize: '0.875rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>⚠️ 7 days remaining</div>
         <div className="mt-1 text-[var(--text-default)]" style={{ fontSize: '0.875rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>Deadline: January 2, 2025 at 11:59 PM</div>
       </div>
@@ -95,7 +95,7 @@ const mockNotifications: Notification[] = [
   {
     id: '4',
     category: 'student',
-    avatar: 'https://i.ibb.co/sphq90p/AVATAR-couponcodefinder.jpg',
+    avatar: '/images/avatar.png',
     text: (
       <>
         <a href="#" className="text-[#346DC2] underline font-semibold">New York University</a> just updated its profile
@@ -114,7 +114,7 @@ const mockNotifications: Notification[] = [
   {
     id: '5',
     category: 'student',
-    avatar: 'https://i.ibb.co/GvKRBQY/AVATAR-github-com-biowaffeln.png',
+    avatar: '/images/avatar.png',
     text: (
       <>
         Your review for <a href="#" className="text-[#346DC2] underline font-semibold">Princeton University</a> has been published
@@ -123,7 +123,7 @@ const mockNotifications: Notification[] = [
     content: (
       <div className="bg-[var(--gray-100)] flex items-center gap-3 p-3 rounded-lg" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
         <Image
-          src="https://i.ibb.co/BHcDXgQ/product5.webp"
+          src="/temp-images/img-announcement.png"
           alt="Princeton University"
           width={48}
           height={48}
@@ -143,7 +143,7 @@ const mockNotifications: Notification[] = [
   {
     id: '6',
     category: 'student',
-    avatar: 'https://i.ibb.co/spz3sVG/AVATAR-Hannah-Seligson.png',
+    avatar: '/images/avatar.png',
     text: (
       <>
         Because you&apos;re interested in <strong>UCLA</strong>, you might like <a href="#" className="text-[#346DC2] underline font-semibold">USC</a>
@@ -152,7 +152,7 @@ const mockNotifications: Notification[] = [
     content: (
       <div className="bg-[var(--gray-100)] flex items-center gap-3 p-3 rounded-lg" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
         <Image
-          src="https://i.ibb.co/5NTkykV/product3.jpg"
+          src="/images/cat.png"
           alt="USC"
           width={48}
           height={48}
@@ -172,7 +172,7 @@ const mockNotifications: Notification[] = [
   {
     id: '7',
     category: 'student',
-    avatar: 'https://i.ibb.co/fGQ8pG7/AVATAR-nightcafe.jpg',
+    avatar: '/images/avatar.png',
     text: (
       <>
         <strong>Chris P.</strong> found your review of <a href="#" className="text-[#346DC2] underline font-semibold">Cornell University</a> helpful
@@ -181,7 +181,7 @@ const mockNotifications: Notification[] = [
     content: (
       <div className="bg-[var(--gray-100)] flex items-center gap-3 p-3 rounded-lg" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
         <Image
-          src="https://i.ibb.co/XkdtT1Y/product2.png"
+          src="/images/cat.png"
           alt="Cornell University"
           width={48}
           height={48}
@@ -201,7 +201,7 @@ const mockNotifications: Notification[] = [
   {
     id: '8',
     category: 'vendor',
-    avatar: 'https://i.ibb.co/LXWbBrR/AVATAR-midtone-ux-instrgram.jpg',
+    avatar: '/images/avatar.png',
     text: (
       <>
         <strong>Reviewer123</strong> left a new review for <a href="#" className="text-[#346DC2] underline font-semibold">Your School Name</a>
@@ -211,7 +211,7 @@ const mockNotifications: Notification[] = [
       <div className="bg-[var(--gray-100)] rounded-lg overflow-hidden" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
         <div className="flex items-center gap-3 p-3">
           <Image
-            src="https://i.ibb.co/60MjrnY/product1.webp"
+            src="/temp-images/img-announcement.png"
             alt="Your School Name"
             width={48}
             height={48}
@@ -222,7 +222,7 @@ const mockNotifications: Notification[] = [
             <div className="text-[var(--gray-500)]" style={{ fontSize: '0.75rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>by School Admin</div>
           </div>
         </div>
-        <div className="p-3 border-t border-[var(--gray-300)] bg-[rgba(255,255,255,0.5)]">
+        <div className="p-3 border-t border-[var(--gray-300)] bg-[var(--surface-secondary)]">
           <div className="flex items-center gap-1 text-[#F59E0B] mb-2" style={{ fontWeight: 600, fontSize: '0.875rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
             <span>★★☆☆☆</span>
             <span>2</span>
@@ -239,14 +239,14 @@ const mockNotifications: Notification[] = [
   {
     id: '9',
     category: 'vendor',
-    avatar: 'https://i.ibb.co/q3gjNwF/AVATAR-Kostis-Kapelonis.png',
+    avatar: '/images/avatar.png',
     text: (
       <>
         A review on your <a href="#" className="text-[#346DC2] underline font-semibold">Your School Name</a> page was flagged for moderation
       </>
     ),
     content: (
-      <div className="bg-[#FEF2F2] p-3 rounded-lg border-l-[3px] border-[#EF4444]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+      <div className="bg-[var(--state-error-bg)] p-3 rounded-lg border-l-[3px] border-[var(--state-error-text)]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
         <div className="text-[var(--text-default)] mb-1" style={{ fontWeight: 600, fontSize: '0.875rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>🚨 Report Reason: Hate Speech</div>
         <div className="mt-1 text-[var(--text-default)]" style={{ fontSize: '0.875rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>Our moderation team will review it shortly.</div>
       </div>
@@ -259,7 +259,7 @@ const mockNotifications: Notification[] = [
   {
     id: '10',
     category: 'vendor',
-    avatar: 'https://i.ibb.co/gLtx1DB/AVATAR-Citra-Gunasiwi-for-Paperpillar.jpg',
+    avatar: '/images/avatar.png',
     text: (
       <>
         <strong>FutureStudent25</strong> just followed <a href="#" className="text-[#346DC2] underline font-semibold">Your School Name</a>
@@ -273,14 +273,14 @@ const mockNotifications: Notification[] = [
   {
     id: '11',
     category: 'system',
-    avatar: 'https://i.ibb.co/sphq90p/AVATAR-couponcodefinder.jpg',
+    avatar: '/images/avatar.png',
     text: (
       <>
         <strong>Security Alert:</strong> We detected a new login to your account
       </>
     ),
     content: (
-      <div className="bg-[#FEF2F2] p-3 rounded-lg border-l-[3px] border-[#EF4444]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+      <div className="bg-[var(--state-error-bg)] p-3 rounded-lg border-l-[3px] border-[var(--state-error-text)]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
         <div className="text-[var(--text-default)] mb-1" style={{ fontWeight: 600, fontSize: '0.875rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>📱 Chrome on Windows</div>
         <div className="mt-1 text-[var(--text-default)]" style={{ fontSize: '0.875rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>Location: Brooklyn, NY • IP: 192.168.1.1</div>
       </div>
@@ -293,14 +293,14 @@ const mockNotifications: Notification[] = [
   {
     id: '12',
     category: 'system',
-    avatar: 'https://i.ibb.co/GvKRBQY/AVATAR-github-com-biowaffeln.png',
+    avatar: '/images/avatar.png',
     text: (
       <>
         <strong>Security Alert:</strong> Your password has been successfully changed
       </>
     ),
     content: (
-      <div className="bg-[#FEF2F2] p-3 rounded-lg border-l-[3px] border-[#EF4444]" style={{ fontSize: '0.875rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+      <div className="bg-[var(--state-error-bg)] p-3 rounded-lg border-l-[3px] border-[var(--state-error-text)]" style={{ fontSize: '0.875rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
         If you did not make this change, please contact support immediately.
       </div>
     ),
@@ -431,7 +431,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
       {/* Desktop Version */}
       {typeof window !== 'undefined' && (
         <Portal containerId="notifications-panel-desktop-portal">
-          <div className="fixed inset-0 z-[1001] hidden md:block pointer-events-none">
+          <div className="fixed inset-0 z-[6000] hidden md:block pointer-events-none">
             {/* Backdrop */}
             <div 
               className="fixed inset-0 cursor-pointer pointer-events-auto" 
@@ -443,7 +443,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
             <div 
               ref={panelRef}
               className={cn(
-                "fixed right-0 w-[480px] bg-white shadow-2xl flex flex-col pointer-events-auto",
+                "notifications-panel fixed right-0 w-[480px] bg-white shadow-2xl flex flex-col pointer-events-auto",
                 "transform transition-transform duration-300 ease-in-out",
                 "border-l border-[var(--gray-300)]",
                 styles.notificationsPanel,
@@ -451,8 +451,8 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
                 className
               )}
               style={{
-                backgroundColor: 'white',
-                boxShadow: '-4px 0 12px rgba(0, 0, 0, 0.1)',
+                backgroundColor: 'var(--surface-color)',
+                boxShadow: '-4px 0 24px var(--shadow-color)',
                 top: '63px',
                 height: 'calc(100vh - 63px)',
                 minHeight: 'calc(100vh - 63px)',
@@ -461,13 +461,13 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
               onClick={(e) => e.stopPropagation()}
             >
           {/* Header */}
-          <div className="px-6 pt-6 pb-4 border-b border-[var(--gray-300)]">
+          <div className="panel-header px-6 pt-6 pb-4 border-b border-[var(--gray-300)]">
             <div className="flex justify-between items-center mb-5">
-              <h1 className="text-[var(--bold-text)]" style={{ fontSize: '1.5rem', fontWeight: 600, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>Notifications</h1>
+              <h1 className="panel-title text-[var(--bold-text)]" style={{ fontSize: '1.5rem', fontWeight: 600, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>Notifications</h1>
               <div className="flex items-center gap-4 h-6">
-                <label className="flex items-center gap-3 text-[var(--subtle-text)]" style={{ fontSize: '0.875rem', fontWeight: 500, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+                <label className="hide-read flex items-center gap-3 text-[var(--subtle-text)]" style={{ fontSize: '0.875rem', fontWeight: 500, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
                   Hide Read
-                  <label className="relative w-9 h-5 cursor-pointer">
+                  <label className="toggle-switch relative w-9 h-5 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={hideRead}
@@ -475,7 +475,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
                       className="sr-only"
                     />
                     <div className={cn(
-                      "absolute top-0 left-0 right-0 bottom-0 rounded-[20px] transition-colors duration-400",
+                      "toggle-slider absolute top-0 left-0 right-0 bottom-0 rounded-[20px] transition-colors duration-400",
                       hideRead ? "bg-[var(--active-green)]" : "bg-[var(--gray-300)]"
                     )}>
                       <div className={cn(
@@ -489,7 +489,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
                 
                 <button
                   onClick={markAllAsRead}
-                  className="p-2 rounded-md hover:bg-[var(--hover-bg)] transition-colors text-[var(--subtle-text)] hover:text-[var(--text-default)] flex items-center justify-center"
+                  className="header-icon mark-all-read p-2 rounded-md hover:bg-[var(--hover-bg)] transition-colors text-[var(--subtle-text)] hover:text-[var(--text-default)] flex items-center justify-center"
                   style={{ padding: '0.5rem' }}
                 >
                   <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinejoin="round" strokeLinecap="round" strokeWidth={2}>
@@ -502,7 +502,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
                   </svg>
                 </button>
                 
-                <button className="p-2 rounded-md hover:bg-[var(--hover-bg)] transition-colors text-[var(--subtle-text)] hover:text-[var(--text-default)] flex items-center justify-center">
+                <button className="header-icon p-2 rounded-md hover:bg-[var(--hover-bg)] transition-colors text-[var(--subtle-text)] hover:text-[var(--text-default)] flex items-center justify-center">
                   <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinejoin="round" strokeLinecap="round" strokeWidth={2}>
                     <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
                     <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
@@ -511,7 +511,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
                 
                 <button
                   onClick={onClose}
-                  className="p-2 rounded-md hover:bg-[var(--hover-bg)] transition-colors text-[var(--subtle-text)] hover:text-[var(--text-default)] flex items-center justify-center close-icon"
+                  className="header-icon close-icon p-2 rounded-md hover:bg-[var(--hover-bg)] transition-colors text-[var(--subtle-text)] hover:text-[var(--text-default)] flex items-center justify-center"
                   style={{ padding: '0.5rem' }}
                 >
                   <svg className="w-5 h-5" viewBox="0 0 15 15" fill="none">
@@ -522,18 +522,14 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
             </div>
 
             {/* Tabs */}
-            <div className="relative flex items-center overflow-hidden">
+            <div className="tabs-container relative flex items-center overflow-hidden">
               <button
                 onClick={() => scrollTabs('left')}
                 className={cn(
-                  "absolute left-0 z-10 flex items-center justify-center w-7 h-7 bg-white border-none cursor-pointer text-[var(--subtle-text)] hover:text-[var(--text-default)] transition-colors",
+                  "tabs-scroll-button left absolute left-0 z-10 flex items-center justify-center w-7 h-7 bg-white border-none cursor-pointer text-[var(--subtle-text)] hover:text-[var(--text-default)] transition-colors",
                   !showLeftScroll && "hidden"
                 )}
-                style={{ 
-                  background: 'linear-gradient(to right, white 50%, rgba(255,255,255,0.9) 100%)',
-                  padding: 0,
-                  margin: '0 0.25rem'
-                }}
+                style={{ padding: 0, margin: '0 0.25rem' }}
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
                   <path d="M15 18l-6-6 6-6" />
@@ -541,7 +537,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
               </button>
               <div 
                 ref={tabsScrollRef}
-                className="flex gap-2 overflow-x-scroll scrollbar-hide pr-4 -mr-4"
+                className="tabs flex gap-2 overflow-x-scroll scrollbar-hide pr-4 -mr-4"
                 style={{ scrollBehavior: 'smooth', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 onScroll={updateScrollButtons}
               >
@@ -556,18 +552,18 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
                       key={category.id}
                       onClick={() => setActiveCategory(category.id)}
                       className={cn(
-                        "px-3 py-2 rounded-[20px] flex items-center gap-2 transition-all duration-200 whitespace-nowrap",
+                        "tab px-3 py-2 rounded-[20px] flex items-center gap-2 transition-all duration-200 whitespace-nowrap",
                         activeCategory === category.id
-                          ? "bg-[var(--active-green)] text-white"
+                          ? "bg-[var(--active-green)] text-white active"
                           : "text-[var(--subtle-text)] hover:bg-[var(--hover-bg)]"
                       )}
                       style={{ fontSize: '0.875rem', fontWeight: 600, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
                     >
                       {category.label}
                       <span className={cn(
-                        "px-2 py-0.5 rounded-xl",
+                        "tab-count px-2 py-0.5 rounded-xl",
                         activeCategory === category.id
-                          ? "bg-[rgba(255,255,255,0.2)] text-white"
+                          ? "bg-[rgba(255,255,255,0.2)] text-white active"
                           : "bg-[var(--gray-200)] text-[var(--subtle-text)]"
                       )}
                       style={{ fontSize: '0.75rem', fontWeight: 500, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
@@ -580,14 +576,10 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
               <button
                 onClick={() => scrollTabs('right')}
                 className={cn(
-                  "absolute right-0 z-10 flex items-center justify-center w-7 h-7 bg-white border-none cursor-pointer text-[var(--subtle-text)] hover:text-[var(--text-default)] transition-colors",
+                  "tabs-scroll-button right absolute right-0 z-10 flex items-center justify-center w-7 h-7 bg-white border-none cursor-pointer text-[var(--subtle-text)] hover:text-[var(--text-default)] transition-colors",
                   !showRightScroll && "hidden"
                 )}
-                style={{ 
-                  background: 'linear-gradient(to left, white 50%, rgba(255,255,255,0.9) 100%)',
-                  padding: 0,
-                  margin: '0 0.25rem'
-                }}
+                style={{ padding: 0, margin: '0 0.25rem' }}
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
                   <path d="M9 6l6 6-6 6" />
@@ -597,8 +589,8 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
           </div>
 
           {/* Search */}
-          <div className="px-6 py-4 relative">
-            <div className="absolute left-8 top-1/2 transform -translate-y-1/2 text-[var(--gray-400)]">
+          <div className="search-container px-6 py-4 relative">
+            <div className="search-icon absolute left-8 top-1/2 transform -translate-y-1/2 text-[var(--gray-400)]">
               <svg className="w-4 h-4" viewBox="1 1 60 60" fill="currentColor">
                 <path d="M27.765 42.244c-8.614 0-15.622-7.008-15.622-15.622S19.151 11 27.765 11s15.622 7.008 15.622 15.622-7.007 15.622-15.622 15.622zm0-28.398c-7.045 0-12.775 5.73-12.775 12.775s5.73 12.775 12.775 12.775 12.775-5.73 12.775-12.775-5.73-12.775-12.775-12.775z" />
                 <path d="M34.869 39.146l4.014-3.738 9.286 9.114a3.164 3.164 0 01-.07 4.562l-.071.066a3.163 3.163 0 01-4.561-.257l-8.598-9.747zM27.77 34.173c-2.882 0-5.412-.876-7.656-2.526a1.002 1.002 0 01-.35-.81c.008-.461.445-.969 1.02-.959.284.005.493.153.713.308 1.837 1.302 3.832 1.971 6.275 1.971 1.875 0 4.492-.476 6.314-2.118a.98.98 0 01.638-.261.92.92 0 01.686.241c.222.209.33.527.336.735a1.02 1.02 0 01-.318.775c-1.333 1.237-4.262 2.644-7.658 2.644z" />
@@ -609,13 +601,13 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
               placeholder="Filter messages"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-10 py-3 rounded-lg border-2 border-transparent bg-[var(--gray-100)] focus:border-[var(--active-green)] focus:bg-white focus:outline-none transition-all duration-200 text-[var(--text-default)] placeholder:text-[var(--gray-400)]"
+              className="notifications-search-input w-full pl-10 pr-10 py-3 rounded-lg border border-[var(--border-color)] bg-[var(--surface-secondary)] focus:border-[var(--active-green)] focus:bg-[var(--surface-secondary)] focus:outline-none transition-all duration-200 text-[var(--text-default)] placeholder:text-[var(--gray-400)]"
               style={{ fontSize: '0.875rem', paddingLeft: '2.5rem', paddingRight: '2.5rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm('')}
-                className="absolute right-8 top-1/2 transform -translate-y-1/2 p-1 rounded-full hover:bg-[var(--gray-300)] transition-colors flex items-center justify-center"
+                className="clear-search absolute right-8 top-1/2 transform -translate-y-1/2 p-1 rounded-full hover:bg-[var(--gray-300)] transition-colors flex items-center justify-center"
                 style={{ display: 'flex' }}
               >
                 <svg className="w-4 h-4" viewBox="0 0 15 15" fill="none">
@@ -626,18 +618,18 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
           </div>
 
           {/* Notifications List */}
-          <div className="flex-1 overflow-y-auto px-6 py-4" style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--gray-200) var(--gray-100)' }}>
+          <div className="notifications-list flex-1 overflow-y-auto px-6 py-4" style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--gray-200) var(--gray-100)' }}>
             {filteredNotifications.map((notification) => (
               <div
                 key={notification.id}
                 data-category={notification.category}
                 className={cn(
-                  "flex gap-4 py-4 border-b border-[var(--gray-300)] relative group last:border-b-0",
+                  "notification flex gap-4 py-4 border-b border-[var(--gray-300)] relative group last:border-b-0",
                   notification.isRead && "opacity-70"
                 )}
               >
                 {/* Avatar */}
-                <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                <div className="notification-avatar w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
                   <Image
                     src={notification.avatar}
                     alt="User"
@@ -650,7 +642,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div 
-                    className="notification-text-content text-[var(--text-default)] mb-1 pr-20 leading-[1.5] break-words" 
+                    className="notification-text text-[var(--text-default)] mb-1 pr-20 leading-[1.5] break-words" 
                     style={{ 
                       fontSize: '0.875rem', 
                       lineHeight: 1.5, 
@@ -664,20 +656,20 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
                       {notification.content}
                     </div>
                   )}
-                  <div className="flex justify-between text-[var(--gray-500)]" style={{ fontSize: '0.75rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+                  <div className="notification-meta flex justify-between text-[var(--gray-500)]" style={{ fontSize: '0.75rem', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
                     <span>{notification.date}</span>
                     <span>{notification.timeAgo}</span>
                   </div>
                 </div>
 
                 {/* Indicators */}
-                <div className="absolute right-0 top-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-2">
+                <div className="notification-indicators absolute right-0 top-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-2">
                   {notification.isUnread && !notification.isRead && (
-                    <div className="w-2 h-2 rounded-full bg-[var(--verification-blue)]" style={{ width: '8px', height: '8px' }} />
+                    <div className="unread-indicator w-2 h-2 rounded-full bg-[var(--verification-blue)]" style={{ width: '8px', height: '8px' }} />
                   )}
                   <button
                     onClick={() => markAsRead(notification.id)}
-                    className="p-1 rounded-full hover:bg-[var(--hover-bg)] transition-colors text-[var(--gray-400)] hover:text-[var(--text-default)] flex items-center justify-center"
+                    className="mark-read p-1 rounded-full hover:bg-[var(--hover-bg)] transition-colors text-[var(--gray-400)] hover:text-[var(--text-default)] flex items-center justify-center"
                   >
                     <svg className="w-4 h-4" viewBox="0 0 256 256" fill="currentColor">
                       <path d="M149.61,85.71l-89.6,88a8,8,0,0,1-11.22,0L10.39,136a8,8,0,1,1,11.22-11.41L54.4,156.79l84-82.5a8,8,0,1,1,11.22,11.42Zm96.1-11.32a8,8,0,0,0-11.32-.1l-84,82.5-18.83-18.5a8,8,0,0,0-11.21,11.42l24.43,24a8,8,0,0,0,11.22,0l89.6-88A8,8,0,0,0,245.71,74.39Z" />
@@ -685,7 +677,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
                   </button>
                   <button
                     onClick={() => dismissNotification(notification.id)}
-                    className="p-1 rounded-full hover:bg-[var(--hover-bg)] transition-colors text-[var(--gray-400)] hover:text-[var(--text-default)] flex items-center justify-center"
+                    className="dismiss-notification p-1 rounded-full hover:bg-[var(--hover-bg)] transition-colors text-[var(--gray-400)] hover:text-[var(--text-default)] flex items-center justify-center"
                   >
                     <svg className="w-4 h-4" viewBox="0 0 15 15" fill="none">
                       <path clipRule="evenodd" fillRule="evenodd" fill="currentColor" d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z" />

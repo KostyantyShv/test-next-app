@@ -28,7 +28,7 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
     <span
       className={`${
         filters().length ? "block" : "hidden"
-      } text-sm font-medium text-textDefault flex flex-wrap items-center gap-2`}
+      } text-sm font-medium text-[var(--text-default)] flex flex-wrap items-center gap-2`}
     >
       {filters().map((filter: FilterItem) => (
         <FilterPill

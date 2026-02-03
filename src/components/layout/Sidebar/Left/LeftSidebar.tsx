@@ -51,7 +51,7 @@ const UserProfileName: FC = () => {
 
   return (
     <div className="flex-1">
-      <div className="font-inter text-sm font-semibold text-gray-700">{userName}</div>
+      <div className="sidebar-user-name font-inter text-sm font-semibold text-gray-700">{userName}</div>
     </div>
   );
 };
@@ -91,7 +91,7 @@ const UserProfileTooltip: FC = () => {
   }, []);
 
   return (
-    <div className="absolute left-16 top-1/2 -translate-x-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg font-inter text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
+    <div className="sidebar-tooltip absolute left-16 top-1/2 -translate-x-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg font-inter text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
       {userName}
     </div>
   );
@@ -239,23 +239,26 @@ export const LeftSidebar: FC = () => {
 
   return (
     <aside
+      data-collapsed={isCollapsed ? "true" : "false"}
       className={cn(
-        "h-screen bg-white border-r border-gray-200 shrink-0 sticky top-0 left-0",
+        "left-sidebar h-screen bg-white border-r border-gray-200 shrink-0 sticky top-0 left-0",
         "transition-all duration-300 ease-in-out",
         isCollapsed ? "w-20" : "w-64"
       )}
     >
       <div className="flex h-full flex-col">
         {/* Logo Container */}
-        <div className={cn(
-          "flex items-center gap-3 border-b border-gray-200 relative flex-shrink-0",
-          isCollapsed ? "px-6 py-4 h-16" : "px-5 py-4 h-16"
-        )}>
+        <div
+          className={cn(
+            "sidebar-logo flex items-center gap-3 border-b border-gray-200 relative flex-shrink-0",
+            isCollapsed ? "px-6 py-4 h-16" : "px-5 py-4 h-16"
+          )}
+        >
           <Logo collapsed={isCollapsed} />
           {!isCollapsed && (
             <button
               onClick={() => setIsCollapsed(true)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded transition-all duration-200 text-gray-500 hover:bg-green-50 hover:text-green-700"
+              className="sidebar-collapse-button absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded transition-all duration-200 text-gray-500 hover:bg-green-50 hover:text-green-700"
               aria-label="Collapse sidebar"
             >
               <svg data-name="expand-panel" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4">
@@ -268,7 +271,7 @@ export const LeftSidebar: FC = () => {
         </div>
 
         {/* Scrollable Navigation Area */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden sidebar-scroll">
+        <div className="sidebar-scrollable flex-1 overflow-y-auto overflow-x-hidden sidebar-scroll">
           {/* Custom scrollbar styles */}
           <style jsx>{`
             .sidebar-scroll::-webkit-scrollbar {
@@ -278,7 +281,7 @@ export const LeftSidebar: FC = () => {
               background: transparent;
             }
             .sidebar-scroll::-webkit-scrollbar-thumb {
-              background-color: rgba(0, 0, 0, 0.2);
+              background-color: var(--surface-tertiary);
               border-radius: 2px;
             }
           `}</style>
@@ -286,10 +289,12 @@ export const LeftSidebar: FC = () => {
           <nav className="py-4">
             {/* Explore Section */}
             <div className="mb-4">
-              <div className={cn(
-                "font-inter font-semibold text-gray-600 uppercase tracking-wider",
-                isCollapsed ? "px-2 py-2 text-xs" : "px-5 mb-2 text-xs"
-              )}>
+              <div
+                className={cn(
+                  "sidebar-section-header font-inter font-semibold text-gray-600 uppercase tracking-wider",
+                  isCollapsed ? "px-2 py-2 text-xs" : "px-5 mb-2 text-xs"
+                )}
+              >
                 {isCollapsed ? "EXPLORE" : "Explore"}
               </div>
               <div className="space-y-1 px-2">
@@ -298,10 +303,10 @@ export const LeftSidebar: FC = () => {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-2 text-gray-600 transition-all duration-200 relative group",
+                      "sidebar-nav-item flex items-center gap-3 px-3 py-2 text-gray-600 transition-all duration-200 relative group",
                       "font-inter text-sm font-medium border border-transparent",
                       "hover:bg-green-50 hover:border-green-200",
-                      pathname === item.href && "bg-gradient-to-r from-green-50 to-green-100 border-green-200 text-green-700",
+                      pathname === item.href && "bg-gradient-to-r from-green-50 to-green-100 border-green-200 text-green-700 is-active",
                       isCollapsed ? "justify-center w-11 h-11 mx-auto rounded-[12px]" : "rounded-3xl"
                     )}
                   >
@@ -321,7 +326,7 @@ export const LeftSidebar: FC = () => {
                     )}
                     {!isCollapsed && <span>{item.label}</span>}
                     {isCollapsed && (
-                      <div className="absolute left-16 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg font-inter text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
+                      <div className="sidebar-tooltip absolute left-16 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg font-inter text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
                         {item.label}
                       </div>
                     )}
@@ -332,10 +337,12 @@ export const LeftSidebar: FC = () => {
 
             {/* Library Section */}
             <div className="mb-4">
-              <div className={cn(
-                "font-inter font-semibold text-gray-600 uppercase tracking-wider",
-                isCollapsed ? "px-2 py-2 text-xs" : "px-5 mb-2 text-xs"
-              )}>
+              <div
+                className={cn(
+                  "sidebar-section-header font-inter font-semibold text-gray-600 uppercase tracking-wider",
+                  isCollapsed ? "px-2 py-2 text-xs" : "px-5 mb-2 text-xs"
+                )}
+              >
                 {isCollapsed ? "LIBRARY" : "Library"}
               </div>
               <div className="space-y-1 px-2">
@@ -349,10 +356,10 @@ export const LeftSidebar: FC = () => {
                     <div key={item.href}>
                       <div
                         className={cn(
-                          "flex items-center gap-3 px-3 py-2 text-gray-600 transition-all duration-200 cursor-pointer relative group",
+                          "sidebar-nav-item flex items-center gap-3 px-3 py-2 text-gray-600 transition-all duration-200 cursor-pointer relative group",
                           "font-inter text-sm font-medium border border-transparent",
                           "hover:bg-green-50 hover:border-green-200",
-                          isActive && "bg-gradient-to-r from-green-50 to-green-100 border-green-200 text-green-700",
+                          isActive && "bg-gradient-to-r from-green-50 to-green-100 border-green-200 text-green-700 is-active",
                           isCollapsed ? "justify-center w-11 h-11 mx-auto rounded-[12px]" : "rounded-3xl"
                         )}
                         onMouseEnter={(e) => {
@@ -451,13 +458,13 @@ export const LeftSidebar: FC = () => {
                           <>
                             <span className="flex-1">{item.label}</span>
                             {hasSubmenu && !isCollapsed && (
-                              <div className="action-buttons flex items-center gap-1 opacity-0 transition-opacity duration-200">
+                              <div className="sidebar-action-buttons action-buttons flex items-center gap-1 opacity-0 transition-opacity duration-200">
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setIsCreateModalOpen(true);
                                   }}
-                                  className="w-6 h-6 !bg-gray-200 rounded-full flex items-center justify-center hover:!bg-gray-300 transition-colors active:!bg-gray-200 focus:!bg-gray-200 text-gray-600"
+                                  className="sidebar-circle-button w-6 h-6 !bg-gray-200 rounded-full flex items-center justify-center hover:!bg-gray-300 transition-colors active:!bg-gray-200 focus:!bg-gray-200 text-gray-600"
                                 >
                                   <svg viewBox="0 0 22 22" fill="currentColor" className="w-4 h-4">
                                     <path d="M22 11C22 17.0751 17.0751 22 11 22C4.92487 22 0 17.0751 0 11C0 4.92487 4.92487 0 11 0C17.0751 0 22 4.92487 22 11Z" fill="#E8E9ED"/>
@@ -469,7 +476,7 @@ export const LeftSidebar: FC = () => {
                                     e.stopPropagation();
                                     toggleSubmenu(submenuId);
                                   }}
-                                  className="w-6 h-6 !bg-gray-200 rounded-full flex items-center justify-center hover:!bg-gray-300 transition-colors active:!bg-gray-200 focus:!bg-gray-200 text-gray-600"
+                                  className="sidebar-circle-button w-6 h-6 !bg-gray-200 rounded-full flex items-center justify-center hover:!bg-gray-300 transition-colors active:!bg-gray-200 focus:!bg-gray-200 text-gray-600"
                                 >
                                   <svg className={cn("w-4 h-4 transition-transform duration-200", isSubmenuOpen ? "rotate-180" : "")} height="16" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" fill="none">
                                     <path d="M19 9l-7 7-7-7" strokeLinejoin="round" strokeLinecap="round"/>
@@ -480,7 +487,7 @@ export const LeftSidebar: FC = () => {
                           </>
                         )}
                         {isCollapsed && (
-                          <div className="absolute left-16 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg font-inter text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
+                          <div className="sidebar-tooltip absolute left-16 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg font-inter text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
                             {item.label}
                           </div>
                         )}
@@ -488,17 +495,19 @@ export const LeftSidebar: FC = () => {
                       
                       {/* Submenu */}
                       {hasSubmenu && !isCollapsed && (
-                        <div className={cn(
-                          "mt-0 relative bg-white py-1",
-                          isSubmenuOpen ? "block" : "hidden"
-                        )}>
-                          <div className="absolute left-7 top-0 bottom-0 w-0.5 bg-green-200"></div>
+                        <div
+                          className={cn(
+                            "sidebar-submenu mt-0 relative bg-white py-1",
+                            isSubmenuOpen ? "block" : "hidden"
+                          )}
+                        >
+                          <div className="submenu-line absolute left-7 top-0 bottom-0 w-0.5 bg-green-200"></div>
                           {item.submenuItems?.map((subItem, index) => (
                             <Link
                               key={subItem.href}
                               href={subItem.href}
                               className={cn(
-                                "flex items-center py-2 pr-5 pl-[52px] text-gray-600 font-inter text-sm font-medium transition-colors duration-200",
+                                "sidebar-submenu-item flex items-center py-2 pr-5 pl-[52px] text-gray-600 font-inter text-sm font-medium transition-colors duration-200",
                                 "hover:text-green-700 relative",
                                 pathname === subItem.href && "text-green-700"
                               )}
@@ -506,11 +515,11 @@ export const LeftSidebar: FC = () => {
                               <span className="mr-2 text-base">{subItem.emoji}</span>
                               <span>{subItem.label}</span>
                               {pathname === subItem.href && (
-                                <div className="absolute left-7 top-0 bottom-0 w-0.5 bg-green-700"></div>
+                                <div className="submenu-active-line absolute left-7 top-0 bottom-0 w-0.5 bg-green-700"></div>
                               )}
                             </Link>
                           ))}
-                          <div className="pк-5 pl-[52px] py-1.5 text-gray-500 font-inter text-xs font-medium opacity-80 hover:opacity-100 cursor-pointer">
+                          <div className="sidebar-more-items pl-[52px] py-1.5 text-gray-500 font-inter text-xs font-medium opacity-80 hover:opacity-100 cursor-pointer">
                             3 more items
                           </div>
                         </div>
@@ -528,7 +537,7 @@ export const LeftSidebar: FC = () => {
           <div className="px-3 py-2 flex-shrink-0">
             <button
               onClick={() => setIsCollapsed(false)}
-              className="w-8 h-8 mx-auto flex items-center justify-center rounded-lg hover:bg-green-50 hover:text-green-700 transition-all duration-200 text-gray-500"
+              className="sidebar-expand-button w-8 h-8 mx-auto flex items-center justify-center rounded-lg hover:bg-green-50 hover:text-green-700 transition-all duration-200 text-gray-500"
               aria-label="Expand sidebar"
             >
               <svg data-name="expand-panel" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4">
@@ -543,7 +552,7 @@ export const LeftSidebar: FC = () => {
         
 
         {/* Bottom Items */}
-        <div className="px-2 py-2 border-t border-gray-200 flex-shrink-0">
+        <div className="sidebar-footer px-2 py-2 border-t border-gray-200 flex-shrink-0">
           <div className="space-y-1">
             {bottomItems.map((item, idx) => {
               const isActive = pathname === item.href;
@@ -553,10 +562,10 @@ export const LeftSidebar: FC = () => {
                 href={item.href}
                 onClick={item.onClick}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2 text-gray-600 transition-all duration-200 relative group",
+                  "sidebar-nav-item flex items-center gap-3 px-3 py-2 text-gray-600 transition-all duration-200 relative group",
                   "font-inter text-sm font-medium border border-transparent",
                   "hover:bg-green-50 hover:border-green-200",
-                  isActive && "bg-gradient-to-r from-green-50 to-green-100 border-green-200 text-green-700",
+                  isActive && "bg-gradient-to-r from-green-50 to-green-100 border-green-200 text-green-700 is-active",
                   isCollapsed ? "justify-center w-11 h-11 mx-auto rounded-[12px]" : (isActive ? "rounded-[18px]" : "rounded-3xl")
                 )}
               >
@@ -587,7 +596,7 @@ export const LeftSidebar: FC = () => {
                 )}
                 {!isCollapsed && <span>{item.label}</span>}
                 {isCollapsed && (
-                  <div className="absolute left-16 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg font-inter text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
+                  <div className="sidebar-tooltip absolute left-16 top-1/2 -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg font-inter text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
                     {item.label}
                   </div>
                 )}
@@ -599,10 +608,10 @@ export const LeftSidebar: FC = () => {
           {/* User Profile */}
           <div 
             className={cn(
-              "user-profile-block flex items-center gap-3 px-3 py-2 transition-all duration-200 mt-2 relative group cursor-pointer",
+              "sidebar-user-profile user-profile-block flex items-center gap-3 px-3 py-2 transition-all duration-200 mt-2 relative group cursor-pointer",
               "hover:bg-green-50",
               isCollapsed ? "justify-center w-11 h-11 mx-auto rounded-[18px]" : "rounded-3xl",
-              isAvatarDropdownOpen && "bg-green-50"
+              isAvatarDropdownOpen && "bg-green-50 is-active"
             )}
             onClick={(e) => {
               // На мобільному пристрої перенаправляємо на сторінку /me

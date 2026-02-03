@@ -5,33 +5,33 @@ export const ViewControls: React.FC<{
   setView: (view: ViewType) => void;
   onJumpToToday: () => void;
 }> = ({ view, setView, onJumpToToday }) => (
-  <div className="flex gap-3 items-center">
+  <div className="calendar-view-controls flex gap-3 items-center">
     <button
-      className="px-4 py-2 border border-[#E0E0E0] rounded text-sm font-medium text-[#5F6368] cursor-pointer bg-white hover:bg-[rgba(95,99,104,0.1)]"
+      className="calendar-today-button px-4 py-2 border border-[var(--border-color)] rounded text-sm font-medium text-[var(--subtle-text)] cursor-pointer bg-[var(--surface-color)] hover:bg-[var(--hover-bg)]"
       onClick={onJumpToToday}
     >
       Today
     </button>
-    <div className="flex bg-[#F1F3F4] rounded p-0.5">
+    <div className="calendar-view-toggle flex bg-[var(--surface-secondary)] rounded p-0.5">
       <button
-        className={`px-3 py-1.5 rounded flex items-center gap-1 ${
-          view === "list" ? "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.1)]" : ""
+        className={`calendar-view-button px-3 py-1.5 rounded flex items-center gap-1 ${
+          view === "list" ? "bg-[var(--surface-color)] shadow-[0_1px_2px_var(--shadow-color)]" : ""
         }`}
         onClick={() => setView("list")}
       >
         <svg
           fill="currentColor"
           viewBox="0 0 24 24"
-          className="w-5 h-5 text-[#5F6368]"
+          className="w-5 h-5 text-[var(--subtle-text)]"
         >
           <path fill="none" d="M0 0h24v24H0V0z"></path>
           <path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"></path>
         </svg>
       </button>
       <button
-        className={`px-3 py-1.5 rounded flex items-center gap-1 ${
+        className={`calendar-view-button px-3 py-1.5 rounded flex items-center gap-1 ${
           view === "calendar"
-            ? "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.1)]"
+            ? "bg-[var(--surface-color)] shadow-[0_1px_2px_var(--shadow-color)]"
             : ""
         }`}
         onClick={() => setView("calendar")}
@@ -43,7 +43,7 @@ export const ViewControls: React.FC<{
           stroke="currentColor"
           fill="none"
           viewBox="0 0 24 24"
-          className="w-5 h-5 text-[#5F6368]"
+          className="w-5 h-5 text-[var(--subtle-text)]"
         >
           <rect
             ry="2"

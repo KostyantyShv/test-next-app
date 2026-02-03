@@ -318,32 +318,34 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <>
       {/* Desktop Header */}
-      <div className="hidden md:flex items-center justify-between p-6 border-b border-[rgba(0,0,0,0.08)] bg-white">
-        <div className="group flex items-center gap-3 relative cursor-pointer p-2 rounded-2xl hover:bg-[#f5f5f7] transition-colors">
-          <div className="w-6 h-6 flex items-center justify-center text-[#464646]">
+      <div className="explore-header hidden md:flex items-center justify-between p-6 border-b border-[var(--border-color)] bg-[var(--surface-color)]">
+        <div className="explore-header-left group flex items-center gap-3 relative cursor-pointer p-2 rounded-2xl hover:bg-[var(--hover-bg)] transition-colors">
+          <div className="w-6 h-6 flex items-center justify-center text-[var(--bold-text)]">
             {getEstablishmentIcon(dropdownValue)}
           </div>
-          <h1 className="text-lg font-semibold text-[#464646]">{dropdownValue}</h1>
-          <div className="w-4 h-4 ml-2 text-[#4A4A4A]">
+          <h1 className="text-lg font-semibold text-[var(--bold-text)]">{dropdownValue}</h1>
+          <div className="explore-header-arrow w-4 h-4 ml-2 text-[var(--subtle-text)]">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <path fill="currentColor" d="M5.29289 9.29289C5.68342 8.90237 6.31658 8.90237 6.70711 9.29289L12 14.5858L17.2929 9.29289C17.6834 8.90237 18.3166 8.90237 18.7071 9.29289C19.0976 9.68342 19.0976 10.3166 18.7071 10.7071L12.7071 16.7071C12.5196 16.8946 12.2652 17 12 17C11.7348 17 11.4804 16.8946 11.2929 16.7071L5.29289 10.7071C4.90237 10.3166 4.90237 9.68342 5.29289 9.29289Z"></path>
             </svg>
           </div>
 
           {/* School Type Tooltip */}
-          <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 w-64 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-            {establishmentTypes.map((type) => (
+          <div className="explore-header-dropdown absolute top-full left-0 mt-2 bg-[var(--surface-secondary)] rounded-lg shadow-[0_4px_20px_var(--shadow-color)] border border-[var(--border-color)] w-64 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            {establishmentTypes.map((type) => {
+              const isSelected = type === dropdownValue;
+              return (
               <div
                 key={type}
                 onClick={() => handleEstablishmentSelect(type)}
-                className="flex items-center p-3 hover:bg-[rgba(0,0,0,0.04)] transition-colors cursor-pointer"
+                className={`explore-header-dropdown-item flex items-center p-3 hover:bg-[var(--hover-bg)] transition-colors cursor-pointer ${isSelected ? "is-selected" : ""}`}
               >
-                <div className="w-6 h-6 flex items-center justify-center mr-3 text-[#5F5F5F]">
+                <div className="explore-header-dropdown-icon w-6 h-6 flex items-center justify-center mr-3 text-[var(--subtle-text)]">
                   {getEstablishmentIcon(type)}
                 </div>
                 <div className="flex-1 flex justify-between items-center">
-                  <span className="text-[#4A4A4A] text-sm font-medium">{type}</span>
-                  <span className="text-[#5F5F5F] text-xs">
+                  <span className="explore-header-dropdown-label text-[var(--text-default)] text-sm font-medium">{type}</span>
+                  <span className="explore-header-dropdown-count text-[var(--subtle-text)] text-xs">
                     {type === "K-12" && "2,583 schools"}
                     {type === "Colleges" && "1,870 colleges"}
                     {type === "Graduates" && "642 programs"}
@@ -351,7 +353,8 @@ const Header: React.FC<HeaderProps> = ({
                   </span>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
 
@@ -362,7 +365,7 @@ const Header: React.FC<HeaderProps> = ({
               setIsContainerExpanded(!isContainerExpanded);
               onContainerExpandChange?.(!isContainerExpanded);
             }}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[var(--hover-bg)] transition-colors"
           >
             {isContainerExpanded ? (
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -383,7 +386,7 @@ const Header: React.FC<HeaderProps> = ({
           <div className={`relative ${isSearchActive ? 'flex' : 'hidden'} items-center gap-3`}>
             <button
               onClick={handleCloseSearch}
-              className="text-[#5F5F5F] hover:text-[#4A4A4A] transition-colors flex-shrink-0"
+              className="text-[var(--subtle-text)] hover:text-[var(--text-default)] transition-colors flex-shrink-0"
             >
               {/* ==================== */}
               <svg width="22" height="14" fill="none" viewBox="0 0 19 19">
@@ -391,20 +394,20 @@ const Header: React.FC<HeaderProps> = ({
               </svg>
             </button>
 
-            <div className="flex items-center bg-white border border-[rgba(0,0,0,0.1)] rounded h-10 w-[350px] flex-shrink-0">
-              <div className="text-sm font-semibold text-[#484848] px-3 whitespace-nowrap flex-shrink-0">Where</div>
+            <div className="flex items-center bg-[var(--surface-secondary)] border border-[var(--border-color)] rounded h-10 w-[350px] flex-shrink-0">
+              <div className="text-sm font-semibold text-[var(--bold-text)] px-3 whitespace-nowrap flex-shrink-0">Where</div>
               <div className="flex items-center relative flex-1 h-full px-3 min-w-0">
                 <input
                   type="text"
                   placeholder="Enter a city, state or country"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="border-none outline-none text-sm w-full h-full bg-transparent"
+                  className="border-none outline-none text-sm w-full h-full bg-transparent text-[var(--text-default)] placeholder:text-[var(--subtle-text)]"
                   autoFocus
                 />
                 <button
                   onClick={() => setSearchQuery("")}
-                  className={`w-5 h-5 flex items-center justify-center text-[#5F5F5F] opacity-70 hover:opacity-100 transition-opacity flex-shrink-0 translate-y-0.5 ${searchQuery.length >= 2 ? 'flex' : 'hidden'}`}
+                  className={`w-5 h-5 flex items-center justify-center text-[var(--subtle-text)] opacity-70 hover:opacity-100 transition-opacity flex-shrink-0 translate-y-0.5 ${searchQuery.length >= 2 ? 'flex' : 'hidden'}`}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
 
@@ -414,12 +417,12 @@ const Header: React.FC<HeaderProps> = ({
 
                   </svg>
                 </button>
-                <button className="w-6 h-6 flex items-center justify-center text-[#0093B0] opacity-80 hover:opacity-100 transition-opacity flex-shrink-0">
+                <button className="w-6 h-6 flex items-center justify-center text-[var(--verification-blue)] opacity-80 hover:opacity-100 transition-opacity flex-shrink-0">
                   <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
                     <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7 c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z"></path><path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3 c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8 C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1 c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1 C18.6,5.5,19.8,8.4,19.2,11.2z"></path>
                   </svg>
                 </button>
-                <button className="w-7 h-7 rounded-full bg-[#0093B0] flex items-center justify-center ml-2 flex-shrink-0">
+                <button className="w-7 h-7 rounded-full bg-[var(--verification-blue)] flex items-center justify-center ml-2 flex-shrink-0">
                   <svg fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
                     <path d="M21.7,20.3l-3.3-2.9c1.5-1.7,2.3-3.8,2.3-6.1c0-5.1-4.2-9.3-9.3-9.3S2,6.2,2,11.3s4.2,9.3,9.3,9.3c2.1,0,4-0.7,5.7-1.9l3.4,3c0.2,0.2,0.4,0.2,0.6,0.2c0.3,0,0.5-0.1,0.7-0.3C22.1,21.3,22.1,20.7,21.7,20.3z M11.3,18.7c-4.1,0-7.4-3.3-7.4-7.4s3.3-7.4,7.4-7.4s7.4,3.3,7.4,7.4S15.4,18.7,11.3,18.7z"></path>
                   </svg>
@@ -432,7 +435,7 @@ const Header: React.FC<HeaderProps> = ({
           {!isSearchActive && (
             <button
               onClick={() => setIsSearchActive(true)}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[var(--hover-bg)] transition-colors"
             >
               <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
                 <path d="M21.7,20.3l-3.3-2.9c1.5-1.7,2.3-3.8,2.3-6.1c0-5.1-4.2-9.3-9.3-9.3S2,6.2,2,11.3s4.2,9.3,9.3,9.3c2.1,0,4-0.7,5.7-1.9l3.4,3c0.2,0.2,0.4,0.2,0.6,0.2c0.3,0,0.5-0.1,0.7-0.3C22.1,21.3,22.1,20.7,21.7,20.3z M11.3,18.7c-4.1,0-7.4-3.3-7.4-7.4s3.3-7.4,7.4-7.4s7.4,3.3,7.4,7.4S15.4,18.7,11.3,18.7z"></path>
@@ -444,8 +447,8 @@ const Header: React.FC<HeaderProps> = ({
           <button
             onClick={handleMapToggle}
             className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors border ${isMapActive
-              ? 'bg-[#EBFCF4] border-[#016853] text-[#016853]'
-              : 'text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)] border-[rgba(0,0,0,0.1)]'
+              ? 'bg-[var(--apply-button-bg)] border-[var(--header-green)] text-[var(--header-green)]'
+              : 'text-[var(--text-default)] hover:bg-[var(--hover-bg)] border-[var(--border-color)]'
               }`}
           >
             <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
@@ -453,7 +456,7 @@ const Header: React.FC<HeaderProps> = ({
             </svg>
           </button>
 
-          <div className="w-px h-6 bg-[rgba(0,0,0,0.1)] mx-2"></div>
+          <div className="w-px h-6 bg-[var(--border-color)] mx-2"></div>
 
           {/* Layout Toggle: show ONLY active; reveal others on hover */}
           <LayoutToggle
@@ -471,8 +474,8 @@ const Header: React.FC<HeaderProps> = ({
       {/* Mobile Header — matches HTML layout/design (Explore & Collections mobile) */}
       <div className="md:hidden relative z-[100]">
         <div
-          className="flex items-center justify-between py-3 px-4 bg-white border-b border-[rgba(0,0,0,0.08)]"
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}
+          className="flex items-center justify-between py-3 px-4 bg-[var(--surface-color)] border-b border-[var(--border-color)]"
+          style={{ boxShadow: "0 2px 8px var(--shadow-color)" }}
         >
           <div className="flex items-center gap-3 min-w-0">
             {/* Menu (sidebar) — only when replacing app header */}
@@ -480,7 +483,7 @@ const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={openMobileSidebar}
-                className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-[#464646] hover:bg-[#f5f5f7] transition-colors"
+                className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-[var(--bold-text)] hover:bg-[var(--hover-bg)] transition-colors"
                 aria-label="Open menu"
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="shrink-0">
@@ -490,16 +493,16 @@ const Header: React.FC<HeaderProps> = ({
             )}
             {/* Establishment / Category selector (header-left) */}
             <div
-              className="flex items-center gap-3 cursor-pointer py-1.5 px-2.5 rounded-[20px] hover:bg-[#f5f5f7] transition-colors min-w-0"
+              className="flex items-center gap-3 cursor-pointer py-1.5 px-2.5 rounded-[20px] hover:bg-[var(--hover-bg)] transition-colors min-w-0"
               onClick={openEstablishmentDrawer}
             >
-              <div className="w-6 h-6 flex items-center justify-center bg-[#F3F4F6] rounded-lg shrink-0 p-1 text-[#464646]">
+              <div className="w-6 h-6 flex items-center justify-center bg-[var(--surface-secondary)] rounded-lg shrink-0 p-1 text-[var(--bold-text)]">
                 {getEstablishmentIcon(dropdownValue)}
               </div>
-              <h1 className="text-base font-semibold text-[#464646] truncate">
+              <h1 className="text-base font-semibold text-[var(--bold-text)] truncate">
                 {dropdownValue}
               </h1>
-              <div className="w-4 h-4 shrink-0 text-[#4A4A4A] ml-0.5">
+              <div className="w-4 h-4 shrink-0 text-[var(--subtle-text)] ml-0.5">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <path fill="currentColor" d="M5.29289 9.29289C5.68342 8.90237 6.31658 8.90237 6.70711 9.29289L12 14.5858L17.2929 9.29289C17.6834 8.90237 18.3166 8.90237 18.7071 9.29289C19.0976 9.68342 19.0976 10.3166 18.7071 10.7071L12.7071 16.7071C12.5196 16.8946 12.2652 17 12 17C11.7348 17 11.4804 16.8946 11.2929 16.7071L5.29289 10.7071C4.90237 10.3166 4.90237 9.68342 5.29289 9.29289Z" />
                 </svg>
@@ -511,7 +514,7 @@ const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center gap-2.5 shrink-0">
             <button
               type="button"
-              className="w-8 h-8 rounded-full flex items-center justify-center text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[var(--hover-bg)] transition-colors"
               onClick={() => setIsSearchActive(!isSearchActive)}
               aria-label="Search"
             >
@@ -523,8 +526,8 @@ const Header: React.FC<HeaderProps> = ({
               type="button"
               className={`w-8 h-8 rounded-full flex items-center justify-center border transition-colors ${
                 isMapActive
-                  ? "bg-[#EBFCF4] border-[#016853] text-[#016853]"
-                  : "bg-[#f5f5f7] border-[rgba(0,0,0,0.1)] text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)]"
+                  ? "bg-[var(--apply-button-bg)] border-[var(--header-green)] text-[var(--header-green)]"
+                  : "bg-[var(--surface-secondary)] border-[var(--border-color)] text-[var(--text-default)] hover:bg-[var(--hover-bg)]"
               }`}
               onClick={handleMapToggle}
               aria-label="Map"
@@ -533,11 +536,11 @@ const Header: React.FC<HeaderProps> = ({
                 <path d="M17.3 8.64003L21.54 10.86L21.55 10.85C21.83 11 22.01 11.28 22.01 11.6V21.13C22.01 21.43 21.86 21.7 21.61 21.86C21.47 21.94 21.32 21.99 21.16 21.99C21.02 21.99 20.9 21.96 20.78 21.9L14.79 18.89L9.64001 21.84C9.62001 21.85 9.54001 21.88 9.51001 21.88C9.46001 21.91 9.37001 21.95 9.28001 21.95H9.21001C9.06001 21.95 8.93001 21.92 8.81001 21.86L2.48001 18.69C2.20001 18.54 2.01001 18.25 2.01001 17.92V8.39003C2.01001 8.10003 2.17001 7.82003 2.42001 7.66003C2.67001 7.51003 3.00001 7.50003 3.26001 7.64003L6.83001 9.50003C6.78001 9.33003 6.74001 9.18003 6.71001 9.03003C6.28001 6.83003 6.82001 4.80003 8.21001 3.45003C10.24 1.48003 13.64 1.51003 15.64 3.51003C16.62 4.48003 17.22 5.83003 17.34 7.30003C17.38 7.72003 17.36 8.17003 17.3 8.64003ZM20.29 19.77V12.14L16.85 10.33C16.62 10.88 16.34 11.4 16 11.87L15.6 12.43V17.41L20.29 19.77ZM3.71001 17.41L8.33001 19.73V12.43L8.10001 12.11L3.71001 9.82003V17.41ZM10.04 19.66L13.89 17.44V14.77L12.84 16.21C12.44 16.78 11.48 16.78 11.07 16.21L10.04 14.78V19.66ZM11.96 14.54L14.62 10.87H14.63C15.37 9.83003 15.74 8.59003 15.64 7.45003C15.55 6.38003 15.1 5.38003 14.44 4.73003C13.78 4.08003 12.86 3.70003 11.9 3.70003C10.94 3.70003 10.04 4.06003 9.39001 4.70003C8.65001 5.41003 8.26001 6.44003 8.26001 7.60003C8.26001 7.96003 8.30001 8.34003 8.38001 8.72003C8.53001 9.53003 8.88001 10.31 9.47001 11.11L11.96 14.54Z" />
               </svg>
             </button>
-            <div className="w-px h-6 bg-[rgba(0,0,0,0.1)] mx-0.5" aria-hidden />
+            <div className="w-px h-6 bg-[var(--border-color)] mx-0.5" aria-hidden />
             <div className="relative">
               <button
                 type="button"
-                className="w-8 h-8 rounded-full flex items-center justify-center text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[var(--hover-bg)] transition-colors"
                 onClick={openFilterDrawer}
                 aria-label="Filters"
               >
@@ -546,7 +549,7 @@ const Header: React.FC<HeaderProps> = ({
                 </svg>
                 {filterCount > 0 && (
                   <span
-                    className="absolute -top-1 -right-1 w-[18px] h-[18px] bg-[#00DF8B] text-white text-[11px] font-medium rounded-full flex items-center justify-center border-[1.5px] border-white"
+                    className="absolute -top-1 -right-1 w-[18px] h-[18px] bg-[#00DF8B] text-white text-[11px] font-medium rounded-full flex items-center justify-center border-[1.5px] border-[var(--surface-color)]"
                   >
                     {filterCount}
                   </span>
@@ -555,7 +558,7 @@ const Header: React.FC<HeaderProps> = ({
             </div>
             <button
               type="button"
-              className="w-8 h-8 rounded-full flex items-center justify-center text-[#4A4A4A] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[var(--hover-bg)] transition-colors"
               onClick={openOptionsDrawer}
               aria-label="More options"
             >
@@ -568,11 +571,11 @@ const Header: React.FC<HeaderProps> = ({
 
         {/* Mobile Search Box */}
         {isSearchActive && (
-          <div className="absolute top-14 left-0 right-0 z-[950] bg-white px-4 py-[10px] border-b border-[rgba(0,0,0,0.05)] shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
+          <div className="absolute top-14 left-0 right-0 z-[950] bg-[var(--surface-color)] px-4 py-[10px] border-b border-[var(--border-color)] shadow-[0_2px_8px_var(--shadow-color)]">
             <form onSubmit={handleSearchSubmit}>
               <div className="flex items-center w-full relative">
-                <div className="flex items-center bg-[#f5f5f7] border border-[rgba(0,0,0,0.1)] rounded-lg h-9 w-full px-3">
-                  <div className="text-[14px] font-semibold text-[#4A4A4A] whitespace-nowrap mr-2 min-w-[50px]">
+                <div className="flex items-center bg-[var(--surface-secondary)] border border-[var(--border-color)] rounded-lg h-9 w-full px-3">
+                  <div className="text-[14px] font-semibold text-[var(--bold-text)] whitespace-nowrap mr-2 min-w-[50px]">
                     Where
                   </div>
                   <input
@@ -580,13 +583,13 @@ const Header: React.FC<HeaderProps> = ({
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Enter a city, state or country"
-                    className="border-none outline-none text-[14px] w-full h-full bg-transparent"
+                    className="border-none outline-none text-[14px] w-full h-full bg-transparent text-[var(--text-default)] placeholder:text-[var(--subtle-text)]"
                     autoFocus
                   />
                   <button
                     type="button"
                     onClick={() => setSearchQuery("")}
-                    className={`w-5 h-5 bg-none border-none items-center justify-center cursor-pointer text-[#5F5F5F] opacity-70 flex-shrink-0 ${
+                    className={`w-5 h-5 bg-none border-none items-center justify-center cursor-pointer text-[var(--subtle-text)] opacity-70 flex-shrink-0 ${
                       searchQuery.trim() !== "" ? "flex" : "hidden"
                     }`}
                     aria-label="Clear search"
@@ -595,10 +598,10 @@ const Header: React.FC<HeaderProps> = ({
                       <path d="M6.34314 4.22183C5.75736 3.63604 4.80761 3.63604 4.22182 4.22183C3.63604 4.80761 3.63604 5.75736 4.22182 6.34315L9.87868 12L4.22182 17.6569C3.63604 18.2426 3.63604 19.1924 4.22182 19.7782C4.80761 20.364 5.75736 20.364 6.34314 19.7782L12 14.1213L17.6569 19.7782C18.2426 20.364 19.1924 20.364 19.7782 19.7782C20.364 19.1924 20.364 18.2426 19.7782 17.6569L14.1213 12L19.7782 6.34315C20.364 5.75736 20.364 4.80761 19.7782 4.22183C19.1924 3.63604 18.2426 3.63604 17.6569 4.22183L12 9.87868L6.34314 4.22183Z" fill="currentColor" />
                     </svg>
                   </button>
-                  <div className="w-px h-5 bg-[rgba(0,0,0,0.1)] mx-1" />
+                  <div className="w-px h-5 bg-[var(--border-color)] mx-1" />
                   <button
                     type="button"
-                    className="w-6 h-6 bg-none border-none flex items-center justify-center cursor-pointer text-[#0093B0] opacity-80 flex-shrink-0 mr-1"
+                    className="w-6 h-6 bg-none border-none flex items-center justify-center cursor-pointer text-[var(--verification-blue)] opacity-80 flex-shrink-0 mr-1"
                     aria-label="Use my location"
                   >
                     <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
@@ -607,7 +610,7 @@ const Header: React.FC<HeaderProps> = ({
                   </button>
                   <button
                     type="submit"
-                    className="w-6 h-6 rounded-full bg-[#0093B0] border-none flex items-center justify-center cursor-pointer flex-shrink-0"
+                    className="w-6 h-6 rounded-full bg-[var(--verification-blue)] border-none flex items-center justify-center cursor-pointer flex-shrink-0"
                     aria-label="Search"
                   >
                     <svg fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
@@ -632,12 +635,12 @@ const Header: React.FC<HeaderProps> = ({
 
         {/* Mobile Establishment Drawer */}
         {isEstablishmentDrawerOpen && (
-          <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-white rounded-t-[20px] z-[1001] shadow-[0_-8px_18px_rgba(0,0,0,0.12)] overflow-hidden flex flex-col">
-            <div className="p-4 border-b border-[rgba(0,0,0,0.08)] flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-[#1B1B1B]">Select School Type</h2>
+          <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-[var(--surface-color)] rounded-t-[20px] z-[1001] shadow-[0_-8px_18px_var(--shadow-color)] overflow-hidden flex flex-col">
+            <div className="p-4 border-b border-[var(--border-color)] flex justify-between items-center">
+              <h2 className="text-lg font-semibold text-[var(--bold-text)]">Select School Type</h2>
               <button
                 onClick={() => setIsEstablishmentDrawerOpen(false)}
-                className="w-9 h-9 rounded-full flex items-center justify-center text-[#5F5F5F] hover:bg-[rgba(0,0,0,0.05)]"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--subtle-text)] hover:bg-[var(--hover-bg)]"
               >
                 <svg viewBox="0 0 24 24" className="w-5 h-5">
                   <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
@@ -650,24 +653,24 @@ const Header: React.FC<HeaderProps> = ({
                   key={type}
                   onClick={() => handleEstablishmentSelect(type)}
                   className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${dropdownValue === type
-                    ? "bg-[rgba(0,147,176,0.1)] border border-[rgba(0,147,176,0.3)]"
-                    : "hover:bg-[#f5f5f7] border border-transparent"
+                    ? "bg-[rgba(125,211,252,0.12)] border border-[rgba(125,211,252,0.3)]"
+                    : "hover:bg-[var(--hover-bg)] border border-transparent"
                     }`}
                 >
                   <div
-                    className={`w-9 h-9 flex items-center justify-center rounded-lg ${dropdownValue === type ? "bg-[#E1F6FB]" : "bg-[#F3F4F6]"
+                    className={`w-9 h-9 flex items-center justify-center rounded-lg ${dropdownValue === type ? "bg-[rgba(125,211,252,0.18)]" : "bg-[var(--surface-secondary)]"
                       }`}
                   >
                     {getEstablishmentIcon(type)}
                   </div>
                   <div className="flex-1">
                     <div
-                      className={`font-medium ${dropdownValue === type ? "text-[#016853]" : "text-[#1B1B1B]"
+                      className={`font-medium ${dropdownValue === type ? "text-[var(--header-green)]" : "text-[var(--bold-text)]"
                         }`}
                     >
                       {type}
                     </div>
-                    <div className="text-sm text-[#5F5F5F]">
+                    <div className="text-sm text-[var(--subtle-text)]">
                       {type === "K-12" && "2,583 schools"}
                       {type === "Colleges" && "1,870 colleges"}
                       {type === "Graduates" && "642 programs"}
@@ -682,7 +685,7 @@ const Header: React.FC<HeaderProps> = ({
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="w-5 h-5 text-[#0093B0]"
+                      className="w-5 h-5 text-[var(--verification-blue)]"
                     >
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
@@ -695,12 +698,12 @@ const Header: React.FC<HeaderProps> = ({
 
         {/* Mobile Filter Drawer */}
         {isFilterDrawerOpen && (
-          <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-white rounded-t-[20px] z-[1001] shadow-[0_-8px_18px_rgba(0,0,0,0.12)] flex flex-col">
-            <div className="p-4 border-b border-[rgba(0,0,0,0.08)] flex justify-between items-center flex-shrink-0">
-              <h2 className="text-lg font-semibold text-[#1B1B1B]">Filters</h2>
+          <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-[var(--surface-color)] rounded-t-[20px] z-[1001] shadow-[0_-8px_18px_var(--shadow-color)] flex flex-col">
+            <div className="p-4 border-b border-[var(--border-color)] flex justify-between items-center flex-shrink-0">
+              <h2 className="text-lg font-semibold text-[var(--bold-text)]">Filters</h2>
               <button
                 onClick={() => setIsFilterDrawerOpen(false)}
-                className="w-9 h-9 rounded-full flex items-center justify-center text-[#5F5F5F] hover:bg-[rgba(0,0,0,0.05)]"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--subtle-text)] hover:bg-[var(--hover-bg)]"
               >
                 <svg viewBox="0 0 24 24" className="w-5 h-5">
                   <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
@@ -710,16 +713,16 @@ const Header: React.FC<HeaderProps> = ({
             <div className="flex-1 overflow-y-auto">
               <div className="p-4">{renderFilters()}</div>
             </div>
-            <div className="p-4 border-t border-[rgba(0,0,0,0.08)] flex gap-3 flex-shrink-0">
+            <div className="p-4 border-t border-[var(--border-color)] flex gap-3 flex-shrink-0">
               <button
                 onClick={handleClearFilters}
-                className="flex-1 px-4 py-3 border border-[rgba(0,0,0,0.15)] rounded-lg text-[#4A4A4A] font-medium hover:bg-[#f5f5f7]"
+                className="flex-1 px-4 py-3 border border-[var(--border-color)] rounded-lg text-[var(--text-default)] font-medium hover:bg-[var(--hover-bg)]"
               >
                 Clear
               </button>
               <button
                 onClick={handleShowResults}
-                className="flex-1 px-4 py-3 bg-[#0093B0] text-white rounded-lg font-medium hover:bg-[#0080a0]"
+                className="flex-1 px-4 py-3 bg-[var(--verification-blue)] text-white rounded-lg font-medium hover:opacity-90"
               >
                 Show Results
               </button>
@@ -738,22 +741,22 @@ const Header: React.FC<HeaderProps> = ({
 
         {/* Mobile Map Drawer */}
         {isMapDrawerOpen && (
-          <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-white rounded-t-[20px] z-[1001] flex flex-col shadow-[0_-8px_18px_rgba(0,0,0,0.12)]">
-            <div className="p-4 border-b border-[rgba(0,0,0,0.08)] flex justify-between items-center flex-shrink-0">
-              <h2 className="text-lg font-semibold text-[#1B1B1B]">Map</h2>
+          <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-[var(--surface-color)] rounded-t-[20px] z-[1001] flex flex-col shadow-[0_-8px_18px_var(--shadow-color)]">
+            <div className="p-4 border-b border-[var(--border-color)] flex justify-between items-center flex-shrink-0">
+              <h2 className="text-lg font-semibold text-[var(--bold-text)]">Map</h2>
               <button
                 onClick={() => {
                   setIsMapDrawerOpen(false);
                   setIsMapActive(false);
                 }}
-                className="w-9 h-9 rounded-full flex items-center justify-center text-[#5F5F5F] hover:bg-[rgba(0,0,0,0.05)]"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--subtle-text)] hover:bg-[var(--hover-bg)]"
               >
                 <svg viewBox="0 0 24 24" className="w-5 h-5">
                   <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
                 </svg>
               </button>
             </div>
-            <div className="flex-1 min-h-0 bg-[#f5f5f7] flex flex-col">
+            <div className="flex-1 min-h-0 bg-[var(--surface-secondary)] flex flex-col">
               <MapContainer
                 isMapActive={isMapActive}
                 schools={schools}

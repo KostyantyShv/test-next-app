@@ -8,7 +8,7 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
   isOpened,
 }) => (
   <div
-    className={`filter-dropdown absolute top-full left-0 mt-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.1)] p-2 min-w-[200px] ${
+    className={`filter-dropdown absolute top-full left-0 mt-2 bg-[var(--surface-secondary)] border border-[var(--border-color)] rounded-lg shadow-[0_4px_12px_var(--shadow-color)] p-2 min-w-[200px] text-[var(--text-default)] ${
       isOpened ? "block" : "hidden"
     } z-[1000]`}
   >

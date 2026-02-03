@@ -15,10 +15,10 @@ export const FilterNav: React.FC<{
       {options.map((option) => (
         <button
           key={option.value}
-          className={`text-sm font-medium cursor-pointer pb-2 border-b-2 transition-colors ${
+          className={`calendar-filter-button text-sm font-medium cursor-pointer pb-2 border-b-2 transition-colors ${
             filter === option.value
-              ? "text-[#202124] border-[#202124]"
-              : "text-[#5F6368] border-transparent hover:text-[#202124]"
+              ? "text-[var(--bold-text)] border-[var(--bold-text)] is-active"
+              : "text-[var(--subtle-text)] border-transparent hover:text-[var(--bold-text)]"
           }`}
           onClick={() => setFilter(option.value)}
         >

@@ -3,10 +3,10 @@ interface SidebarHeaderProps {
 }
 
 export const SidebarHeader: React.FC<SidebarHeaderProps> = ({ onClose }) => (
-  <div className="p-4 md:p-6 border-b border-[rgba(0,0,0,0.1)] flex justify-between items-center">
-    <h2 className="text-base md:text-lg font-semibold text-bold-text">All Filters</h2>
+  <div className="p-4 md:p-6 border-b border-[var(--border-color)] flex justify-between items-center">
+    <h2 className="text-base md:text-lg font-semibold text-[var(--bold-text)]">All Filters</h2>
     <button
-      className="bg-transparent border-none cursor-pointer p-1 text-subtle-text hover:bg-gray-100 rounded-full transition-colors"
+      className="bg-transparent border-none cursor-pointer p-1 text-[var(--subtle-text)] hover:bg-[var(--hover-bg)] rounded-full transition-colors"
       onClick={onClose}
     >
       <svg viewBox="0 0 24 24" className="w-5 h-5">

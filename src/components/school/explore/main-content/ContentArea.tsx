@@ -71,7 +71,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
   return (
     <div className="flex flex-col md:flex-row min-h-[400px] min-w-0">
       <div
-        className={`flex-1 min-w-0 md:p-6 transition-all duration-300 ${isMapExpanded ? "hidden" : ""}`}
+        className={`explore-content-area flex-1 min-w-0 md:p-6 transition-all duration-300 ${isMapExpanded ? "hidden" : ""}`}
         aria-hidden={isMapExpanded}
       >
         {/* Mobile Layouts — grid matches School Finder Mobile (10) reference: padding 16px 12px, gap 16px */}

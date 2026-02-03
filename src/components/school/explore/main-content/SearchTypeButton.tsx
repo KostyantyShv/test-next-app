@@ -3,10 +3,10 @@ import React from "react";
 const SearchTypeButton: React.FC = () => {
   return (
     <div className="relative">
-      <button className="flex items-center gap-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-md px-3 py-1.5 min-h-8 text-sm font-medium text-[#4A4A4A] hover:bg-[#f8fafc] hover:border-[rgba(0,0,0,0.15)] transition-all duration-200">
-        <svg viewBox="0 0 24 24" fill="#0093B0" width="16" height="16">
+      <button className="flex items-center gap-2 bg-[var(--surface-secondary)] border border-[var(--border-color)] rounded-md px-3 py-1.5 min-h-8 text-sm font-medium text-[var(--text-default)] hover:bg-[var(--hover-bg)] transition-all duration-200">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" className="text-[var(--verification-blue)]">
           <path
-            fill="#0093B0"
+            fill="currentColor"
             fillRule="evenodd"
             d="M6.168 15.31c-.596 2.567-.34 4.607.87 5.298 1.2.687 3.068-.11 4.962-1.897 1.894 1.787 3.761 2.584 4.962 1.897 1.21-.691 1.466-2.73.87-5.297C20.356 14.555 22 13.32 22 11.927s-1.644-2.628-4.168-3.384c.596-2.567.34-4.607-.87-5.298-1.2-.687-3.068.11-4.962 1.897-1.894-1.787-3.762-2.584-4.963-1.897-1.21.691-1.465 2.731-.87 5.298C3.645 9.299 2 10.533 2 11.927s1.644 2.628 4.168 3.384Zm10.024-.951c-.091-.28-.192-.566-.303-.856a24.282 24.282 0 0 1-.582 1.017c.304-.048.6-.102.885-.161Zm.356 1.278c-.69.147-1.427.262-2.198.34-.463.649-.942 1.247-1.426 1.785.283.266.563.505.837.716.694.535 1.295.846 1.762.977.46.13.683.06.782.003.099-.056.272-.212.395-.675.124-.47.16-1.145.052-2.015a11.368 11.368 0 0 0-.204-1.13Zm-2.933-.927a22.583 22.583 0 0 0 1.593-2.783 22.613 22.613 0 0 0-1.593-2.784 22.58 22.58 0 0 0-3.23 0 22.617 22.617 0 0 0-1.593 2.784 22.6 22.6 0 0 0 1.593 2.783 22.572 22.572 0 0 0 3.23 0Zm-2.225 1.374a24.126 24.126 0 0 0 1.22 0c-.203.254-.406.495-.61.724-.204-.229-.407-.47-.61-.724ZM8.693 14.52a24.036 24.036 0 0 1-.582-1.016c-.111.29-.212.576-.303.856.286.06.581.113.885.16Zm-1.241 1.118c.69.147 1.427.262 2.198.34.463.649.942 1.247 1.426 1.785-.283.266-.563.505-.837.716-.694.535-1.295.846-1.762.977-.46.13-.684.06-.782.003-.099-.056-.272-.212-.395-.675-.124-.47-.16-1.145-.052-2.015.045-.357.113-.735.204-1.13Zm-.93-1.603c-.39-.117-.752-.246-1.084-.385-.809-.337-1.377-.704-1.723-1.045-.34-.335-.39-.564-.39-.677 0-.114.05-.342.39-.678.346-.34.914-.708 1.723-1.045.332-.138.695-.267 1.083-.385.218.682.489 1.389.81 2.108a20.322 20.322 0 0 0-.81 2.107Zm1.286-4.54c.091.28.192.566.303.856a24.206 24.206 0 0 1 .582-1.016c-.304.047-.6.101-.885.16ZM11.39 7.77a24.339 24.339 0 0 1 1.22 0 17.895 17.895 0 0 0-.61-.724c-.204.229-.408.47-.61.724Zm3.917 1.565a24.656 24.656 0 0 1 .582 1.016c.11-.29.212-.576.303-.855-.286-.06-.581-.114-.885-.161Zm1.241-1.118a20.297 20.297 0 0 0-2.198-.34 20.242 20.242 0 0 0-1.426-1.785c.283-.266.563-.505.837-.716.694-.535 1.295-.846 1.762-.977.46-.13.683-.06.782-.003.099.056.272.212.395.675.124.47.16 1.145.052 2.015-.045.357-.113.735-.204 1.131Zm.93 1.603a20.33 20.33 0 0 1-.81 2.108c.322.718.593 1.425.81 2.107.39-.117.752-.246 1.084-.385.809-.337 1.377-.704 1.723-1.045.34-.335.39-.564.39-.677 0-.114-.05-.342-.39-.678-.346-.34-.914-.708-1.723-1.045a11.367 11.367 0 0 0-1.084-.385ZM9.65 7.877c-.771.077-1.508.192-2.198.34a11.36 11.36 0 0 1-.204-1.132c-.109-.87-.072-1.546.052-2.015.123-.463.296-.619.395-.675.098-.057.321-.127.782.003.467.13 1.068.442 1.762.977.274.21.554.45.837.716A20.227 20.227 0 0 0 9.65 7.877Z"
             clipRule="evenodd"
@@ -28,7 +28,7 @@ const SearchTypeButton: React.FC = () => {
           ></path>
         </svg>
       </button>
-      <div className="absolute top-full right-0 mt-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.1)] p-2 min-w-[180px] hidden z-[1000] hover:block">
+      <div className="absolute top-full right-0 mt-2 bg-[var(--surface-secondary)] border border-[var(--border-color)] rounded-lg shadow-[0_4px_12px_var(--shadow-color)] p-2 min-w-[180px] hidden z-[1000] hover:block">
         {[
           "Trending",
           "Latest",
@@ -38,16 +38,16 @@ const SearchTypeButton: React.FC = () => {
         ].map((item) => (
           <div
             key={item}
-            className={`flex items-center gap-3 p-2 rounded-md hover:bg-[#f5f5f7] transition-colors duration-200 cursor-pointer ${
+            className={`flex items-center gap-3 p-2 rounded-md hover:bg-[var(--hover-bg)] transition-colors duration-200 cursor-pointer text-[var(--text-default)] ${
               item === "Trending"
-                ? "bg-[rgba(0,147,176,0.1)] text-[#0093B0]"
+                ? "bg-[rgba(125,211,252,0.12)] text-[var(--verification-blue)]"
                 : ""
             }`}
           >
             <span className="flex-1 text-sm">{item}</span>
             {item === "Trending" && (
               <svg
-                className="w-5 h-5 text-[#0093B0]"
+                className="w-5 h-5 text-[var(--verification-blue)]"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
