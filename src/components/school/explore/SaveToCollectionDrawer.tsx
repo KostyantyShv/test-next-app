@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { Portal } from '@/components/ui/Portal';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 // Reference CSS variables from the HTML design (1:1)
 const COLORS = {
@@ -81,7 +82,8 @@ function CheckIconSvg() {
 
 /**
  * Save to Collection drawer — 1:1 visual and functional replica of the HTML/CSS/JS reference.
- * Modal drawer slides up from bottom with overlay; same CSS variables, typography (Inter), spacing, and behavior.
+ * Mobile: drawer slides up from bottom with overlay
+ * Desktop: centered modal with overlay
  */
 export function SaveToCollectionDrawer({
   isOpen,
@@ -96,6 +98,8 @@ export function SaveToCollectionDrawer({
   onDone,
   hasSelection,
 }: SaveToCollectionDrawerProps) {
+  const isMobile = useIsMobile();
+  
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -115,6 +119,49 @@ export function SaveToCollectionDrawer({
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [isOpen, onClose]);
 
+  // Desktop modal styles
+  const desktopModalStyle: React.CSSProperties = {
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    transform: isOpen ? 'translate(-50%, -50%)' : 'translate(-50%, -50%) scale(0.95)',
+    opacity: isOpen ? 1 : 0,
+    visibility: isOpen ? 'visible' : 'hidden',
+    width: '100%',
+    maxWidth: '440px',
+    maxHeight: '80vh',
+    backgroundColor: COLORS.white,
+    borderRadius: '12px',
+    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)',
+    zIndex: 1001,
+    transition: 'transform 0.2s ease, opacity 0.2s ease, visibility 0s linear 0.2s',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+  };
+
+  // Mobile drawer styles
+  const mobileDrawerStyle: React.CSSProperties = {
+    position: 'fixed',
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    maxHeight: '85%',
+    transform: isOpen ? 'translateY(0)' : 'translateY(100%)',
+    visibility: isOpen ? 'visible' : 'hidden',
+    backgroundColor: COLORS.white,
+    borderRadius: '20px 20px 0 0',
+    boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.15)',
+    zIndex: 1001,
+    transition: isOpen ? 'transform 0.3s ease' : 'transform 0.3s ease, visibility 0s linear 0.3s',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+    WebkitTapHighlightColor: 'transparent',
+  };
+
   return (
     <>
       <style>{`
@@ -123,9 +170,10 @@ export function SaveToCollectionDrawer({
         .save-to-collection-drawer-body::-webkit-scrollbar-thumb { background: ${COLORS.gray300}; border-radius: 3px; }
         .save-to-collection-drawer-body::-webkit-scrollbar-thumb:hover { background: ${COLORS.gray500}; }
         .save-to-collection-item:active .save-to-collection-checkbox { opacity: 1; transform: scale(1); }
+        .save-to-collection-item:hover .save-to-collection-checkbox { opacity: 1; transform: scale(1); }
       `}</style>
       <Portal containerId="mobile-modal-root">
-        {/* .drawer-overlay — reference: rgba(0,0,0,0.5), z-index 1000, opacity/visibility transition */}
+        {/* Overlay — reference: rgba(0,0,0,0.5), z-index 1000, opacity/visibility transition */}
         <div
           role="presentation"
           aria-hidden
@@ -146,28 +194,10 @@ export function SaveToCollectionDrawer({
           }}
         />
 
-        {/* .drawer — reference: bottom 0, left 0, width 100%, max-height 85%, transform, border-radius 20px 20px 0 0, box-shadow */}
+        {/* Modal/Drawer container - desktop: centered modal, mobile: bottom drawer */}
         <div
           className="save-to-collection-drawer"
-          style={{
-            position: 'fixed',
-            bottom: 0,
-            left: 0,
-            width: '100%',
-            maxHeight: '85%',
-            transform: isOpen ? 'translateY(0)' : 'translateY(100%)',
-            visibility: isOpen ? 'visible' : 'hidden',
-            backgroundColor: COLORS.white,
-            borderRadius: '20px 20px 0 0',
-            boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.15)',
-            zIndex: 1001,
-            transition: isOpen ? 'transform 0.3s ease' : 'transform 0.3s ease, visibility 0s linear 0.3s',
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-            fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-            WebkitTapHighlightColor: 'transparent',
-          }}
+          style={isMobile ? mobileDrawerStyle : desktopModalStyle}
         >
           {/* .drawer-header — padding 16px 20px, border-bottom gray-200 */}
           <div

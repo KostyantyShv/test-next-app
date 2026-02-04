@@ -71,7 +71,7 @@ const CalendarMobile: React.FC = () => {
   };
 
   return (
-    <div className="mb-24 bg-[#F8F9FA]">
+    <div className="mb-24 bg-[var(--background-color)]">
       <MobileHeader />
       <div className="">
         <div className="px-4 py-3">
@@ -101,7 +101,7 @@ const CalendarMobile: React.FC = () => {
         ) : (
           <div className="px-4">
             {listData.length === 0 ? (
-              <div className="text-[#5F6368] text-center py-4">
+              <div className="text-[var(--subtle-text)] text-center py-4">
                 No events scheduled.
               </div>
             ) : (

@@ -113,14 +113,52 @@ const FiltersWrapper: React.FC<FiltersWrapperProps> = ({
 
   return (
     <>
-      <div className="w-full mb-4 md:mb-5 bg-white p-3 md:p-4 md:px-8 rounded-lg md:rounded-xl shadow-sm border border-gray-200">
-        <div className="flex items-center justify-between gap-3 md:gap-4 flex-wrap">
-          {renderFilterButtonsComponent()}
-          <div className="flex items-center gap-3 md:gap-4 pl-3 md:pl-6 border-l border-gray-200">
+      {/* Desktop filter wrapper */}
+      <div 
+        className="hidden md:block w-full mb-5 bg-white rounded-xl border border-[rgba(0,0,0,0.1)]"
+        style={{
+          maxWidth: '1055px',
+          padding: '16px 32px',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+        }}
+      >
+        <div 
+          className="flex items-center justify-between"
+          style={{ gap: '16px' }}
+        >
+          <div 
+            className="flex items-center flex-wrap flex-1"
+            style={{ gap: '12px' }}
+          >
+            {renderFilterButtonsComponent()}
+          </div>
+          <div 
+            className="flex items-center"
+            style={{ 
+              gap: '16px',
+              paddingLeft: '24px',
+              borderLeft: '1px solid rgba(0, 0, 0, 0.1)',
+            }}
+          >
             {renderSortButtonComponent()}
           </div>
         </div>
-        <div className="active-filters-bar mt-2 md:mt-2.5 flex flex-wrap gap-2 items-center">
+        <div 
+          className="active-filters-bar flex flex-wrap items-center"
+          style={{ marginTop: '10px', gap: '8px' }}
+        >
+          {renderActiveFiltersComponent()}
+        </div>
+      </div>
+      {/* Mobile filter wrapper */}
+      <div className="md:hidden w-full mb-4 bg-white p-3 rounded-lg shadow-sm border border-gray-200">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          {renderFilterButtonsComponent()}
+          <div className="flex items-center gap-3 pl-3 border-l border-gray-200">
+            {renderSortButtonComponent()}
+          </div>
+        </div>
+        <div className="active-filters-bar mt-2 flex flex-wrap gap-2 items-center">
           {renderActiveFiltersComponent()}
         </div>
       </div>

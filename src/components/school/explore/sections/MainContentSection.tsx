@@ -3,12 +3,19 @@ import MainContent from "../main-content/MainContent";
 
 interface MainContentSectionProps {
   onContainerExpandChange?: (isExpanded: boolean) => void;
+  isContainerExpanded?: boolean;
 }
 
-const MainContentSection: React.FC<MainContentSectionProps> = ({ onContainerExpandChange }) => {
+const MainContentSection: React.FC<MainContentSectionProps> = ({
+  onContainerExpandChange,
+  isContainerExpanded,
+}) => {
   return (
     <>
-      <MainContent onContainerExpandChange={onContainerExpandChange} />
+      <MainContent
+        onContainerExpandChange={onContainerExpandChange}
+        isContainerExpanded={isContainerExpanded}
+      />
     </>
   );
 };

@@ -45,8 +45,8 @@ export const EventList: React.FC<EventListProps> = ({
   const monthName = months[currentDate.getMonth()]; // Use static month name
 
   return (
-    <div className="border-t border-[#E0E0E0] pt-4 px-4">
-      <div className="text-lg font-semibold text-[#202124] mb-4 flex flex-row items-center gap-2">
+    <div className="border-t border-[var(--border-color)] pt-4 px-4">
+      <div className="text-lg font-semibold text-[var(--bold-text)] mb-4 flex flex-row items-center gap-2">
         <svg fill="none" viewBox="0 0 20 20" width={20} height={20}>
           <path
             fill="currentColor"
@@ -58,7 +58,7 @@ export const EventList: React.FC<EventListProps> = ({
         {weekday}, {monthName} {selectedDate}
       </div>
       {filteredEvents.length === 0 ? (
-        <div className="text-[#5F6368] text-center py-4">
+        <div className="text-[var(--subtle-text)] text-center py-4">
           No events for this date.
         </div>
       ) : (

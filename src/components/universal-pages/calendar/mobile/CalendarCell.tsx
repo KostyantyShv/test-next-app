@@ -35,17 +35,17 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
     <div
       className={`flex flex-row w-[51px] h-[51px] items-center justify-center gap-2 px-2 ${
         isNextMonth
-          ? "text-[#E0E0E0] bg-[#E0E0E0] cursor-default"
+          ? "text-[var(--border-color)] bg-[var(--border-color)] cursor-default"
           : isPrevMonth
-          ? "text-[#B0B7C0] cursor-default"
+          ? "text-[var(--subtle-text)] opacity-60 cursor-default"
           : isSelected
-          ? "!bg-[#0B6333] text-white rounded-full"
-          : "text-[#202124] cursor-pointer hover:bg-[#F1F3F4]"
-      } ${isToday ? "border border-[#0B6333] rounded-full" : ""} ${
+          ? "!bg-[var(--active-green)] text-[var(--surface-color)] rounded-full"
+          : "text-[var(--text-default)] cursor-pointer hover:bg-[var(--hover-bg)]"
+      } ${isToday ? "border border-[var(--active-green)] rounded-full" : ""} ${
         events &&
         events.length > 0 &&
         !isNextMonth &&
-        "bg-[rgba(0,_223,_139,_0.05)] rounded-full"
+        "bg-[var(--apply-button-bg)] rounded-full"
       }`}
       onClick={handleClick}
     >
@@ -62,14 +62,14 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
               }}
               className={`w-2 h-2 rounded-full cursor-pointer ${
                 event.type === "zoom-meeting" || event.type === "zoom-webinar"
-                  ? "bg-[#15B7C3]"
+                  ? "bg-[var(--event-zoom)]"
                   : event.type === "teams-meeting"
-                  ? "bg-[#608CFD]"
+                  ? "bg-[var(--event-teams)]"
                   : event.type === "one-on-one"
-                  ? "bg-[#E47EF4]"
+                  ? "bg-[var(--event-1on1)]"
                   : event.type === "webex-meeting"
-                  ? "bg-[#F89E6C]"
-                  : "bg-[#EE4206]"
+                  ? "bg-[var(--event-webex)]"
+                  : "bg-[var(--event-group)]"
               }`}
             />
           ))}

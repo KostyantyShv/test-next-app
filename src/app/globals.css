@@ -2888,24 +2888,26 @@ body {
   position: relative;
 }
 
-.stat[data-tooltip]:hover::after,
-.mh-stat[data-tooltip]:hover::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(70, 70, 70, 0.9);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  white-space: nowrap;
-  z-index: 50;
-  margin-bottom: 6px;
-  pointer-events: none;
-  opacity: 0;
-  animation: fadeInTooltip 0.2s ease forwards;
+@media (hover: hover) and (pointer: fine) {
+  .stat[data-tooltip]:hover::after,
+  .mh-stat[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(70, 70, 70, 0.9);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    z-index: 50;
+    margin-bottom: 6px;
+    pointer-events: none;
+    opacity: 0;
+    animation: fadeInTooltip 0.2s ease forwards;
+  }
 }
 
 @keyframes fadeInTooltip {
@@ -3474,12 +3476,13 @@ input[type="number"] {
 }
 
 .explore-mobile-hybrid .mh-header {
-  padding: 16px;
-  background-color: var(--surface-color);
+  padding: 12px 16px;
+  background-color: #ffffff;
   position: sticky;
   top: 0;
   z-index: 5;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -3494,20 +3497,27 @@ input[type="number"] {
   flex: 1;
   border: 0;
   background: transparent;
-  padding: 0;
+  padding: 6px 10px;
   text-align: left;
+  border-radius: 20px;
+  transition: background-color 0.2s ease;
+}
+
+.explore-mobile-hybrid .mh-header-left:hover {
+  background-color: #f5f5f7;
 }
 
 .explore-mobile-hybrid .mh-header-icon {
   width: 24px;
   height: 24px;
-  background: #F5F5F7;
+  background: #F3F4F6;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #424242;
   flex-shrink: 0;
+  padding: 4px;
 }
 
 .explore-mobile-hybrid .mh-header-icon svg {
@@ -3516,7 +3526,7 @@ input[type="number"] {
 }
 
 .explore-mobile-hybrid .mh-header-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--bold-text);
   letter-spacing: -0.01em;
@@ -9289,4 +9299,238 @@ input[type="number"] {
 [data-theme="mint"] .global-header-search .search-container-mint:focus-within {
   border-color: #BBF7D0;
   box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.12), 0 2px 8px rgba(5, 150, 105, 0.1);
+}
+
+/* ===========================
+   Explore Mobile Grid (Match Mobile HTML 1:1)
+   =========================== */
+@media (max-width: 768px) {
+  .explore-page .school-card.mobile-grid-card {
+    background: #FFFFFF;
+    border-color: #E5E7EB;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .explore-page .school-card.mobile-grid-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transform: none;
+  }
+
+  .explore-page .school-card.mobile-grid-card .school-type-label,
+  .explore-page .school-card.mobile-grid-card .specialty-label {
+    background: #FFFFFF;
+    border-color: transparent;
+  }
+
+  .explore-page .school-card.mobile-grid-card .specialty-label.hot {
+    color: #FF4D4D;
+  }
+
+  .explore-page .school-card.mobile-grid-card .specialty-label.instant-book {
+    color: #1D77BD;
+  }
+
+  .explore-page .school-card.mobile-grid-card .specialty-label.sponsored {
+    color: #FF9900;
+  }
+
+  .explore-page .school-card.mobile-grid-card .ranking-text {
+    color: #089E68;
+  }
+
+  .explore-page .school-card.mobile-grid-card .school-name {
+    color: #464646;
+  }
+
+  .explore-page .school-card.mobile-grid-card .stat,
+  .explore-page .school-card.mobile-grid-card .students-score,
+  .explore-page .school-card.mobile-grid-card .sat-score {
+    color: #5F5F5F;
+  }
+
+  .explore-page .school-card.mobile-grid-card .school-stats {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .explore-page .school-card.mobile-grid-card .school-stats > * {
+    width: auto !important;
+  }
+
+  .explore-page .school-card.mobile-grid-card .stat span {
+    color: #5F5F5F;
+  }
+
+  .explore-page .school-card.mobile-grid-card .stat span strong {
+    color: #444444;
+    font-weight: 600;
+  }
+
+  .explore-page .school-card.mobile-grid-card .stat svg {
+    color: #565656;
+  }
+
+  .explore-page .school-card.mobile-grid-card .school-footer {
+    background: #F4F6FA;
+    border-color: #E5E7EB;
+  }
+
+  .explore-page .school-card.mobile-grid-card .students-score svg,
+  .explore-page .school-card.mobile-grid-card .sat-score svg {
+    color: #089E68;
+  }
+
+  .explore-page .school-card.mobile-grid-card .grade-circle {
+    background: #00DF8B;
+    color: #FFFFFF;
+  }
+
+  .explore-page .school-card.mobile-grid-card .options-button {
+    background: #FFFFFF;
+    color: #4A4A4A;
+  }
+
+  /* ===========================
+     Explore Mobile Hybrid (Match Mobile HTML 1:1)
+     =========================== */
+  .explore-page .school-card.mobile-hybrid-card {
+    background: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+
+  .explore-page .school-card.mobile-hybrid-card .school-type-label {
+    background: rgba(1, 104, 83, 0.1);
+    color: #016853;
+  }
+
+  .explore-page .school-card.mobile-hybrid-card .ranking-text {
+    color: #089E68;
+  }
+
+  .explore-page .school-card.mobile-hybrid-card .school-name {
+    color: #464646;
+  }
+
+  .explore-page .school-card.mobile-hybrid-card .school-stats {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  .explore-page .school-card.mobile-hybrid-card .stat {
+    color: #5F5F5F;
+  }
+
+  .explore-page .school-card.mobile-hybrid-card .stat svg {
+    color: #565656;
+  }
+
+  .explore-page .school-card.mobile-hybrid-card .stat span {
+    color: #464646;
+    font-weight: 500;
+  }
+
+  .explore-page .school-card.mobile-hybrid-card .school-description {
+    background: #F8F9FB;
+    border-color: #EAEDF2;
+    color: #5F5F5F;
+  }
+
+  .explore-page .school-card.mobile-hybrid-card .reviewer-type {
+    color: #464646;
+  }
+
+  .explore-page .school-card.mobile-hybrid-card .review-link,
+  .explore-page .school-card.mobile-hybrid-card .view-more-description {
+    color: #346DC2;
+  }
+
+  .explore-page .school-card.mobile-hybrid-card .school-footer {
+    border-color: rgba(0, 0, 0, 0.06);
+  }
+
+  .explore-page .school-card.mobile-hybrid-card .grade-circle {
+    background: #00DF8B;
+    color: #FFFFFF;
+  }
+
+  .explore-page .school-card.mobile-hybrid-card .star-rating svg {
+    color: #00DF8B;
+  }
+
+  .explore-page .school-card.mobile-hybrid-card .btn-like {
+    background: #EBFCF4;
+    color: #016853;
+    border-color: rgba(1, 104, 83, 0.2);
+  }
+
+  /* ===========================
+     Explore Mobile Classic (Match Classic Mobile HTML 1:1)
+     =========================== */
+  .explore-page .school-card.mobile-classic-card {
+    background: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .explore-page .school-card.mobile-classic-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transform: none;
+  }
+
+  .explore-page .school-card.mobile-classic-card .ranking-text {
+    color: #089E68;
+  }
+
+  .explore-page .school-card.mobile-classic-card .school-name {
+    color: #464646;
+  }
+
+  .explore-page .school-card.mobile-classic-card .stat {
+    color: #5F5F5F;
+  }
+
+  .explore-page .school-card.mobile-classic-card .stat-icon {
+    color: #089E68;
+  }
+
+  .explore-page .school-card.mobile-classic-card .stat-label {
+    color: #5F5F5F;
+  }
+
+  .explore-page .school-card.mobile-classic-card .stat-value {
+    color: #464646;
+    font-weight: 500;
+  }
+
+  .explore-page .school-card.mobile-classic-card .school-type-label {
+    background: #FFFFFF;
+    color: #464646;
+  }
+
+  .explore-page .school-card.mobile-classic-card .empty-badge {
+    background: #F5F5F7;
+  }
+
+  .explore-page .school-card.mobile-classic-card .card-footer {
+    border-color: rgba(0, 0, 0, 0.06);
+  }
+
+  .explore-page .school-card.mobile-classic-card .rating-text svg {
+    color: #00DF8B;
+  }
+
+  .explore-page .school-card.mobile-classic-card .options-button,
+  .explore-page .school-card.mobile-classic-card .info-button {
+    background: #f5f5f7;
+    color: #5F5F5F;
+  }
+}
+
+@media (max-width: 475px) {
+  .explore-page .school-card.mobile-hybrid-card .stat-prefix {
+    display: none !important;
+  }
 }

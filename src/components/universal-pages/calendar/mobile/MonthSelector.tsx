@@ -37,24 +37,24 @@ export const MonthSelector: React.FC<MonthSelectorProps> = ({
   return (
     <div className="flex items-center justify-between px-4 py-3">
       <button
-        className="p-2 rounded-full hover:bg-[#F1F3F4]"
+        className="p-2 rounded-full hover:bg-[var(--hover-bg)]"
         onClick={handlePrevMonth}
       >
-        <svg viewBox="0 0 24 24" className="w-5 h-5 text-[#5F6368]">
+        <svg viewBox="0 0 24 24" className="w-5 h-5 text-[var(--subtle-text)]">
           <path
             fill="currentColor"
             d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"
           />
         </svg>
       </button>
-      <span className="text-lg font-semibold text-[#202124]">
+      <span className="text-lg font-semibold text-[var(--bold-text)]">
         {months[currentDate.getMonth()]} {currentDate.getFullYear()}
       </span>
       <button
-        className="p-2 rounded-full hover:bg-[#F1F3F4]"
+        className="p-2 rounded-full hover:bg-[var(--hover-bg)]"
         onClick={handleNextMonth}
       >
-        <svg viewBox="0 0 24 24" className="w-5 h-5 text-[#5F6368]">
+        <svg viewBox="0 0 24 24" className="w-5 h-5 text-[var(--subtle-text)]">
           <path
             fill="currentColor"
             d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"

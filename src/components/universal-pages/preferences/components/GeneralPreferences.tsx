@@ -18,6 +18,68 @@ export const GeneralPreferences: FC<GeneralPreferencesProps> = ({
   onSave,
   isSaving,
 }) => {
+  const themeSwatches: Record<Theme, string> = {
+    midnight: "linear-gradient(135deg, #0B1220 0%, #2C3447 100%)",
+    light: "linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%)",
+    mint: "linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)",
+    teal: "linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 100%)",
+    oceanic: "linear-gradient(135deg, #082F49 0%, #0C4A6E 100%)",
+  };
+
+  const themeAccents: Record<Theme, string> = {
+    midnight: "#1D77BD",
+    light: "#0B6333",
+    mint: "#15803D",
+    teal: "#0F766E",
+    oceanic: "#0EA5E9",
+  };
+
+  const themePreview: Record<
+    Theme,
+    { viewport: string; header: string; primary: string; subtle: string; input: string; inputBorder: string }
+  > = {
+    midnight: {
+      viewport: "#0E1525",
+      header: "#1C2333",
+      primary: "#1D77BD",
+      subtle: "#2B3245",
+      input: "#1C2333",
+      inputBorder: "#4E5569",
+    },
+    light: {
+      viewport: "#FFFFFF",
+      header: "#F8F9FA",
+      primary: "#1D77BD",
+      subtle: "#EBEDEF",
+      input: "#F8F9FA",
+      inputBorder: "#CCCCCC",
+    },
+    mint: {
+      viewport: "#F1F6F4",
+      header: "#F8F9FA",
+      primary: "#089E68",
+      subtle: "#E9F1EE",
+      input: "#FFFFFF",
+      inputBorder: "#BFDBD0",
+    },
+    teal: {
+      viewport: "#F0F7F9",
+      header: "#F8F9FA",
+      primary: "#13C4CC",
+      subtle: "#E6F3F7",
+      input: "#FFFFFF",
+      inputBorder: "#C0DCE6",
+    },
+    oceanic: {
+      viewport: "#F4F9FC",
+      header: "#F8F9FA",
+      primary: "#458BC1",
+      subtle: "#E1E7EE",
+      input: "#FFFFFF",
+      inputBorder: "#E0E9F1",
+    },
+  };
+
   return (
     <div className="flex flex-col md:flex-row gap-5 md:gap-6 mb-[30px] md:mb-12 items-start">
       <div className="flex-[0_0_100%] md:flex-[0_0_30%] md:pt-16">
@@ -87,14 +149,17 @@ export const GeneralPreferences: FC<GeneralPreferencesProps> = ({
                       onClick={() => onUpdatePreference('theme', theme.id)}
                       className={cn(
                         "w-11 h-11 md:w-10 md:h-10 rounded-lg md:rounded-md cursor-pointer border-2 md:border-2 transition-all active:scale-95 md:hover:scale-105",
-                        preferences.theme === theme.id ? "border-[#0B6333] shadow-[0_0_0_2px_rgba(11,99,51,0.2)] md:shadow-[0_0_0_2px_rgba(11,99,51,0.15)]" : "border-transparent",
-                        theme.id === 'midnight' && "bg-gradient-to-br from-[#0E1525] to-[#2B3245]",
-                        theme.id === 'light' && "bg-gradient-to-br from-white to-[#F8F9FA] border-[#EBEDEF]",
-                        theme.id === 'mint' && "bg-gradient-to-br from-[#F1F6F4] to-[#E9F1EE]",
-                        theme.id === 'teal' && "bg-gradient-to-br from-[#F0F7F9] to-[#E6F3F7]",
-                        theme.id === 'oceanic' && "bg-gradient-to-br from-[#F4F9FC] to-[#E1E7EE]"
+                        preferences.theme === theme.id ? "border-2" : "border-transparent"
                       )}
                       title={theme.name}
+                      style={{
+                        background: themeSwatches[theme.id as Theme],
+                        borderColor: preferences.theme === theme.id ? themeAccents[theme.id as Theme] : "transparent",
+                        boxShadow:
+                          preferences.theme === theme.id
+                            ? `0 0 0 2px ${themeAccents[theme.id as Theme]}26`
+                            : undefined,
+                      }}
                     />
                   ))}
                 </div>
@@ -107,25 +172,34 @@ export const GeneralPreferences: FC<GeneralPreferencesProps> = ({
                       onClick={() => onUpdatePreference('theme', theme.id)}
                       className={cn(
                         "theme-preview-card bg-[#F8F9FA] border-2 rounded-lg p-3 md:p-4 cursor-pointer transition-all relative overflow-hidden active:scale-95 md:active:scale-100",
-                        preferences.theme === theme.id ? "border-[#0B6333] shadow-[0_0_0_2px_rgba(11,99,51,0.15)]" : "border-[#DFDDDB] md:hover:-translate-y-0.5 md:hover:shadow-[0_4px_15px_rgba(0,0,0,0.1)]"
+                        preferences.theme === theme.id ? "" : "border-[#DFDDDB] md:hover:-translate-y-0.5 md:hover:shadow-[0_4px_15px_rgba(0,0,0,0.1)]"
                       )}
+                      style={{
+                        borderColor:
+                          preferences.theme === theme.id
+                            ? themeAccents[theme.id as Theme]
+                            : "#DFDDDB",
+                        boxShadow:
+                          preferences.theme === theme.id
+                            ? `0 0 0 2px ${themeAccents[theme.id as Theme]}26`
+                            : undefined,
+                      }}
                     >
                     {preferences.theme === theme.id && (
                       <>
-                        <div className="absolute top-2 right-2 md:top-3 md:right-3 w-4 h-4 md:w-[18px] md:h-[18px] bg-[#0B6333] rounded-full z-20" />
+                        <div
+                          className="absolute top-2 right-2 md:top-3 md:right-3 w-4 h-4 md:w-[18px] md:h-[18px] rounded-full z-20"
+                          style={{ backgroundColor: themeAccents[theme.id as Theme] }}
+                        />
                         <div className="absolute top-2 right-2 md:top-3 md:right-3 w-4 h-4 md:w-[18px] md:h-[18px] text-white text-[10px] md:text-[11px] font-bold flex items-center justify-center z-30">✓</div>
                       </>
                     )}
                     <div
                       data-theme="light"
                       className={cn(
-                        "theme-preview-viewport w-full h-[60px] md:h-20 rounded mb-2 md:mb-3 relative overflow-hidden border border-black/5",
-                      theme.id === 'midnight' && "bg-[#0E1525]",
-                      theme.id === 'light' && "bg-white",
-                      theme.id === 'mint' && "bg-[#F1F6F4]",
-                      theme.id === 'teal' && "bg-[#F0F7F9]",
-                      theme.id === 'oceanic' && "bg-[#F4F9FC]"
+                        "theme-preview-viewport w-full h-[60px] md:h-20 rounded mb-2 md:mb-3 relative overflow-hidden border border-black/5"
                     )}
+                      style={{ backgroundColor: themePreview[theme.id as Theme].viewport }}
                     >
                       <div 
                         className="h-full p-1.5 md:p-2 flex flex-col gap-0.5 md:gap-1"
@@ -135,39 +209,33 @@ export const GeneralPreferences: FC<GeneralPreferencesProps> = ({
                           transition: 'none'
                         }}
                       >
-                        <div className={cn("h-3 md:h-4 rounded flex items-center gap-0.5 md:gap-1 px-1 md:px-1.5", theme.id === 'midnight' ? "bg-[#1C2333]" : "bg-[#F8F9FA]")}>
+                        <div
+                          className="h-3 md:h-4 rounded flex items-center gap-0.5 md:gap-1 px-1 md:px-1.5"
+                          style={{ backgroundColor: themePreview[theme.id as Theme].header }}
+                        >
                           <div className="w-1 h-1 rounded-full bg-[#ff5f57]" />
                           <div className="w-1 h-1 rounded-full bg-[#ffbd2e]" />
                           <div className="w-1 h-1 rounded-full bg-[#28ca42]" />
                         </div>
-                        <div className={cn("flex-1 rounded ml-2 md:ml-4", 
-                          theme.id === 'midnight' ? "bg-[#1D77BD]" : 
-                          theme.id === 'mint' ? "bg-[#089E68]" :
-                          theme.id === 'teal' ? "bg-[#13C4CC]" :
-                          theme.id === 'oceanic' ? "bg-[#458BC1]" :
-                          "bg-[#1D77BD]"
-                        )} />
-                        <div className={cn("h-2 md:h-2.5 rounded mr-2 md:mr-4", 
-                          theme.id === 'midnight' ? "bg-[#2B3245]" : 
-                          theme.id === 'mint' ? "bg-[#E9F1EE]" :
-                          theme.id === 'teal' ? "bg-[#E6F3F7]" :
-                          theme.id === 'oceanic' ? "bg-[#E1E7EE]" :
-                          "bg-[#EBEDEF]"
-                        )} />
-                        <div className={cn("flex-1 rounded ml-2 md:ml-4", 
-                          theme.id === 'midnight' ? "bg-[#1D77BD]" : 
-                          theme.id === 'mint' ? "bg-[#089E68]" :
-                          theme.id === 'teal' ? "bg-[#13C4CC]" :
-                          theme.id === 'oceanic' ? "bg-[#458BC1]" :
-                          "bg-[#1D77BD]"
-                        )} />
-                        <div className={cn("h-2 md:h-3 rounded border", 
-                          theme.id === 'midnight' ? "bg-[#1C2333] border-[#4E5569]" : 
-                          theme.id === 'mint' ? "bg-[#FFFFFF] border-[#BFDBD0]" :
-                          theme.id === 'teal' ? "bg-[#FFFFFF] border-[#C0DCE6]" :
-                          theme.id === 'oceanic' ? "bg-[#FFFFFF] border-[#E0E9F1]" :
-                          "bg-[#F8F9FA] border-[#CCCCCC]"
-                        )} />
+                        <div
+                          className="flex-1 rounded ml-2 md:ml-4"
+                          style={{ backgroundColor: themePreview[theme.id as Theme].primary }}
+                        />
+                        <div
+                          className="h-2 md:h-2.5 rounded mr-2 md:mr-4"
+                          style={{ backgroundColor: themePreview[theme.id as Theme].subtle }}
+                        />
+                        <div
+                          className="flex-1 rounded ml-2 md:ml-4"
+                          style={{ backgroundColor: themePreview[theme.id as Theme].primary }}
+                        />
+                        <div
+                          className="h-2 md:h-3 rounded border"
+                          style={{
+                            backgroundColor: themePreview[theme.id as Theme].input,
+                            borderColor: themePreview[theme.id as Theme].inputBorder,
+                          }}
+                        />
                       </div>
                     </div>
                     <div className="text-xs md:text-[13px] font-medium md:font-semibold mb-0.5 md:mb-1 text-[#464646]">{theme.name}</div>

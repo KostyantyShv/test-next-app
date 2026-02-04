@@ -19,7 +19,13 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
 }) => (
   <button
     onClick={onDropdownOpen}
-    className={`filter-button flex items-center gap-2 px-4 py-2 rounded-md text-[var(--text-default)] font-medium text-sm min-h-[36px] hover:bg-[var(--hover-bg)] hover:border-[var(--border-color)] transition-all ${className}`}
+    className={`filter-button flex items-center bg-white border border-[rgba(0,0,0,0.1)] cursor-pointer text-[var(--text-default)] font-medium text-sm transition-all hover:bg-[#f8fafc] hover:border-[rgba(0,0,0,0.15)] ${className}`}
+    style={{
+      padding: '8px 16px',
+      borderRadius: '6px',
+      gap: '8px',
+      minHeight: '36px',
+    }}
   >
     {icon}
     {label}

@@ -70,11 +70,11 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
   }
 
   return (
-    <div className="grid grid-cols-7 gap-1 bg-white p-4">
+    <div className="grid grid-cols-7 gap-1 bg-[var(--surface-color)] p-4">
       {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
         <div
           key={`weekday-${index}`}
-          className="text-center text-sm font-medium text-[#5F6368]"
+          className="text-center text-sm font-medium text-[var(--subtle-text)]"
         >
           {day}
         </div>

@@ -5,10 +5,12 @@ interface ViewToggleProps {
 
 export const ViewToggle: React.FC<ViewToggleProps> = ({ view, setView }) => {
   return (
-    <div className="flex bg-[#F1F3F4] rounded-full p-1">
+    <div className="flex bg-[var(--surface-secondary)] rounded-full p-1">
       <button
         className={`px-4 py-2 rounded-full flex items-center gap-2 ${
-          view === "calendar" ? "bg-white text-[#202124]" : "text-[#5F6368]"
+          view === "calendar"
+            ? "bg-[var(--surface-color)] text-[var(--bold-text)]"
+            : "text-[var(--subtle-text)]"
         }`}
         onClick={() => setView("calendar")}
       >
@@ -52,7 +54,9 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({ view, setView }) => {
       </button>
       <button
         className={`px-4 py-2 rounded-full flex items-center gap-2 ${
-          view === "list" ? "bg-white text-[#202124]" : "text-[#5F6368]"
+          view === "list"
+            ? "bg-[var(--surface-color)] text-[var(--bold-text)]"
+            : "text-[var(--subtle-text)]"
         }`}
         onClick={() => setView("list")}
       >

@@ -21,12 +21,27 @@ export const ListItem: React.FC<ListItemProps> = ({
   onDateClick,
   onEventClick,
 }) => {
+  const eventColorMap: Record<string, string> = {
+    "zoom-meeting": "var(--event-zoom)",
+    "zoom-webinar": "var(--event-zoom-webinar)",
+    "teams-meeting": "var(--event-teams)",
+    "one-on-one": "var(--event-1on1)",
+    "webex-meeting": "var(--event-webex)",
+    "group-session": "var(--event-group)",
+  };
+
+  const getEventColor = (type: string) =>
+    eventColorMap[type] || "var(--event-zoom)";
+
+  const getEventBg = (type: string) =>
+    `color-mix(in srgb, ${getEventColor(type)} 18%, var(--surface-color))`;
+
   return (
     <div className="flex flex-col py-2 w-full items-start px-4">
       <div className={`text-center relative w-full ${events[0].type}`}>
         <div
-          className={`w-full font-semibold mb-3 pb-3 border-b border-[#E0E0E0] flex gap-2 items-center ${
-            isCurrent ? "text-[#1A73E8]" : "text-[#5F6368]"
+          className={`w-full font-semibold mb-3 pb-3 border-b border-[var(--border-color)] flex gap-2 items-center ${
+            isCurrent ? "text-[var(--active-green)]" : "text-[var(--subtle-text)]"
           }`}
         >
           <svg fill="none" viewBox="0 0 20 20" width={20} height={20}>
@@ -39,7 +54,7 @@ export const ListItem: React.FC<ListItemProps> = ({
           </svg>
           <span
             onClick={() => onDateClick && onDateClick(date)}
-            className="cursor-pointer hover:bg-gray-100 rounded px-2"
+            className="cursor-pointer hover:bg-[var(--hover-bg)] rounded px-2"
           >
             {weekday}, {month} {date}
           </span>
@@ -54,78 +69,43 @@ export const ListItem: React.FC<ListItemProps> = ({
                 onEventClick(event.id);
               }
             }}
-            className={`flex items-center gap-3 border-l-2 p-3 rounded-e-xl shadow-[0_2px_8px_rgba(0,_0,_0,_0.05)] bg-white w-full cursor-pointer hover:bg-gray-50 ${
-              event.type
-            } ${
-              events[0].type === "zoom-meeting" ||
-              events[0].type === "zoom-webinar"
-                ? "border-[#15B7C3]"
-                : events[0].type === "teams-meeting"
-                ? "border-[#608CFD]"
-                : events[0].type === "one-on-one"
-                ? "border-[#E47EF4]"
-                : events[0].type === "webex-meeting"
-                ? "border-[#F89E6C]"
-                : events[0].type === "group-session"
-                ? "border-[#EE4206]"
-                : ""
-            }`}
+            className={`flex items-center gap-3 border-l-2 p-3 rounded-e-xl shadow-[0_2px_8px_rgba(0,_0,_0,_0.05)] bg-[var(--surface-color)] w-full cursor-pointer hover:bg-[var(--hover-bg)] ${event.type}`}
+            style={{ borderLeftColor: getEventColor(event.type) }}
           >
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                event.type === "zoom-meeting" || event.type === "zoom-webinar"
-                  ? "bg-[#E6F7FA]"
-                  : event.type === "teams-meeting"
-                  ? "bg-[#E8EDFF]"
-                  : event.type === "one-on-one"
-                  ? "bg-[#FBE6FF]"
-                  : event.type === "webex-meeting"
-                  ? "bg-[#FFF2E8]"
-                  : "bg-[#FFEDE6]"
-              }`}
+              className="w-10 h-10 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: getEventBg(event.type) }}
             >
               {getIconSvg(event.type)}
             </div>
             <div className="flex flex-col gap-1.5 w-full">
               <div className="flex items-center gap-1">
                 <div
-                  className={`font-medium ${
-                    event.type === "zoom-meeting" ||
-                    event.type === "zoom-webinar"
-                      ? "text-[#15B7C3]"
-                      : event.type === "teams-meeting"
-                      ? "text-[#608CFD]"
-                      : event.type === "one-on-one"
-                      ? "text-[#E47EF4]"
-                      : event.type === "webex-meeting"
-                      ? "text-[#F89E6C]"
-                      : event.type === "group-session"
-                      ? "text-[#EE4206]"
-                      : ""
-                  }`}
+                  className="font-medium"
+                  style={{ color: getEventColor(event.type) }}
                 >
                   {event.title}
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 text-xs text-[#5F6368] flex-wrap">
+              <div className="flex items-center gap-1.5 text-xs text-[var(--subtle-text)] flex-wrap">
                 <span>{event.time}</span>
                 <div className="flex items-center">
                   <Image
                     height={24}
                     width={24}
                     src={event.avatar1}
-                    className="w-5 h-5 rounded-full border-2 border-white -ml-1.5 first:ml-0"
+                    className="w-5 h-5 rounded-full border-2 border-[var(--surface-color)] -ml-1.5 first:ml-0"
                     alt="Attendee 1"
                   />
                   <Image
                     height={24}
                     width={24}
                     src={event.avatar2}
-                    className="w-5 h-5 rounded-full border-2 border-white -ml-1.5"
+                    className="w-5 h-5 rounded-full border-2 border-[var(--surface-color)] -ml-1.5"
                     alt="Attendee 2"
                   />
                 </div>
-                <span className="text-xs text-[#5F6368] px-1.5 py-0.5 bg-[#F1F3F4] rounded-xl">
+                <span className="text-xs text-[var(--subtle-text)] px-1.5 py-0.5 bg-[var(--surface-secondary)] rounded-xl">
                   {event.attendees}+
                 </span>
               </div>

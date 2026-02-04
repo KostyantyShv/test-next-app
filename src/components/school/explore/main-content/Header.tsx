@@ -1,8 +1,4 @@
-import React, { ReactNode, useState, useMemo, useRef } from "react";
-import CategoryDropdown from "./CategoryDropdown";
-import SearchBox from "./SearchBox";
-import MapButton from "./MapButton";
-import LayoutToggle from "./LayoutToggle";
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import MapContainer from "./MapContainer";
 import { School } from "../types";
 import { useSchoolsExplore } from "@/store/use-schools-explore";
@@ -37,19 +33,23 @@ interface HeaderProps {
   schools: School[];
   layout: string;
   setLayout: (value: string) => void;
-  renderDropdownItems: () => React.ReactNode;
   dropdownValue: string;
-  dropdownIcon?: ReactNode;
   layouts: {
     type: string;
     icon: ReactNode;
   }[];
-  layoutToggleWidth: number;
-  renderActionsButton?: () => React.ReactNode;
-  renderItemsCount?: () => React.ReactNode;
-  renderSearchTypeButton?: () => React.ReactNode;
-  renderExpandCollapseButton?: () => React.ReactNode;
   onContainerExpandChange?: (isExpanded: boolean) => void;
+  isContainerExpanded?: boolean;
+  /** Optional: used by collections page for custom dropdown icon */
+  dropdownIcon?: ReactNode;
+  /** Optional: used by collections page for custom dropdown content */
+  renderDropdownItems?: () => React.ReactNode;
+  /** Optional: used by collections page for layout toggle width */
+  layoutToggleWidth?: number;
+  /** Optional: used by collections page for custom actions button */
+  renderActionsButton?: () => React.ReactNode;
+  /** Optional: used by collections page for custom items count */
+  renderItemsCount?: () => React.ReactNode;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -60,18 +60,16 @@ const Header: React.FC<HeaderProps> = ({
   schools,
   layout,
   setLayout,
-  renderDropdownItems,
   dropdownValue,
-  dropdownIcon,
   layouts,
-  layoutToggleWidth,
-  renderItemsCount = () => <></>,
-  renderActionsButton = () => <></>,
-  renderSearchTypeButton = () => <></>,
-  renderExpandCollapseButton = () => <></>,
   onContainerExpandChange,
+  isContainerExpanded = false,
+  dropdownIcon: _dropdownIcon,
+  renderDropdownItems: _renderDropdownItems,
+  layoutToggleWidth: _layoutToggleWidth,
+  renderActionsButton: _renderActionsButton,
+  renderItemsCount: _renderItemsCount,
 }) => {
-  const [isContainerExpanded, setIsContainerExpanded] = useState(false);
   const {
     setEstablishment,
     filterK12,
@@ -94,10 +92,16 @@ const Header: React.FC<HeaderProps> = ({
   const [isOptionsDrawerOpen, setIsOptionsDrawerOpen] = useState(false);
   const [isMapDrawerOpen, setIsMapDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isDesktopEstablishmentOpen, setIsDesktopEstablishmentOpen] =
+    useState(false);
+  const [isSearchTypeOpen, setIsSearchTypeOpen] = useState(false);
+  const [searchType, setSearchType] = useState("Trending");
   const openMobileSidebar = useOpenMobileSidebar();
   /** Ignore overlay clicks for a short time after opening a drawer (prevents same-tap close on touch) */
   const drawerOpenedAtRef = useRef<number>(0);
   const OVERLAY_CLOSE_GRACE_MS = 350;
+  const desktopEstablishmentRef = useRef<HTMLDivElement>(null);
+  const searchTypeRef = useRef<HTMLDivElement>(null);
 
   const currentFilters = useMemo(() => {
     switch (establishment) {
@@ -136,6 +140,14 @@ const Header: React.FC<HeaderProps> = ({
 
     return count;
   }, [currentFilters]);
+
+  const desktopLayouts = useMemo(() => {
+    if (layouts.some((item) => item.type === layout)) {
+      return layouts;
+    }
+    const current = layouts.find((item) => item.type === layout);
+    return current ? [current, ...layouts] : layouts;
+  }, [layouts, layout]);
 
   const isOverlayVisible =
     isEstablishmentDrawerOpen ||
@@ -276,6 +288,7 @@ const Header: React.FC<HeaderProps> = ({
   const handleEstablishmentSelect = (establishment: string) => {
     setEstablishment(establishment as EstablishmentType);
     setIsEstablishmentDrawerOpen(false);
+    setIsDesktopEstablishmentOpen(false);
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -315,127 +328,193 @@ const Header: React.FC<HeaderProps> = ({
     setIsFilterDrawerOpen(false);
   };
 
+  const handleExpandToggle = () => {
+    if (!onContainerExpandChange) return;
+    onContainerExpandChange(!isContainerExpanded);
+  };
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (
+        desktopEstablishmentRef.current &&
+        !desktopEstablishmentRef.current.contains(target)
+      ) {
+        setIsDesktopEstablishmentOpen(false);
+      }
+      if (
+        searchTypeRef.current &&
+        !searchTypeRef.current.contains(target)
+      ) {
+        setIsSearchTypeOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleOutsideClick);
+    return () => document.removeEventListener("click", handleOutsideClick);
+  }, []);
+
   return (
     <>
       {/* Desktop Header */}
-      <div className="explore-header hidden md:flex items-center justify-between p-6 border-b border-[var(--border-color)] bg-[var(--surface-color)]">
-        <div className="explore-header-left group flex items-center gap-3 relative cursor-pointer p-2 rounded-2xl hover:bg-[var(--hover-bg)] transition-colors">
-          <div className="w-6 h-6 flex items-center justify-center text-[var(--bold-text)]">
-            {getEstablishmentIcon(dropdownValue)}
-          </div>
-          <h1 className="text-lg font-semibold text-[var(--bold-text)]">{dropdownValue}</h1>
-          <div className="explore-header-arrow w-4 h-4 ml-2 text-[var(--subtle-text)]">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M5.29289 9.29289C5.68342 8.90237 6.31658 8.90237 6.70711 9.29289L12 14.5858L17.2929 9.29289C17.6834 8.90237 18.3166 8.90237 18.7071 9.29289C19.0976 9.68342 19.0976 10.3166 18.7071 10.7071L12.7071 16.7071C12.5196 16.8946 12.2652 17 12 17C11.7348 17 11.4804 16.8946 11.2929 16.7071L5.29289 10.7071C4.90237 10.3166 4.90237 9.68342 5.29289 9.29289Z"></path>
-            </svg>
-          </div>
+      <div className="hidden md:flex items-center justify-between py-4 px-6 bg-white border-b border-[rgba(0,0,0,0.08)] relative">
+        <div ref={desktopEstablishmentRef} className="relative">
+          <button
+            type="button"
+            onClick={() => setIsDesktopEstablishmentOpen((prev) => !prev)}
+            className="flex items-center gap-3 cursor-pointer py-2 px-4 rounded-[20px] hover:bg-[#f5f5f7] transition-colors"
+            aria-haspopup="listbox"
+            aria-expanded={isDesktopEstablishmentOpen}
+          >
+            <div className="w-6 h-6 flex items-center justify-center text-[var(--bold-text)]">
+              {getEstablishmentIcon(dropdownValue)}
+            </div>
+            <h1 className="text-lg font-semibold text-[var(--bold-text)]">
+              {dropdownValue}
+            </h1>
+            <div className="w-4 h-4 ml-2 text-[var(--text-default)]">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M5.29289 9.29289C5.68342 8.90237 6.31658 8.90237 6.70711 9.29289L12 14.5858L17.2929 9.29289C17.6834 8.90237 18.3166 8.90237 18.7071 9.29289C19.0976 9.68342 19.0976 10.3166 18.7071 10.7071L12.7071 16.7071C12.5196 16.8946 12.2652 17 12 17C11.7348 17 11.4804 16.8946 11.2929 16.7071L5.29289 10.7071C4.90237 10.3166 4.90237 9.68342 5.29289 9.29289Z"
+                ></path>
+              </svg>
+            </div>
+          </button>
 
-          {/* School Type Tooltip */}
-          <div className="explore-header-dropdown absolute top-full left-0 mt-2 bg-[var(--surface-secondary)] rounded-lg shadow-[0_4px_20px_var(--shadow-color)] border border-[var(--border-color)] w-64 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+          <div
+            className={`absolute top-full left-0 mt-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.1)] w-60 z-50 ${
+              isDesktopEstablishmentOpen ? "block" : "hidden"
+            }`}
+          >
             {establishmentTypes.map((type) => {
               const isSelected = type === dropdownValue;
               return (
-              <div
-                key={type}
-                onClick={() => handleEstablishmentSelect(type)}
-                className={`explore-header-dropdown-item flex items-center p-3 hover:bg-[var(--hover-bg)] transition-colors cursor-pointer ${isSelected ? "is-selected" : ""}`}
-              >
-                <div className="explore-header-dropdown-icon w-6 h-6 flex items-center justify-center mr-3 text-[var(--subtle-text)]">
-                  {getEstablishmentIcon(type)}
+                <div
+                  key={type}
+                  role="option"
+                  aria-selected={isSelected}
+                  onClick={() => handleEstablishmentSelect(type)}
+                  className={`flex items-center px-4 py-2.5 cursor-pointer transition-colors hover:bg-[#f5f5f7] ${
+                    isSelected ? "bg-[rgba(1,104,83,0.1)] text-[var(--header-green)]" : ""
+                  }`}
+                >
+                  <div className="w-6 h-6 flex items-center justify-center mr-3 text-[var(--subtle-text)]">
+                    {getEstablishmentIcon(type)}
+                  </div>
+                  <div className="flex-1 flex items-center justify-between">
+                    <span className="text-sm font-medium">{type}</span>
+                    <span className="text-xs text-[var(--subtle-text)]">
+                      {type === "K-12" && "2,583 schools"}
+                      {type === "Colleges" && "1,870 colleges"}
+                      {type === "Graduates" && "642 programs"}
+                      {type === "District" && "1,234 districts"}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex-1 flex justify-between items-center">
-                  <span className="explore-header-dropdown-label text-[var(--text-default)] text-sm font-medium">{type}</span>
-                  <span className="explore-header-dropdown-count text-[var(--subtle-text)] text-xs">
-                    {type === "K-12" && "2,583 schools"}
-                    {type === "Colleges" && "1,870 colleges"}
-                    {type === "Graduates" && "642 programs"}
-                    {type === "District" && "1,234 districts"}
-                  </span>
-                </div>
-              </div>
-            );
+              );
             })}
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Expand/Collapse Button */}
           <button
-            onClick={() => {
-              setIsContainerExpanded(!isContainerExpanded);
-              onContainerExpandChange?.(!isContainerExpanded);
-            }}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[var(--hover-bg)] transition-colors"
+            type="button"
+            onClick={handleExpandToggle}
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+              isContainerExpanded ? "bg-[rgba(0,0,0,0.05)]" : ""
+            }`}
+            aria-label={isContainerExpanded ? "Collapse layout" : "Expand layout"}
           >
-            {isContainerExpanded ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
-                <path d="M15 4v16"></path>
-                <path d="M9 10l2 2l-2 2"></path>
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
-                <path d="M15 4v16"></path>
-                <path d="M10 10l-2 2l2 2"></path>
-              </svg>
-            )}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+              <path d="M15 4v16"></path>
+              {/* Arrow points LEFT when cards are small (to expand), RIGHT when cards are wide (to collapse) */}
+              <path d={isContainerExpanded ? "M10 10l2 2l-2 2" : "M10 10l-2 2l2 2"}></path>
+            </svg>
           </button>
 
-          {/* Search Box */}
-          <div className={`relative ${isSearchActive ? 'flex' : 'hidden'} items-center gap-3`}>
+          <form
+            onSubmit={handleSearchSubmit}
+            className={`relative ${isSearchActive ? "flex" : "hidden"} items-center gap-3`}
+          >
             <button
+              type="button"
               onClick={handleCloseSearch}
-              className="text-[var(--subtle-text)] hover:text-[var(--text-default)] transition-colors flex-shrink-0"
+              className="text-[var(--subtle-text)] hover:text-[var(--text-default)] transition-colors flex-shrink-0 p-2"
+              aria-label="Close search"
             >
-              {/* ==================== */}
-              <svg width="22" height="14" fill="none" viewBox="0 0 19 19">
-                <path d="M6.34314 4.22183C5.75736 3.63604 4.80761 3.63604 4.22182 4.22183C3.63604 4.80761 3.63604 5.75736 4.22182 6.34315L9.87868 12L4.22182 17.6569C3.63604 18.2426 3.63604 19.1924 4.22182 19.7782C4.80761 20.364 5.75736 20.364 6.34314 19.7782L12 14.1213L17.6569 19.7782C18.2426 20.364 19.1924 20.364 19.7782 19.7782C20.364 19.1924 20.364 18.2426 19.7782 17.6569L14.1213 12L19.7782 6.34315C20.364 5.75736 20.364 4.80761 19.7782 4.22183C19.1924 3.63604 18.2426 3.63604 17.6569 4.22183L12 9.87868L6.34314 4.22183Z" fill="currentColor" />
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-
-            <div className="flex items-center bg-[var(--surface-secondary)] border border-[var(--border-color)] rounded h-10 w-[350px] flex-shrink-0">
-              <div className="text-sm font-semibold text-[var(--bold-text)] px-3 whitespace-nowrap flex-shrink-0">Where</div>
-              <div className="flex items-center relative flex-1 h-full px-3 min-w-0">
+            <div className="flex items-center bg-white border border-[rgba(0,0,0,0.1)] rounded h-10 w-[350px]">
+              <div className="text-sm font-semibold text-[var(--text-default)] px-3 whitespace-nowrap">
+                Where
+              </div>
+              <div className="flex items-center relative flex-1 h-full px-3">
                 <input
                   type="text"
                   placeholder="Enter a city, state or country"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="border-none outline-none text-sm w-full h-full bg-transparent text-[var(--text-default)] placeholder:text-[var(--subtle-text)]"
-                  autoFocus
                 />
                 <button
+                  type="button"
                   onClick={() => setSearchQuery("")}
-                  className={`w-5 h-5 flex items-center justify-center text-[var(--subtle-text)] opacity-70 hover:opacity-100 transition-opacity flex-shrink-0 translate-y-0.5 ${searchQuery.length >= 2 ? 'flex' : 'hidden'}`}
+                  className={`w-5 h-5 bg-none border-none items-center justify-center cursor-pointer text-[var(--subtle-text)] opacity-70 hover:opacity-100 flex-shrink-0 ${
+                    searchQuery.trim() !== "" ? "flex" : "hidden"
+                  }`}
+                  aria-label="Clear search"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
-
-                    {/* ==================== */}
-
-                    <path fill="currentColor" d="M9.33398 18.791C14.3045 18.791 18.334 14.7616 18.334 9.79102C18.334 4.82045 14.3045 0.791016 9.33398 0.791016C4.36342 0.791016 0.333984 4.82045 0.333984 9.79102C0.333984 14.7616 4.36342 18.791 9.33398 18.791ZM6.86431 6.26069C6.57142 5.96779 6.09655 5.96779 5.80365 6.26069C5.51076 6.55358 5.51076 7.02845 5.80365 7.32135L8.27332 9.79102L5.80365 12.2607C5.51076 12.5536 5.51076 13.0285 5.80365 13.3213C6.09655 13.6142 6.57142 13.6142 6.86431 13.3213L9.33398 10.8517L11.8037 13.3213C12.0965 13.6142 12.5714 13.6142 12.8643 13.3213C13.1572 13.0285 13.1572 12.5536 12.8643 12.2607L10.3946 9.79102L12.8643 7.32135C13.1572 7.02845 13.1572 6.55358 12.8643 6.26069C12.5714 5.96779 12.0965 5.96779 11.8037 6.26069L9.33398 8.73036L6.86431 6.26069Z" clipRule="evenodd" fillRule="evenodd"></path>
-
+                    <path d="M6.34314 4.22183C5.75736 3.63604 4.80761 3.63604 4.22182 4.22183C3.63604 4.80761 3.63604 5.75736 4.22182 6.34315L9.87868 12L4.22182 17.6569C3.63604 18.2426 3.63604 19.1924 4.22182 19.7782C4.80761 20.364 5.75736 20.364 6.34314 19.7782L12 14.1213L17.6569 19.7782C18.2426 20.364 19.1924 20.364 19.7782 19.7782C20.364 19.1924 20.364 18.2426 19.7782 17.6569L14.1213 12L19.7782 6.34315C20.364 5.75736 20.364 4.80761 19.7782 4.22183C19.1924 3.63604 18.2426 3.63604 17.6569 4.22183L12 9.87868L6.34314 4.22183Z" fill="currentColor" />
                   </svg>
                 </button>
-                <button className="w-6 h-6 flex items-center justify-center text-[var(--verification-blue)] opacity-80 hover:opacity-100 transition-opacity flex-shrink-0">
+                <div
+                  className={`w-px h-5 bg-[rgba(0,0,0,0.1)] mx-2 ${
+                    searchQuery.trim() !== "" ? "block" : "hidden"
+                  }`}
+                />
+                <button
+                  type="button"
+                  className="w-6 h-6 bg-none border-none flex items-center justify-center cursor-pointer text-[var(--primary-blue)] opacity-80 hover:opacity-100 flex-shrink-0"
+                  aria-label="Use my location"
+                >
                   <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
                     <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7 c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z"></path><path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3 c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8 C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1 c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1 C18.6,5.5,19.8,8.4,19.2,11.2z"></path>
                   </svg>
                 </button>
-                <button className="w-7 h-7 rounded-full bg-[var(--verification-blue)] flex items-center justify-center ml-2 flex-shrink-0">
+                <button
+                  type="submit"
+                  className="w-7 h-7 rounded-full bg-[var(--primary-blue)] border-none flex items-center justify-center cursor-pointer ml-2 flex-shrink-0"
+                  aria-label="Search"
+                >
                   <svg fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
                     <path d="M21.7,20.3l-3.3-2.9c1.5-1.7,2.3-3.8,2.3-6.1c0-5.1-4.2-9.3-9.3-9.3S2,6.2,2,11.3s4.2,9.3,9.3,9.3c2.1,0,4-0.7,5.7-1.9l3.4,3c0.2,0.2,0.4,0.2,0.6,0.2c0.3,0,0.5-0.1,0.7-0.3C22.1,21.3,22.1,20.7,21.7,20.3z M11.3,18.7c-4.1,0-7.4-3.3-7.4-7.4s3.3-7.4,7.4-7.4s7.4,3.3,7.4,7.4S15.4,18.7,11.3,18.7z"></path>
                   </svg>
                 </button>
               </div>
             </div>
-          </div>
+          </form>
 
-          {/* Search Button */}
           {!isSearchActive && (
             <button
+              type="button"
               onClick={() => setIsSearchActive(true)}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[var(--hover-bg)] transition-colors"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+              aria-label="Search"
             >
               <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
                 <path d="M21.7,20.3l-3.3-2.9c1.5-1.7,2.3-3.8,2.3-6.1c0-5.1-4.2-9.3-9.3-9.3S2,6.2,2,11.3s4.2,9.3,9.3,9.3c2.1,0,4-0.7,5.7-1.9l3.4,3c0.2,0.2,0.4,0.2,0.6,0.2c0.3,0,0.5-0.1,0.7-0.3C22.1,21.3,22.1,20.7,21.7,20.3z M11.3,18.7c-4.1,0-7.4-3.3-7.4-7.4s3.3-7.4,7.4-7.4s7.4,3.3,7.4,7.4S15.4,18.7,11.3,18.7z"></path>
@@ -443,39 +522,133 @@ const Header: React.FC<HeaderProps> = ({
             </button>
           )}
 
-          {/* Map Button */}
           <button
+            type="button"
             onClick={handleMapToggle}
-            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors border ${isMapActive
-              ? 'bg-[var(--apply-button-bg)] border-[var(--header-green)] text-[var(--header-green)]'
-              : 'text-[var(--text-default)] hover:bg-[var(--hover-bg)] border-[var(--border-color)]'
-              }`}
+            className="w-8 h-8 rounded-full flex items-center justify-center border border-[rgba(0,0,0,0.1)] text-[var(--text-default)] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+            aria-label="Map"
           >
             <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
               <path d="M17.3 8.64003L21.54 10.86L21.55 10.85C21.83 11 22.01 11.28 22.01 11.6V21.13C22.01 21.43 21.86 21.7 21.61 21.86C21.47 21.94 21.32 21.99 21.16 21.99C21.02 21.99 20.9 21.96 20.78 21.9L14.79 18.89L9.64001 21.84C9.62001 21.85 9.54001 21.88 9.51001 21.88C9.46001 21.91 9.37001 21.95 9.28001 21.95H9.21001C9.06001 21.95 8.93001 21.92 8.81001 21.86L2.48001 18.69C2.20001 18.54 2.01001 18.25 2.01001 17.92V8.39003C2.01001 8.10003 2.17001 7.82003 2.42001 7.66003C2.67001 7.51003 3.00001 7.50003 3.26001 7.64003L6.83001 9.50003C6.78001 9.33003 6.74001 9.18003 6.71001 9.03003C6.28001 6.83003 6.82001 4.80003 8.21001 3.45003C10.24 1.48003 13.64 1.51003 15.64 3.51003C16.62 4.48003 17.22 5.83003 17.34 7.30003C17.38 7.72003 17.36 8.17003 17.3 8.64003ZM20.29 19.77V12.14L16.85 10.33C16.62 10.88 16.34 11.4 16 11.87L15.6 12.43V17.41L20.29 19.77ZM3.71001 17.41L8.33001 19.73V12.43L8.10001 12.11L3.71001 9.82003V17.41ZM10.04 19.66L13.89 17.44V14.77L12.84 16.21C12.44 16.78 11.48 16.78 11.07 16.21L10.04 14.78V19.66ZM11.96 14.54L14.62 10.87H14.63C15.37 9.83003 15.74 8.59003 15.64 7.45003C15.55 6.38003 15.1 5.38003 14.44 4.73003C13.78 4.08003 12.86 3.70003 11.9 3.70003C10.94 3.70003 10.04 4.06003 9.39001 4.70003C8.65001 5.41003 8.26001 6.44003 8.26001 7.60003C8.26001 7.96003 8.30001 8.34003 8.38001 8.72003C8.53001 9.53003 8.88001 10.31 9.47001 11.11L11.96 14.54Z"></path>
             </svg>
           </button>
 
-          <div className="w-px h-6 bg-[var(--border-color)] mx-2"></div>
+          <div className="w-px h-6 bg-[rgba(0,0,0,0.1)] mx-2" />
 
-          {/* Layout Toggle: show ONLY active; reveal others on hover */}
-          <LayoutToggle
-            layout={layout}
-            setLayout={handleLayoutChange}
-            layouts={layouts}
-            width={layoutToggleWidth}
-          />
+          {/* Layout Toggle - 6 variants matching HTML design */}
+          <div 
+            className="layout-toggle group flex items-center bg-[#f5f5f7] overflow-hidden relative"
+            style={{
+              borderRadius: '6px',
+              padding: '2px',
+              width: '36px',
+              transition: 'width 0.3s ease',
+            }}
+            onMouseEnter={(e) => {
+              // Width for 6 buttons: 6 × 32px + 4px padding = 196px
+              (e.currentTarget as HTMLElement).style.width = '196px';
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.width = '36px';
+            }}
+          >
+            {desktopLayouts.map((item, index) => {
+              const isActive = layout === item.type;
+              return (
+                <button
+                  key={item.type}
+                  type="button"
+                  onClick={() => handleLayoutChange(item.type)}
+                  style={{ 
+                    order: isActive ? desktopLayouts.length + 1 : index + 1,
+                    width: '32px',
+                    height: '28px',
+                    borderRadius: '4px',
+                    flexShrink: 0,
+                  }}
+                  className={`layout-toggle-button flex items-center justify-center cursor-pointer border-none transition-all ${
+                    isActive
+                      ? "active bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)] [&>span>svg]:text-[#0093B0]"
+                      : "bg-transparent hidden group-hover:flex [&>span>svg]:text-[#4A4A4A]"
+                  }`}
+                  data-layout={item.type}
+                  aria-label={`Layout ${item.type}`}
+                >
+                  <span className="w-4 h-4 flex items-center justify-center">{item.icon}</span>
+                </button>
+              );
+            })}
+          </div>
 
-          {/* Search Type Button */}
-          {renderSearchTypeButton()}
+          <div ref={searchTypeRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setIsSearchTypeOpen((prev) => !prev)}
+              className="flex items-center gap-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-md px-3 py-1.5 text-sm font-medium text-[var(--text-default)] hover:bg-[#f8fafc] transition-all min-h-[32px]"
+              aria-haspopup="listbox"
+              aria-expanded={isSearchTypeOpen}
+            >
+              <svg viewBox="0 0 24 24" fill="#0093B0" className="w-4 h-4">
+                <path
+                  fill="#0093B0"
+                  fillRule="evenodd"
+                  d="M6.168 15.31c-.596 2.567-.34 4.607.87 5.298 1.2.687 3.068-.11 4.962-1.897 1.894 1.787 3.761 2.584 4.962 1.897 1.21-.691 1.466-2.73.87-5.297C20.356 14.555 22 13.32 22 11.927s-1.644-2.628-4.168-3.384c.596-2.567.34-4.607-.87-5.298-1.2-.687-3.068.11-4.962 1.897-1.894-1.787-3.762-2.584-4.963-1.897-1.21.691-1.465 2.731-.87 5.298C3.645 9.299 2 10.533 2 11.927s1.644 2.628 4.168 3.384Zm10.024-.951c-.091-.28-.192-.566-.303-.856a24.282 24.282 0 0 1-.582 1.017c.304-.048.6-.102.885-.161Zm.356 1.278c-.69.147-1.427.262-2.198.34-.463.649-.942 1.247-1.426 1.785.283.266.563.505.837.716.694.535 1.295.846 1.762.977.46.13.683.06.782.003.099-.056.272-.212.395-.675.124-.47.16-1.145.052-2.015a11.368 11.368 0 0 0-.204-1.13Zm-2.933-.927a22.583 22.583 0 0 0 1.593-2.783 22.613 22.613 0 0 0-1.593-2.784 22.58 22.58 0 0 0-3.23 0 22.617 22.617 0 0 0-1.593 2.784 22.6 22.6 0 0 0 1.593 2.783 22.572 22.572 0 0 0 3.23 0Zm-2.225 1.374a24.126 24.126 0 0 0 1.22 0c-.203.254-.406.495-.61.724-.204-.229-.407-.47-.61-.724ZM8.693 14.52a24.036 24.036 0 0 1-.582-1.016c-.111.29-.212.576-.303.856.286.06.581.113.885.16Zm-1.241 1.118c.69.147 1.427.262 2.198.34.463.649.942 1.247 1.426 1.785-.283.266-.563.505-.837.716-.694.535-1.295.846-1.762.977-.46.13-.684.06-.782.003-.099-.056-.272-.212-.395-.675-.124-.47-.16-1.145-.052-2.015.045-.357.113-.735.204-1.13Zm-.93-1.603c-.39-.117-.752-.246-1.084-.385-.809-.337-1.377-.704-1.723-1.045-.34-.335-.39-.564-.39-.677 0-.114.05-.342.39-.678.346-.34.914-.708 1.723-1.045.332-.138.695-.267 1.083-.385.218.682.489 1.389.81 2.108a20.322 20.322 0 0 0-.81 2.107Zm1.286-4.54c.091.28.192.566.303.856a24.206 24.206 0 0 1 .582-1.016c-.304.047-.6.101-.885.16ZM11.39 7.77a24.339 24.339 0 0 1 1.22 0 17.895 17.895 0 0 0-.61-.724c-.204.229-.408.47-.61.724Zm3.917 1.565a24.656 24.656 0 0 1 .582 1.016c.11-.29.212-.576.303-.855-.286-.06-.581-.114-.885-.161Zm1.241-1.118a20.297 20.297 0 0 0-2.198-.34 20.242 20.242 0 0 0-1.426-1.785c.283-.266.563-.505.837-.716.694-.535 1.295-.846 1.762-.977.46-.13.683-.06.782-.003.099.056.272.212.395.675.124.47.16 1.145.052 2.015-.045.357-.113.735-.204 1.131Zm.93 1.603a20.33 20.33 0 0 1-.81 2.108c.322.718.593 1.425.81 2.107.39-.117.752-.246 1.084-.385.809-.337 1.377-.704 1.723-1.045.34-.335.39-.564.39-.677 0-.114-.05-.342-.39-.678-.346-.34-.914-.708-1.723-1.045a11.367 11.367 0 0 0-1.084-.385ZM9.65 7.877c-.771.077-1.508.192-2.198.34a11.36 11.36 0 0 1-.204-1.132c-.109-.87-.072-1.546.052-2.015.123-.463.296-.619.395-.675.098-.057.321-.127.782.003.467.13 1.068.442 1.762.977.274.21.554.45.837.716A20.227 20.227 0 0 0 9.65 7.877Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              {searchType}
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width="16" height="16">
+                <path fill="currentColor" d="M5.29289 9.29289C5.68342 8.90237 6.31658 8.90237 6.70711 9.29289L12 14.5858L17.2929 9.29289C17.6834 8.90237 18.3166 8.90237 18.7071 9.29289C19.0976 9.68342 19.0976 10.3166 18.7071 10.7071L12.7071 16.7071C12.5196 16.8946 12.2652 17 12 17C11.7348 17 11.4804 16.8946 11.2929 16.7071L5.29289 10.7071C4.90237 10.3166 4.90237 9.68342 5.29289 9.29289Z" clipRule="evenodd" fillRule="evenodd"></path>
+              </svg>
+            </button>
+
+            <div
+              className={`absolute right-0 mt-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.1)] min-w-[180px] z-50 ${
+                isSearchTypeOpen ? "block" : "hidden"
+              }`}
+            >
+              {[
+                "Trending",
+                "Latest",
+                "Highest Rated",
+                "Most Favorited",
+                "Most Reactions",
+              ].map((type) => {
+                const isSelected = searchType === type;
+                return (
+                  <div
+                    key={type}
+                    onClick={() => {
+                      setSearchType(type);
+                      setIsSearchTypeOpen(false);
+                    }}
+                    className={`flex items-center gap-2 px-3 py-2 text-sm cursor-pointer hover:bg-[#f5f5f7] ${
+                      isSelected ? "bg-[rgba(0,147,176,0.1)] text-[var(--primary-blue)]" : ""
+                    }`}
+                  >
+                    <span className="flex-1">{type}</span>
+                    {isSelected && (
+                      <svg viewBox="0 0 24 24" className="w-4 h-4 text-[var(--primary-blue)]" fill="none">
+                        <path
+                          fill="currentColor"
+                          d="M9.55 18.4L3.55 12.4C3.16 12.01 3.16 11.39 3.55 11C3.94 10.61 4.56 10.61 4.95 11L10 16.05L19.05 7.00002C19.44 6.61002 20.06 6.61002 20.45 7.00002C20.84 7.39002 20.84 8.01002 20.45 8.40002L10.45 18.4C10.25 18.6 10 18.7 9.75 18.7C9.5 18.7 9.75 18.59 9.55 18.4Z"
+                          clipRule="evenodd"
+                          fillRule="evenodd"
+                        ></path>
+                      </svg>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Mobile Header — matches HTML layout/design (Explore & Collections mobile) */}
       <div className="md:hidden relative z-[100]">
         <div
-          className="flex items-center justify-between py-3 px-4 bg-[var(--surface-color)] border-b border-[var(--border-color)]"
-          style={{ boxShadow: "0 2px 8px var(--shadow-color)" }}
+          className="flex items-center justify-between py-3 px-4 bg-white border-b border-[rgba(0,0,0,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.05)]"
         >
           <div className="flex items-center gap-3 min-w-0">
             {/* Menu (sidebar) — only when replacing app header */}
@@ -493,10 +666,10 @@ const Header: React.FC<HeaderProps> = ({
             )}
             {/* Establishment / Category selector (header-left) */}
             <div
-              className="flex items-center gap-3 cursor-pointer py-1.5 px-2.5 rounded-[20px] hover:bg-[var(--hover-bg)] transition-colors min-w-0"
+              className="flex items-center gap-3 cursor-pointer py-1.5 px-2.5 rounded-[20px] hover:bg-[#f5f5f7] transition-colors min-w-0"
               onClick={openEstablishmentDrawer}
             >
-              <div className="w-6 h-6 flex items-center justify-center bg-[var(--surface-secondary)] rounded-lg shrink-0 p-1 text-[var(--bold-text)]">
+              <div className="w-6 h-6 flex items-center justify-center bg-[#F3F4F6] rounded-lg shrink-0 p-1 text-[var(--bold-text)]">
                 {getEstablishmentIcon(dropdownValue)}
               </div>
               <h1 className="text-base font-semibold text-[var(--bold-text)] truncate">
@@ -514,7 +687,7 @@ const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center gap-2.5 shrink-0">
             <button
               type="button"
-              className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[var(--hover-bg)] transition-colors"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
               onClick={() => setIsSearchActive(!isSearchActive)}
               aria-label="Search"
             >
@@ -527,7 +700,7 @@ const Header: React.FC<HeaderProps> = ({
               className={`w-8 h-8 rounded-full flex items-center justify-center border transition-colors ${
                 isMapActive
                   ? "bg-[var(--apply-button-bg)] border-[var(--header-green)] text-[var(--header-green)]"
-                  : "bg-[var(--surface-secondary)] border-[var(--border-color)] text-[var(--text-default)] hover:bg-[var(--hover-bg)]"
+                  : "bg-[#f5f5f7] border-[rgba(0,0,0,0.1)] text-[var(--text-default)] hover:bg-[rgba(0,0,0,0.05)]"
               }`}
               onClick={handleMapToggle}
               aria-label="Map"
@@ -536,11 +709,11 @@ const Header: React.FC<HeaderProps> = ({
                 <path d="M17.3 8.64003L21.54 10.86L21.55 10.85C21.83 11 22.01 11.28 22.01 11.6V21.13C22.01 21.43 21.86 21.7 21.61 21.86C21.47 21.94 21.32 21.99 21.16 21.99C21.02 21.99 20.9 21.96 20.78 21.9L14.79 18.89L9.64001 21.84C9.62001 21.85 9.54001 21.88 9.51001 21.88C9.46001 21.91 9.37001 21.95 9.28001 21.95H9.21001C9.06001 21.95 8.93001 21.92 8.81001 21.86L2.48001 18.69C2.20001 18.54 2.01001 18.25 2.01001 17.92V8.39003C2.01001 8.10003 2.17001 7.82003 2.42001 7.66003C2.67001 7.51003 3.00001 7.50003 3.26001 7.64003L6.83001 9.50003C6.78001 9.33003 6.74001 9.18003 6.71001 9.03003C6.28001 6.83003 6.82001 4.80003 8.21001 3.45003C10.24 1.48003 13.64 1.51003 15.64 3.51003C16.62 4.48003 17.22 5.83003 17.34 7.30003C17.38 7.72003 17.36 8.17003 17.3 8.64003ZM20.29 19.77V12.14L16.85 10.33C16.62 10.88 16.34 11.4 16 11.87L15.6 12.43V17.41L20.29 19.77ZM3.71001 17.41L8.33001 19.73V12.43L8.10001 12.11L3.71001 9.82003V17.41ZM10.04 19.66L13.89 17.44V14.77L12.84 16.21C12.44 16.78 11.48 16.78 11.07 16.21L10.04 14.78V19.66ZM11.96 14.54L14.62 10.87H14.63C15.37 9.83003 15.74 8.59003 15.64 7.45003C15.55 6.38003 15.1 5.38003 14.44 4.73003C13.78 4.08003 12.86 3.70003 11.9 3.70003C10.94 3.70003 10.04 4.06003 9.39001 4.70003C8.65001 5.41003 8.26001 6.44003 8.26001 7.60003C8.26001 7.96003 8.30001 8.34003 8.38001 8.72003C8.53001 9.53003 8.88001 10.31 9.47001 11.11L11.96 14.54Z" />
               </svg>
             </button>
-            <div className="w-px h-6 bg-[var(--border-color)] mx-0.5" aria-hidden />
+            <div className="w-px h-6 bg-[rgba(0,0,0,0.1)] mx-0.5" aria-hidden />
             <div className="relative">
               <button
                 type="button"
-                className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[var(--hover-bg)] transition-colors"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
                 onClick={openFilterDrawer}
                 aria-label="Filters"
               >
@@ -556,12 +729,12 @@ const Header: React.FC<HeaderProps> = ({
                 )}
               </button>
             </div>
-            <button
-              type="button"
-              className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[var(--hover-bg)] transition-colors"
-              onClick={openOptionsDrawer}
-              aria-label="More options"
-            >
+              <button
+                type="button"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+                onClick={openOptionsDrawer}
+                aria-label="More options"
+              >
               <svg viewBox="0 0 24 24" className="w-5 h-5">
                 <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="currentColor" />
               </svg>
@@ -571,10 +744,10 @@ const Header: React.FC<HeaderProps> = ({
 
         {/* Mobile Search Box */}
         {isSearchActive && (
-          <div className="absolute top-14 left-0 right-0 z-[950] bg-[var(--surface-color)] px-4 py-[10px] border-b border-[var(--border-color)] shadow-[0_2px_8px_var(--shadow-color)]">
+          <div className="absolute top-14 left-0 right-0 z-[950] bg-white px-4 py-[10px] border-b border-[rgba(0,0,0,0.05)] shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
             <form onSubmit={handleSearchSubmit}>
               <div className="flex items-center w-full relative">
-                <div className="flex items-center bg-[var(--surface-secondary)] border border-[var(--border-color)] rounded-lg h-9 w-full px-3">
+                <div className="flex items-center bg-[#f5f5f7] border border-[rgba(0,0,0,0.1)] rounded-lg h-9 w-full px-3">
                   <div className="text-[14px] font-semibold text-[var(--bold-text)] whitespace-nowrap mr-2 min-w-[50px]">
                     Where
                   </div>
@@ -598,7 +771,7 @@ const Header: React.FC<HeaderProps> = ({
                       <path d="M6.34314 4.22183C5.75736 3.63604 4.80761 3.63604 4.22182 4.22183C3.63604 4.80761 3.63604 5.75736 4.22182 6.34315L9.87868 12L4.22182 17.6569C3.63604 18.2426 3.63604 19.1924 4.22182 19.7782C4.80761 20.364 5.75736 20.364 6.34314 19.7782L12 14.1213L17.6569 19.7782C18.2426 20.364 19.1924 20.364 19.7782 19.7782C20.364 19.1924 20.364 18.2426 19.7782 17.6569L14.1213 12L19.7782 6.34315C20.364 5.75736 20.364 4.80761 19.7782 4.22183C19.1924 3.63604 18.2426 3.63604 17.6569 4.22183L12 9.87868L6.34314 4.22183Z" fill="currentColor" />
                     </svg>
                   </button>
-                  <div className="w-px h-5 bg-[var(--border-color)] mx-1" />
+                  <div className="w-px h-5 bg-[rgba(0,0,0,0.1)] mx-1" />
                   <button
                     type="button"
                     className="w-6 h-6 bg-none border-none flex items-center justify-center cursor-pointer text-[var(--verification-blue)] opacity-80 flex-shrink-0 mr-1"

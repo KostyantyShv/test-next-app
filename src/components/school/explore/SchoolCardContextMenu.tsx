@@ -173,6 +173,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
 
     // Close dropdown when clicking outside
     useEffect(() => {
+        if (isMobile) return;
         const handleClickOutside = (event: PointerEvent) => {
             if (
                 dropdownRef.current &&
@@ -199,7 +200,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                 document.removeEventListener('keydown', handleEscKey);
             };
         }
-    }, [isOpen]);
+    }, [isOpen, isMobile]);
 
     const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
@@ -745,4 +746,3 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
         </>
     );
 };
-

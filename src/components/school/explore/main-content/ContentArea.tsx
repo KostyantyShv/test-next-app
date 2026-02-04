@@ -51,9 +51,9 @@ const ContentArea: React.FC<ContentAreaProps> = ({
       return isMapActive ? "grid-cols-1" : "grid-cols-2";
     }
     if (layout === "classic") {
+      // When map is active: 2 columns only; when map is off: 4 columns with responsive breakpoints
       return isMapActive
-        // When map is active, always keep 2 columns (no 3-col breakpoints)
-        ? "grid-cols-2"
+        ? "grid-cols-2 max-[700px]:grid-cols-1"
         : "grid-cols-4 max-[1100px]:grid-cols-3 max-[900px]:grid-cols-2 max-[600px]:grid-cols-1";
     }
     return "";
@@ -102,7 +102,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
             </div>
           )}
           {layout === "classic" && (
-            <div className="py-4 px-4 grid grid-cols-1 gap-5">
+            <div className="p-4 pb-5 flex flex-col gap-4">
               {renderCards()}
             </div>
           )}
@@ -111,7 +111,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
         {/* Desktop Layouts */}
         <div className="hidden md:block min-w-0">
           {layout === "grid" || layout === "card" || layout === "hybrid" || layout === "classic" ? (
-            <div className={`grid ${layout === "classic" ? "gap-5" : "gap-6"} min-w-0 ${getGridCols()}`}>
+            <div className={`grid gap-6 min-w-0 ${getGridCols()}`}>
               {renderCards()}
             </div>
           ) : (

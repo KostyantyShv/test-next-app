@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState, useEffect, useRef } from 'react';
+import React, { useMemo, useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { MobileDrawerIcons } from './MobileDrawerIcons';
 import { Portal } from '@/components/ui/Portal';
 import { SaveToCollectionDrawer } from './SaveToCollectionDrawer';
@@ -82,7 +82,28 @@ interface DrawerProps {
 }
 
 const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, title, children, hasBack, onBack }) => {
-    const handleOverlayPointerDown = () => {
+    const openedAtRef = useRef(0);
+
+    // Use useLayoutEffect to set timestamp synchronously before any event handlers can fire
+    // This prevents the "ghost tap" issue where the overlay closes immediately after opening
+    useLayoutEffect(() => {
+        if (isOpen) {
+            openedAtRef.current = Date.now();
+        } else {
+            // Reset when closed so next open gets fresh timestamp
+            openedAtRef.current = 0;
+        }
+    }, [isOpen]);
+
+    const handleOverlayPointerDown = (e: React.PointerEvent) => {
+        // Guard against the immediate "ghost" tap after opening on mobile emulation.
+        // Also check if timestamp is 0 (not yet set) to prevent premature closing
+        const elapsed = Date.now() - openedAtRef.current;
+        if (openedAtRef.current === 0 || (isOpen && elapsed < 300)) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
         onClose();
     };
 

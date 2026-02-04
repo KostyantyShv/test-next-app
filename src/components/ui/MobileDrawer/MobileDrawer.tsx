@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { Portal } from "@/components/ui/Portal";
 
 interface MobileDrawerProps {
@@ -10,8 +10,20 @@ interface MobileDrawerProps {
 }
 
 export function MobileDrawer({ children, isOpen, onClose }: MobileDrawerProps) {
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const openedAtRef = useRef(0);
+
+  useEffect(() => {
+    if (isOpen) {
+      openedAtRef.current = Date.now();
+    }
+  }, [isOpen]);
+
+  const handleOverlayPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
+      // Guard against the immediate "ghost" pointer event right after opening on mobile emulation.
+      if (isOpen && Date.now() - openedAtRef.current < 250) {
+        return;
+      }
       onClose();
     }
   };
@@ -25,7 +37,7 @@ export function MobileDrawer({ children, isOpen, onClose }: MobileDrawerProps) {
             isOpen ? "opacity-100 visible" : "opacity-0 invisible"
           }`}
           style={isOpen ? undefined : { transitionDelay: "0s, 0.3s" }}
-          onClick={handleOverlayClick}
+          onPointerDown={handleOverlayPointerDown}
         />
         {/* Drawer — 90% width, max 420px, centered; same shell as Actions drawer */}
         <div
