@@ -27,7 +27,8 @@ export const Monitor: React.FC<MonitorProps> = ({
   className,
   buttonRef,
 }) => {
-  const [arrowPosition, setArrowPosition] = useState<number>(24); // default right-6 = 24px
+  const [arrowPosition, setArrowPosition] = useState<number>(24); // kept for backward compatibility
+  const [arrowLeft, setArrowLeft] = useState<number>(24);
   const [panelRight, setPanelRight] = useState<number>(88); // default right position
   const [changesData, setChangesData] = useState<ChangeItem[]>([
     {
@@ -126,10 +127,12 @@ export const Monitor: React.FC<MonitorProps> = ({
           // Arrow is at: windowWidth - finalRight - arrowPosition
           // We want arrow center to align with button center: windowWidth - finalRight - arrowPosition = buttonCenterX
           // So: arrowPosition = windowWidth - finalRight - buttonCenterX
-          const modalRight = windowWidth - finalRight;
-          const distanceFromRight = modalRight - buttonCenterX;
-          // Arrow is 16px wide (w-4), so center it
-          setArrowPosition(distanceFromRight - 8); // 8px = half of 16px
+          const modalLeft = windowWidth - finalRight - panelWidth;
+          const arrowSize = 16;
+          const rawArrowLeft = buttonCenterX - modalLeft - arrowSize / 2;
+          const clampedArrowLeft = Math.max(8, Math.min(panelWidth - arrowSize - 8, rawArrowLeft));
+          setArrowLeft(clampedArrowLeft);
+          setArrowPosition(windowWidth - finalRight - buttonCenterX - 8);
         }
       };
       updateArrowPosition();
@@ -218,7 +221,7 @@ export const Monitor: React.FC<MonitorProps> = ({
         {/* Arrow pointer */}
         <div 
           className="absolute -top-2 w-4 h-4 bg-[var(--surface-color)] border border-[var(--border-color)] border-b-0 border-r-0 transform rotate-45" 
-          style={{ right: `${arrowPosition}px` }}
+          style={{ left: `${arrowLeft}px` }}
         />
         
         {/* Modal Header */}

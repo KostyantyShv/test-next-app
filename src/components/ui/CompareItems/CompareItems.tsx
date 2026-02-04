@@ -327,12 +327,12 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
           isOpen && "opacity-100 visibility-visible"
         )}>
         {/* Header Space */}
-        <div className="fixed top-0 left-0 right-0 h-[25px] bg-[rgba(38,43,61,0.05)] z-[1002]" />
+        <div className="fixed top-0 left-0 right-0 h-[64px] bg-[rgba(38,43,61,0.05)] z-[1002]" />
         
         {/* Close Button */}
         <button 
           onClick={onClose}
-          className="fixed top-2 right-6 w-8 h-8 bg-[var(--surface-color)] border-none rounded-full flex items-center justify-center cursor-pointer z-[1003] shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
+          className="fixed top-24 right-6 w-8 h-8 bg-[var(--surface-color)] border-none rounded-full flex items-center justify-center cursor-pointer z-[1003] shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
         >
           <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-[var(--dark-text)]">
             <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -340,7 +340,7 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
         </button>
 
         {/* Overlay Content */}
-        <div className="pt-[45px] px-5 pb-5 bg-[var(--surface-color)] min-h-screen">
+        <div className="pt-[100px] px-5 pb-5 bg-[var(--surface-color)] min-h-screen">
           <div className="max-w-[1200px] mx-auto">
             {/* Table Header with Title, Layout Toggle and Pagination */}
             <div className="flex justify-between items-center mb-6">

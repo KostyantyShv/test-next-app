@@ -54,8 +54,10 @@ export const Avatar: React.FC<AvatarProps> = ({
     plan?: string;
     avatar?: string;
   } | null>(userProp || null);
+  const [arrowRightOffset, setArrowRightOffset] = useState(12);
   const [loading, setLoading] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const avatarButtonRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
   const router = useRouter();
 
@@ -203,6 +205,22 @@ export const Avatar: React.FC<AvatarProps> = ({
     }
   }, [avatarSrc]);
 
+  useEffect(() => {
+    if (dropdownPosition !== 'right') return;
+    if (!isDropdownOpen) return;
+
+    const updateArrowOffset = () => {
+      const buttonWidth = avatarButtonRef.current?.clientWidth || 40;
+      const arrowSize = 16;
+      const offset = Math.max(6, Math.round(buttonWidth / 2 - arrowSize / 2));
+      setArrowRightOffset(offset);
+    };
+
+    updateArrowOffset();
+    window.addEventListener('resize', updateArrowOffset);
+    return () => window.removeEventListener('resize', updateArrowOffset);
+  }, [dropdownPosition, isDropdownOpen, size]);
+
   if (loading) {
     return (
       <div className={`relative rounded-full overflow-hidden ${sizeClasses[size]} ${className} bg-gray-200 animate-pulse`} />
@@ -214,6 +232,7 @@ export const Avatar: React.FC<AvatarProps> = ({
       <div
         className={`relative cursor-pointer rounded-full overflow-hidden ${sizeClasses[size]} ${className}`}
         onClick={handleAvatarClick}
+        ref={avatarButtonRef}
       >
         {avatarSrc && avatarSrc.trim() !== '' ? (
           <Image
@@ -256,7 +275,10 @@ export const Avatar: React.FC<AvatarProps> = ({
           {dropdownPosition === 'left' ? (
             <div className="avatar-dropdown-arrow absolute -left-2 bottom-[27px] w-3 h-3 bg-[#E1E7EE] transform rotate-45 shadow-[-2px_2px_5px_rgba(0,0,0,0.12)]"></div>
           ) : (
-            <div className="avatar-dropdown-arrow absolute -top-2 right-4 w-4 h-4 bg-white border-l border-t border-gray-100 transform rotate-45"></div>
+            <div
+              className="avatar-dropdown-arrow absolute -top-2 w-4 h-4 bg-white border-l border-t border-gray-100 transform rotate-45"
+              style={{ right: `${arrowRightOffset}px` }}
+            ></div>
           )}
           
           {/* Top Section */}

@@ -416,12 +416,12 @@ export default function PageHistoryModal({
                         )}
                       </div>
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--subtle-text)', width: '12%' }}>Change ID</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--subtle-text)', width: '13%' }}>Date & Time</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--subtle-text)', width: '10%' }}>Field</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--subtle-text)', width: '20%' }}>Previous Value</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--subtle-text)', width: '20%' }}>New Value</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--subtle-text)', width: '12%' }}>Magnitude</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--subtle-text)', width: '12%' }}>Change ID</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--subtle-text)', width: '13%' }}>Date & Time</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--subtle-text)', width: '10%' }}>Field</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--subtle-text)', width: '20%' }}>Previous Value</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--subtle-text)', width: '20%' }}>New Value</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--subtle-text)', width: '12%' }}>Magnitude</th>
                     <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--subtle-text)', width: '8%' }}>Alert Sent</th>
                   </tr>
                 </thead>
@@ -462,11 +462,11 @@ export default function PageHistoryModal({
                               )}
                             </div>
                           </td>
-                          <td className="px-4 py-4">
-                            <span className="text-sm" style={{ color: 'var(--subtle-text)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif" }}>{change.id}</span>
+                          <td className="px-4 py-4 text-center">
+                            <span className="text-sm inline-block text-center w-full" style={{ color: 'var(--subtle-text)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif" }}>{change.id}</span>
                           </td>
                           <td
-                            className="px-4 py-4 cursor-pointer relative group"
+                            className="px-4 py-4 cursor-pointer text-center"
                             style={{ color: 'var(--text-default)', fontSize: '14px' }}
                             onClick={() => change.fullDate && copyToClipboard(change.fullDate)}
                             onMouseEnter={(e) => {
@@ -476,21 +476,23 @@ export default function PageHistoryModal({
                               e.currentTarget.style.color = 'var(--text-default)';
                             }}
                           >
-                            {change.date}
-                            {change.fullDate && (
-                              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-[#1B1B1B] text-white text-xs rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap pointer-events-none z-50">
-                                {change.fullDate}
-                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1B1B1B]"></div>
-                              </div>
-                            )}
+                            <span className="relative inline-flex items-center justify-center group w-full">
+                              {change.date}
+                              {change.fullDate && (
+                                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-[#1B1B1B] text-white text-xs rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap pointer-events-none z-50">
+                                  {change.fullDate}
+                                  <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1B1B1B]"></span>
+                                </span>
+                              )}
+                            </span>
                           </td>
-                          <td className="px-4 py-4">
-                            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium" style={{ backgroundColor: 'var(--gray-100)', color: 'var(--bold-text)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif" }}>
+                          <td className="px-4 py-4 text-center">
+                            <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-md text-xs font-medium" style={{ backgroundColor: 'var(--gray-100)', color: 'var(--bold-text)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif" }}>
                               {change.field}
                             </span>
                           </td>
                           <td
-                            className="px-4 py-4 cursor-pointer"
+                            className="px-4 py-4 cursor-pointer text-center"
                             onClick={() => copyToClipboard(change.prev)}
                             onMouseEnter={(e) => {
                               const span = e.currentTarget.querySelector('span');
@@ -501,12 +503,12 @@ export default function PageHistoryModal({
                               if (span) span.style.color = 'var(--text-default)';
                             }}
                           >
-                            <span className="text-sm inline-block max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: 'var(--text-default)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif", verticalAlign: 'middle' }}>
+                            <span className="text-sm inline-block max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis text-center" style={{ color: 'var(--text-default)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif", verticalAlign: 'middle' }}>
                               {change.prev}
                             </span>
                           </td>
                           <td
-                            className="px-4 py-4 cursor-pointer"
+                            className="px-4 py-4 cursor-pointer text-center"
                             onClick={() => copyToClipboard(change.new)}
                             onMouseEnter={(e) => {
                               const span = e.currentTarget.querySelector('span');
@@ -517,19 +519,25 @@ export default function PageHistoryModal({
                               if (span) span.style.color = 'var(--text-default)';
                             }}
                           >
-                            <span className="text-sm inline-block max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: 'var(--text-default)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif", verticalAlign: 'middle' }}>
+                            <span className="text-sm inline-block max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis text-center" style={{ color: 'var(--text-default)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif", verticalAlign: 'middle' }}>
                               {change.new}
                             </span>
                           </td>
-                          <td className="px-4 py-4 relative group">
-                            <span
-                              className="font-semibold text-[13px] px-2.5 py-1 rounded-md inline-block"
-                              style={{
-                                color: magClass === 'increase' ? 'var(--success-green)' : magClass === 'decrease' ? '#D92D20' : 'var(--subtle-text)',
-                                backgroundColor: magClass === 'increase' ? 'var(--apply-button-bg)' : magClass === 'decrease' ? '#fef2f2' : 'var(--gray-100)'
-                              }}
-                            >
-                              {change.mag}
+                          <td className="px-4 py-4 text-center">
+                            <span className="relative inline-flex items-center justify-center group w-full">
+                              <span
+                                className="font-semibold text-[13px] px-2.5 py-1 rounded-md inline-block"
+                                style={{
+                                  color: magClass === 'increase' ? 'var(--success-green)' : magClass === 'decrease' ? '#D92D20' : 'var(--subtle-text)',
+                                  backgroundColor: magClass === 'increase' ? 'var(--apply-button-bg)' : magClass === 'decrease' ? '#fef2f2' : 'var(--gray-100)'
+                                }}
+                              >
+                                {change.mag}
+                              </span>
+                              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-[#1B1B1B] text-white text-xs rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap pointer-events-none z-50">
+                                {`${change.field} ${change.mag}`}
+                                <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1B1B1B]"></span>
+                              </span>
                             </span>
                           </td>
                           <td className="px-4 py-4 text-center">
@@ -570,4 +578,3 @@ export default function PageHistoryModal({
     document.body
   );
 }
-

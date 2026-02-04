@@ -27,7 +27,8 @@ export const Cart: React.FC<CartProps> = ({
   buttonRef,
 }) => {
   const router = useRouter();
-  const [arrowPosition, setArrowPosition] = useState<number>(24); // default right-6 = 24px
+  const [arrowPosition, setArrowPosition] = useState<number>(24); // kept for backward compatibility
+  const [arrowLeft, setArrowLeft] = useState<number>(24);
   const [panelRight, setPanelRight] = useState<number>(24); // default right position
   const [panelTop, setPanelTop] = useState<number>(72); // default top position
   const [cartItems, setCartItems] = useState<CartItem[]>([
@@ -62,7 +63,7 @@ export const Cart: React.FC<CartProps> = ({
           const buttonRect = button.getBoundingClientRect();
           const buttonCenterX = buttonRect.left + buttonRect.width / 2;
           const windowWidth = window.innerWidth;
-          const panelWidth = 400; // w-[400px]
+          const panelWidth = modalRef.current?.offsetWidth ?? 400;
           
           // Calculate panel position: align arrow (at arrowPosition from right) with button center
           // We want: windowWidth - panelRight - arrowPosition = buttonCenterX
@@ -82,15 +83,22 @@ export const Cart: React.FC<CartProps> = ({
           const calculatedTop = buttonRect.bottom + 16;
           setPanelTop(calculatedTop);
           
-          // Calculate arrow position based on final panel position
-          // Panel right edge is at: windowWidth - finalRight
-          // Arrow is at: windowWidth - finalRight - arrowPosition
-          // We want arrow center to align with button center: windowWidth - finalRight - arrowPosition = buttonCenterX
-          // So: arrowPosition = windowWidth - finalRight - buttonCenterX
-          const modalRight = windowWidth - finalRight;
-          const distanceFromRight = modalRight - buttonCenterX;
-          // Arrow is 16px wide (w-4), so center it
-          setArrowPosition(distanceFromRight - 8); // 8px = half of 16px
+          // Calculate arrow position based on final panel position (use left for precise centering)
+          const arrowSize = 16;
+          const modalLeft = windowWidth - finalRight - panelWidth;
+          const rawArrowLeft = buttonCenterX - modalLeft - arrowSize / 2;
+          const clampedArrowLeft = Math.max(8, Math.min(panelWidth - arrowSize - 8, rawArrowLeft));
+          setArrowLeft(clampedArrowLeft);
+          setArrowPosition(windowWidth - finalRight - buttonCenterX - 8);
+
+          requestAnimationFrame(() => {
+            const modalRect = modalRef.current?.getBoundingClientRect();
+            if (!modalRect) return;
+            const updatedPanelWidth = modalRect.width || panelWidth;
+            const rawLeft = buttonCenterX - modalRect.left - arrowSize / 2;
+            const nextLeft = Math.max(8, Math.min(updatedPanelWidth - arrowSize - 8, rawLeft));
+            setArrowLeft(nextLeft);
+          });
         }
       };
       updateArrowPosition();
@@ -172,7 +180,7 @@ export const Cart: React.FC<CartProps> = ({
         {/* Arrow pointer */}
         <div 
           className="cart-modal-arrow absolute -top-2 w-4 h-4 bg-[var(--surface-color)] border border-[var(--modal-arrow-border)] border-b-0 border-r-0 transform rotate-45" 
-          style={{ right: `${arrowPosition}px` }}
+          style={{ left: `${arrowLeft}px` }}
         />
         
         {/* Modal Header */}

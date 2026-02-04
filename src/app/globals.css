@@ -131,6 +131,8 @@
   --grade-badge: #00DF8B;
   --apply-button-bg: #EBFCF4;
   --apply-button-hover: #D7F7E9;
+  --btn-primary-bg: #016853;
+  --btn-primary-hover: #0B6333;
   --hover-bg: #F3F4F6;
   --border-color: rgba(0, 0, 0, 0.1);
   --shadow-color: rgba(0, 0, 0, 0.08);
@@ -367,6 +369,8 @@ body {
   --grade-badge: #00DF8B;
   --apply-button-bg: #EBFCF4;
   --apply-button-hover: #D7F7E9;
+  --btn-primary-bg: #016853;
+  --btn-primary-hover: #0B6333;
   --hover-bg: #F3F4F6;
   --border-color: rgba(0, 0, 0, 0.1);
   --shadow-color: rgba(0, 0, 0, 0.08);

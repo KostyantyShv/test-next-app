@@ -24,9 +24,14 @@ export const Portal: React.FC<PortalProps> = ({
 
     return () => {
       const container = document.getElementById(containerId);
-      if (container && container.parentNode && container.parentNode === document.body && container.childNodes.length === 0) {
+      if (!container) return;
+
+      const shouldRemove =
+        container.parentNode === document.body && container.childNodes.length === 0;
+
+      if (shouldRemove) {
         try {
-          if (container.remove) {
+          if (typeof container.remove === 'function') {
             container.remove();
           } else if (container.parentNode) {
             container.parentNode.removeChild(container);

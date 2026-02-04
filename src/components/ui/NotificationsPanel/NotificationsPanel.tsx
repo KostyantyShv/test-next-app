@@ -322,6 +322,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
   const [notifications, setNotifications] = useState(mockNotifications);
   const panelRef = useRef<HTMLDivElement>(null);
   const tabsScrollRef = useRef<HTMLDivElement>(null);
+  const [panelTop, setPanelTop] = useState(63);
   const [showLeftScroll, setShowLeftScroll] = useState(false);
   const [showRightScroll, setShowRightScroll] = useState(false);
 
@@ -347,6 +348,21 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
       }
     };
   }, [isOpen, handleClickOutside]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const updatePanelTop = () => {
+      const header = document.querySelector('header.app-header') as HTMLElement | null;
+      if (header) {
+        setPanelTop(Math.round(header.getBoundingClientRect().height));
+      } else {
+        setPanelTop(63);
+      }
+    };
+    updatePanelTop();
+    window.addEventListener('resize', updatePanelTop);
+    return () => window.removeEventListener('resize', updatePanelTop);
+  }, [isOpen]);
 
   const updateScrollButtons = useCallback(() => {
     if (!tabsScrollRef.current) return;
@@ -453,9 +469,9 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
               style={{
                 backgroundColor: 'var(--surface-color)',
                 boxShadow: '-4px 0 24px var(--shadow-color)',
-                top: '63px',
-                height: 'calc(100vh - 63px)',
-                minHeight: 'calc(100vh - 63px)',
+                top: `${panelTop}px`,
+                height: `calc(100vh - ${panelTop}px)`,
+                minHeight: `calc(100vh - ${panelTop}px)`,
                 fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
               }}
               onClick={(e) => e.stopPropagation()}

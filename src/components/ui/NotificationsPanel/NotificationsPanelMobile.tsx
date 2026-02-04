@@ -375,47 +375,51 @@ export const NotificationsPanelMobile: React.FC<NotificationsPanelMobileProps> =
       <>
         {/* Backdrop */}
         <div 
-          className="fixed inset-0 z-[1001] md:hidden bg-black bg-opacity-25 transition-opacity duration-300" 
+          className="fixed inset-0 z-[1001] md:hidden bg-black/40 backdrop-blur-[4px] transition-opacity duration-300" 
           onClick={onClose}
           data-backdrop="notifications-mobile"
         />
         
-        {/* Mobile Panel - Side Panel */}
+        {/* Mobile Panel - Bottom Drawer */}
         <div 
-        ref={panelRef}
-        className={cn(
-          "fixed top-0 right-0 w-full max-w-[400px] bg-white shadow-2xl flex flex-col md:hidden",
-          "transform transition-transform duration-300 ease-in-out",
-          "border-l border-[var(--gray-300)] z-[1002]",
-          isOpen ? "translate-x-0" : "translate-x-full"
-        )}
-        style={{
-          backgroundColor: 'white',
-          boxShadow: '-4px 0 12px rgba(0, 0, 0, 0.1)',
-          top: '0',
-          height: '100vh',
-          minHeight: '100vh',
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-        }}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-        onMouseDown={(e) => {
-          e.stopPropagation();
-        }}
-        onTouchStart={(e) => {
-          e.stopPropagation();
-        }}
-      >
+          ref={panelRef}
+          className={cn(
+            "fixed bottom-0 left-0 right-0 bg-white flex flex-col md:hidden",
+            "transition-transform duration-300 ease-in-out",
+            "z-[1002]"
+          )}
+          style={{
+            maxHeight: '85%',
+            transform: isOpen ? 'translateY(0)' : 'translateY(100%)',
+            borderTopLeftRadius: 24,
+            borderTopRightRadius: 24,
+            boxShadow: '0 -8px 32px rgba(0, 0, 0, 0.12), 0 -2px 8px rgba(0, 0, 0, 0.04)',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          }}
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+        >
+          {/* Pull Indicator */}
+          <div className="w-9 h-1 bg-[#DFDDDB] rounded-full mx-auto mt-3 mb-2 flex-shrink-0" />
           {/* Header */}
           <div 
-            className="px-4 pt-6 pb-4 border-b border-[var(--gray-300)]"
+            className="px-5 pt-2 pb-4 border-b border-[var(--gray-300)]"
             onClick={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center mb-5">
-              <h1 className="text-[var(--bold-text)]" style={{ fontSize: '1.5rem', fontWeight: 600, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>Notifications</h1>
-              <div className="flex items-center gap-2 h-6">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 flex items-center justify-center text-[#016853]">
+                  <svg viewBox="0 0 24 24" className="w-[22px] h-[22px]" fill="currentColor">
+                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+                  </svg>
+                </div>
+                <h1 className="text-[var(--bold-text)]" style={{ fontSize: '1.125rem', fontWeight: 700, fontFamily: '-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif' }}>
+                  Notifications
+                </h1>
+              </div>
+              <div className="flex items-center gap-2 h-8">
                 <label 
                   className="flex items-center gap-3 text-[var(--subtle-text)]" 
                   style={{ fontSize: '0.7rem', fontWeight: 500, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
@@ -472,11 +476,10 @@ export const NotificationsPanelMobile: React.FC<NotificationsPanelMobileProps> =
                 
                 <button
                   onClick={onClose}
-                  className="p-2 rounded-md hover:bg-[var(--hover-bg)] transition-colors text-[var(--subtle-text)] hover:text-[var(--text-default)] flex items-center justify-center close-icon"
-                  style={{ padding: '0.5rem' }}
+                  className="w-8 h-8 rounded-full bg-[#E1E7EE] text-[var(--subtle-text)] hover:text-[var(--active-green)] hover:bg-[#D7F7E9] flex items-center justify-center transition-colors close-icon"
                 >
-                  <svg className="w-5 h-5" viewBox="0 0 15 15" fill="none">
-                    <path clipRule="evenodd" fillRule="evenodd" fill="currentColor" d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z" />
+                  <svg viewBox="0 0 24 24" className="w-[18px] h-[18px]" fill="none">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
                   </svg>
                 </button>
               </div>
