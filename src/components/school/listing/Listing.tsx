@@ -43,6 +43,7 @@ const Listing: React.FC<ListingProps> = ({
     (s) => s.setIsDesktopStickyHeaderVisible
   );
   const rafRef = useRef<number | null>(null);
+  const lastStickyVisibleRef = useRef<boolean | null>(null);
   
   // Get active school type from URL
   const getSchoolType = (): SchoolType => {
@@ -119,8 +120,7 @@ const Listing: React.FC<ListingProps> = ({
         rafRef.current = requestAnimationFrame(() => {
           setIsDesktopStickyHeaderVisible((prev) => {
             if (prev === nextVisible) return prev;
-            // Sync to global layout immediately (no extra render cycle).
-            setIsDesktopListingStickyHeaderVisible(nextVisible);
+            lastStickyVisibleRef.current = nextVisible;
             return nextVisible;
           });
         });
@@ -139,6 +139,15 @@ const Listing: React.FC<ListingProps> = ({
       observer.disconnect();
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    setIsDesktopListingStickyHeaderVisible(isDesktopStickyHeaderVisible);
+  }, [isDesktopStickyHeaderVisible, setIsDesktopListingStickyHeaderVisible]);
+
+  useEffect(() => {
+    return () => {
       setIsDesktopListingStickyHeaderVisible(false);
     };
   }, [setIsDesktopListingStickyHeaderVisible]);

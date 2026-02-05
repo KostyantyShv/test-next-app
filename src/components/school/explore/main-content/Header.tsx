@@ -96,12 +96,32 @@ const Header: React.FC<HeaderProps> = ({
     useState(false);
   const [isSearchTypeOpen, setIsSearchTypeOpen] = useState(false);
   const [searchType, setSearchType] = useState("Trending");
+  const [isLayoutToggleExpanded, setIsLayoutToggleExpanded] = useState(false);
+  const [isLayoutTooltipReady, setIsLayoutTooltipReady] = useState(false);
+  const [hoveredLayout, setHoveredLayout] = useState<string | null>(null);
+  const layoutToggleHoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const layoutToggleTooltipTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const openMobileSidebar = useOpenMobileSidebar();
   /** Ignore overlay clicks for a short time after opening a drawer (prevents same-tap close on touch) */
   const drawerOpenedAtRef = useRef<number>(0);
   const OVERLAY_CLOSE_GRACE_MS = 350;
   const desktopEstablishmentRef = useRef<HTMLDivElement>(null);
   const searchTypeRef = useRef<HTMLDivElement>(null);
+  const layoutToggleExpandedWidth = useMemo(
+    () => _layoutToggleWidth ?? layouts.length * 32 + 6,
+    [_layoutToggleWidth, layouts.length]
+  );
+
+  useEffect(() => {
+    return () => {
+      if (layoutToggleHoverTimeoutRef.current) {
+        clearTimeout(layoutToggleHoverTimeoutRef.current);
+      }
+      if (layoutToggleTooltipTimeoutRef.current) {
+        clearTimeout(layoutToggleTooltipTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const currentFilters = useMemo(() => {
     switch (establishment) {
@@ -291,6 +311,46 @@ const Header: React.FC<HeaderProps> = ({
     setIsDesktopEstablishmentOpen(false);
   };
 
+  const hasCustomDropdown = Boolean(_renderDropdownItems);
+  const resolvedDropdownIcon =
+    _dropdownIcon ?? getEstablishmentIcon(dropdownValue);
+
+  const renderDefaultDropdownItems = () =>
+    establishmentTypes.map((type) => {
+      const isSelected = type === dropdownValue;
+      return (
+        <div
+          key={type}
+          role="option"
+          aria-selected={isSelected}
+          onClick={() => handleEstablishmentSelect(type)}
+          className={`flex items-center px-4 py-2.5 cursor-pointer transition-colors hover:bg-[#f5f5f7] ${isSelected ? "bg-[rgba(1,104,83,0.1)] text-[var(--header-green)]" : ""
+            }`}
+        >
+          <div className="w-6 h-6 flex items-center justify-center mr-3 text-[var(--subtle-text)]">
+            {getEstablishmentIcon(type)}
+          </div>
+          <div className="flex-1 flex items-center justify-between">
+            <span className="text-sm font-medium">{type}</span>
+            <span className="text-xs text-[var(--subtle-text)]">
+              {type === "K-12" && "2,583 schools"}
+              {type === "Colleges" && "1,870 colleges"}
+              {type === "Graduates" && "642 programs"}
+              {type === "District" && "1,234 districts"}
+            </span>
+          </div>
+        </div>
+      );
+    });
+
+  const handleCustomDropdownClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement;
+    const selectedItem = target.closest("[data-dropdown-select]");
+    if (!selectedItem) return;
+    setIsEstablishmentDrawerOpen(false);
+    setIsDesktopEstablishmentOpen(false);
+  };
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Search query:", searchQuery);
@@ -357,17 +417,17 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <>
       {/* Desktop Header */}
-      <div className="hidden md:flex items-center justify-between py-4 px-6 bg-white border-b border-[rgba(0,0,0,0.08)] relative">
+      <div className="explore-desktop-header hidden md:flex items-center justify-between py-4 px-6 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl relative z-[120] overflow-visible">
         <div ref={desktopEstablishmentRef} className="relative">
           <button
             type="button"
             onClick={() => setIsDesktopEstablishmentOpen((prev) => !prev)}
-            className="flex items-center gap-3 cursor-pointer py-2 px-4 rounded-[20px] hover:bg-[#f5f5f7] transition-colors"
+            className="explore-desktop-dropdown-trigger flex items-center gap-3 cursor-pointer py-2 px-4 rounded-[20px] hover:bg-[#f5f5f7] transition-colors"
             aria-haspopup="listbox"
             aria-expanded={isDesktopEstablishmentOpen}
           >
-            <div className="w-6 h-6 flex items-center justify-center text-[var(--bold-text)]">
-              {getEstablishmentIcon(dropdownValue)}
+            <div className="explore-desktop-dropdown-icon w-11 h-11 flex items-center justify-center text-[#424242] bg-[#F5F5F7] rounded-lg">
+              {resolvedDropdownIcon}
             </div>
             <h1 className="text-lg font-semibold text-[var(--bold-text)]">
               {dropdownValue}
@@ -383,37 +443,16 @@ const Header: React.FC<HeaderProps> = ({
           </button>
 
           <div
-            className={`absolute top-full left-0 mt-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.1)] w-60 z-50 ${
-              isDesktopEstablishmentOpen ? "block" : "hidden"
-            }`}
+            className={`explore-desktop-dropdown-menu absolute top-full left-0 mt-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.1)] w-60 z-50 ${isDesktopEstablishmentOpen ? "block" : "hidden"
+              }`}
           >
-            {establishmentTypes.map((type) => {
-              const isSelected = type === dropdownValue;
-              return (
-                <div
-                  key={type}
-                  role="option"
-                  aria-selected={isSelected}
-                  onClick={() => handleEstablishmentSelect(type)}
-                  className={`flex items-center px-4 py-2.5 cursor-pointer transition-colors hover:bg-[#f5f5f7] ${
-                    isSelected ? "bg-[rgba(1,104,83,0.1)] text-[var(--header-green)]" : ""
-                  }`}
-                >
-                  <div className="w-6 h-6 flex items-center justify-center mr-3 text-[var(--subtle-text)]">
-                    {getEstablishmentIcon(type)}
-                  </div>
-                  <div className="flex-1 flex items-center justify-between">
-                    <span className="text-sm font-medium">{type}</span>
-                    <span className="text-xs text-[var(--subtle-text)]">
-                      {type === "K-12" && "2,583 schools"}
-                      {type === "Colleges" && "1,870 colleges"}
-                      {type === "Graduates" && "642 programs"}
-                      {type === "District" && "1,234 districts"}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+            {hasCustomDropdown ? (
+              <div onClick={handleCustomDropdownClick}>
+                {_renderDropdownItems?.()}
+              </div>
+            ) : (
+              renderDefaultDropdownItems()
+            )}
           </div>
         </div>
 
@@ -421,9 +460,8 @@ const Header: React.FC<HeaderProps> = ({
           <button
             type="button"
             onClick={handleExpandToggle}
-            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-              isContainerExpanded ? "bg-[rgba(0,0,0,0.05)]" : ""
-            }`}
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isContainerExpanded ? "bg-[rgba(0,0,0,0.05)]" : ""
+              }`}
             aria-label={isContainerExpanded ? "Collapse layout" : "Expand layout"}
           >
             <svg
@@ -473,9 +511,8 @@ const Header: React.FC<HeaderProps> = ({
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className={`w-5 h-5 bg-none border-none items-center justify-center cursor-pointer text-[var(--subtle-text)] opacity-70 hover:opacity-100 flex-shrink-0 ${
-                    searchQuery.trim() !== "" ? "flex" : "hidden"
-                  }`}
+                  className={`w-5 h-5 bg-none border-none items-center justify-center cursor-pointer text-[var(--subtle-text)] opacity-70 hover:opacity-100 flex-shrink-0 ${searchQuery.length >= 2 ? "flex" : "hidden"
+                    }`}
                   aria-label="Clear search"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -483,9 +520,8 @@ const Header: React.FC<HeaderProps> = ({
                   </svg>
                 </button>
                 <div
-                  className={`w-px h-5 bg-[rgba(0,0,0,0.1)] mx-2 ${
-                    searchQuery.trim() !== "" ? "block" : "hidden"
-                  }`}
+                  className={`w-px h-5 bg-[rgba(0,0,0,0.1)] mx-2 ${searchQuery.length >= 2 ? "block" : "hidden"
+                    }`}
                 />
                 <button
                   type="button"
@@ -536,45 +572,73 @@ const Header: React.FC<HeaderProps> = ({
           <div className="w-px h-6 bg-[rgba(0,0,0,0.1)] mx-2" />
 
           {/* Layout Toggle - 6 variants matching HTML design */}
-          <div 
-            className="layout-toggle group flex items-center bg-[#f5f5f7] overflow-hidden relative"
+          <div
+            className={`layout-toggle flex items-center bg-[#f5f5f7] relative z-[8000] ${isLayoutToggleExpanded ? "expanded" : ""
+              } ${isLayoutTooltipReady ? "tooltip-ready" : ""}`}
             style={{
               borderRadius: '6px',
               padding: '2px',
-              width: '36px',
+              width: isLayoutToggleExpanded ? `${layoutToggleExpandedWidth}px` : '36px',
               transition: 'width 0.3s ease',
+              overflow: 'visible',
             }}
-            onMouseEnter={(e) => {
-              // Width for 6 buttons: 6 × 32px + 4px padding = 196px
-              (e.currentTarget as HTMLElement).style.width = '196px';
+            onMouseEnter={() => {
+              if (layoutToggleHoverTimeoutRef.current) clearTimeout(layoutToggleHoverTimeoutRef.current);
+              setIsLayoutToggleExpanded(true);
+              if (layoutToggleTooltipTimeoutRef.current) clearTimeout(layoutToggleTooltipTimeoutRef.current);
+              layoutToggleTooltipTimeoutRef.current = setTimeout(() => {
+                setIsLayoutTooltipReady(true);
+              }, 300);
             }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.width = '36px';
+            onMouseLeave={() => {
+              setIsLayoutTooltipReady(false);
+              setHoveredLayout(null);
+              if (layoutToggleTooltipTimeoutRef.current) clearTimeout(layoutToggleTooltipTimeoutRef.current);
+              layoutToggleHoverTimeoutRef.current = setTimeout(() => {
+                setIsLayoutToggleExpanded(false);
+              }, 300);
             }}
           >
             {desktopLayouts.map((item, index) => {
               const isActive = layout === item.type;
+              const shouldShowButton = isActive || isLayoutToggleExpanded;
               return (
                 <button
                   key={item.type}
                   type="button"
                   onClick={() => handleLayoutChange(item.type)}
-                  style={{ 
+                  onMouseEnter={() => setHoveredLayout(item.type)}
+                  onMouseLeave={() => setHoveredLayout(null)}
+                  style={{
                     order: isActive ? desktopLayouts.length + 1 : index + 1,
                     width: '32px',
                     height: '28px',
                     borderRadius: '4px',
                     flexShrink: 0,
                   }}
-                  className={`layout-toggle-button flex items-center justify-center cursor-pointer border-none transition-all ${
-                    isActive
-                      ? "active bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)] [&>span>svg]:text-[#0093B0]"
-                      : "bg-transparent hidden group-hover:flex [&>span>svg]:text-[#4A4A4A]"
-                  }`}
+                  className={`layout-toggle-button relative items-center justify-center cursor-pointer border-none transition-all overflow-visible ${shouldShowButton ? "flex" : "hidden"
+                    } ${isActive
+                      ? "active bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
+                      : "bg-transparent hover:bg-[rgba(0,0,0,0.05)]"
+                    }`}
                   data-layout={item.type}
                   aria-label={`Layout ${item.type}`}
                 >
-                  <span className="w-4 h-4 flex items-center justify-center">{item.icon}</span>
+                  <span
+                    className={`w-4 h-4 flex items-center justify-center ${isActive ? "text-[#0093B0]" : "text-[#4A4A4A]"
+                      }`}
+                  >
+                    {item.icon}
+                  </span>
+                  <span
+                    className={`layout-tooltip absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-[var(--tooltip-bg)] text-[var(--tooltip-text)] px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap pointer-events-none z-[3000] shadow-[0_2px_8px_rgba(0,0,0,0.15)] transition-opacity duration-150 ${isLayoutTooltipReady && hoveredLayout === item.type
+                      ? "opacity-100 visible"
+                      : "opacity-0 invisible"
+                      }`}
+                  >
+                    {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
+                    <span className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-[var(--tooltip-bg)]"></span>
+                  </span>
                 </button>
               );
             })}
@@ -603,9 +667,8 @@ const Header: React.FC<HeaderProps> = ({
             </button>
 
             <div
-              className={`absolute right-0 mt-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.1)] min-w-[180px] z-50 ${
-                isSearchTypeOpen ? "block" : "hidden"
-              }`}
+              className={`absolute right-0 mt-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.1)] min-w-[180px] z-50 ${isSearchTypeOpen ? "block" : "hidden"
+                }`}
             >
               {[
                 "Trending",
@@ -622,9 +685,8 @@ const Header: React.FC<HeaderProps> = ({
                       setSearchType(type);
                       setIsSearchTypeOpen(false);
                     }}
-                    className={`flex items-center gap-2 px-3 py-2 text-sm cursor-pointer hover:bg-[#f5f5f7] ${
-                      isSelected ? "bg-[rgba(0,147,176,0.1)] text-[var(--primary-blue)]" : ""
-                    }`}
+                    className={`flex items-center gap-2 px-3 py-2 text-sm cursor-pointer hover:bg-[#f5f5f7] ${isSelected ? "bg-[rgba(0,147,176,0.1)] text-[var(--primary-blue)]" : ""
+                      }`}
                   >
                     <span className="flex-1">{type}</span>
                     {isSelected && (
@@ -646,7 +708,7 @@ const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Mobile Header — matches HTML layout/design (Explore & Collections mobile) */}
-      <div className="md:hidden relative z-[100]">
+      <div className="md:hidden sticky top-0 z-[1000] w-[calc(100%+24px)] -mx-3">
         <div
           className="flex items-center justify-between py-3 px-4 bg-white border-b border-[rgba(0,0,0,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.05)]"
         >
@@ -670,7 +732,7 @@ const Header: React.FC<HeaderProps> = ({
               onClick={openEstablishmentDrawer}
             >
               <div className="w-6 h-6 flex items-center justify-center bg-[#F3F4F6] rounded-lg shrink-0 p-1 text-[var(--bold-text)]">
-                {getEstablishmentIcon(dropdownValue)}
+                {resolvedDropdownIcon}
               </div>
               <h1 className="text-base font-semibold text-[var(--bold-text)] truncate">
                 {dropdownValue}
@@ -697,11 +759,10 @@ const Header: React.FC<HeaderProps> = ({
             </button>
             <button
               type="button"
-              className={`w-8 h-8 rounded-full flex items-center justify-center border transition-colors ${
-                isMapActive
-                  ? "bg-[var(--apply-button-bg)] border-[var(--header-green)] text-[var(--header-green)]"
-                  : "bg-[#f5f5f7] border-[rgba(0,0,0,0.1)] text-[var(--text-default)] hover:bg-[rgba(0,0,0,0.05)]"
-              }`}
+              className={`w-8 h-8 rounded-full flex items-center justify-center border transition-colors ${isMapActive
+                ? "bg-[var(--apply-button-bg)] border-[var(--header-green)] text-[var(--header-green)]"
+                : "bg-[#f5f5f7] border-[rgba(0,0,0,0.1)] text-[var(--text-default)] hover:bg-[rgba(0,0,0,0.05)]"
+                }`}
               onClick={handleMapToggle}
               aria-label="Map"
             >
@@ -729,12 +790,12 @@ const Header: React.FC<HeaderProps> = ({
                 )}
               </button>
             </div>
-              <button
-                type="button"
-                className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
-                onClick={openOptionsDrawer}
-                aria-label="More options"
-              >
+            <button
+              type="button"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+              onClick={openOptionsDrawer}
+              aria-label="More options"
+            >
               <svg viewBox="0 0 24 24" className="w-5 h-5">
                 <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="currentColor" />
               </svg>
@@ -762,9 +823,8 @@ const Header: React.FC<HeaderProps> = ({
                   <button
                     type="button"
                     onClick={() => setSearchQuery("")}
-                    className={`w-5 h-5 bg-none border-none items-center justify-center cursor-pointer text-[var(--subtle-text)] opacity-70 flex-shrink-0 ${
-                      searchQuery.trim() !== "" ? "flex" : "hidden"
-                    }`}
+                    className={`w-5 h-5 bg-none border-none items-center justify-center cursor-pointer text-[var(--subtle-text)] opacity-70 flex-shrink-0 ${searchQuery.trim() !== "" ? "flex" : "hidden"
+                      }`}
                     aria-label="Clear search"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -806,139 +866,147 @@ const Header: React.FC<HeaderProps> = ({
               />
             )}
 
-        {/* Mobile Establishment Drawer */}
-        {isEstablishmentDrawerOpen && (
-          <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-[var(--surface-color)] rounded-t-[20px] z-[1001] shadow-[0_-8px_18px_var(--shadow-color)] overflow-hidden flex flex-col">
-            <div className="p-4 border-b border-[var(--border-color)] flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-[var(--bold-text)]">Select School Type</h2>
-              <button
-                onClick={() => setIsEstablishmentDrawerOpen(false)}
-                className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--subtle-text)] hover:bg-[var(--hover-bg)]"
-              >
-                <svg viewBox="0 0 24 24" className="w-5 h-5">
-                  <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                </svg>
-              </button>
-            </div>
-            <div className="p-4 space-y-2 flex-1 overflow-y-auto">
-              {establishmentTypes.map((type) => (
-                <div
-                  key={type}
-                  onClick={() => handleEstablishmentSelect(type)}
-                  className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${dropdownValue === type
-                    ? "bg-[rgba(125,211,252,0.12)] border border-[rgba(125,211,252,0.3)]"
-                    : "hover:bg-[var(--hover-bg)] border border-transparent"
-                    }`}
-                >
-                  <div
-                    className={`w-9 h-9 flex items-center justify-center rounded-lg ${dropdownValue === type ? "bg-[rgba(125,211,252,0.18)]" : "bg-[var(--surface-secondary)]"
-                      }`}
+            {/* Mobile Establishment Drawer */}
+            {isEstablishmentDrawerOpen && (
+              <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-[var(--surface-color)] rounded-t-[20px] z-[1001] shadow-[0_-8px_18px_var(--shadow-color)] overflow-hidden flex flex-col">
+                <div className="p-4 border-b border-[var(--border-color)] flex justify-between items-center">
+                  <h2 className="text-lg font-semibold text-[var(--bold-text)]">
+                    {hasCustomDropdown ? "Select Category" : "Select School Type"}
+                  </h2>
+                  <button
+                    onClick={() => setIsEstablishmentDrawerOpen(false)}
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--subtle-text)] hover:bg-[var(--hover-bg)]"
                   >
-                    {getEstablishmentIcon(type)}
-                  </div>
-                  <div className="flex-1">
-                    <div
-                      className={`font-medium ${dropdownValue === type ? "text-[var(--header-green)]" : "text-[var(--bold-text)]"
-                        }`}
-                    >
-                      {type}
-                    </div>
-                    <div className="text-sm text-[var(--subtle-text)]">
-                      {type === "K-12" && "2,583 schools"}
-                      {type === "Colleges" && "1,870 colleges"}
-                      {type === "Graduates" && "642 programs"}
-                      {type === "District" && "1,234 districts"}
-                    </div>
-                  </div>
-                  {dropdownValue === type && (
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-5 h-5 text-[var(--verification-blue)]"
-                    >
-                      <path d="M20 6L9 17l-5-5" />
+                    <svg viewBox="0 0 24 24" className="w-5 h-5">
+                      <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
                     </svg>
+                  </button>
+                </div>
+                <div className="p-4 space-y-2 flex-1 overflow-y-auto">
+                  {hasCustomDropdown ? (
+                    <div onClick={handleCustomDropdownClick}>
+                      {_renderDropdownItems?.()}
+                    </div>
+                  ) : (
+                    establishmentTypes.map((type) => (
+                      <div
+                        key={type}
+                        onClick={() => handleEstablishmentSelect(type)}
+                        className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${dropdownValue === type
+                          ? "bg-[rgba(125,211,252,0.12)] border border-[rgba(125,211,252,0.3)]"
+                          : "hover:bg-[var(--hover-bg)] border border-transparent"
+                          }`}
+                      >
+                        <div
+                          className={`w-9 h-9 flex items-center justify-center rounded-lg ${dropdownValue === type ? "bg-[rgba(125,211,252,0.18)]" : "bg-[var(--surface-secondary)]"
+                            }`}
+                        >
+                          {getEstablishmentIcon(type)}
+                        </div>
+                        <div className="flex-1">
+                          <div
+                            className={`font-medium ${dropdownValue === type ? "text-[var(--header-green)]" : "text-[var(--bold-text)]"
+                              }`}
+                          >
+                            {type}
+                          </div>
+                          <div className="text-sm text-[var(--subtle-text)]">
+                            {type === "K-12" && "2,583 schools"}
+                            {type === "Colleges" && "1,870 colleges"}
+                            {type === "Graduates" && "642 programs"}
+                            {type === "District" && "1,234 districts"}
+                          </div>
+                        </div>
+                        {dropdownValue === type && (
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="w-5 h-5 text-[var(--verification-blue)]"
+                          >
+                            <path d="M20 6L9 17l-5-5" />
+                          </svg>
+                        )}
+                      </div>
+                    ))
                   )}
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
+              </div>
+            )}
 
-        {/* Mobile Filter Drawer */}
-        {isFilterDrawerOpen && (
-          <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-[var(--surface-color)] rounded-t-[20px] z-[1001] shadow-[0_-8px_18px_var(--shadow-color)] flex flex-col">
-            <div className="p-4 border-b border-[var(--border-color)] flex justify-between items-center flex-shrink-0">
-              <h2 className="text-lg font-semibold text-[var(--bold-text)]">Filters</h2>
-              <button
-                onClick={() => setIsFilterDrawerOpen(false)}
-                className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--subtle-text)] hover:bg-[var(--hover-bg)]"
-              >
-                <svg viewBox="0 0 24 24" className="w-5 h-5">
-                  <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                </svg>
-              </button>
-            </div>
-            <div className="flex-1 overflow-y-auto">
-              <div className="p-4">{renderFilters()}</div>
-            </div>
-            <div className="p-4 border-t border-[var(--border-color)] flex gap-3 flex-shrink-0">
-              <button
-                onClick={handleClearFilters}
-                className="flex-1 px-4 py-3 border border-[var(--border-color)] rounded-lg text-[var(--text-default)] font-medium hover:bg-[var(--hover-bg)]"
-              >
-                Clear
-              </button>
-              <button
-                onClick={handleShowResults}
-                className="flex-1 px-4 py-3 bg-[var(--verification-blue)] text-white rounded-lg font-medium hover:opacity-90"
-              >
-                Show Results
-              </button>
-            </div>
-          </div>
-        )}
+            {/* Mobile Filter Drawer */}
+            {isFilterDrawerOpen && (
+              <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-[var(--surface-color)] rounded-t-[20px] z-[1001] shadow-[0_-8px_18px_var(--shadow-color)] flex flex-col">
+                <div className="p-4 border-b border-[var(--border-color)] flex justify-between items-center flex-shrink-0">
+                  <h2 className="text-lg font-semibold text-[var(--bold-text)]">Filters</h2>
+                  <button
+                    onClick={() => setIsFilterDrawerOpen(false)}
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--subtle-text)] hover:bg-[var(--hover-bg)]"
+                  >
+                    <svg viewBox="0 0 24 24" className="w-5 h-5">
+                      <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="flex-1 overflow-y-auto">
+                  <div className="p-4">{renderFilters()}</div>
+                </div>
+                <div className="p-4 border-t border-[var(--border-color)] flex gap-3 flex-shrink-0">
+                  <button
+                    onClick={handleClearFilters}
+                    className="flex-1 px-4 py-3 border border-[var(--border-color)] rounded-lg text-[var(--text-default)] font-medium hover:bg-[var(--hover-bg)]"
+                  >
+                    Clear
+                  </button>
+                  <button
+                    onClick={handleShowResults}
+                    className="flex-1 px-4 py-3 bg-[var(--verification-blue)] text-white rounded-lg font-medium hover:opacity-90"
+                  >
+                    Show Results
+                  </button>
+                </div>
+              </div>
+            )}
 
-        {/* Mobile Options drawer (Sort, Search Type, Layout — matches HTML) */}
-        <MobileActionsDrawer
-          isOpen={isOptionsDrawerOpen}
-          onClose={() => setIsOptionsDrawerOpen(false)}
-          layout={layout}
-          setLayout={handleLayoutChange}
-          layouts={layouts}
-        />
+            {/* Mobile Options drawer (Sort, Search Type, Layout — matches HTML) */}
+            <MobileActionsDrawer
+              isOpen={isOptionsDrawerOpen}
+              onClose={() => setIsOptionsDrawerOpen(false)}
+              layout={layout}
+              setLayout={handleLayoutChange}
+              layouts={layouts}
+            />
 
-        {/* Mobile Map Drawer */}
-        {isMapDrawerOpen && (
-          <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-[var(--surface-color)] rounded-t-[20px] z-[1001] flex flex-col shadow-[0_-8px_18px_var(--shadow-color)]">
-            <div className="p-4 border-b border-[var(--border-color)] flex justify-between items-center flex-shrink-0">
-              <h2 className="text-lg font-semibold text-[var(--bold-text)]">Map</h2>
-              <button
-                onClick={() => {
-                  setIsMapDrawerOpen(false);
-                  setIsMapActive(false);
-                }}
-                className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--subtle-text)] hover:bg-[var(--hover-bg)]"
-              >
-                <svg viewBox="0 0 24 24" className="w-5 h-5">
-                  <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                </svg>
-              </button>
-            </div>
-            <div className="flex-1 min-h-0 bg-[var(--surface-secondary)] flex flex-col">
-              <MapContainer
-                isMapActive={isMapActive}
-                schools={schools}
-                layout={layout}
-                mode="mobileDrawer"
-              />
-            </div>
-          </div>
-        )}
+            {/* Mobile Map Drawer */}
+            {isMapDrawerOpen && (
+              <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-[var(--surface-color)] rounded-t-[20px] z-[1001] flex flex-col shadow-[0_-8px_18px_var(--shadow-color)]">
+                <div className="p-4 border-b border-[var(--border-color)] flex justify-between items-center flex-shrink-0">
+                  <h2 className="text-lg font-semibold text-[var(--bold-text)]">Map</h2>
+                  <button
+                    onClick={() => {
+                      setIsMapDrawerOpen(false);
+                      setIsMapActive(false);
+                    }}
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--subtle-text)] hover:bg-[var(--hover-bg)]"
+                  >
+                    <svg viewBox="0 0 24 24" className="w-5 h-5">
+                      <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="flex-1 min-h-0 bg-[var(--surface-secondary)] flex flex-col">
+                  <MapContainer
+                    isMapActive={isMapActive}
+                    schools={schools}
+                    layout={layout}
+                    mode="mobileDrawer"
+                  />
+                </div>
+              </div>
+            )}
 
           </div>
         </Portal>

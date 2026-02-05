@@ -23,7 +23,7 @@ const MainContent: React.FC<MainContentProps> = ({
   const [layout, setLayout] = useState("classic");
 
   return (
-    <div className="w-full bg-[var(--surface-color)] rounded-xl border border-[var(--border-color)] shadow-[0_2px_12px_var(--shadow-color)] overflow-hidden">
+    <div className="w-full bg-[var(--surface-color)] rounded-none border-0 shadow-none md:rounded-xl md:border md:border-[var(--border-color)] md:shadow-[0_2px_12px_var(--shadow-color)] overflow-visible">
       <Header
         dropdownValue={establishment}
         schools={schools}

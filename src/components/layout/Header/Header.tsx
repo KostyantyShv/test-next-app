@@ -9,12 +9,15 @@ import { MobileActions } from './components/MobileActions/MobileActions';
 interface HeaderProps {
   className?: string;
   onOpenSidebar?: () => void;
+  showScrollProgress?: boolean;
 }
 
-export const Header: FC<HeaderProps> = ({ className, onOpenSidebar }) => {
+export const Header: FC<HeaderProps> = ({ className, onOpenSidebar, showScrollProgress = false }) => {
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
+    if (!showScrollProgress) return;
+
     const handleScroll = () => {
       const scrollTop = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -24,7 +27,7 @@ export const Header: FC<HeaderProps> = ({ className, onOpenSidebar }) => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [showScrollProgress]);
 
   return (
     <>
@@ -37,24 +40,26 @@ export const Header: FC<HeaderProps> = ({ className, onOpenSidebar }) => {
       >
         {/* Desktop Header */}
         <div className="hidden md:block">
-          <div className="app-header-bar max-w-[1400px] h-[63px] px-6 flex items-center justify-center h-18 gap-6 mx-auto">
-            {/* Search Container */}
-            <div className="header-search-container flex-1 max-w-[800px] relative">
-              <Search />
-            </div>
-            {/* Header Actions */}
-            <div className="header-actions-container flex items-center gap-4">
-              <Actions />
+          <div className="app-header-bar h-[64px] px-6 flex items-center justify-center gap-6">
+            <div className="flex items-center justify-center gap-6 w-full max-w-[1400px] mx-auto">
+              {/* Search Container */}
+              <div className="header-search-container flex-1 max-w-[800px] min-w-0 overflow-hidden relative">
+                <Search />
+              </div>
+              {/* Header Actions */}
+              <div className="header-actions-container flex items-center gap-4">
+                <Actions />
+              </div>
             </div>
           </div>
-          <div className="header-bottom-strip h-[12px] flex-shrink-0 border-t border-[var(--border-color)] bg-[var(--surface-secondary)]"></div>
+
         </div>
-        
+
 
         {/* Mobile Header */}
         <div className="md:hidden flex items-center justify-between px-5 py-4">
           {/* Menu Button */}
-          <button 
+          <button
             onClick={onOpenSidebar}
             className="w-9 h-9 border border-[var(--border-color)] rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[var(--apply-button-bg)] hover:border-[var(--apply-button-hover)] transition-colors"
           >
@@ -68,17 +73,20 @@ export const Header: FC<HeaderProps> = ({ className, onOpenSidebar }) => {
 
         </div>
 
-        {/* Scroll Progress Indicator */}
-        <div className="md:hidden h-0.5 bg-[var(--surface-secondary)] w-full">
-          <div 
-            className="h-full bg-[var(--active-green)] transition-all duration-150"
-            style={{ width: `${scrollProgress}%` }}
-          />
-          <div className="h-[12px] bg-[var(--surface-secondary)] flex-shrink-0 border-t border-[var(--border-color)]"></div>
+        {/* Scroll Progress Indicator - Only shown on listing pages */}
+        {showScrollProgress && (
+          <div className="md:hidden h-0.5 bg-[var(--surface-secondary)] w-full">
+            <div
+              className="h-full bg-[var(--active-green)] transition-all duration-150"
+              style={{ width: `${scrollProgress}%` }}
+            />
+            <div className="h-[12px] bg-[var(--surface-secondary)] flex-shrink-0 border-t border-[var(--border-color)]"></div>
 
-        </div>
+          </div>
+        )}
 
       </header>
     </>
   );
-}; 
+};
+

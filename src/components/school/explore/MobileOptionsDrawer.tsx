@@ -28,9 +28,9 @@ const DrawerItem: React.FC<DrawerItemProps> = ({
 }) => (
     <div
         onClick={onClick}
-        className={`flex items-center px-5 py-4 cursor-pointer transition-colors active:bg-[#F7F9FC] ${className}`}
+        className={`flex items-center px-5 py-4 cursor-pointer w-max transition-colors active:bg-[#F7F9FC] ${className}`}
     >
-        <div className={`mr-4 flex items-center justify-center w-[22px] h-[22px] flex-shrink-0 ${iconClassName}`}>
+        <div className={`mr-4 flex items-center justify-center w-max h-[22px] flex-shrink-0 ${iconClassName}`}>
             {icon}
         </div>
         <span className={`text-base font-medium flex-grow leading-[1.4] ${textClassName}`}>
@@ -118,7 +118,7 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, title, children, hasBa
 
             {/* Drawer — 90% width, max 420px, centered like HTML */}
             <div
-                className={`fixed bottom-0 left-1/2 w-[90%] max-w-[420px] max-h-[85vh] bg-white rounded-t-[20px] shadow-[0_-2px_16px_rgba(0,0,0,0.15)] z-[1001] flex flex-col overflow-hidden transition-[transform,visibility] duration-300 ease-out ${isOpen ? '-translate-x-1/2 translate-y-0 visible' : '-translate-x-1/2 translate-y-full invisible'}`}
+                className={`fixed bottom-0 left-1/2 w-full max-h-[85vh] bg-white rounded-t-[20px] shadow-[0_-2px_16px_rgba(0,0,0,0.15)] z-[1001] flex flex-col overflow-hidden transition-[transform,visibility] duration-300 ease-out ${isOpen ? '-translate-x-1/2 translate-y-0 visible' : '-translate-x-1/2 translate-y-full invisible'}`}
                 style={isOpen ? undefined : { transitionDelay: '0s, 0.3s' }}
             >
                 {/* Header — 16px 20px padding, border #E5E5E5 */}
@@ -282,7 +282,7 @@ export const MobileOptionsDrawer: React.FC<MobileOptionsDrawerProps> = ({ isOpen
                     <DrawerItem
                         icon={<MobileDrawerIcons.Apply />}
                         text="Apply Now"
-                        className="bg-[#EBFCF4] active:bg-[#D7F7E9]"
+                        className="bg-[#EBFCF4] active:bg-[#D7F7E9] !w-full"
                         textClassName="text-[#016853]"
                         iconClassName="text-[#016853]"
                         onClick={() => handleAction('apply-now')}
@@ -291,7 +291,7 @@ export const MobileOptionsDrawer: React.FC<MobileOptionsDrawerProps> = ({ isOpen
                     <DrawerItem
                         icon={<MobileDrawerIcons.ViewOffers />}
                         text="View Offers"
-                        className="bg-[#EBFCF4] active:bg-[#D7F7E9]"
+                        className="bg-[#EBFCF4] active:bg-[#D7F7E9] !w-full"
                         textClassName="text-[#016853]"
                         iconClassName="text-[#016853]"
                         onClick={() => handleAction('view-offers')}

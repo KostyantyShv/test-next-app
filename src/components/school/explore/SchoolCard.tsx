@@ -64,10 +64,10 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
     const specialty = (() => {
       if (!school.specialty) return null;
-      if (school.specialty === "hot") return { className: "text-[#FF4D4D]", icon: <SchoolCardIcons.Hot />, label: "High demand" };
+      if (school.specialty === "hot") return { className: "hot text-[#FF4D4D]", icon: <SchoolCardIcons.Hot />, label: "High demand" };
       if (school.specialty === "instant-book")
-        return { className: "text-[#1D77BD]", icon: <SchoolCardIcons.InstantBook />, label: "Instant book" };
-      return { className: "text-[#FF9900]", icon: <SchoolCardIcons.Sponsored />, label: "Sponsored" };
+        return { className: "instant-book text-[#1D77BD]", icon: <SchoolCardIcons.InstantBook />, label: "Instant book" };
+      return { className: "sponsored text-[#FF9900]", icon: <SchoolCardIcons.Sponsored />, label: "Sponsored" };
     })();
 
     const secondStat = (() => {
@@ -131,11 +131,10 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           {/* Desktop like button */}
           <button
             type="button"
-            className={`hidden md:flex like-button absolute top-3 right-3 w-8 h-8 rounded-full items-center justify-center cursor-pointer transition-all duration-200 z-[2] ${
-              isLiked
-                ? "bg-[var(--apply-button-bg)] text-[var(--header-green)] hover:bg-[var(--apply-button-hover)]"
-                : "bg-[var(--surface-color)] text-[var(--text-default)] hover:bg-[var(--hover-bg)] hover:text-[var(--header-green)]"
-            }`}
+            className={`hidden md:flex like-button absolute top-3 right-3 w-8 h-8 rounded-full items-center justify-center cursor-pointer transition-all duration-200 z-[2] ${isLiked
+              ? "bg-[var(--apply-button-bg)] text-[var(--header-green)] hover:bg-[var(--apply-button-hover)]"
+              : "bg-[var(--surface-color)] text-[var(--text-default)] hover:bg-[var(--hover-bg)] hover:text-[var(--header-green)]"
+              }`}
             onClick={(e) => {
               e.stopPropagation();
               setIsLiked((v) => !v);
@@ -147,7 +146,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
           {specialty ? (
             <div className={`specialty-label absolute top-2 md:top-3 left-0 h-7 md:h-8 bg-white md:bg-[var(--surface-color)] rounded-r-[14px] md:rounded-r-[16px] flex items-center px-2.5 md:px-3 text-[11px] md:text-[12px] font-medium shadow-[0_2px_4px_rgba(0,0,0,0.1)] md:shadow-[0_2px_2px_var(--shadow-color)] z-[2] ${specialty.className}`}>
-              <span className="[&>svg]:w-[14px] [&>svg]:h-[14px] md:[&>svg]:w-4 md:[&>svg]:h-4 mr-1">{specialty.icon}</span>
+              <span className="[&>svg]:w-[14px] [&>svg]:h-[14px] md:[&>svg]:w-4 md:[&>svg]:h-4 [&>svg]:text-current mr-1">{specialty.icon}</span>
               {specialty.label}
             </div>
           ) : null}
@@ -184,7 +183,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
             <div className="stat flex items-center gap-[6px] text-[13px] text-[#5F5F5F] md:text-[var(--subtle-text)] tracking-[0.01em] font-[450]">
               <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#565656] md:[&>svg]:text-[var(--subtle-text)]">
-                <SchoolCardIcons.Star className="w-4 h-4 text-[#565656] md:text-[var(--subtle-text)]" />
+                <SchoolCardIcons.StarOutline className="w-4 h-4 text-[#565656] md:text-[var(--subtle-text)]" />
               </span>
               <span className="text-[#5F5F5F] md:text-[var(--text-default)]">
                 <strong className="font-semibold text-[#444444] md:text-[var(--bold-text)]">{ratingNum}</strong> {ratingCountText}
@@ -195,16 +194,16 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
         </div>
 
         {/* Footer - outside school-content to match HTML structure */}
-        <div 
+        <div
           className="school-footer flex items-center justify-between"
-          style={{ 
-            padding: '16px', 
+          style={{
+            padding: '16px',
             borderTop: '1px solid rgba(1, 104, 83, 0.1)'
           }}
         >
           {/* Grade */}
           <div className="grade flex items-center gap-2 font-semibold text-[#016853]">
-            <div 
+            <div
               className="grade-circle flex items-center justify-center text-white font-semibold"
               style={{ width: '32px', height: '32px', background: '#00DF8B', borderRadius: '50%', fontSize: '14px' }}
             >
@@ -213,7 +212,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           </div>
 
           {/* Footer stat (Students/SAT) - desktop only */}
-          <div 
+          <div
             className="students-score hidden md:flex items-center text-[#5F5F5F]"
             style={{ gap: '6px', fontSize: '13px' }}
           >
@@ -299,9 +298,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                     More Info
                   </button>
                   <button
-                    className={`button-like flex-1 py-3 rounded-lg font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${
-                      isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
-                    }`}
+                    className={`button-like flex-1 py-3 rounded-lg font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                      }`}
                     style={{ fontSize: 14 }}
                     onClick={() => setIsLiked((v) => !v)}
                     type="button"
@@ -447,7 +445,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
         ...base,
         { icon: <SchoolCardIcons.Ratio />, value: school.ratio },
         { icon: <SchoolCardIcons.Students />, value: school.students },
-        { icon: <SchoolCardIcons.Star className="w-[14px] h-[14px] text-[#565656]" />, value: `${ratingNum} (${reviewsCount})`, boldPrefix: ratingNum },
+        { icon: <SchoolCardIcons.StarOutline className="w-[14px] h-[14px] text-[#565656]" />, value: `${ratingNum} (${reviewsCount})`, boldPrefix: ratingNum },
       ];
     })();
 
@@ -458,13 +456,12 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
         {/* Specialty badge (full-width, top) */}
         {school.specialty && (
           <div
-            className={`specialty-badge hidden md:flex absolute top-0 left-0 right-0 px-3 py-2 text-xs font-medium items-center gap-1.5 rounded-t-xl z-[5] ${
-              school.specialty === "hot"
-                ? "bg-[rgba(255,77,77,0.1)] text-[#FF4D4D]"
-                : school.specialty === "instant-book"
+            className={`specialty-badge hidden md:flex absolute top-0 left-0 right-0 px-3 py-2 text-xs font-medium items-center gap-1.5 rounded-t-xl z-[5] ${school.specialty === "hot"
+              ? "bg-[rgba(255,77,77,0.1)] text-[#FF4D4D]"
+              : school.specialty === "instant-book"
                 ? "bg-[rgba(29,119,189,0.1)] text-[#1D77BD]"
                 : "bg-[rgba(255,153,0,0.1)] text-[#FF9900]"
-            }`}
+              }`}
           >
             {school.specialty === "hot" ? <SchoolCardIcons.Hot /> : null}
             {school.specialty === "instant-book" ? <SchoolCardIcons.InstantBook /> : null}
@@ -473,8 +470,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               (school.specialty === "hot"
                 ? "High demand"
                 : school.specialty === "instant-book"
-                ? "Instant book"
-                : "Sponsored")}
+                  ? "Instant book"
+                  : "Sponsored")}
           </div>
         )}
 
@@ -521,7 +518,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                 <span className="text-[#464646]">{secondStat.value}</span>
               </div>
               <div className="stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F] tracking-[0.01em] font-[450]">
-                <SchoolCardIcons.Star className="w-4 h-4 text-[#565656]" />
+                <SchoolCardIcons.StarOutline className="w-4 h-4 text-[#565656]" />
                 <span className="text-[#464646]">
                   <span className="stat-bold font-semibold">{ratingNum}</span> ({reviewsCount})
                 </span>
@@ -546,9 +543,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
             <div className="footer-actions flex gap-2 shrink-0">
               <div
-                className={`like-indicator w-7 h-7 flex items-center justify-center cursor-pointer ${
-                  isLiked ? "text-[#298541]" : "text-[#5F5F5F]"
-                } [&>svg]:w-4 [&>svg]:h-4`}
+                className={`like-indicator w-7 h-7 flex items-center justify-center cursor-pointer ${isLiked ? "text-[#298541]" : "text-[#5F5F5F]"
+                  } [&>svg]:w-4 [&>svg]:h-4`}
                 role="button"
                 tabIndex={0}
                 onClick={(e) => {
@@ -578,13 +574,12 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           {/* Specialty badge (absolute positioned at top) */}
           {school.specialty && (
             <div
-              className={`specialty-badge absolute top-0 left-0 right-0 flex items-center text-xs font-medium z-[5] ${
-                school.specialty === "hot"
-                  ? "bg-[rgba(255,77,77,0.1)] text-[#FF4D4D]"
-                  : school.specialty === "instant-book"
+              className={`specialty-badge absolute top-0 left-0 right-0 flex items-center text-xs font-medium z-[5] ${school.specialty === "hot"
+                ? "bg-[rgba(255,77,77,0.1)] text-[#FF4D4D]"
+                : school.specialty === "instant-book"
                   ? "bg-[rgba(29,119,189,0.1)] text-[#1D77BD]"
                   : "bg-[rgba(255,153,0,0.1)] text-[#FF9900]"
-              }`}
+                }`}
               style={{ padding: '8px 12px', gap: '6px', borderRadius: '12px 12px 0 0' }}
             >
               <span className="[&>svg]:w-4 [&>svg]:h-4">
@@ -602,7 +597,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           )}
 
           {/* Card header */}
-          <div 
+          <div
             className="card-header flex items-start"
             style={{ padding: '40px 16px 12px 16px', gap: '12px' }}
           >
@@ -622,7 +617,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                   {school.ranking}
                 </div>
               )}
-              <div 
+              <div
                 className="school-type-badge flex items-center bg-[#E5E7EB] text-[#464646] w-fit"
                 style={{ gap: '6px', padding: '4px 8px', borderRadius: '16px', fontSize: '11px', fontWeight: 500, marginTop: '6px' }}
               >
@@ -636,11 +631,11 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
           {/* Card content */}
           <div className="school-content" style={{ padding: '8px 16px 12px' }}>
-            <div className="school-stats flex items-center" style={{ gap: '12px' }}>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
               {mobileStats.map((stat, idx) => (
                 <div
                   key={idx}
-                  className="stat flex items-center text-xs text-[#5F5F5F]"
+                  className="flex w-[calc(50%-8px)] items-center gap-1.5 text-xs text-[#5F5F5F]"
                   style={{ gap: '4px' }}
                 >
                   <span className="[&>svg]:w-[14px] [&>svg]:h-[14px] [&>svg]:text-[#565656] shrink-0">
@@ -662,7 +657,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           </div>
 
           {/* Card footer */}
-          <div 
+          <div
             className="school-footer flex items-center justify-between"
             style={{ padding: '12px 16px', borderTop: '1px solid rgba(1, 104, 83, 0.1)' }}
           >
@@ -770,9 +765,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                     More Info
                   </button>
                   <button
-                    className={`hover-button button-like flex-1 py-3 rounded-lg text-sm font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${
-                      isLiked ? 'bg-[#298541] text-white' : 'bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]'
-                    }`}
+                    className={`hover-button button-like flex-1 py-3 rounded-lg text-sm font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? 'bg-[#298541] text-white' : 'bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]'
+                      }`}
                     onClick={() => setIsLiked((v) => !v)}
                     type="button"
                   >
@@ -787,75 +781,74 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
         {/* Hover overlay (desktop only) */}
         <div className="hover-overlay hidden md:flex absolute inset-0 bg-[rgba(255,255,255,0.98)] pt-6 pr-6 pb-3 pl-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300 flex-col z-10 rounded-t-xl">
-            <div className="hover-header flex gap-3 mb-3">
-              <Image
-                src={school.avatar || school.image}
-                alt={school.name}
-                width={40}
-                height={40}
-                className="school-avatar w-10 h-10 rounded-lg object-cover"
-              />
-              <div className="hover-school-name text-base font-semibold text-[#464646] mr-2 flex-1 cursor-pointer transition-all hover:text-[#346DC2] hover:underline hover:decoration-[#346DC2]">
-                {school.name}
-              </div>
-            </div>
-
-            <div className="hover-stats flex gap-3 mb-4">
-              <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                <span className="text-[#089E68] [&>svg]:w-4 [&>svg]:h-4">
-                  <SchoolCardIcons.Tuition />
-                </span>
-                <span>{hoverTuition}</span>
-              </div>
-              <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                <span className="text-[#089E68] [&>svg]:w-4 [&>svg]:h-4">{hoverStat2.icon}</span>
-                <span>{hoverStat2.label}</span>
-              </div>
-            </div>
-
-            <p className="description text-sm leading-[1.6] text-[#4A4A4A] overflow-hidden mb-3 line-clamp-5">
-              {Boolean((school as any).review) && school.name.length % 2 === 0 ? (
-                <>
-                  <span className="reviewer-type font-semibold mr-1">
-                    {(school as any).reviewerType || "Parent"}:
-                  </span>
-                  {(school as any).review}
-                </>
-              ) : (
-                school.description
-              )}
-            </p>
-
-            <div className="review-count text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer hover:underline">
-              Read {reviewsCount} reviews
-            </div>
-
-            <div className="hover-buttons flex flex-row gap-2 mt-auto">
-              <button
-                className="hover-button flex-1 py-3 px-3 rounded-lg text-sm font-medium cursor-pointer bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors flex items-center justify-center gap-2"
-                type="button"
-              >
-                More Info
-              </button>
-              <button
-                type="button"
-                className={`hover-button flex-1 py-3 px-3 rounded-lg text-sm font-medium cursor-pointer transition-colors flex items-center justify-center gap-2 ${
-                  isLiked
-                    ? "bg-[#298541] text-white"
-                    : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
-                }`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsLiked((v) => !v);
-                }}
-              >
-                <span className="[&>svg]:w-4 [&>svg]:h-4">
-                  <SchoolCardIcons.Heart filled={isLiked} />
-                </span>
-                {isLiked ? "Liked" : "Like"}
-              </button>
+          <div className="hover-header flex gap-3 mb-3">
+            <Image
+              src={school.avatar || school.image}
+              alt={school.name}
+              width={40}
+              height={40}
+              className="school-avatar w-10 h-10 rounded-lg object-cover"
+            />
+            <div className="hover-school-name text-base font-semibold text-[#464646] mr-2 flex-1 cursor-pointer transition-all hover:text-[#346DC2] hover:underline hover:decoration-[#346DC2]">
+              {school.name}
             </div>
           </div>
+
+          <div className="hover-stats flex gap-3 mb-4">
+            <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+              <span className="text-[#089E68] [&>svg]:w-4 [&>svg]:h-4">
+                <SchoolCardIcons.Tuition />
+              </span>
+              <span>{hoverTuition}</span>
+            </div>
+            <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+              <span className="text-[#089E68] [&>svg]:w-4 [&>svg]:h-4">{hoverStat2.icon}</span>
+              <span>{hoverStat2.label}</span>
+            </div>
+          </div>
+
+          <p className="description text-sm leading-[1.6] text-[#4A4A4A] overflow-hidden mb-3 line-clamp-5">
+            {Boolean((school as any).review) && school.name.length % 2 === 0 ? (
+              <>
+                <span className="reviewer-type font-semibold mr-1">
+                  {(school as any).reviewerType || "Parent"}:
+                </span>
+                {(school as any).review}
+              </>
+            ) : (
+              school.description
+            )}
+          </p>
+
+          <div className="review-count text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer hover:underline">
+            Read {reviewsCount} reviews
+          </div>
+
+          <div className="hover-buttons flex flex-row gap-2 mt-auto">
+            <button
+              className="hover-button flex-1 py-3 px-3 rounded-lg text-sm font-medium cursor-pointer bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors flex items-center justify-center gap-2"
+              type="button"
+            >
+              More Info
+            </button>
+            <button
+              type="button"
+              className={`hover-button flex-1 py-3 px-3 rounded-lg text-sm font-medium cursor-pointer transition-colors flex items-center justify-center gap-2 ${isLiked
+                ? "bg-[#298541] text-white"
+                : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsLiked((v) => !v);
+              }}
+            >
+              <span className="[&>svg]:w-4 [&>svg]:h-4">
+                <SchoolCardIcons.Heart filled={isLiked} />
+              </span>
+              {isLiked ? "Liked" : "Like"}
+            </button>
+          </div>
+        </div>
 
         {/* Mobile Options Drawer */}
         <MobileOptionsDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} schoolName={school.name} />
@@ -971,11 +964,11 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           {/* School Header */}
           <div className="school-header flex mb-3 relative">
             {/* School Type Label - positioned at top, offset from image */}
-            <div 
+            <div
               className="school-type-label absolute text-[#016853] uppercase z-[2]"
-              style={{ 
-                top: '0px', 
-                left: '75px', 
+              style={{
+                top: '0px',
+                left: '75px',
                 background: 'rgba(1, 104, 83, 0.1)',
                 padding: '4px 8px',
                 borderRadius: '6px',
@@ -988,7 +981,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
             </div>
 
             {/* Image Container */}
-            <div 
+            <div
               className={`image-container relative flex-shrink-0 flex flex-col ${school.specialty ? "has-specialty" : ""}`}
               style={{ width: '60px', marginRight: '16px', paddingTop: 0 }}
             >
@@ -1001,7 +994,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                 style={{ width: '60px', height: '60px' }}
               />
               {specialtyFooter && (
-                <div 
+                <div
                   className={`specialty-footer w-full text-center flex items-center justify-center leading-none ${specialtyFooter.cls}`}
                   style={{ fontSize: '10px', fontWeight: 600, padding: '3px 0', borderRadius: '0 0 8px 8px', gap: '4px' }}
                 >
@@ -1014,19 +1007,19 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
             </div>
 
             {/* Title Container */}
-            <div 
+            <div
               className="school-title-container flex-1 flex flex-col justify-center"
               style={{ paddingTop: '20px' }}
             >
               {school.ranking && (
-                <div 
+                <div
                   className="ranking-text text-[#089E68] font-medium whitespace-nowrap overflow-hidden text-ellipsis"
                   style={{ fontSize: '12px', marginBottom: '4px', marginTop: 0, width: '190px' }}
                 >
                   {school.ranking}
                 </div>
               )}
-              <h3 
+              <h3
                 className="school-name text-[#464646] line-clamp-3"
                 style={{ fontSize: '15px', fontWeight: 600, lineHeight: 1.3, paddingRight: '16px' }}
               >
@@ -1108,9 +1101,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
             <button
               type="button"
-              className={`btn-like flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium cursor-pointer border border-[rgba(1,104,83,0.2)] transition-colors ${
-                isLiked ? "bg-[#EBFCF4] text-[#016853]" : "bg-[#EBFCF4] text-[#016853]"
-              }`}
+              className={`btn-like flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium cursor-pointer border border-[rgba(1,104,83,0.2)] transition-colors ${isLiked ? "bg-[#EBFCF4] text-[#016853]" : "bg-[#EBFCF4] text-[#016853]"
+                }`}
               onClick={() => setIsLiked((v) => !v)}
             >
               <SchoolCardIcons.Heart filled={isLiked} className="w-[14px] h-[14px]" />
@@ -1173,7 +1165,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               />
             </div>
 
-            <div className="school-stats flex flex-wrap gap-4 mb-3">
+            <div className="flex flex-wrap gap-4 mb-3">
               {desktopStats.map((s, idx) => (
                 <div key={idx} className="stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F] relative" data-tooltip={s.tooltip}>
                   <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#565656]">{s.icon}</span>
@@ -1231,9 +1223,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                 </button>
                 <button
                   type="button"
-                  className={`btn btn-like flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-[13px] font-medium cursor-pointer border border-[rgba(1,104,83,0.2)] transition-colors ${
-                    isLiked ? "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
-                  }`}
+                  className={`btn btn-like flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-[13px] font-medium cursor-pointer border border-[rgba(1,104,83,0.2)] transition-colors ${isLiked ? "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                    }`}
                   onClick={() => setIsLiked((v) => !v)}
                 >
                   <SchoolCardIcons.Heart filled={isLiked} />
@@ -1256,25 +1247,25 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
     const specialtyMeta = (() => {
       if (!school.specialty) return null;
       const specialty = school.specialty as string;
-      if (specialty === "hot") return { 
-        className: "hot text-[#FF4D4D]", 
-        icon: <SchoolCardIcons.Hot />, 
+      if (specialty === "hot") return {
+        className: "hot text-[#FF4D4D]",
+        icon: <SchoolCardIcons.Hot />,
         mobileIcon: <SchoolCardIcons.Hot className="fill-white" />,
-        label: "High demand" 
+        label: "High demand"
       };
       if (specialty === "instant-book" || specialty === "instantBook") {
-        return { 
-          className: "instant-book text-[#1D77BD]", 
-          icon: <SchoolCardIcons.InstantBook />, 
+        return {
+          className: "instant-book text-[#1D77BD]",
+          icon: <SchoolCardIcons.InstantBook />,
           mobileIcon: <SchoolCardIcons.InstantBook className="fill-white" />,
-          label: "Instant book" 
+          label: "Instant book"
         };
       }
-      return { 
-        className: "sponsored text-[#FF9900]", 
-        icon: <SchoolCardIcons.Sponsored />, 
+      return {
+        className: "sponsored text-[#FF9900]",
+        icon: <SchoolCardIcons.Sponsored />,
         mobileIcon: <SchoolCardIcons.Sponsored className="fill-white" />,
-        label: "Sponsored" 
+        label: "Sponsored"
       };
     })();
 
@@ -1312,30 +1303,30 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
     const mobileDrawerStats = (() => {
       if (establishment === "K-12") {
         return [
-          { icon: <SchoolCardIcons.Ratio />, text: school.ratio || "—" },
-          { icon: <SchoolCardIcons.Tuition />, text: withPerYear(school.price) },
-          { icon: <SchoolCardIcons.Grades />, text: `Grades: ${school.grades || "—"}` },
+          { icon: <SchoolCardIcons.Ratio className="text-[#089E68]" />, text: school.ratio || "—" },
+          { icon: <SchoolCardIcons.Tuition className="text-[#089E68]" />, text: withPerYear(school.price) },
+          { icon: <SchoolCardIcons.Grades className="text-[#089E68]" />, text: `Grades: ${school.grades || "—"}` },
         ];
       }
       if (establishment === "Colleges") {
         return [
-          { icon: <SchoolCardIcons.Duration />, text: school.duration || "—" },
-          { icon: <SchoolCardIcons.Tuition />, text: withPerYear(school.price) },
-          { icon: <SchoolCardIcons.Acceptance />, text: `Acceptance: ${(school as any).acceptance || school.acceptanceRate || "—"}` },
+          { icon: <SchoolCardIcons.Duration className="text-[#089E68]" />, text: school.duration || "—" },
+          { icon: <SchoolCardIcons.Tuition className="text-[#089E68]" />, text: withPerYear(school.price) },
+          { icon: <SchoolCardIcons.Acceptance className="text-[#089E68]" />, text: `Acceptance: ${(school as any).acceptance || school.acceptanceRate || "—"}` },
         ];
       }
       if (establishment === "Graduates") {
         return [
-          { icon: <SchoolCardIcons.Duration />, text: school.duration || "—" },
-          { icon: <SchoolCardIcons.Tuition />, text: school.price || "—" },
-          { icon: <SchoolCardIcons.MedianSalary />, text: `Median: ${medianSalaryText}` },
+          { icon: <SchoolCardIcons.Duration className="text-[#089E68]" />, text: school.duration || "—" },
+          { icon: <SchoolCardIcons.Tuition className="text-[#089E68]" />, text: school.price || "—" },
+          { icon: <SchoolCardIcons.MedianSalary className="text-[#089E68]" />, text: `Median: ${medianSalaryText}` },
         ];
       }
       // District
       return [
-        { icon: <SchoolCardIcons.TotalSchools />, text: `${(school as any).totalSchools || "—"} Schools` },
-        { icon: <SchoolCardIcons.Ratio />, text: school.ratio || "—" },
-        { icon: <SchoolCardIcons.Grades />, text: `Grades: ${school.grades || "—"}` },
+        { icon: <SchoolCardIcons.TotalSchools className="text-[#089E68]" />, text: `${(school as any).totalSchools || "—"} Schools` },
+        { icon: <SchoolCardIcons.Ratio className="text-[#089E68]" />, text: school.ratio || "—" },
+        { icon: <SchoolCardIcons.Grades className="text-[#089E68]" />, text: `Grades: ${school.grades || "—"}` },
       ];
     })();
 
@@ -1393,7 +1384,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           {/* School type badge - top left */}
           <div
             className="absolute top-0 left-0 text-white pt-2 pb-1.5 pl-2 pr-3 text-[11px] font-semibold tracking-[0.5px] uppercase z-[3]"
-            style={{ 
+            style={{
               borderRadius: "16px 0 12px 0",
               background: "rgba(8, 58, 155, 0.9)",
               backdropFilter: "blur(4px)"
@@ -1404,7 +1395,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
           {/* Specialty label - top right */}
           {specialtyMeta && (
-            <div 
+            <div
               className="absolute top-0 right-0 text-white px-2 py-1 text-[11px] font-medium flex items-center gap-1 z-[3]"
               style={{
                 borderRadius: "6px",
@@ -1449,15 +1440,15 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           {/* School footer - blue bar at bottom */}
           <div
             className="absolute bottom-0 left-0 right-0 h-[90px] px-4 py-3 flex items-center justify-between z-[2]"
-            style={{ 
-              background: "rgba(8, 65, 172, 0.95)", 
+            style={{
+              background: "rgba(8, 65, 172, 0.95)",
               borderRadius: "0 0 16px 16px",
               backdropFilter: "blur(8px)"
             }}
           >
             <div className="flex items-center gap-3">
               {/* Grade square */}
-              <div 
+              <div
                 className="w-8 h-8 rounded-md flex items-center justify-center text-white text-sm font-bold"
                 style={{ background: "rgba(255, 255, 255, 0.2)", backdropFilter: "blur(4px)" }}
               >
@@ -1513,9 +1504,9 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
             />
             <div
               className="fixed bottom-0 left-0 right-0 z-[10000] bg-white overflow-hidden flex flex-col mx-auto"
-              style={{ 
-                maxHeight: '80%', 
-                borderRadius: '16px 16px 0 0', 
+              style={{
+                maxHeight: '80%',
+                borderRadius: '16px 16px 0 0',
                 boxShadow: '0 -2px 10px rgba(0,0,0,0.15)'
               }}
             >
@@ -1558,7 +1549,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                 <div className="flex flex-wrap mb-4" style={{ gap: '12px 16px' }}>
                   {mobileDrawerStats.map((stat, idx) => (
                     <div key={idx} className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                      <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68] [&>svg]:fill-[#089E68] [&>svg]:stroke-[#089E68]">{stat.icon}</span>
+                      <span className="[&>svg]:w-4 [&>svg]:h-4 text-[#089E68]">{stat.icon}</span>
                       <span>{stat.text}</span>
                     </div>
                   ))}
@@ -1582,9 +1573,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                     More Info
                   </button>
                   <button
-                    className={`flex-1 py-3 rounded-lg text-sm font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${
-                      isLiked ? 'bg-[#298541] text-white' : 'bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]'
-                    }`}
+                    className={`flex-1 py-3 rounded-lg text-sm font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? 'bg-[#298541] text-white' : 'bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]'
+                      }`}
                     onClick={() => setIsLiked((v) => !v)}
                     type="button"
                   >
@@ -1618,9 +1608,9 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                   <div key={idx} className="stat relative group flex items-center gap-2 text-sm text-[#5F5F5F] leading-none">
                     <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#565656] flex-shrink-0 block">{s.icon}</span>
                     <span className="text-[#464646] font-medium leading-none">{s.text}</span>
-                    <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[125%] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300 bg-black/80 text-white text-center rounded px-2 py-1 text-xs font-medium whitespace-nowrap z-10">
+                    <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[125%] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300 bg-black text-[#5F5F5F] text-center rounded px-2 py-1 text-xs font-medium whitespace-nowrap z-10 border border-[#E5E7EB] shadow-[0_4px_12px_rgba(0,0,0,0.12)]">
                       {s.tooltip}
-                      <span className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-black/80" />
+                      <span className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-white" />
                     </span>
                   </div>
                 ))}
@@ -1635,10 +1625,10 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                   <div className="grade-circle w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-sm font-semibold cursor-pointer">
                     {school.grade}
                   </div>
-                  <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/80 text-white px-2.5 py-1.5 rounded text-xs whitespace-nowrap z-10">
+                  <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white text-[#464646] px-2.5 py-1.5 rounded text-xs whitespace-nowrap z-10 border border-[#E5E7EB] shadow-[0_4px_12px_rgba(0,0,0,0.12)]">
                     {school.grade} Overall Grade
                   </div>
-                  <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[34px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-0 h-0 border-x-[6px] border-x-transparent border-t-[6px] border-t-black/80 z-10" />
+                  <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[34px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-0 h-0 border-x-[6px] border-x-transparent border-t-[6px] border-t-white z-10" />
                 </div>
               </div>
 
@@ -1649,9 +1639,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                   </button>
                   <button
                     type="button"
-                    className={`action-button apply-button h-9 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
-                      isLiked ? "liked bg-[#E6F7F0] text-[#016853] hover:bg-[#D1F0E4]" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
-                    }`}
+                    className={`action-button apply-button h-9 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${isLiked ? "liked bg-[#E6F7F0] text-[#016853] hover:bg-[#D1F0E4]" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                      }`}
                     onClick={() => setIsLiked((v) => !v)}
                   >
                     <SchoolCardIcons.Heart filled={isLiked} />
@@ -1675,7 +1664,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               <div
                 className={`specialty-label absolute top-6 right-0 h-8 bg-white rounded-l-xl flex items-center px-2.5 cursor-pointer transition-all z-[2] text-xs font-medium shadow-[-1px_2px_2px_rgba(0,0,0,0.1)] ${specialtyMeta.className}`}
               >
-                <span className="[&>svg]:w-4 [&>svg]:h-4 mr-1">{specialtyMeta.icon}</span>
+                <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-current mr-1">{specialtyMeta.icon}</span>
                 {specialtyMeta.label}
               </div>
             ) : null}
@@ -1713,10 +1702,10 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
     const specialty = (() => {
       if (!school.specialty) return null;
-      if (school.specialty === "hot") return { className: "text-[#FF4D4D]", icon: <SchoolCardIcons.Hot />, label: "High demand" };
+      if (school.specialty === "hot") return { className: "hot text-[#FF4D4D]", icon: <SchoolCardIcons.Hot />, label: "High demand" };
       if (school.specialty === "instant-book")
-        return { className: "text-[#1D77BD]", icon: <SchoolCardIcons.InstantBook />, label: "Instant book" };
-      return { className: "text-[#FF9900]", icon: <SchoolCardIcons.Sponsored />, label: "Sponsored" };
+        return { className: "instant-book text-[#1D77BD]", icon: <SchoolCardIcons.InstantBook />, label: "Instant book" };
+      return { className: "sponsored text-[#FF9900]", icon: <SchoolCardIcons.Sponsored />, label: "Sponsored" };
     })();
 
     // Mobile: first stat based on establishment
@@ -1770,9 +1759,9 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
         <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#565656] flex-shrink-0">{icon}</span>
         <span className="text-[#464646] font-medium">{text}</span>
         {tooltip ? (
-          <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[125%] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300 bg-black/80 text-white text-center rounded px-2 py-1 text-xs font-medium whitespace-nowrap z-10">
+          <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[125%] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300 bg-white text-[#464646] text-center rounded px-2 py-1 text-xs font-medium whitespace-nowrap z-10 border border-[#E5E7EB] shadow-[0_4px_12px_rgba(0,0,0,0.12)]">
             {tooltip}
-            <span className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-black/80" />
+            <span className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-white" />
           </span>
         ) : null}
       </div>
@@ -1804,19 +1793,19 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           <>
             <div className="students-count flex items-center gap-2 text-sm text-[#5F5F5F]">
               <span className="[&>svg]:text-[#089E68]">
-                <SchoolCardIcons.Students />
+                <SchoolCardIcons.Students className="text-[#089E68]" />
               </span>
               <span className="text-[#464646] font-medium">Students: {(school.students as any)?.toLocaleString?.() || school.students || "—"}</span>
             </div>
             <div className="tuition flex items-center gap-2 text-sm text-[#5F5F5F]">
               <span className="[&>svg]:text-[#089E68]">
-                <SchoolCardIcons.Tuition />
+                <SchoolCardIcons.Tuition className="text-[#089E68]" />
               </span>
               <span className="text-[#464646] font-medium">{tuitionText}</span>
             </div>
             <div className="grade-range flex items-center gap-2 text-sm text-[#5F5F5F]">
               <span className="[&>svg]:text-[#089E68]">
-                <SchoolCardIcons.Grades />
+                <SchoolCardIcons.Grades className="text-[#089E68]" />
               </span>
               <span className="text-[#464646] font-medium">Grades: {school.grades || "—"}</span>
             </div>
@@ -1879,7 +1868,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
         <>
           <div className="students-count flex items-center gap-2 text-sm text-[#5F5F5F]">
             <span className="[&>svg]:text-[#089E68]">
-              <SchoolCardIcons.Students />
+              <SchoolCardIcons.Students className="text-[#089E68]" />
             </span>
             <span className="text-[#464646] font-medium">Students: {(school.students as any)?.toLocaleString?.() || school.students || "—"}</span>
           </div>
@@ -1938,7 +1927,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               {/* Specialty label - bottom of image, above footer */}
               {specialty && (
                 <div className={`specialty-label absolute bottom-[36px] left-0 h-6 bg-white rounded-r-[12px] flex items-center px-2.5 text-[11px] font-medium shadow-[1px_2px_4px_rgba(0,0,0,0.1)] z-[2] ${specialty.className}`}>
-                  <span className="[&>svg]:w-3 [&>svg]:h-3 mr-1">{specialty.icon}</span>
+                  <span className="[&>svg]:w-3 [&>svg]:h-3 [&>svg]:text-current mr-1">{specialty.icon}</span>
                   {specialty.label}
                 </div>
               )}
@@ -2060,9 +2049,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                     More Info
                   </button>
                   <button
-                    className={`hover-button button-like flex-1 py-3 rounded-lg text-[14px] font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${
-                      isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
-                    }`}
+                    className={`hover-button button-like flex-1 py-3 rounded-lg text-[14px] font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                      }`}
                     onClick={() => setIsLiked((v) => !v)}
                     type="button"
                   >
@@ -2078,41 +2066,44 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
         </div>
 
         {/* ===== DESKTOP LIST LAYOUT ===== */}
-        <div className="school-card desktop-list-card hidden md:flex bg-white rounded-xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-[transform,box-shadow] duration-300 ease-in-out border border-[#E5E7EB] relative hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
-          {/* Image section (left) */}
-          <div className="image-section w-[280px] flex flex-col pr-6 pt-6 relative">
-            {/* Specialty */}
+        <div className="school-card desktop-list-card hidden md:flex bg-[#ffffff] rounded-xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-[transform,box-shadow] duration-300 ease-in-out border border-[#E5E7EB] relative hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
+          {/* Image section (left) - matching HTML exactly */}
+          <div className="image-section w-[280px] flex flex-col pt-6 pr-6 relative">
+            {/* Specialty label - top: 36px, left: 12px, height: 32px */}
             {specialty ? (
-              <div className={`specialty-label absolute top-9 left-3 h-8 bg-white rounded-r-xl flex items-center px-2.5 text-xs font-medium shadow-[1px_2px_2px_rgba(0,0,0,0.1)] z-[2] ${specialty.className}`}>
-                <span className="[&>svg]:w-4 [&>svg]:h-4 mr-1">{specialty.icon}</span>
+              <div className={`specialty-label absolute top-9 left-3 z-[2] flex h-8 items-center rounded-r-[12px] bg-white px-[10px] text-[12px] font-medium shadow-[1px_2px_2px_rgba(0,0,0,0.1)] transition-all duration-200 ease cursor-pointer ${specialty.className}`}>
+                <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-current mr-1">{specialty.icon}</span>
                 {specialty.label}
               </div>
             ) : null}
 
-            {/* Options */}
-            <div className="options-button absolute top-9 right-6 w-8 h-8 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] transition-all z-[2] shadow-[0_1px_2px_rgba(0,0,0,0.1)] hover:bg-[#F5F5F7]">
-              <SchoolCardContextMenu
-                schoolName={school.name}
-                buttonClassName="w-8 h-8 bg-transparent border-none flex items-center justify-center text-[#5F5F5F]"
-              />
-            </div>
+            {/* Options button - top: 36px, right: 24px, width/height: 32px */}
+            <SchoolCardContextMenu
+              schoolName={school.name}
+              iconVariant="list"
+              buttonClassName="options-button absolute top-9 right-6 w-8 h-8 bg-white rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] transition-all z-[2] shadow-[0_1px_2px_rgba(0,0,0,0.1)] hover:bg-[#F5F5F7] border-none"
+              iconClassName="w-[14px] h-[14px] text-[#5F5F5F]"
+            />
 
+            {/* Image: height: 9.25rem, margin-left: 12px, border-radius: 8px */}
             <Image
               src={school.image}
               alt={school.name}
-              width={280}
+              width={268}
               height={148}
-              className="school-image h-[148px] w-full object-cover rounded-lg ml-3"
+              className="school-image ml-3 h-[9.25rem] w-full rounded-lg object-cover"
             />
 
+            {/* Image buttons: padding: 12px 0, margin-left: 12px */}
             <div className="image-buttons flex gap-2 py-3 ml-3 w-full">
-              <div className="school-type-full w-full px-4 py-2 text-center bg-[#F5F5F7] text-[#464646] text-[13px] font-medium rounded-lg">
+              {/* school-type-full: background: #E1E7EE, font-size: 13px, padding: 8px 16px, border-radius: 8px */}
+              <div className="w-full px-4 py-2 text-center bg-[#E1E7EE] text-[#464646] text-[13px] font-medium rounded-lg">
                 {school.schoolType}
               </div>
             </div>
           </div>
 
-          {/* Content section */}
+          {/* Content section (right) */}
           <div className="content-section flex-1 p-6 flex flex-col">
             {school.ranking ? <div className="ranking-text text-[#089E68] text-[13px] mb-2 font-medium">{school.ranking}</div> : null}
 
@@ -2132,7 +2123,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               </div>
               <div className="stat-group flex gap-6">
                 <StatWithTooltip
-                  icon={<SchoolCardIcons.Star />}
+                  icon={<SchoolCardIcons.StarOutline />}
                   text={`${ratingNum} (${reviewsCount})`}
                   tooltip="Rating"
                 />
@@ -2147,32 +2138,34 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                   <div className="grade-circle w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-sm font-semibold cursor-pointer">
                     {school.grade}
                   </div>
-                  <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/80 text-white px-2.5 py-1.5 rounded text-xs whitespace-nowrap z-10">
+                  <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white text-[#464646] px-2.5 py-1.5 rounded text-xs whitespace-nowrap z-10 border border-[#E5E7EB] shadow-[0_4px_12px_rgba(0,0,0,0.12)]">
                     {school.grade} Overall Grade
                   </div>
-                  <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[34px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-0 h-0 border-x-[6px] border-x-transparent border-t-[6px] border-t-black/80 z-10" />
+                  <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[34px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-0 h-0 border-x-[6px] border-x-transparent border-t-[6px] border-t-white z-10" />
                 </div>
                 {metrics}
               </div>
 
               <div className="actions flex gap-2">
-                <button type="button" className="action-button info-button h-9 px-4 rounded-lg text-sm font-medium bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors">
+                <button type="button" className="action-button info-button h-9 px-4 rounded-lg text-sm font-medium bg-[#E1E7EE] text-[#464646] hover:bg-[#E8E8EA] transition-colors">
                   More Info
                 </button>
                 <button
                   type="button"
-                  className={`action-button apply-button h-9 px-4 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
-                    isLiked ? "bg-[#E6F7F0] text-[#016853] hover:bg-[#D1F0E4]" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
-                  }`}
+                  className={`action-button apply-button h-9 px-4 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${isLiked ? "bg-[#E6F7F0] text-[#016853] hover:bg-[#D1F0E4]" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                    }`}
                   onClick={() => setIsLiked((v) => !v)}
                 >
-                  <SchoolCardIcons.Heart filled={isLiked} />
+
                   <span>{isLiked ? "Liked" : "Like"}</span>
                 </button>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Mobile Options Drawer for List Layout */}
+        <MobileOptionsDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} schoolName={school.name} />
       </>
     );
   }
@@ -2227,7 +2220,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
             label: "Rating",
             valueNode: <><strong>{ratingNum}</strong> {ratingCountText}</>,
             value: `${ratingNum} ${ratingCountText}`,
-            icon: <SchoolCardIcons.Star className="text-[#089E68]" />,
+            icon: <SchoolCardIcons.StarOutline className="text-[#089E68]" />,
           },
         ];
       }
@@ -2350,7 +2343,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               height={720}
               className="school-image w-full h-[160px] object-cover rounded-lg"
             />
-            <div className="school-type-label absolute bottom-1 left-6 bg-white px-2 pt-1 text-[11px] font-semibold text-[#464646] tracking-[0.02em] rounded-t-[4px] h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
+            <div className="school-type-label absolute bottom-0 left-6 bg-white px-2 pt-1 text-[11px] font-semibold text-[#464646] tracking-[0.02em] rounded-t-[4px] h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
               {school.schoolType}
             </div>
           </div>
@@ -2482,9 +2475,8 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                   </button>
                   <button
                     type="button"
-                    className={`hover-button button-like flex-1 py-3 rounded-lg text-[14px] font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${
-                      isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
-                    }`}
+                    className={`hover-button button-like flex-1 py-3 rounded-lg text-[14px] font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                      }`}
                     onClick={() => setIsLiked((v) => !v)}
                   >
                     <SchoolCardIcons.Heart className="w-4 h-4" />
@@ -2500,154 +2492,152 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
         {/* ===== DESKTOP CLASSIC LAYOUT ===== */}
         <div className="school-card classic-card group relative hidden md:flex flex-col bg-white rounded-[12px] overflow-visible border border-[rgba(0,0,0,0.08)] shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all duration-200 ease-in-out hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:border-[rgba(1,104,83,0.2)]">
-        {/* Specialty badge / placeholder */}
-        {specialty ? (
-          <div className={`specialty-badge absolute top-0 left-0 right-0 px-3 py-2 text-[13px] font-medium flex items-center justify-center gap-1.5 leading-none rounded-t-[12px] z-[2] ${specialty.className}`}>
-            <span className="[&>svg]:w-3.5 [&>svg]:h-3.5">{specialty.icon}</span>
-            {specialty.label}
-          </div>
-        ) : (
-          <div className="empty-badge absolute top-0 left-0 right-0 h-8 bg-[#F5F5F7] rounded-t-[12px] z-[1]" />
-        )}
-
-        {/* Header */}
-        <div className="card-header flex px-4 pt-10 pb-3 items-start gap-3 h-[108px]">
-          <div className="grade-circle w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-[14px] font-semibold flex-shrink-0">
-            {school.grade}
-          </div>
-          <div className="school-info flex-1 min-w-0 overflow-hidden">
-            <div className="school-name text-[16px] font-semibold text-[#464646] mb-1 leading-[1.3] line-clamp-2 overflow-hidden">
-              {truncateName(school.name)}
+          {/* Specialty badge / placeholder */}
+          {specialty ? (
+            <div className={`specialty-badge absolute top-0 left-0 right-0 px-3 py-2 text-[13px] font-medium flex items-center justify-center gap-1.5 leading-none rounded-t-[12px] z-[2] ${specialty.className}`}>
+              <span className="[&>svg]:w-3.5 [&>svg]:h-3.5">{specialty.icon}</span>
+              {specialty.label}
             </div>
-            {school.ranking ? (
-              <div className="ranking-text text-[#089E68] text-xs font-medium leading-[1.4] whitespace-nowrap overflow-hidden text-ellipsis max-w-[calc(100%-16px)] pr-2.5">
-                {school.ranking}
+          ) : (
+            <div className="empty-badge absolute top-0 left-0 right-0 h-8 bg-[#F5F5F7] rounded-t-[12px] z-[1]" />
+          )}
+
+          {/* Header */}
+          <div className="card-header flex px-4 pt-10 pb-3 items-start gap-3 h-[108px]">
+            <div className="grade-circle w-8 h-8 bg-[#00DF8B] rounded-full flex items-center justify-center text-white text-[14px] font-semibold flex-shrink-0">
+              {school.grade}
+            </div>
+            <div className="school-info flex-1 min-w-0 overflow-hidden">
+              <div className="school-name text-[16px] font-semibold text-[#464646] mb-1 leading-[1.3] line-clamp-2 overflow-hidden">
+                {truncateName(school.name)}
               </div>
-            ) : null}
-          </div>
-        </div>
-
-        {/* Image */}
-        <div className="image-container relative w-full p-3 pb-0">
-          <Image
-            src={school.image}
-            alt={school.name}
-            width={720}
-            height={720}
-            className="school-image w-full h-[140px] object-cover rounded-lg"
-          />
-          <div className="school-type-label absolute bottom-1 left-[18px] bg-white px-2 pt-1 text-[11px] font-semibold text-[#464646] tracking-[0.02em] rounded-t-[4px] h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
-            {school.schoolType}
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="school-content p-4 flex flex-col h-[160px]">
-          {/* Stats grid - left column slightly wider */}
-          <div className="stats-section grid grid-cols-[1.15fr_0.85fr] gap-2.5 mb-4">
-            {stats.map((s: any) => (
-              <div key={s.label} className="stat flex items-center gap-2 p-2.5 bg-[#f0f1f3] rounded-lg" data-tooltip={s.label}>
-                <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
-                  {s.icon}
+              {school.ranking ? (
+                <div className="ranking-text text-[#089E68] text-xs font-medium leading-[1.4] whitespace-nowrap overflow-hidden text-ellipsis max-w-[calc(100%-16px)] pr-2.5">
+                  {school.ranking}
                 </div>
-                <div className="stat-content flex flex-col">
-                  <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">{s.label}</div>
-                  <div className="stat-value text-[12px] text-[#464646] font-medium leading-[1.3]">
-                    {s.valueNode ?? s.value}
+              ) : null}
+            </div>
+          </div>
+
+          {/* Image */}
+          <div className="image-container relative w-full p-3 pb-0">
+            <Image
+              src={school.image}
+              alt={school.name}
+              width={720}
+              height={720}
+              className="school-image w-full h-[140px] object-cover rounded-lg"
+            />
+            <div className="school-type-label absolute bottom-0 left-[18px] bg-white px-2 pt-1 text-[11px] font-semibold text-[#464646] tracking-[0.02em] rounded-t-[4px] h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
+              {school.schoolType}
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="school-content p-4 flex flex-col h-[160px]">
+            {/* Stats grid - left column slightly wider */}
+            <div className="stats-section grid grid-cols-[1.15fr_0.85fr] gap-2.5 mb-4">
+              {stats.map((s: any) => (
+                <div key={s.label} className="stat flex items-center gap-2 p-2.5 bg-[#ffffff] rounded-lg" data-tooltip={s.label}>
+                  <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
+                    {s.icon}
+                  </div>
+                  <div className="stat-content flex flex-col">
+                    <div className="stat-label text-[10px] text-[#5F5F5F] leading-none">{s.label}</div>
+                    <div className="stat-value text-[12px] text-[#464646] font-medium leading-[1.3]">
+                      {s.valueNode ?? s.value}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Footer - matching HTML: padding: 12px 16px, border-top: 1px solid rgba(0,0,0,0.06) */}
-        <div className="school-footer mt-auto px-4 py-3 border-t border-[rgba(0,0,0,0.06)] flex items-center justify-between relative z-20">
-          <div className="footer-left flex items-center gap-2">
-            <button
-              type="button"
-              className={`like-indicator w-7 h-7 flex items-center justify-center cursor-pointer ${
-                isLiked ? "text-[#298541]" : "text-[#5F5F5F]"
-              }`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsLiked((v) => !v);
-              }}
-              aria-pressed={isLiked}
-              aria-label="Like"
-            >
-              <span className="[&>svg]:w-[18px] [&>svg]:h-[18px]">
-                <SchoolCardIcons.Heart filled={isLiked} />
-              </span>
-            </button>
-          </div>
-
-          <div className="footer-actions flex items-center gap-2">
-            <SchoolCardContextMenu
-              schoolName={school.name}
-              preferredPlacement="top"
-              buttonClassName="options-button relative z-30 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] bg-[#f5f5f7] transition-all hover:text-[#346DC2] hover:bg-[#e8e8e8] pointer-events-auto [&_svg]:w-[14px] [&_svg]:h-[14px]"
-            />
-          </div>
-        </div>
-
-        {/* Hover overlay
-            Note: keep overlay visible on hover but do NOT steal hover from underlying stats/tooltips. */}
-        <div className="hover-overlay pointer-events-none absolute top-0 left-0 w-full h-[calc(100%-60px)] bg-[rgba(255,255,255,0.98)] p-6 opacity-0 invisible transition-opacity duration-300 ease-in-out flex flex-col z-10 rounded-t-[12px] group-hover:opacity-100 group-hover:visible">
-          <div className="hover-header flex gap-3 mb-3">
-            <Image
-              src={school.avatar || school.image}
-              alt={school.name}
-              width={40}
-              height={40}
-              className="school-avatar w-10 h-10 rounded-lg object-cover"
-            />
-            <div className="hover-school-name text-[16px] font-semibold text-[#464646] line-clamp-2 leading-[1.3]">
-              {school.name}
+              ))}
             </div>
           </div>
 
-          <div className="hover-stats flex gap-3 mb-4">
-            {hoverStats.map((s, idx) => (
-              <div key={idx} className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">{s.icon}</span>
-                <span className="text-[#464646]">{s.text}</span>
+          {/* Footer - matching HTML: padding: 12px 16px, border-top: 1px solid rgba(0,0,0,0.06) */}
+          <div className="school-footer mt-auto px-4 py-3 border-t border-[rgba(0,0,0,0.06)] flex items-center justify-between relative z-20">
+            <div className="footer-left flex items-center gap-2">
+              <button
+                type="button"
+                className={`like-indicator w-7 h-7 flex items-center justify-center cursor-pointer ${isLiked ? "text-[#298541]" : "text-[#5F5F5F]"
+                  }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsLiked((v) => !v);
+                }}
+                aria-pressed={isLiked}
+                aria-label="Like"
+              >
+                <span className="[&>svg]:w-[18px] [&>svg]:h-[18px]">
+                  <SchoolCardIcons.Heart filled={isLiked} />
+                </span>
+              </button>
+            </div>
+
+            <div className="footer-actions flex items-center gap-2">
+              <SchoolCardContextMenu
+                schoolName={school.name}
+                preferredPlacement="top"
+                buttonClassName="options-button relative z-30 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] bg-[#f5f5f7] transition-all hover:text-[#346DC2] hover:bg-[#e8e8e8] pointer-events-auto [&_svg]:w-[14px] [&_svg]:h-[14px]"
+              />
+            </div>
+          </div>
+
+          {/* Hover overlay
+            Note: keep overlay visible on hover but do NOT steal hover from underlying stats/tooltips. */}
+          <div className="hover-overlay pointer-events-none absolute top-0 left-0 w-full h-[calc(100%-60px)] bg-[rgba(255,255,255,0.98)] p-6 opacity-0 invisible transition-opacity duration-300 ease-in-out flex flex-col z-10 rounded-t-[12px] group-hover:opacity-100 group-hover:visible">
+            <div className="hover-header flex gap-3 mb-3">
+              <Image
+                src={school.avatar || school.image}
+                alt={school.name}
+                width={40}
+                height={40}
+                className="school-avatar w-10 h-10 rounded-lg object-cover"
+              />
+              <div className="hover-school-name text-[16px] font-semibold text-[#464646] line-clamp-2 leading-[1.3]">
+                {school.name}
               </div>
-            ))}
-          </div>
+            </div>
 
-          <div className="school-description text-[14px] leading-[1.6] text-[#4A4A4A] line-clamp-5 mb-3">
-            <strong className="font-semibold text-[#464646] mr-1">{reviewerType}:</strong>
-            {school.description}
-          </div>
+            <div className="hover-stats flex gap-3 mb-4">
+              {hoverStats.map((s, idx) => (
+                <div key={idx} className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                  <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">{s.icon}</span>
+                  <span className="text-[#464646]">{s.text}</span>
+                </div>
+              ))}
+            </div>
 
-          <div className="review-count pointer-events-auto text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer">
-            Read {reviewsCount || school.reviews || "—"} reviews
-          </div>
+            <div className="school-description text-[14px] leading-[1.6] text-[#4A4A4A] line-clamp-5 mb-3">
+              <strong className="font-semibold text-[#464646] mr-1">{reviewerType}:</strong>
+              {school.description}
+            </div>
 
-          <div className="hover-buttons pointer-events-auto flex flex-col gap-2 mt-auto">
-            <button type="button" className="hover-button button-info w-full py-3 rounded-lg text-[14px] font-medium bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors flex items-center justify-center">
-              More Info
-            </button>
-            <button
-              type="button"
-              className={`hover-button button-like w-full py-3 rounded-lg text-[14px] font-medium transition-colors flex items-center justify-center gap-2 ${
-                isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
-              }`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsLiked((v) => !v);
-              }}
-              aria-pressed={isLiked}
-            >
-              <span className="[&>svg]:w-4 [&>svg]:h-4">
-                <SchoolCardIcons.Heart filled={isLiked} />
-              </span>
-              {isLiked ? "Liked" : "Like"}
-            </button>
+            <div className="review-count pointer-events-auto text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer">
+              Read {reviewsCount || school.reviews || "—"} reviews
+            </div>
+
+            <div className="hover-buttons pointer-events-auto flex flex-col gap-2 mt-auto">
+              <button type="button" className="hover-button button-info w-full py-3 rounded-lg text-[14px] font-medium bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors flex items-center justify-center">
+                More Info
+              </button>
+              <button
+                type="button"
+                className={`hover-button button-like w-full py-3 rounded-lg text-[14px] font-medium transition-colors flex items-center justify-center gap-2 ${isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                  }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsLiked((v) => !v);
+                }}
+                aria-pressed={isLiked}
+              >
+                <span className="[&>svg]:w-4 [&>svg]:h-4">
+                  <SchoolCardIcons.Heart filled={isLiked} />
+                </span>
+                {isLiked ? "Liked" : "Like"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
       </>
     );
   }

@@ -767,7 +767,7 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
           {/* Desktop modal */}
           <div 
             ref={modalRef}
-            className="bg-white rounded-xl w-full max-w-[480px] max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.15)]"
+            className="request-content-modal bg-white rounded-xl w-full max-w-[480px] max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.15)]"
             role="dialog"
             aria-labelledby="modal-title"
             aria-modal="true"
@@ -777,12 +777,12 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
             }}
           >
           {/* Header */}
-          <div className="px-6 pt-6 pb-4 border-b border-[#f0f0f0] relative">
-            <h2 id="modal-title" className="text-xl font-semibold text-[#1B1B1B] mb-0 font-inter">Request New Content</h2>
+          <div className="request-content-header px-6 pt-6 pb-4 border-b border-[#f0f0f0] relative">
+            <h2 id="modal-title" className="request-content-title text-xl font-semibold text-[#1B1B1B] mb-0 font-inter">Request New Content</h2>
             <button
               ref={firstFocusableRef}
               onClick={toggleModal}
-              className="absolute top-5 right-5 bg-none border-none text-[#5F5F5F] cursor-pointer p-1 rounded transition-colors text-2xl leading-none hover:bg-[#f5f5f5] hover:text-[#4A4A4A]"
+              className="request-content-close absolute top-5 right-5 bg-none border-none text-[#5F5F5F] cursor-pointer p-1 rounded transition-colors text-2xl leading-none hover:bg-[#f5f5f5] hover:text-[#4A4A4A]"
               aria-label="Close modal"
             >
               ×
@@ -790,11 +790,11 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
           </div>
 
         {/* Body */}
-        <div className="p-6">
+        <div className="request-content-body p-6">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Content Type Dropdown */}
             <div>
-              <label className="block text-sm font-medium text-[#464646] mb-2 font-inter">
+              <label className="request-content-label block text-sm font-medium text-[#464646] mb-2 font-inter">
                 Content Type
               </label>
               <div className="relative" ref={dropdownRef}>
@@ -802,7 +802,7 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
                   type="button"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   onKeyDown={handleDropdownKeyDown}
-                  className="w-full py-3 px-4 border border-[#e0e0e0] rounded-lg bg-white text-left flex items-center justify-between hover:border-[#ccc] focus:outline-none focus:border-[#1D77BD] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)] transition-colors"
+                  className="request-content-select w-full py-3 px-4 border border-[#e0e0e0] rounded-lg bg-white text-left flex items-center justify-between hover:border-[#ccc] focus:outline-none focus:border-[#1D77BD] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)] transition-colors"
                   aria-expanded={isDropdownOpen}
                   aria-haspopup="listbox"
                   id="content-type-dropdown"
@@ -824,7 +824,7 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
 
                 {isDropdownOpen && (
                   <div 
-                    className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#e0e0e0] rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.1)] z-10 animate-in slide-in-from-top-2 duration-150"
+                    className="request-content-menu absolute top-full left-0 right-0 mt-1 bg-white border border-[#e0e0e0] rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.1)] z-10 animate-in slide-in-from-top-2 duration-150"
                     role="listbox"
                     aria-labelledby="content-type-dropdown"
                     style={{
@@ -841,7 +841,7 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
                           setIsDropdownOpen(false);
                           setFocusedDropdownIndex(-1);
                         }}
-                        className={`w-full py-3 px-4 text-left flex items-center gap-2.5 hover:bg-[#f8f9fa] focus:bg-[#f8f9fa] focus:outline-none transition-colors border-none bg-none ${
+                        className={`request-content-menu-item w-full py-3 px-4 text-left flex items-center gap-2.5 hover:bg-[#f8f9fa] focus:bg-[#f8f9fa] focus:outline-none transition-colors border-none bg-none ${
                           focusedDropdownIndex === index ? 'bg-[#f8f9fa]' : ''
                         }`}
                         role="option"
@@ -861,7 +861,7 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
 
             {/* Title Input */}
             <div>
-              <label className="block text-sm font-medium text-[#464646] mb-2 font-inter">
+              <label className="request-content-label block text-sm font-medium text-[#464646] mb-2 font-inter">
                 Title
               </label>
               <input
@@ -869,13 +869,13 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter content title"
-                className="w-full py-3 px-4 border border-[#e0e0e0] rounded-lg bg-white text-[#4A4A4A] placeholder:text-[#5F5F5F] focus:outline-none focus:border-[#1D77BD] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)] transition-colors font-inter text-sm"
+                className="request-content-input w-full py-3 px-4 border border-[#e0e0e0] rounded-lg bg-white text-[#4A4A4A] placeholder:text-[#5F5F5F] focus:outline-none focus:border-[#1D77BD] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)] transition-colors font-inter text-sm"
               />
             </div>
 
             {/* URL Input */}
             <div>
-              <label className="block text-sm font-medium text-[#464646] mb-2 font-inter">
+              <label className="request-content-label block text-sm font-medium text-[#464646] mb-2 font-inter">
                 URL
               </label>
               <input
@@ -883,12 +883,12 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://example.com"
-                className="w-full py-3 px-4 border border-[#e0e0e0] rounded-lg bg-white text-[#4A4A4A] placeholder:text-[#5F5F5F] focus:outline-none focus:border-[#1D77BD] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)] transition-colors font-inter text-sm"
+                className="request-content-input w-full py-3 px-4 border border-[#e0e0e0] rounded-lg bg-white text-[#4A4A4A] placeholder:text-[#5F5F5F] focus:outline-none focus:border-[#1D77BD] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)] transition-colors font-inter text-sm"
               />
 
               {/* URL Preview */}
               {(showUrlPreview || isLoadingPreview) && (
-                <div className="mt-4 p-4 border border-[#e0e0e0] rounded-lg bg-[#fafafa] animate-in slide-in-from-top-2 duration-300">
+                <div className="request-content-preview mt-4 p-4 border border-[#e0e0e0] rounded-lg bg-[#fafafa] animate-in slide-in-from-top-2 duration-300">
                   <span className="block text-xs font-medium text-[#5F5F5F] mb-3 font-inter">Preview</span>
                   {isLoadingPreview ? (
                     <div className="flex items-center justify-center py-4">
@@ -919,11 +919,11 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
 
             {/* Matching Requests */}
             {matchingRequests.length > 0 && (
-              <div className="mt-6 p-5 bg-[#f8f9fa] rounded-lg border border-[#e9ecef]">
+              <div className="request-content-matches mt-6 p-5 bg-[#f8f9fa] rounded-lg border border-[#e9ecef]">
                 <h4 className="text-sm font-medium text-[#5F5F5F] mb-4 font-inter">Matching Requests</h4>
                 <div className="space-y-2">
                   {matchingRequests.map((request) => (
-                    <div key={request.id} className="flex items-center gap-3 p-3 bg-white border border-[#e0e0e0] rounded-lg hover:shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-shadow mb-2 last:mb-0">
+                    <div key={request.id} className="request-content-item flex items-center gap-3 p-3 bg-white border border-[#e0e0e0] rounded-lg hover:shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-shadow mb-2 last:mb-0">
                       <img 
                         src={request.image} 
                         alt={request.title} 
@@ -933,9 +933,9 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
                         <div className="text-sm font-medium text-[#464646] truncate font-inter mb-0.5">
                           {request.title}
                         </div>
-                        <div className="text-xs text-[#5F5F5F] flex items-center gap-2 font-inter">
-                          <span>{request.author}</span>
-                          <div className="inline-flex items-center bg-[#EBFCF4] text-[#089E68] rounded font-medium flex-shrink-0 request-type-badge" style={{ fontSize: '10px', gap: '4px', padding: '2px 6px' }}>
+                          <div className="text-xs text-[#5F5F5F] flex items-center gap-2 font-inter">
+                            <span>{request.author}</span>
+                            <div className="inline-flex items-center bg-[#EBFCF4] text-[#089E68] rounded font-medium flex-shrink-0 request-type-badge" style={{ fontSize: '10px', gap: '4px', padding: '2px 6px' }}>
                             <span className="inline-flex items-center justify-center flex-shrink-0 request-type-icon" style={{ width: '10px', height: '10px', color: '#089E68' }}>
                               {contentTypes.find(t => t.id === request.type)?.icon}
                             </span>
@@ -972,11 +972,11 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
             <div className="pt-5 border-t border-[#e9ecef] mt-6">
               {hasMatchingResults && (
                 <div className="flex items-start gap-3 mb-5">
-                  <div
-                    className={`w-[18px] h-[18px] border-2 rounded cursor-pointer flex items-center justify-center transition-all flex-shrink-0 mt-0.5 ${
-                      isCheckboxChecked 
-                        ? 'bg-[#1D77BD] border-[#1D77BD]' 
-                        : 'border-[#e0e0e0] hover:border-[#ccc]'
+                    <div
+                      className={`request-content-checkbox w-[18px] h-[18px] border-2 rounded cursor-pointer flex items-center justify-center transition-all flex-shrink-0 mt-0.5 ${
+                        isCheckboxChecked 
+                          ? 'bg-[#1D77BD] border-[#1D77BD]' 
+                          : 'border-[#e0e0e0] hover:border-[#ccc]'
                     }`}
                     onClick={() => setIsCheckboxChecked(!isCheckboxChecked)}
                     role="checkbox"
@@ -995,7 +995,7 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
                       </svg>
                     )}
                   </div>
-                  <label className="text-sm text-[#4A4A4A] cursor-pointer leading-relaxed font-inter" style={{ lineHeight: '1.4' }}>
+                  <label className="request-content-confirm-label text-sm text-[#4A4A4A] cursor-pointer leading-relaxed font-inter" style={{ lineHeight: '1.4' }}>
                     I confirm my request is not in the list above
                   </label>
                 </div>
@@ -1005,7 +1005,7 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
                 ref={lastFocusableRef}
                 type="submit"
                 disabled={!canSubmit || isSubmitting}
-                className="w-full py-3 px-6 bg-[#EBFCF4] text-[#016853] border border-[#d0f0d0] rounded-lg font-medium hover:bg-[#D7F7E9] hover:border-[#c0e0c0] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-inter text-sm"
+                className="request-content-submit w-full py-3 px-6 bg-[#EBFCF4] text-[#016853] border border-[#d0f0d0] rounded-lg font-medium hover:bg-[#D7F7E9] hover:border-[#c0e0c0] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-inter text-sm"
               >
                 {isSubmitting ? (
                   <div className="flex items-center justify-center gap-2">

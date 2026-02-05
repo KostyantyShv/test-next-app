@@ -51,7 +51,7 @@ export const DesktopGridSchoolCard: React.FC<{
     if (establishment === "Colleges") {
       return { icon: <SchoolCardIcons.SAT />, text: `SAT: ${school.sat || "—"}` };
     }
-    return { icon: <SchoolCardIcons.Students />, text: `Students: ${school.students || "—"}` };
+    return { icon: <SchoolCardIcons.Students className="text-[#089E68]" />, text: `Students: ${school.students || "—"}` };
   }, [establishment, school.sat, school.students]);
 
   const hoverStat1 = useMemo(() => {
@@ -59,7 +59,7 @@ export const DesktopGridSchoolCard: React.FC<{
     const perYear = establishment === "K-12" || establishment === "Colleges";
     const price = school.price || "—";
     return {
-      icon: <SchoolCardIcons.Tuition />,
+      icon: <SchoolCardIcons.Tuition className="text-[#089E68]" />,
       text: perYear && !price.includes("/") ? `${price}/yr` : price,
       iconClassName: "text-[#089E68]",
     };
@@ -232,4 +232,3 @@ export const DesktopGridSchoolCard: React.FC<{
     </div>
   );
 };
-

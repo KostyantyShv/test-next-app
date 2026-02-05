@@ -1,5 +1,5 @@
 "use client";
-import React, { ReactNode, useState, useMemo } from "react";
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { useSchoolsExplore } from "@/store/use-schools-explore";
 import { establishmentTypes } from "../../explore/main-content/mock";
 import K12Filters from "../../explore/filter-sidebar/filters/k12-filters";
@@ -34,7 +34,7 @@ interface SearchHeaderProps {
   setIsMapActive: (active: boolean) => void;
   layout: string;
   setLayout: (layout: string) => void;
-  layoutToggleWidth: number;
+  layoutToggleWidth?: number;
   onContainerExpandChange?: (isExpanded: boolean) => void;
 }
 
@@ -75,6 +75,26 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   const [isMapDrawerOpen, setIsMapDrawerOpen] = useState(false);
   const [whatSearchQuery, setWhatSearchQuery] = useState("");
   const [whereSearchQuery, setWhereSearchQuery] = useState("");
+  const [isLayoutToggleExpanded, setIsLayoutToggleExpanded] = useState(false);
+  const [isLayoutTooltipReady, setIsLayoutTooltipReady] = useState(false);
+  const [hoveredLayout, setHoveredLayout] = useState<string | null>(null);
+  const layoutToggleHoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const layoutToggleTooltipTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const layoutToggleExpandedWidth = useMemo(
+    () => layoutToggleWidth ?? layouts.length * 32 + 6,
+    [layoutToggleWidth, layouts.length]
+  );
+
+  useEffect(() => {
+    return () => {
+      if (layoutToggleHoverTimeoutRef.current) {
+        clearTimeout(layoutToggleHoverTimeoutRef.current);
+      }
+      if (layoutToggleTooltipTimeoutRef.current) {
+        clearTimeout(layoutToggleTooltipTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const currentFilters = useMemo(() => {
     switch (establishment) {
@@ -113,6 +133,14 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
 
     return count;
   }, [currentFilters]);
+
+  const desktopLayouts = useMemo(() => {
+    if (layouts.some((item) => item.type === layout)) {
+      return layouts;
+    }
+    const current = layouts.find((item) => item.type === layout);
+    return current ? [current, ...layouts] : layouts;
+  }, [layouts, layout]);
 
   const isOverlayVisible =
     isEstablishmentDrawerOpen ||
@@ -317,7 +345,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   return (
     <>
       {/* Desktop Header */}
-      <div className="hidden md:flex items-center justify-between p-4 px-6 border-b border-[rgba(0,0,0,0.08)] bg-white">
+      <div className="hidden md:flex items-center justify-between p-4 px-6 border-b border-[rgba(0,0,0,0.08)] bg-white relative z-[120] overflow-visible">
         <div className="group flex items-center gap-3 relative cursor-pointer p-2 rounded-2xl hover:bg-[#f5f5f7] transition-colors">
           <div className="w-6 h-6 flex items-center justify-center text-[#464646]">
             {getEstablishmentIcon(dropdownValue)}
@@ -488,25 +516,82 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
           
           <div className="w-px h-6 bg-[rgba(0,0,0,0.1)] mx-2"></div>
           
-          {/* Layout Toggle */}
-          <div className="flex items-center bg-[#f5f5f7] rounded-md p-0.5">
-            {layouts.filter(l => l.type !== 'classic').map((layoutOption) => (
-              <button
-                key={layoutOption.type}
-                onClick={() => handleLayoutChange(layoutOption.type)}
-                className={`flex items-center justify-center w-8 h-7 rounded transition-all ${
-                  layout === layoutOption.type
-                    ? 'bg-white shadow-sm'
-                    : 'bg-transparent'
-                }`}
-              >
-                <div className={`w-4 h-4 ${
-                  layout === layoutOption.type ? 'text-[#0093B0]' : 'text-[#4A4A4A]'
-                }`}>
-                  {layoutOption.icon}
-                </div>
-              </button>
-            ))}
+          {/* Layout Toggle - matches Explore/Collections desktop */}
+          <div 
+            className={`layout-toggle flex items-center bg-[#f5f5f7] relative z-[8000] ${
+              isLayoutToggleExpanded ? "expanded" : ""
+            } ${isLayoutTooltipReady ? "tooltip-ready" : ""}`}
+            style={{
+              borderRadius: '6px',
+              padding: '2px',
+              width: isLayoutToggleExpanded ? `${layoutToggleExpandedWidth}px` : '36px',
+              transition: 'width 0.3s ease',
+              overflow: 'visible',
+            }}
+            onMouseEnter={() => {
+              if (layoutToggleHoverTimeoutRef.current) clearTimeout(layoutToggleHoverTimeoutRef.current);
+              setIsLayoutToggleExpanded(true);
+              if (layoutToggleTooltipTimeoutRef.current) clearTimeout(layoutToggleTooltipTimeoutRef.current);
+              layoutToggleTooltipTimeoutRef.current = setTimeout(() => {
+                setIsLayoutTooltipReady(true);
+              }, 300);
+            }}
+            onMouseLeave={() => {
+              setIsLayoutTooltipReady(false);
+              setHoveredLayout(null);
+              if (layoutToggleTooltipTimeoutRef.current) clearTimeout(layoutToggleTooltipTimeoutRef.current);
+              layoutToggleHoverTimeoutRef.current = setTimeout(() => {
+                setIsLayoutToggleExpanded(false);
+              }, 300);
+            }}
+          >
+            {desktopLayouts.map((layoutOption, index) => {
+              const isActive = layout === layoutOption.type;
+              const shouldShowButton = isActive || isLayoutToggleExpanded;
+              return (
+                <button
+                  key={layoutOption.type}
+                  type="button"
+                  onClick={() => handleLayoutChange(layoutOption.type)}
+                  onMouseEnter={() => setHoveredLayout(layoutOption.type)}
+                  onMouseLeave={() => setHoveredLayout(null)}
+                  style={{
+                    order: isActive ? desktopLayouts.length + 1 : index + 1,
+                    width: '32px',
+                    height: '28px',
+                    borderRadius: '4px',
+                    flexShrink: 0,
+                  }}
+                  className={`layout-toggle-button relative items-center justify-center cursor-pointer border-none transition-all overflow-visible ${
+                    shouldShowButton ? "flex" : "hidden"
+                  } ${
+                    isActive
+                      ? "active bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
+                      : "bg-transparent hover:bg-[rgba(0,0,0,0.05)]"
+                  }`}
+                  data-layout={layoutOption.type}
+                  aria-label={`Layout ${layoutOption.type}`}
+                >
+                  <span
+                    className={`w-4 h-4 flex items-center justify-center ${
+                      isActive ? "text-[#0093B0]" : "text-[#4A4A4A]"
+                    }`}
+                  >
+                    {layoutOption.icon}
+                  </span>
+                  <span
+                    className={`layout-tooltip absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-[var(--tooltip-bg)] text-[var(--tooltip-text)] px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap pointer-events-none z-[3000] shadow-[0_2px_8px_rgba(0,0,0,0.15)] transition-opacity duration-150 ${
+                      isLayoutTooltipReady && hoveredLayout === layoutOption.type
+                        ? "opacity-100 visible"
+                        : "opacity-0 invisible"
+                    }`}
+                  >
+                    {layoutOption.type.charAt(0).toUpperCase() + layoutOption.type.slice(1)}
+                    <span className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-[var(--tooltip-bg)]"></span>
+                  </span>
+                </button>
+              );
+            })}
           </div>
           
           <div className="w-px h-6 bg-[rgba(0,0,0,0.1)] mx-2"></div>

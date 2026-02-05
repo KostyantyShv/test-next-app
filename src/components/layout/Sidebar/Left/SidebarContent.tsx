@@ -32,9 +32,9 @@ interface SidebarContentProps {
   isCollapsed?: boolean;
 }
 
-export const SidebarContent: FC<SidebarContentProps> = ({ 
+export const SidebarContent: FC<SidebarContentProps> = ({
   variant = 'desktop',
-  isCollapsed = false 
+  isCollapsed = false
 }) => {
   const pathname = usePathname();
   const [isCollectionsDropdownOpen, setIsCollectionsDropdownOpen] = useState(false);
@@ -46,7 +46,7 @@ export const SidebarContent: FC<SidebarContentProps> = ({
         <nav>
           {navigationItems.map((item) => {
             const isCollections = item.href === '/collections';
-            
+
             return (
               <div key={item.href}>
                 <Link
@@ -58,13 +58,13 @@ export const SidebarContent: FC<SidebarContentProps> = ({
                     pathname === item.href && "bg-[var(--menu-active)]"
                   )}
                 >
-                  <Icon 
-                    name={item.icon} 
+                  <Icon
+                    name={item.icon}
                     size="lg"
                     className={cn(
                       "shrink-0",
                       pathname === item.href ? "text-[var(--icon)]" : "text-gray-500"
-                    )} 
+                    )}
                   />
                   <span className="flex-1">{item.label}</span>
                   {isCollections && (
@@ -87,13 +87,13 @@ export const SidebarContent: FC<SidebarContentProps> = ({
                         className="p-1 hover:bg-gray-200 rounded-md"
                         aria-label="Toggle collections"
                       >
-                        <Icon 
-                          name="chevron-up" 
-                          size="sm" 
+                        <Icon
+                          name="chevron-up"
+                          size="sm"
                           className={cn(
                             "text-gray-500 transition-transform",
                             isCollectionsDropdownOpen ? "rotate-180" : ""
-                          )} 
+                          )}
                         />
                       </button>
                     </div>
@@ -112,7 +112,7 @@ export const SidebarContent: FC<SidebarContentProps> = ({
         </nav>
 
         {/* Create Collection Modal */}
-        <CreateCollectionModal 
+        <CreateCollectionModal
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
         />
@@ -144,10 +144,10 @@ export const SidebarContent: FC<SidebarContentProps> = ({
               isCollapsed && variant === 'desktop' && "justify-center"
             )}
           >
-            <Icon 
-              name={item.icon} 
+            <Icon
+              name={item.icon}
               size={"lg"}
-              className={pathname === item.href ? "text-primary" : "text-gray-500"} 
+              className={pathname === item.href ? "text-primary" : "text-gray-500"}
             />
             {(!isCollapsed) && <span>{item.label}</span>}
           </Link>
@@ -175,10 +175,10 @@ export const SidebarContent: FC<SidebarContentProps> = ({
               isCollapsed && variant === 'desktop' && "justify-center"
             )}
           >
-            <Icon 
-              name={item.icon} 
+            <Icon
+              name={item.icon}
               size={"lg"}
-              className={pathname === item.href ? "text-primary" : "text-gray-500"} 
+              className={pathname === item.href ? "text-primary" : "text-gray-500"}
             />
             {(!isCollapsed) && <span>{item.label}</span>}
           </Link>
@@ -200,10 +200,10 @@ export const SidebarContent: FC<SidebarContentProps> = ({
               isCollapsed && variant === 'desktop' && "justify-center"
             )}
           >
-            <Icon 
-              name={item.icon} 
+            <Icon
+              name={item.icon}
               size={"lg"}
-              className={pathname === item.href ? "text-primary" : "text-gray-500"} 
+              className={pathname === item.href ? "text-primary" : "text-gray-500"}
             />
             {(!isCollapsed) && <span>{item.label}</span>}
           </Link>

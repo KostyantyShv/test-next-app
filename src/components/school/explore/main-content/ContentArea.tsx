@@ -32,23 +32,19 @@ const ContentArea: React.FC<ContentAreaProps> = ({
 
   const getGridCols = () => {
     if (layout === "grid") {
-      // Match provided HTML (Grid 6) when map is OFF:
-      // grid-template-columns: repeat(auto-fill, minmax(250px, 1fr))
-      //
-      // When map is ON, available width is much smaller → keep cards readable:
-      // 2 cols, 1 below ~700px.
+      // Keep cards readable on narrower viewports (avoid overlap).
       return isMapActive
-        ? "grid-cols-2 max-[700px]:grid-cols-1"
-        : "grid-cols-[repeat(auto-fill,minmax(250px,1fr))]";
+        ? "grid-cols-2 max-[900px]:grid-cols-1"
+        : "grid-cols-3 max-[1200px]:grid-cols-2 max-[900px]:grid-cols-1";
     }
     if (layout === "card") {
-      // Keep previous "card" layout grid behavior.
+      // Same responsive behavior as grid to prevent cramped columns.
       return isMapActive
-        ? "grid-cols-2 max-[700px]:grid-cols-1"
-        : "grid-cols-3 max-[900px]:grid-cols-2 max-[600px]:grid-cols-1";
+        ? "grid-cols-2 max-[900px]:grid-cols-1"
+        : "grid-cols-3 max-[1200px]:grid-cols-2 max-[900px]:grid-cols-1";
     }
     if (layout === "hybrid") {
-      return isMapActive ? "grid-cols-1" : "grid-cols-2";
+      return isMapActive ? "grid-cols-1" : "grid-cols-2 max-[900px]:grid-cols-1";
     }
     if (layout === "classic") {
       // When map is active: 2 columns only; when map is off: 4 columns with responsive breakpoints

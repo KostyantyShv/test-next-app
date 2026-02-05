@@ -22,6 +22,195 @@
   color: var(--text-default);
 }
 
+/* Midnight + Oceanic theme overrides */
+:global([data-theme="midnight"]) .aiPanelRoot,
+:global([data-theme="oceanic"]) .aiPanelRoot {
+  --bg-color: var(--background-color);
+  --text-default: var(--text-default);
+  --active-green: var(--active-green);
+  --header-green: var(--header-green);
+  --verification-blue: var(--verification-blue);
+  --apply-button-bg: var(--apply-button-bg);
+  --apply-button-hover: var(--apply-button-hover);
+  --grade-badge: var(--grade-badge);
+  --success-green: var(--success-green);
+  --arrow-circle: var(--hover-bg);
+  --bold-text: var(--bold-text);
+  --subtle-text: var(--subtle-text);
+  --link-text: var(--link-text);
+  --dark-text: var(--dark-text);
+  --white: var(--surface-color);
+  --border-light: var(--border-color);
+  --shadow-light: var(--shadow-color);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.ai-panel),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.ai-panel) {
+  background: var(--surface-color);
+  box-shadow: -4px 0 20px var(--shadow-light);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.ai-panel-left),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.ai-panel-left) {
+  background: var(--surface-color);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.ai-panel-right),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.ai-panel-right) {
+  background: var(--surface-secondary);
+  border-left-color: var(--border-color);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.message.ai .message-bubble),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.message.ai .message-bubble) {
+  background: var(--surface-secondary);
+  color: var(--text-default);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.context-pill),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.context-pill) {
+  background: var(--surface-secondary);
+  border-color: var(--border-color);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.prompt-pills),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.prompt-pills) {
+  border-bottom-color: var(--border-color);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.prompt-pill),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.prompt-pill) {
+  background: var(--surface-secondary);
+  color: var(--text-default);
+  border-color: var(--border-color);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.prompt-pill:hover),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.prompt-pill:hover) {
+  background: var(--hover-bg);
+  border-color: var(--verification-blue);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.prompt-pill.active),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.prompt-pill.active) {
+  background: var(--active-green);
+  color: var(--background-color);
+  border-color: var(--active-green);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.chat-input-container),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.chat-input-container) {
+  background: var(--surface-color);
+  border-color: var(--border-color);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.chat-controls),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.chat-controls) {
+  background: var(--surface-secondary);
+  border-top-color: var(--border-color);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.inline-modal),
+:global([data-theme="midnight"]) .aiPanelRoot :global(.all-prompts-inline),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.inline-modal),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.all-prompts-inline) {
+  background: var(--surface-color);
+  border-color: var(--border-color);
+  box-shadow: 0 4px 16px var(--shadow-light);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.inline-modal-item),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.inline-modal-item) {
+  border-bottom-color: var(--border-color);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.inline-modal-item:hover),
+:global([data-theme="midnight"]) .aiPanelRoot :global(.prompt-row:hover),
+:global([data-theme="midnight"]) .aiPanelRoot :global(.tab-item:hover),
+:global([data-theme="midnight"]) .aiPanelRoot :global(.collection-item:hover),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.inline-modal-item:hover),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.prompt-row:hover),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.tab-item:hover),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.collection-item:hover) {
+  background: var(--hover-bg);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.prompt-row),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.prompt-row) {
+  border-bottom-color: var(--border-color);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.tab-item),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.tab-item),
+:global([data-theme="midnight"]) .aiPanelRoot :global(.collection-item),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.collection-item) {
+  border-color: var(--border-color);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.tab-item.current),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.tab-item.current) {
+  background: var(--surface-secondary);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.tab-icon),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.tab-icon) {
+  background: var(--hover-bg);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.chat-history),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.chat-history) {
+  background: var(--surface-color);
+  box-shadow: -4px 0 20px var(--shadow-light);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.chat-history-header),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.chat-history-header),
+:global([data-theme="midnight"]) .aiPanelRoot :global(.history-search),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.history-search) {
+  border-bottom-color: var(--border-color);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.history-search input),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.history-search input) {
+  background: var(--surface-secondary);
+  border-color: var(--border-color);
+  color: var(--text-default);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.history-item),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.history-item) {
+  border-bottom-color: var(--border-color);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.history-item:hover),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.history-item:hover) {
+  background: var(--hover-bg);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.modal),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.modal) {
+  background: var(--surface-color);
+  box-shadow: 0 20px 60px var(--shadow-light);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.modal-header),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.modal-header),
+:global([data-theme="midnight"]) .aiPanelRoot :global(.modal-footer),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.modal-footer) {
+  border-bottom-color: var(--border-color);
+  border-top-color: var(--border-color);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.btn-secondary),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.btn-secondary) {
+  border-color: var(--border-color);
+  color: var(--text-default);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.btn-primary),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.btn-primary) {
+  color: var(--dark-text);
+}
 .aiPanelRoot :global(.ai-panel) {
   position: fixed;
   right: -500px;

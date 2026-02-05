@@ -49,6 +49,7 @@ const MainContentSection: React.FC<MainContentSectionProps> = ({
                   <div
                     key={item.id}
                     className="flex flex-row gap-3 p-[12px_16px_8px] hover:bg-[rgba(0,0,0,0.04)] items-center"
+                    data-dropdown-select="true"
                     onClick={() => setSubcategory(subcategory)}
                   >
                     <span className="text-[#4A4A4A]">{item.icon}</span>
@@ -93,7 +94,7 @@ const MainContentSection: React.FC<MainContentSectionProps> = ({
   );
 
   return (
-    <div className="w-full mx-auto bg-white rounded-lg sm:rounded-xl border border-[rgba(0,0,0,0.1)] shadow-[0_1px_4px_rgba(0,0,0,0.05)] sm:shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-hidden">
+    <div className="w-full mx-auto bg-white rounded-none border-0 shadow-none md:rounded-xl md:border md:border-[rgba(0,0,0,0.1)] md:shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-visible">
       <Header
         schools={schools}
         layouts={layouts}
@@ -106,7 +107,6 @@ const MainContentSection: React.FC<MainContentSectionProps> = ({
         setIsMapActive={setIsMapActive}
         layout={layout}
         setLayout={setLayout}
-        layoutToggleWidth={200}
         renderActionsButton={renderActionsDropdown}
         renderItemsCount={renderItemsCount}
         onContainerExpandChange={onContainerExpandChange}

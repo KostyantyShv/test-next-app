@@ -53,7 +53,7 @@ const SearchMainContent: React.FC<SearchMainContentProps> = ({
   );
 
   return (
-    <div className="w-full bg-white rounded-xl border border-[rgba(0,0,0,0.1)] shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-hidden">
+    <div className="w-full bg-white rounded-xl border border-[rgba(0,0,0,0.1)] shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-visible">
       <SearchHeader
         dropdownValue={establishment}
         layouts={layouts}
@@ -64,7 +64,6 @@ const SearchMainContent: React.FC<SearchMainContentProps> = ({
         setIsMapActive={setIsMapActive}
         layout={layout}
         setLayout={setLayout}
-        layoutToggleWidth={134}
         onContainerExpandChange={onContainerExpandChange}
       />
       <SearchContentArea

@@ -149,16 +149,18 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
 
   const getExploreLikeGridCols = (variant: "grid" | "hybrid" | "classic") => {
     if (variant === "grid") {
-      // Same as Explore: when map is ON → 2 cols, 1 below ~700px. When OFF → 3 cols, 2 below 900px, 1 below 600px.
+      // Keep cards readable on narrower viewports (avoid overlap).
       return isMapActive
-        ? "grid-cols-2 max-[700px]:grid-cols-1"
-        : "grid-cols-3 max-[900px]:grid-cols-2 max-[600px]:grid-cols-1";
+        ? "grid-cols-2 max-[900px]:grid-cols-1"
+        : "grid-cols-3 max-[1200px]:grid-cols-2 max-[900px]:grid-cols-1";
     }
     if (variant === "hybrid") {
-      return isMapActive ? "grid-cols-1" : "grid-cols-2";
+      return isMapActive ? "grid-cols-1" : "grid-cols-2 max-[900px]:grid-cols-1";
     }
     // classic
-    return isMapActive ? "grid-cols-2" : "grid-cols-4";
+    return isMapActive
+      ? "grid-cols-2 max-[900px]:grid-cols-1"
+      : "grid-cols-4 max-[1200px]:grid-cols-3 max-[1000px]:grid-cols-2 max-[800px]:grid-cols-1";
   };
 
   // Keep map prop shape identical to Explore map component (even though we render collections cards).

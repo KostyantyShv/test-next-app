@@ -42,14 +42,14 @@ export default function Checkout() {
   };
 
   return (
-    <div className="min-h-screen py-4 md:py-10 pb-6 md:pb-10">
-      <div className="max-w-[1220px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-6 px-4 md:px-6">
+    <div className="checkout-page min-h-screen py-4 md:py-10 pb-6 md:pb-10">
+      <div className="checkout-grid max-w-[1220px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-6 px-4 md:px-6">
         {/* Main Content */}
         <div className="flex-1">
-          <div className="md:bg-white md:rounded-2xl md:p-8 md:shadow-sm">
-            <div className="bg-white md:bg-transparent rounded-xl md:rounded-none p-5 md:p-0 shadow-sm md:shadow-none mb-4 md:mb-8">
-              <h1 className="text-2xl md:text-[28px] font-semibold text-[#1B1B1B]">Shopping Cart</h1>
-              <div className="text-sm text-[#5F5F5F] mt-1 md:hidden">
+          <div className="checkout-card md:bg-white md:rounded-2xl md:p-8 md:shadow-sm">
+            <div className="checkout-header bg-white md:bg-transparent rounded-xl md:rounded-none p-5 md:p-0 shadow-sm md:shadow-none mb-4 md:mb-8">
+              <h1 className="checkout-title text-2xl md:text-[28px] font-semibold text-[#1B1B1B]">Shopping Cart</h1>
+              <div className="checkout-subtitle text-sm text-[#5F5F5F] mt-1 md:hidden">
                 {cartItems.length} items in cart
               </div>
             </div>
@@ -65,10 +65,10 @@ export default function Checkout() {
 
         {/* Sidebar */}
         <div className="lg:sticky lg:top-6 self-start mt-4 lg:mt-0">
-          <div className="bg-white rounded-xl md:rounded-2xl p-5 md:p-8 shadow-sm">
-            <div className="flex justify-between items-center mb-5 md:mb-6 px-4 mt-4 md:mt-0">
-              <h2 className="text-lg md:text-xl font-semibold text-[#1B1B1B]">Payment Details</h2>
-              <span className="text-xs md:text-sm text-[#5F5F5F] font-medium">
+          <div className="checkout-sidebar-card bg-white rounded-xl md:rounded-2xl p-5 md:p-8 shadow-sm">
+            <div className="checkout-payment-header flex justify-between items-center mb-5 md:mb-6 px-4 mt-4 md:mt-0">
+              <h2 className="checkout-payment-title text-lg md:text-xl font-semibold text-[#1B1B1B]">Payment Details</h2>
+              <span className="checkout-payment-count text-xs md:text-sm text-[#5F5F5F] font-medium">
                 {cartItems.length} ITEMS
               </span>
             </div>
