@@ -195,11 +195,17 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
       updateScrollConstraints();
       // Prevent body scroll when overlay is open
       document.body.style.overflow = 'hidden';
+      document.body.classList.add('compare-open');
+      document.documentElement.classList.add('compare-open');
     } else {
       document.body.style.overflow = '';
+      document.body.classList.remove('compare-open');
+      document.documentElement.classList.remove('compare-open');
     }
     return () => {
       document.body.style.overflow = '';
+      document.body.classList.remove('compare-open');
+      document.documentElement.classList.remove('compare-open');
     };
   }, [isOpen, schools]);
 
@@ -322,17 +328,14 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
       {/* Desktop Version - Fullscreen Overlay */}
       <Portal containerId="compare-items-portal">
         <div className={cn(
-          "fixed inset-0 z-[1001] hidden md:block bg-[var(--surface-color)] overflow-y-auto",
+          "fixed inset-0 z-[1001] hidden md:block bg-[var(--surface-color)] overflow-hidden",
           "opacity-0 visibility-hidden transition-all duration-300",
           isOpen && "opacity-100 visibility-visible"
         )}>
-        {/* Header Space */}
-        <div className="fixed top-0 left-0 right-0 h-[64px] bg-[rgba(38,43,61,0.05)] z-[1002]" />
-        
         {/* Close Button */}
         <button 
           onClick={onClose}
-          className="fixed top-24 right-6 w-8 h-8 bg-[var(--surface-color)] border-none rounded-full flex items-center justify-center cursor-pointer z-[1003] shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
+          className="fixed top-6 right-6 w-8 h-8 bg-[var(--surface-color)] border-none rounded-full flex items-center justify-center cursor-pointer z-[1003] shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
         >
           <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-[var(--dark-text)]">
             <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -340,7 +343,7 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
         </button>
 
         {/* Overlay Content */}
-        <div className="pt-[100px] px-5 pb-5 bg-[var(--surface-color)] min-h-screen">
+        <div className="pt-10 px-5 pb-5 bg-[var(--surface-color)] min-h-screen">
           <div className="max-w-[1200px] mx-auto">
             {/* Table Header with Title, Layout Toggle and Pagination */}
             <div className="flex justify-between items-center mb-6">
@@ -426,7 +429,7 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
               <div className="table w-full border-collapse border-spacing-0">
                 <div className="table-row bg-[var(--surface-secondary)]">
                   <div className="table-cell w-[200px] min-w-[200px] p-0 bg-[var(--surface-secondary)] border-r border-[var(--border-color)] sticky left-0 z-10"></div>
-                  <div className="table-cell overflow-x-auto w-[1075px] relative">
+                  <div className="table-cell overflow-x-hidden w-[1075px] relative">
                     <div 
                       className="flex w-max min-w-[1075px]"
                       style={{ transform: `translateX(-${scrollDistance}px)` }}
@@ -514,7 +517,7 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
                           </div>
                         </div>
                       </div>
-                      <div className="table-cell overflow-x-auto relative">
+                      <div className="table-cell overflow-x-hidden relative">
                         <div 
                           className="flex w-max min-w-[1075px]"
                           style={{ transform: `translateX(-${scrollDistance}px)` }}
@@ -538,7 +541,7 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
 
                 <div className="table-row border-t border-[var(--border-color)]">
                   <div className="table-cell w-[200px] min-w-[200px] bg-[var(--surface-secondary)] border-r border-[var(--border-color)]"></div>
-                  <div className="table-cell overflow-x-auto relative">
+                  <div className="table-cell overflow-x-hidden relative">
                     <div 
                       className="flex w-max min-w-[1075px]"
                       style={{ transform: `translateX(-${scrollDistance}px)` }}
@@ -560,7 +563,7 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
               </div>
               ) : (
                 /* List View - Table */
-                <div className="w-full overflow-x-auto bg-[var(--surface-color)]">
+                <div className="w-full overflow-x-hidden bg-[var(--surface-color)]">
                   <table className="w-full border-collapse table-fixed">
                     <thead>
                       <tr>

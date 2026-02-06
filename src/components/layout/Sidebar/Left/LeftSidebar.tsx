@@ -91,8 +91,9 @@ const UserProfileTooltip: FC = () => {
   }, []);
 
   return (
-    <div className="sidebar-tooltip absolute left-16 top-1/2 -translate-x-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg font-inter text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
+    <div className="sidebar-tooltip absolute left-full top-1/2 -translate-y-1/2 ml-2 bg-gray-900 text-white px-3 py-2 rounded-lg font-inter text-xs font-medium opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 z-50 whitespace-nowrap">
       {userName}
+      <span className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full w-0 h-0 border-y-[5px] border-y-transparent border-r-[5px] border-r-gray-900" />
     </div>
   );
 };
@@ -250,14 +251,15 @@ export const LeftSidebar: FC = () => {
   if (!mounted) {
     return (
       <aside
+        data-collapsed={isCollapsed ? "true" : "false"}
         className={cn(
-          "h-screen bg-white border-r border-gray-200 shrink-0 sticky top-0 left-0",
+          "left-sidebar h-screen bg-white border-r border-gray-200 shrink-0 sticky top-0 left-0",
           "transition-none",
           isCollapsed ? "w-20" : "w-64"
         )}
       >
         <div className="flex h-full flex-col">
-          <div className="h-16 flex items-center px-5 border-b border-gray-200">
+          <div className="sidebar-logo flex items-center gap-3 border-b border-transparent relative flex-shrink-0 h-16">
             <Logo collapsed={isCollapsed} />
           </div>
         </div>
@@ -278,8 +280,7 @@ export const LeftSidebar: FC = () => {
         {/* Logo Container */}
         <div
           className={cn(
-            "sidebar-logo flex items-center gap-3 border-b border-gray-200 relative flex-shrink-0",
-            isCollapsed ? "px-6 py-4 h-16" : "px-5 py-4 h-16"
+            "sidebar-logo flex items-center gap-3 border-b border-transparent relative flex-shrink-0 h-16"
           )}
         >
           <Logo collapsed={isCollapsed} />
@@ -297,9 +298,6 @@ export const LeftSidebar: FC = () => {
             </button>
           )}
         </div>
-
-        {/* Sidebar Header Bottom Strip - matches header height */}
-        <div className="sidebar-header-strip h-[12px] flex-shrink-0 border-b border-[var(--border-color)] bg-[var(--surface-secondary)]"></div>
 
         {/* Scrollable Navigation Area */}
         <div
@@ -525,7 +523,7 @@ export const LeftSidebar: FC = () => {
                       {hasSubmenu && !isCollapsed && (
                         <div
                           className={cn(
-                            "sidebar-submenu mt-0 relative bg-white py-1",
+                            " mt-0 relative bg-white py-1",
                             isSubmenuOpen ? "block" : "hidden"
                           )}
                         >

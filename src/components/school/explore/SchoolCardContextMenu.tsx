@@ -18,12 +18,12 @@ interface MenuItemProps {
 const MenuItem: React.FC<MenuItemProps> = ({ icon, text, onClick, className = "", textClassName = "" }) => (
     <div
         onClick={onClick}
-        className={`flex items-center px-3 py-2.5 rounded-lg cursor-pointer hover:bg-[#F7F9FC] transition-colors duration-200 my-0.5 ${className}`}
+        className={`school-context-menu-item flex items-center px-3 py-2.5 rounded-lg cursor-pointer hover:bg-[#F7F9FC] transition-colors duration-200 my-0.5 ${className}`}
     >
         <div className="mr-3 flex items-center justify-center w-[18px] h-[18px]">
             {icon}
         </div>
-        <span className={`text-sm font-medium text-[#464646] flex-grow leading-[1.4] ${textClassName}`}>
+        <span className={`school-context-menu-text text-sm font-medium text-[#464646] flex-grow leading-[1.4] ${textClassName}`}>
             {text}
         </span>
     </div>
@@ -32,12 +32,12 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, text, onClick, className = ""
 const NestedMenuItem: React.FC<MenuItemProps> = ({ icon, text, onClick }) => (
     <div
         onClick={onClick}
-        className="flex items-center px-3 py-2.5 rounded-lg cursor-pointer hover:bg-[#F7F9FC] transition-colors duration-200"
+        className="school-context-menu-item flex items-center px-3 py-2.5 rounded-lg cursor-pointer hover:bg-[#F7F9FC] transition-colors duration-200"
     >
         <div className="mr-3 flex items-center justify-center w-5 h-5 text-[#4A4A4A]">
             {icon}
         </div>
-        <span className="text-sm font-medium text-[#464646]">
+        <span className="school-context-menu-text text-sm font-medium text-[#464646]">
             {text}
         </span>
     </div>
@@ -545,7 +545,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
             {!isMobile && isOpen && typeof window !== 'undefined' && createPortal(
                 <div
                     ref={setDropdownNode}
-                    className="fixed top-0 left-0 w-60 bg-white rounded-[10px] shadow-[0_8px_24px_rgba(0,0,0,0.15)] z-[9999] will-change-transform"
+                    className="school-context-menu fixed top-0 left-0 w-60 bg-white rounded-[10px] shadow-[0_8px_24px_rgba(0,0,0,0.15)] z-[9999] will-change-transform"
                     style={{
                         // Note: position is updated imperatively (see applyMenuStyles / updateMenuPosition).
                         // Keep a default CSS var so arrow has a valid initial value before first measurement.
@@ -556,7 +556,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                     {menuPlacement === "bottom" ? (
                         // Menu is below the button → arrow on top pointing UP to button
                         <div
-                            className="absolute w-0 h-0 border-l-[8px] border-r-[8px] border-b-[8px] border-l-transparent border-r-transparent border-b-white"
+                            className="school-context-menu-arrow absolute w-0 h-0 border-l-[8px] border-r-[8px] border-b-[8px] border-l-transparent border-r-transparent border-b-white"
                             style={{
                                 left: "var(--menu-arrow-left)",
                                 top: "-8px",
@@ -567,7 +567,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                     ) : (
                         // Menu is above the button → arrow on bottom pointing DOWN to button
                         <div
-                            className="absolute w-0 h-0 border-l-[8px] border-r-[8px] border-t-[8px] border-l-transparent border-r-transparent border-t-white"
+                            className="school-context-menu-arrow absolute w-0 h-0 border-l-[8px] border-r-[8px] border-t-[8px] border-l-transparent border-r-transparent border-t-white"
                             style={{
                                 left: "var(--menu-arrow-left)",
                                 bottom: "-8px",
@@ -587,7 +587,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                     >
 
                         {/* --- ACTIONS SECTION --- */}
-                        <div className="px-3 pt-2 pb-1 text-xs font-semibold text-[#5F5F5F] uppercase tracking-[0.5px]">Actions</div>
+                        <div className="school-context-menu-section px-3 pt-2 pb-1 text-xs font-semibold text-[#5F5F5F] uppercase tracking-[0.5px]">Actions</div>
 
                         {/* Regular Items */}
                         <MenuItem icon={<ContextMenuIcons.Compare />} text="Compare" onClick={() => handleAction('compare')} />
@@ -600,7 +600,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                         <MenuItem
                             icon={<ContextMenuIcons.Apply />}
                             text="Apply Now"
-                            className="bg-[#EBFCF4] hover:bg-[#D7F7E9] text-[#016853] mt-0.5"
+                            className="menu-accent bg-[#EBFCF4] hover:bg-[#D7F7E9] text-[#016853] mt-0.5"
                             textClassName="text-[#016853]"
                             onClick={() => handleAction('apply-now')}
                         />
@@ -609,7 +609,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                         <MenuItem
                             icon={<ContextMenuIcons.ViewOffers />}
                             text="View Offers"
-                            className="bg-[#EBFCF4] hover:bg-[#D7F7E9] text-[#016853] mt-0.5"
+                            className="menu-accent bg-[#EBFCF4] hover:bg-[#D7F7E9] text-[#016853] mt-0.5"
                             textClassName="text-[#016853]"
                             onClick={() => handleAction('view-offers')}
                         />
@@ -649,16 +649,16 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                         >
                             <div
                                 ref={moveToItemRef}
-                                className="flex items-center px-3 py-2.5 rounded-lg cursor-pointer hover:bg-[#F7F9FC] transition-colors duration-200"
+                                className="school-context-menu-item flex items-center px-3 py-2.5 rounded-lg cursor-pointer hover:bg-[#F7F9FC] transition-colors duration-200"
                             >
                                 <div className="mr-3 flex items-center justify-center"><ContextMenuIcons.MoveTo /></div>
-                                <span className="text-sm font-medium text-[#464646] flex-grow">Move To</span>
+                                <span className="school-context-menu-text text-sm font-medium text-[#464646] flex-grow">Move To</span>
                                 <ContextMenuIcons.Arrow />
                             </div>
                         </div>
 
                         {/* --- VENDOR SECTION --- */}
-                        <div className="px-3 pt-3 pb-1 text-xs font-semibold text-[#5F5F5F] uppercase tracking-[0.5px]">Vendor</div>
+                        <div className="school-context-menu-section px-3 pt-3 pb-1 text-xs font-semibold text-[#5F5F5F] uppercase tracking-[0.5px]">Vendor</div>
 
                         <MenuItem icon={<ContextMenuIcons.NewAnnouncement />} text="New Announcement" onClick={() => handleAction('new-announcement')} />
                         <MenuItem icon={<ContextMenuIcons.ViewAnalytics />} text="View Analytics" onClick={() => handleAction('view-analytics')} />
@@ -674,7 +674,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
             {!isMobile && isOpen && isMoveToOpenDesktop && moveToPosition && typeof window !== 'undefined' && createPortal(
                 <div
                     ref={moveToDropdownRef}
-                    className="fixed w-60 bg-white rounded-[10px] shadow-[0_4px_16px_rgba(0,0,0,0.1)] p-2 z-[10000]"
+                    className="school-context-menu school-context-menu-nested fixed w-60 bg-white rounded-[10px] shadow-[0_4px_16px_rgba(0,0,0,0.1)] p-2 z-[10000]"
                     style={{ top: `${moveToPosition.top}px`, left: `${moveToPosition.left}px` }}
                     onPointerEnter={() => {
                         if (moveToCloseTimerRef.current) {
@@ -694,7 +694,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                     {moveToPosition.side === "right" ? (
                         // Nested menu is to the RIGHT of the anchor → arrow on left pointing LEFT
                         <div
-                            className="absolute w-0 h-0 border-t-[8px] border-b-[8px] border-r-[8px] border-t-transparent border-b-transparent border-r-white"
+                            className="school-context-menu-arrow absolute w-0 h-0 border-t-[8px] border-b-[8px] border-r-[8px] border-t-transparent border-b-transparent border-r-white"
                             style={{
                                 top: `${moveToPosition.arrowTop}px`,
                                 left: "-8px",

@@ -573,13 +573,11 @@ const Header: React.FC<HeaderProps> = ({
 
           {/* Layout Toggle - 6 variants matching HTML design */}
           <div
-            className={`layout-toggle flex items-center bg-[#f5f5f7] relative z-[8000] ${isLayoutToggleExpanded ? "expanded" : ""
+            className={`layout-toggle flex flex-row-reverse items-center bg-[#f5f5f7] relative z-[8000] ${isLayoutToggleExpanded ? "expanded" : ""
               } ${isLayoutTooltipReady ? "tooltip-ready" : ""}`}
             style={{
               borderRadius: '6px',
               padding: '2px',
-              width: isLayoutToggleExpanded ? `${layoutToggleExpandedWidth}px` : '36px',
-              transition: 'width 0.3s ease',
               overflow: 'visible',
             }}
             onMouseEnter={() => {
@@ -610,13 +608,13 @@ const Header: React.FC<HeaderProps> = ({
                   onMouseEnter={() => setHoveredLayout(item.type)}
                   onMouseLeave={() => setHoveredLayout(null)}
                   style={{
-                    order: isActive ? desktopLayouts.length + 1 : index + 1,
+                    order: isActive ? 0 : index + 1,
                     width: '32px',
                     height: '28px',
                     borderRadius: '4px',
                     flexShrink: 0,
                   }}
-                  className={`layout-toggle-button relative items-center justify-center cursor-pointer border-none transition-all overflow-visible ${shouldShowButton ? "flex" : "hidden"
+                  className={`layout-toggle-button relative items-center justify-center cursor-pointer border-none overflow-visible ${shouldShowButton ? "flex" : "hidden"
                     } ${isActive
                       ? "active bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
                       : "bg-transparent hover:bg-[rgba(0,0,0,0.05)]"
@@ -648,7 +646,7 @@ const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={() => setIsSearchTypeOpen((prev) => !prev)}
-              className="flex items-center gap-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-md px-3 py-1.5 text-sm font-medium text-[var(--text-default)] hover:bg-[#f8fafc] transition-all min-h-[32px]"
+              className="explore-desktop-trending-button flex items-center gap-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-md px-3 py-1.5 text-sm font-medium text-[var(--text-default)] hover:bg-[#f8fafc] transition-all min-h-[32px]"
               aria-haspopup="listbox"
               aria-expanded={isSearchTypeOpen}
             >

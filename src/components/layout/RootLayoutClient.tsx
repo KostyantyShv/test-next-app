@@ -67,6 +67,15 @@ export const RootLayoutClient = ({
   const isTeamMembersPage = pathname?.startsWith("/team-members-dashboard");
   const isListingPage =
     pathname?.startsWith("/listing") || pathname?.startsWith("/schools/listing");
+  const showDesktopHeader =
+    (!isTeamMembersPage &&
+      !(isListingPage && isDesktopListingStickyHeaderVisible)) ||
+    isTeamMembersPage;
+  const sidebarOffset = hasMounted
+    ? isLeftSidebarCollapsed
+      ? 80
+      : 256
+    : 256;
 
   // If auth route, render children without layout
   if (isAuthRoute) {
@@ -103,16 +112,14 @@ export const RootLayoutClient = ({
             {!(isTeamMembersPage) && !isMobileSidebarOpen && !hideDefaultMobileHeader && (
               <div className="md:hidden sticky top-0 z-[5000] bg-[var(--surface-color)]">
                 <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} showScrollProgress={isListingPage} />
-                <div className="h-[12px] flex-shrink-0" />
               </div>
             )}
 
             {/* Desktop Header (hide on listing when listing sticky header is visible) */}
             {!(isTeamMembersPage) &&
               !(isListingPage && isDesktopListingStickyHeaderVisible) && (
-                <div className="hidden md:block">
+                <div className="hidden md:block sticky top-0 z-[5000] bg-[var(--surface-color)]">
                   <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} />
-                  <div className="h-[12px] flex-shrink-0" />
                 </div>
               )}
 
@@ -120,7 +127,16 @@ export const RootLayoutClient = ({
             {isTeamMembersPage && (
               <div className="hidden md:block">
                 <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} />
-                <div className="h-[12px] flex-shrink-0" />
+              </div>
+            )}
+
+            {/* Desktop header gap bar (full width, under header, behind sidebar) */}
+            {showDesktopHeader && (
+              <div className="hidden md:block">
+                <div
+                  className="header-gap-bar fixed top-[64px] right-0 h-[12px] bg-[var(--background-color)] z-[900] pointer-events-none"
+                  style={{ left: sidebarOffset }}
+                />
               </div>
             )}
 
