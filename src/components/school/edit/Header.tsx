@@ -156,21 +156,21 @@ export default function ResponsiveHeader({
   }, []);
 
   return (
-    <header className="sticky top-0 z-10 bg-[#F8FCFF]">
-      {/* Mobile Header (md:hidden) */}
-      <div className="md:hidden bg-white border-b border-black/10 shadow-sm">
+    <header className="sticky top-0 z-10 bg-[#E1E7EE]">
+      {/* Mobile Header (md:hidden) — matches HTML reference */}
+      <div className="md:hidden bg-white border-b border-black/10 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
         <div className="p-4 flex items-center gap-3">
           <Image
             src="https://i.ibb.co/jJ4GHXP/img1.jpg"
             alt="Stanford University"
             width={48}
             height={48}
-            className="rounded-lg object-cover"
+            className="w-12 h-12 rounded-lg object-cover"
           />
-          <h1 className="text-base font-semibold text-[#464646] flex items-center gap-1">
+          <h1 className="text-[16px] font-semibold text-[#464646] flex items-center gap-1">
             Stanford University
             <svg
-              className="h-4 w-4 ml-1 cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-200"
+              className="w-4 h-4 ml-1 cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-200"
               viewBox="0 0 24 24"
               onClick={handleInfoClick}
             >
@@ -182,40 +182,35 @@ export default function ResponsiveHeader({
           </h1>
         </div>
 
-        {/* Mobile Tab Navigation with Scroll Controls */}
-        <div className="relative mb-2">
-          {/* Scrollable Nav */}
-          <nav
-            className="overflow-x-scroll w-screen scrollbar-none whitespace-nowrap px-8 pb-2"
-            ref={tabNavRef}
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            <div className="inline-flex gap-6 pb-2">
-              {navLinks.map(({ href, label, isActive }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`relative pb-2 font-medium transition-colors duration-200 ${
-                    isActive
-                      ? "text-[#0B6333] active"
-                      : "text-[#5F5F5F] hover:text-[#464646]"
+        {/* Tab Navigation — matches .tab-nav in HTML */}
+        <nav
+          className="overflow-x-auto whitespace-nowrap px-4 mb-2"
+          ref={tabNavRef}
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
+          <div className="inline-flex gap-6 pb-2">
+            {navLinks.map(({ href, label, isActive }) => (
+              <Link
+                key={href}
+                href={href}
+                className={`relative pb-2 text-[14px] font-medium transition-colors duration-200 ${isActive
+                  ? "text-[#0B6333] active"
+                  : "text-[#5F5F5F] hover:text-[#464646]"
                   }`}
-                  style={{ fontSize: '15px' }}
-                  onClick={(e) => handleNavClick(e, href)}
-                >
-                  {label}
-                  {isActive && (
-                    <span className="absolute -bottom-2 left-0 h-0.5 w-full bg-[#0B6333] [clip-path:polygon(4px_0,calc(100%_-_4px)_0,100%_100%,0_100%)]"></span>
-                  )}
-                </Link>
-              ))}
-            </div>
-          </nav>
-        </div>
+                onClick={(e) => handleNavClick(e, href)}
+              >
+                {label}
+                {isActive && (
+                  <span className="absolute -bottom-[9px] left-0 h-0.5 w-full bg-[#0B6333] [clip-path:polygon(4px_0,calc(100%_-_4px)_0,100%_100%,0_100%)]"></span>
+                )}
+              </Link>
+            ))}
+          </div>
+        </nav>
       </div>
 
       {/* Desktop Header (hidden on mobile) */}
-      <div className="hidden md:block pt-6 mb-7">
+      <div className="hidden md:block py-6 px-8">
         <div className="relative mx-auto flex justify-between rounded-lg pb-3">
           <div className="flex items-start gap-6">
             <Image
@@ -241,18 +236,17 @@ export default function ResponsiveHeader({
               </h1>
               <nav className="-mb-2 flex gap-8">
                 {navLinks.map(({ href, label, isActive }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`relative pb-2 font-medium transition-all duration-200 ${
-                    isActive
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`relative pb-2 font-medium transition-all duration-200 ${isActive
                       ? "text-[#0B6333]"
                       : "text-[#5F5F5F] hover:text-[#464646]"
-                  }`}
-                  style={{ fontSize: '15px' }}
-                  onClick={(e) => handleNavClick(e, href)}
-                >
-                  {label}
+                      }`}
+                    style={{ fontSize: '15px' }}
+                    onClick={(e) => handleNavClick(e, href)}
+                  >
+                    {label}
                     {isActive && (
                       <span className="absolute -bottom-0.5 left-0 h-0.5 w-full bg-[#0B6333] [clip-path:polygon(4px_0,calc(100%_-_4px)_0,100%_100%,0_100%)]"></span>
                     )}
@@ -265,7 +259,7 @@ export default function ResponsiveHeader({
             <div className="group relative pb-2">
               <button
                 type="button"
-                className="flex items-center gap-2 rounded-lg border border-[#e0e0e0] bg-white px-4 py-2 text-sm font-medium text-[#1B1B1B] transition-all duration-200 hover:border-[#ccc] hover:bg-[#f8f8f8]"
+                className="relative flex items-center gap-[8px] rounded-[8px] border border-[#e0e0e0] bg-white px-[16px] py-[8px] text-[14px] font-medium text-[#1B1B1B] transition-all duration-[0.2s] cursor-pointer hover:border-[#ccc] hover:bg-[#f8f8f8]"
               >
                 <svg
                   width="16"
@@ -296,7 +290,7 @@ export default function ResponsiveHeader({
                 </svg>
               </button>
 
-              <div className="pointer-events-none absolute right-0 top-full min-w-[225px] translate-y-[-4px] rounded-lg bg-white p-2 opacity-0 shadow-md transition-all duration-200 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 z-50">
+              <div className="pointer-events-none absolute right-0 top-full min-w-[225px] translate-y-[-4px] rounded-lg bg-white py-2 opacity-0 shadow-md transition-all duration-200 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 z-50">
                 <div className="flex cursor-pointer items-center gap-3 px-4 py-2 transition-all duration-200 hover:bg-[#f5f5f5]" style={{ fontSize: '14px' }}>
                   <svg viewBox="0 0 20 20" width={16} height={16}>
                     <path
@@ -334,7 +328,7 @@ export default function ResponsiveHeader({
               </div>
             </div>
             <button
-              className="rounded-lg bg-[#1a1a1a] px-6 py-2 text-sm font-medium text-white transition-all duration-200 hover:bg-[#333]"
+              className="rounded-[8px] bg-[#1a1a1a] px-[24px] py-[8px] text-[14px] font-medium text-white transition-all duration-[0.2s] hover:bg-[#333] cursor-pointer"
               onClick={handleSaveClick}
             >
               {saveButtonText}

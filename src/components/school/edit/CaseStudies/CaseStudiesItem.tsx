@@ -23,14 +23,13 @@ export default function CaseStudyItem({
 
   return (
     <div
-      className={`flex items-start gap-5 max-md:gap-3 p-5 max-md:p-4 mb-4 max-md:mb-3 rounded-lg max-md:rounded-lg ${
-        caseStudy.pinned
+      className={`flex items-start gap-5 max-md:gap-3 p-5 max-md:p-4 mb-4 max-md:mb-3 rounded-lg max-md:rounded-lg ${caseStudy.pinned
           ? "bg-[#EBFCF4] max-md:bg-[#EBFCF4] border border-[#D7F7E9] max-md:border-[#D7F7E9]"
           : "bg-[#F8F9FA] max-md:bg-[#F8F9FA]"
-      }`}
+        }`}
       style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}
     >
-      <div className="w-[75px] h-[75px] max-md:w-[60px] max-md:h-[60px] rounded-lg max-md:rounded-lg overflow-hidden flex-shrink-0">
+      <div className="relative flex-shrink-0 w-[75px] h-[75px] max-md:w-[60px] max-md:h-[60px] overflow-hidden rounded-[var(--border-radius,8px)]">
         <img
           src={caseStudy.thumbnail}
           alt={caseStudy.title}
@@ -45,11 +44,10 @@ export default function CaseStudyItem({
             </span>
             <div className="flex items-center gap-2 max-md:gap-2 mt-0.5 max-md:mt-0">
               <span
-                className={`text-sm max-md:text-xs font-medium max-md:font-medium ${
-                  caseStudy.status === "published"
+                className={`text-sm max-md:text-xs font-medium max-md:font-medium ${caseStudy.status === "published"
                     ? "text-[#0B6333] max-md:text-[#0B6333]"
                     : "text-[#5F5F5F] max-md:text-[#5F5F5F]"
-                }`}
+                  }`}
               >
                 {caseStudy.status === "published" ? "Published" : "Draft"}
               </span>

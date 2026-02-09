@@ -12,12 +12,20 @@ export const Dropdown: React.FC<DropdownProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const options = [
-    { label: "Expand All", mode: "all" },
-    { label: "Expand Incomplete", mode: "incomplete" },
-    { label: "Expand Issues", mode: "issues" },
-    { label: "Expand Completed", mode: "completed" },
-  ];
+  const baseOptions = [
+    { label: "All", mode: "all" },
+    { label: "Incomplete", mode: "incomplete" },
+    { label: "Issues", mode: "issues" },
+    { label: "Completed", mode: "completed" },
+  ] as const;
+
+  const options = baseOptions.map((option) => ({
+    ...option,
+    label:
+      expandMode === option.mode
+        ? `Collapse ${option.label}`
+        : `Expand ${option.label}`,
+  }));
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -55,32 +63,24 @@ export const Dropdown: React.FC<DropdownProps> = ({
     return "Expand";
   };
 
+  const displayLabel = (() => {
+    const label = getButtonLabel();
+    return label.length > 7 ? `${label.slice(0, 7)}\u2026` : label;
+  })();
+
   return (
     <div className="expand-dropdown-trigger" ref={dropdownRef}>
       <button
-        className={`expand-button ${
-          expandMode === "incomplete" ? "two-line" : ""
-        }`}
+        className="expand-button expand-button-truncate"
         onClick={(e) => {
           e.stopPropagation();
           setIsOpen((prev) => !prev);
         }}
         type="button"
+        title={getButtonLabel()}
       >
-        {expandMode === "incomplete" ? (
-          <>
-            <span className="expand-button-labels">
-              <span>Collapse</span>
-              <span>Incomplete</span>
-            </span>
-            {expandButtonSVG}
-          </>
-        ) : (
-          <>
-            <span className="expand-button-label">{getButtonLabel()}</span>
-            {expandButtonSVG}
-          </>
-        )}
+        <span className="expand-button-label">{displayLabel}</span>
+        {expandButtonSVG}
       </button>
 
       <div className={`expand-menu ${isOpen ? "active" : ""}`}>

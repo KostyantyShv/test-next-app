@@ -216,10 +216,10 @@ const About: React.FC = () => {
         
         {/* Mobile Header */}
         <div className="hidden max-md:block px-4 pt-4 pb-4">
-          <h1 className="text-2xl font-semibold mb-2" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif', color: 'var(--bold-text)' }}>
+          <h1 className="section-title text-2xl font-semibold mb-2" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif', color: 'var(--bold-text)' }}>
             About
           </h1>
-          <p className="text-sm leading-[1.6] mb-4" style={{ color: 'var(--subtle-text)' }}>
+          <p className="section-description text-sm leading-[1.6] mb-4" style={{ color: 'var(--subtle-text)' }}>
             Share information about your institution, qualifications, and areas
             of expertise to establish credibility and build connections with
             your audience.
@@ -229,12 +229,12 @@ const About: React.FC = () => {
         <div className="w-full bg-surface max-md:bg-transparent rounded-lg shadow-[0_1px_3px_rgba(0,_0,_0,_0.1)] max-md:shadow-none p-8 max-md:p-0 relative">
           <form onSubmit={handleSubmit} className="max-md:flex max-md:flex-col max-md:gap-4 max-md:px-4">
             {/* Profile Avatar Section */}
-            <div className="mb-7 max-md:mb-4 max-md:bg-white max-md:rounded-lg max-md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:p-4">
-              <h2 className="text-lg max-md:text-base font-semibold text-bold mb-4 max-md:mb-3 pb-2 max-md:pb-2 border-b border-apply-button">
+            <div className="editor-section mb-7 max-md:mb-4 max-md:bg-white max-md:rounded-lg max-md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:p-4">
+              <h2 className="editor-section-title text-lg max-md:text-base font-semibold text-bold mb-4 max-md:mb-3 pb-2 max-md:pb-2 border-b border-apply-button">
                 Profile Avatar
               </h2>
-              <div className="flex items-start max-md:flex-col max-md:w-full max-md:items-center gap-4 max-md:gap-4 mt-2 max-md:mt-0">
-                <div className="w-[100px] h-[100px] max-md:w-[100px] max-md:h-[100px] rounded-full overflow-hidden border-4 max-md:border-4 border-white shadow-md max-md:shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+              <div className="avatar-upload flex items-start max-md:flex-col max-md:w-full max-md:items-center gap-4 max-md:gap-4 mt-2 max-md:mt-0">
+                <div className="avatar-preview w-[100px] h-[100px] max-md:w-[100px] max-md:h-[100px] rounded-full overflow-hidden border-4 max-md:border-4 border-white shadow-md max-md:shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
                   <Image
                     src={avatarSrc}
                     alt="Profile Avatar"
@@ -246,7 +246,7 @@ const About: React.FC = () => {
                 <div className="max-md:flex max-md:flex-col max-md:w-full max-md:items-center">
                   <button
                     type="button"
-                    className="py-2 px-4 max-md:py-2 max-md:px-4 max-md:bg-[#f5f5f5] max-md:border max-md:border-[#ddd] max-md:rounded max-md:text-sm cursor-pointer transition-all duration-200 hover:bg-hover max-md:active:bg-[#eee] max-md:flex max-md:items-center max-md:gap-2"
+                    className="upload-button py-2 px-4 max-md:py-2 max-md:px-4 max-md:bg-[#f5f5f5] max-md:border max-md:border-[#ddd] max-md:rounded max-md:text-sm cursor-pointer transition-all duration-200 hover:bg-hover max-md:active:bg-[#eee] max-md:flex max-md:items-center max-md:gap-2"
                     onClick={handleAvatarUpload}
                   >
                     <svg
@@ -278,7 +278,7 @@ const About: React.FC = () => {
                     className="hidden"
                     accept="image/*"
                   />
-                  <div className="mt-2 max-md:mt-2 text-subtle text-xs max-md:text-xs max-md:text-center max-md:text-[#5F5F5F]">
+                  <div className="upload-note mt-2 max-md:mt-2 text-subtle text-xs max-md:text-xs max-md:text-center max-md:text-[#5F5F5F]">
                     Recommended size: 250x250 pixels
                   </div>
                 </div>
@@ -286,15 +286,15 @@ const About: React.FC = () => {
             </div>
 
             {/* Achievements/Badges Section */}
-            <div className="mb-7 max-md:mb-4 max-md:bg-white max-md:rounded-lg max-md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:p-4">
-              <h2 className="text-lg max-md:text-base font-semibold text-bold mb-4 max-md:mb-3 pb-2 max-md:pb-2 border-b border-apply-button">
+            <div className="editor-section mb-7 max-md:mb-4 max-md:bg-white max-md:rounded-lg max-md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:p-4">
+              <h2 className="editor-section-title text-lg max-md:text-base font-semibold text-bold mb-4 max-md:mb-3 pb-2 max-md:pb-2 border-b border-apply-button">
                 Achievements/Badges
               </h2>
-              <div className="flex flex-wrap gap-2 max-md:gap-2 max-md:mb-3">
+              <div className="badges-container flex flex-wrap gap-2 max-md:gap-2 max-md:mb-3">
                 {badges.map((badge, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-1 max-md:gap-1 bg-apply-button text-header-green py-1.5 max-md:py-1.5 px-3 max-md:px-[10px] rounded-full max-md:rounded-[20px] text-sm max-md:text-xs"
+                    className="badge-item flex items-center gap-1 max-md:gap-1 bg-apply-button text-header-green py-1.5 max-md:py-1.5 px-3 max-md:px-[10px] rounded-full max-md:rounded-[20px] text-sm max-md:text-xs"
                   >
                     <span>{badge.text}</span>
                     <span
@@ -306,12 +306,12 @@ const About: React.FC = () => {
                   </div>
                 ))}
               </div>
-              <div className="flex gap-2 max-md:gap-2 mt-3 max-md:mt-0">
+              <div className="add-badge-form flex gap-2 max-md:gap-2 mt-3 max-md:mt-0">
                 <input
                   type="text"
                   value={newBadge}
                   onChange={(e) => setNewBadge(e.target.value)}
-                  className="flex-1 max-md:flex-1 py-2.5 max-md:py-2 px-3 max-md:px-3 border border-theme max-md:border-[#ddd] rounded max-md:rounded text-sm max-md:text-sm text-default bg-surface max-md:bg-white focus:outline-none"
+                  className="add-badge-input flex-1 max-md:flex-1 py-2.5 max-md:py-2 px-3 max-md:px-3 border border-theme max-md:border-[#ddd] rounded max-md:rounded text-sm max-md:text-sm text-default bg-surface max-md:bg-white focus:outline-none"
                   style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif' }}
                   onFocus={(e) => {
                     const target = e.target as HTMLInputElement;
@@ -328,7 +328,7 @@ const About: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleAddBadge}
-                  className="py-2 max-md:py-2 px-4 max-md:px-3 bg-apply-button text-header-green rounded max-md:rounded text-sm max-md:text-sm font-semibold cursor-pointer hover:bg-apply-button-hover max-md:active:bg-[#D7F7E9]"
+                  className="add-button py-2 max-md:py-2 px-4 max-md:px-3 bg-apply-button text-header-green rounded max-md:rounded text-sm max-md:text-sm font-semibold cursor-pointer hover:bg-apply-button-hover max-md:active:bg-[#D7F7E9]"
                 >
                   Add
                 </button>
@@ -336,27 +336,27 @@ const About: React.FC = () => {
             </div>
 
             {/* Contact Information Section */}
-            <div className="mb-7 max-md:mb-4 max-md:bg-white max-md:rounded-lg max-md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:p-4">
-              <h2 className="text-lg max-md:text-base font-semibold text-bold mb-4 max-md:mb-3 pb-2 max-md:pb-2 border-b border-apply-button">
+            <div className="editor-section mb-7 max-md:mb-4 max-md:bg-white max-md:rounded-lg max-md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:p-4">
+              <h2 className="editor-section-title text-lg max-md:text-base font-semibold text-bold mb-4 max-md:mb-3 pb-2 max-md:pb-2 border-b border-apply-button">
                 Contact Information
               </h2>
               <div className="flex max-md:flex-col gap-4 max-md:gap-0 mb-4 max-md:mb-0">
-                <div className="flex-1 max-md:flex-1 max-md:mb-[14px]">
-                  <label className="block font-semibold text-sm max-md:text-[13px] mb-2 max-md:mb-1.5 text-subtle max-md:text-[#5F5F5F]">
+                <div className="form-group flex-1 max-md:flex-1 max-md:mb-[14px]">
+                  <label className="form-label form-label-read-only block font-semibold text-sm max-md:text-[13px] mb-2 max-md:mb-1.5 text-subtle max-md:text-[#5F5F5F]">
                     Joined Date
                   </label>
                   <input
                     type="text"
                     id="joinedDate"
                     value={contactInfo.joinedDate}
-                    className="w-full py-2.5 max-md:py-2.5 px-3 max-md:px-3 border border-theme max-md:border-[#ddd] rounded max-md:rounded text-sm max-md:text-sm bg-surface-secondary max-md:bg-[#f8f9fa] cursor-not-allowed text-subtle max-md:text-[#5F5F5F]"
+                    className="form-control form-control-read-only w-full py-2.5 max-md:py-2.5 px-3 max-md:px-3 border border-theme max-md:border-[#ddd] rounded max-md:rounded text-sm max-md:text-sm bg-surface-secondary max-md:bg-[#f8f9fa] cursor-not-allowed text-subtle max-md:text-[#5F5F5F]"
                     style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif' }}
                     readOnly
                     onFocus={(e) => e.target.blur()}
                   />
                 </div>
-                <div className="flex-1 max-md:flex-1 max-md:mb-[14px]">
-                  <label className="block font-semibold text-sm max-md:text-[13px] mb-2 max-md:mb-1.5 text-default max-md:text-[#4A4A4A]">
+                <div className="form-group flex-1 max-md:flex-1 max-md:mb-[14px]">
+                  <label className="form-label block font-semibold text-sm max-md:text-[13px] mb-2 max-md:mb-1.5 text-default max-md:text-[#4A4A4A]">
                     Location
                   </label>
                   <input
@@ -364,7 +364,7 @@ const About: React.FC = () => {
                     id="location"
                     value={contactInfo.location}
                     onChange={handleContactChange}
-                    className="w-full py-2.5 max-md:py-2.5 px-3 max-md:px-3 border border-theme max-md:border-[#ddd] rounded max-md:rounded text-sm max-md:text-sm text-default bg-surface max-md:bg-white focus:outline-none"
+                    className="form-control w-full py-2.5 max-md:py-2.5 px-3 max-md:px-3 border border-theme max-md:border-[#ddd] rounded max-md:rounded text-sm max-md:text-sm text-default bg-surface max-md:bg-white focus:outline-none"
                     style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif' }}
                     onFocus={(e) => {
                       const target = e.target as HTMLInputElement;
@@ -380,8 +380,8 @@ const About: React.FC = () => {
                 </div>
               </div>
               <div className="flex max-md:flex-col gap-4 max-md:gap-0">
-                <div className="flex-1 max-md:flex-1 max-md:mb-[14px]">
-                  <label className="block font-semibold text-sm max-md:text-[13px] mb-2 max-md:mb-1.5 text-default max-md:text-[#4A4A4A]">
+                <div className="form-group flex-1 max-md:flex-1 max-md:mb-[14px]">
+                  <label className="form-label block font-semibold text-sm max-md:text-[13px] mb-2 max-md:mb-1.5 text-default max-md:text-[#4A4A4A]">
                     Website
                   </label>
                   <input
@@ -389,7 +389,7 @@ const About: React.FC = () => {
                     id="website"
                     value={contactInfo.website}
                     onChange={handleContactChange}
-                    className="w-full py-2.5 max-md:py-2.5 px-3 max-md:px-3 border border-theme max-md:border-[#ddd] rounded max-md:rounded text-sm max-md:text-sm text-default bg-surface max-md:bg-white focus:outline-none"
+                    className="form-control w-full py-2.5 max-md:py-2.5 px-3 max-md:px-3 border border-theme max-md:border-[#ddd] rounded max-md:rounded text-sm max-md:text-sm text-default bg-surface max-md:bg-white focus:outline-none"
                     style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif' }}
                     onFocus={(e) => {
                       const target = e.target as HTMLInputElement;
@@ -403,8 +403,8 @@ const About: React.FC = () => {
                     }}
                   />
                 </div>
-                <div className="flex-1 max-md:flex-1 max-md:mb-0">
-                  <label className="block font-semibold text-sm max-md:text-[13px] mb-2 max-md:mb-1.5 text-default max-md:text-[#4A4A4A]">
+                <div className="form-group flex-1 max-md:flex-1 max-md:mb-0">
+                  <label className="form-label block font-semibold text-sm max-md:text-[13px] mb-2 max-md:mb-1.5 text-default max-md:text-[#4A4A4A]">
                     Phone
                   </label>
                   <input
@@ -412,7 +412,7 @@ const About: React.FC = () => {
                     id="phone"
                     value={contactInfo.phone}
                     onChange={handleContactChange}
-                    className="w-full py-2.5 max-md:py-2.5 px-3 max-md:px-3 border border-theme max-md:border-[#ddd] rounded max-md:rounded text-sm max-md:text-sm text-default bg-surface max-md:bg-white focus:outline-none"
+                    className="form-control w-full py-2.5 max-md:py-2.5 px-3 max-md:px-3 border border-theme max-md:border-[#ddd] rounded max-md:rounded text-sm max-md:text-sm text-default bg-surface max-md:bg-white focus:outline-none"
                     style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif' }}
                     onFocus={(e) => {
                       const target = e.target as HTMLInputElement;
@@ -430,26 +430,26 @@ const About: React.FC = () => {
             </div>
 
             {/* Social Media Section */}
-            <div className="mb-7 max-md:mb-4 max-md:bg-white max-md:rounded-lg max-md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:p-4">
-              <h2 className="text-lg max-md:text-base font-semibold text-bold mb-4 max-md:mb-3 pb-2 max-md:pb-2 border-b border-apply-button">
+            <div className="editor-section mb-7 max-md:mb-4 max-md:bg-white max-md:rounded-lg max-md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:p-4">
+              <h2 className="editor-section-title text-lg max-md:text-base font-semibold text-bold mb-4 max-md:mb-3 pb-2 max-md:pb-2 border-b border-apply-button">
                 Social Media
               </h2>
-              <div className="flex flex-wrap gap-3 max-md:flex-col max-md:gap-2 max-md:mb-3">
+              <div className="social-container flex flex-wrap gap-3 max-md:flex-col max-md:gap-2 max-md:mb-3">
                 {socialMedia.map((social, index) => (
                   <div
                     key={index}
-                    className="flex items-center max-md:justify-between max-md:w-full gap-2 max-md:gap-2 bg-surface-secondary max-md:bg-[#f5f5f5] py-2 max-md:py-2 px-3 max-md:px-3 rounded max-md:rounded text-sm max-md:text-[13px]"
+                    className="social-item flex items-center max-md:justify-between max-md:w-full gap-2 max-md:gap-2 bg-surface-secondary max-md:bg-[#f5f5f5] py-2 max-md:py-2 px-3 max-md:px-3 rounded max-md:rounded text-sm max-md:text-[13px]"
                   >
                     <div className="max-md:flex max-md:items-center max-md:gap-2">
-                      <span className="text-default font-semibold max-md:text-[#4A4A4A] max-md:font-semibold max-md:flex-shrink-0">
+                      <span className="social-label text-default font-semibold max-md:text-[#4A4A4A] max-md:font-semibold max-md:flex-shrink-0">
                         {socialLabels[social.type]}
                       </span>
-                      <span className="text-link text-sm max-md:text-[13px] ml-1 max-md:ml-0 max-md:text-[#346DC2] max-md:overflow-hidden max-md:text-ellipsis max-md:whitespace-nowrap max-md:flex-1">
+                      <span className="social-url text-link text-sm max-md:text-[13px] ml-1 max-md:ml-0 max-md:text-[#346DC2] max-md:overflow-hidden max-md:text-ellipsis max-md:whitespace-nowrap max-md:flex-1">
                         {formatUrl(social.url)}
                       </span>
                     </div>
                     <span
-                      className="cursor-pointer text-subtle text-sm max-md:text-sm max-md:text-[#5F5F5F] max-md:flex-shrink-0"
+                      className="social-remove cursor-pointer text-subtle text-sm max-md:text-sm max-md:text-[#5F5F5F] max-md:flex-shrink-0"
                       onClick={() => handleRemoveSocial(index)}
                     >
                       &times;
@@ -457,11 +457,11 @@ const About: React.FC = () => {
                   </div>
                 ))}
               </div>
-              <div className="flex gap-2 max-md:flex-col max-md:gap-2 mt-3 max-md:mt-0">
+              <div className="add-social flex gap-2 max-md:flex-col max-md:gap-2 mt-3 max-md:mt-0">
                 <select
                   value={newSocialType}
                   onChange={(e) => setNewSocialType(e.target.value)}
-                  className="w-1/3 max-md:w-full py-2 max-md:py-2 px-3 max-md:px-3 border border-theme max-md:border-[#ddd] rounded max-md:rounded text-sm max-md:text-sm text-default bg-surface max-md:bg-white appearance-none pr-8 max-md:pr-[30px]"
+                  className="social-select w-1/3 max-md:w-full py-2 max-md:py-2 px-3 max-md:px-3 border border-theme max-md:border-[#ddd] rounded max-md:rounded text-sm max-md:text-sm text-default bg-surface max-md:bg-white appearance-none pr-8 max-md:pr-[30px]"
                   style={{ 
                     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
                     backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235F5F5F' width='18px' height='18px'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")`,
@@ -481,7 +481,7 @@ const About: React.FC = () => {
                   type="text"
                   value={newSocialUrl}
                   onChange={(e) => setNewSocialUrl(e.target.value)}
-                  className="flex-1 max-md:w-full py-2 max-md:py-2 px-3 max-md:px-3 border border-theme max-md:border-[#ddd] rounded max-md:rounded text-sm max-md:text-sm text-default bg-surface max-md:bg-white focus:outline-none"
+                  className="social-url-input flex-1 max-md:w-full py-2 max-md:py-2 px-3 max-md:px-3 border border-theme max-md:border-[#ddd] rounded max-md:rounded text-sm max-md:text-sm text-default bg-surface max-md:bg-white focus:outline-none"
                   style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif' }}
                   onFocus={(e) => {
                     const target = e.target as HTMLInputElement;
@@ -499,7 +499,7 @@ const About: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleAddSocial}
-                    className="py-2 max-md:py-2 px-4 max-md:px-3 w-fit max-md:w-auto bg-apply-button text-header-green rounded max-md:rounded text-sm max-md:text-sm font-semibold cursor-pointer hover:bg-apply-button-hover max-md:active:bg-[#D7F7E9] max-md:self-end"
+                    className="social-add-btn py-2 max-md:py-2 px-4 max-md:px-3 w-fit max-md:w-auto bg-apply-button text-header-green rounded max-md:rounded text-sm max-md:text-sm font-semibold cursor-pointer hover:bg-apply-button-hover max-md:active:bg-[#D7F7E9] max-md:self-end"
                   >
                     Add
                   </button>
@@ -508,19 +508,19 @@ const About: React.FC = () => {
             </div>
 
             {/* Areas of Expertise Section */}
-            <div className="mb-7 max-md:mb-4 max-md:bg-white max-md:rounded-lg max-md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:p-4">
-              <h2 className="text-lg max-md:text-base font-semibold text-bold mb-4 max-md:mb-3 pb-2 max-md:pb-2 border-b border-apply-button">
+            <div className="editor-section mb-7 max-md:mb-4 max-md:bg-white max-md:rounded-lg max-md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:p-4">
+              <h2 className="editor-section-title text-lg max-md:text-base font-semibold text-bold mb-4 max-md:mb-3 pb-2 max-md:pb-2 border-b border-apply-button">
                 Areas of Expertise
               </h2>
-              <div className="flex max-md:flex-wrap flex-wrap gap-2 max-md:gap-2 min-h-9 max-md:min-h-[44px] p-2 max-md:p-2.5 border border-theme max-md:border-[#ddd] rounded max-md:rounded">
+              <div className="tags-container flex max-md:flex-wrap flex-wrap gap-2 max-md:gap-2 min-h-9 max-md:min-h-[44px] p-2 max-md:p-2.5 border border-theme max-md:border-[#ddd] rounded max-md:rounded">
                 {expertise.map((tag, index) => (
                   <span
                     key={index}
-                    className="flex max-md:w-fit items-center gap-1.5 max-md:gap-1.5 bg-apply-button text-header-green py-1 max-md:py-1 px-2.5 max-md:px-[10px] rounded max-md:rounded text-sm max-md:text-xs"
+                    className="tag-item flex max-md:w-fit items-center gap-1.5 max-md:gap-1.5 bg-apply-button text-header-green py-1 max-md:py-1 px-2.5 max-md:px-[10px] rounded max-md:rounded text-sm max-md:text-xs"
                   >
                     {tag}
                     <span
-                      className="cursor-pointer text-header-green text-sm max-md:text-sm font-semibold max-md:font-semibold"
+                      className="tag-remove cursor-pointer text-header-green text-sm max-md:text-sm font-semibold max-md:font-semibold"
                       onClick={() => handleRemoveTag(index)}
                     >
                       &times;
@@ -532,7 +532,7 @@ const About: React.FC = () => {
                   value={newTag}
                   onChange={(e) => setNewTag(e.target.value)}
                   onKeyDown={handleAddTag}
-                  className="border-none outline-none flex-1 max-md:flex-1 text-sm max-md:text-[13px] min-w-[60px] max-md:min-w-[60px] text-default bg-transparent"
+                  className="tag-input border-none outline-none flex-1 max-md:flex-1 text-sm max-md:text-[13px] min-w-[60px] max-md:min-w-[60px] text-default bg-transparent"
                   style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif' }}
                   placeholder="Type and press Enter"
                 />
@@ -542,7 +542,7 @@ const About: React.FC = () => {
             {/* Save Button */}
               <button
                 type="submit"
-                className="bg-[#02C5AF] max-md:w-full text-white px-6 py-3 max-md:py-3 max-md:px-0 rounded-lg font-semibold text-sm max-md:text-base hover:opacity-90 max-md:shadow-[0_2px_4px_rgba(2,197,175,0.2)]"
+                className="btn-primary bg-[#02C5AF] max-md:w-full text-white px-6 py-3 max-md:py-3 max-md:px-0 rounded-lg font-semibold text-sm max-md:text-base hover:opacity-90 max-md:shadow-[0_2px_4px_rgba(2,197,175,0.2)]"
               >
                 Save Changes
               </button>

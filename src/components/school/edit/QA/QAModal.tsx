@@ -1,4 +1,7 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import QAModalContent from "./QAModalContent";
 import { Question } from "./types/question";
 import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
@@ -19,31 +22,43 @@ const QAModal: React.FC<QAModalProps> = ({
   onDelete,
   currentQuestion,
 }) => {
+  const isMobile = useIsMobile();
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  if (!hasMounted || !isOpen) {
+    return null;
+  }
+
+  const content = (
+    <QAModalContent
+      isOpen={true}
+      currentQuestion={currentQuestion}
+      onClose={onClose}
+      onSave={onSave}
+      onDelete={onDelete}
+    />
+  );
+
+  if (isMobile) {
+    return (
+      <MobileDrawer
+        isOpen={true}
+        onClose={onClose}
+        title={currentQuestion ? "Edit Question" : "Create Question"}
+      >
+        {content}
+      </MobileDrawer>
+    );
+  }
+
   return (
-    <>
-      <div className="max-md:block hidden">
-        <MobileDrawer onClose={onClose} isOpen={isOpen}>
-          <QAModalContent
-            isOpen={isOpen}
-            currentQuestion={currentQuestion}
-            onClose={onClose}
-            onSave={onSave}
-            onDelete={onDelete}
-          />
-        </MobileDrawer>
-      </div>
-      <div className="max-md:hidden block">
-        <DesktopModal onClose={onClose} isOpen={isOpen} className="w-full max-w-[600px]">
-          <QAModalContent
-            isOpen={isOpen}
-            currentQuestion={currentQuestion}
-            onClose={onClose}
-            onSave={onSave}
-            onDelete={onDelete}
-          />
-        </DesktopModal>
-      </div>
-    </>
+    <DesktopModal isOpen={true} onClose={onClose} className="w-full max-w-[600px]">
+      {content}
+    </DesktopModal>
   );
 };
 

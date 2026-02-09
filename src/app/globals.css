@@ -267,6 +267,34 @@
   margin: 4px 0;
 }
 
+.qa-richtext__content a {
+  color: var(--link-text, #0a66c2);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.qa-richtext__content a:visited {
+  color: var(--link-text, #0a66c2);
+}
+
+.case-studies-count {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color, #4A4A4A);
+  padding: 4px 12px;
+  background: #F8F9FA;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.case-studies-count-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #f8fcff;
@@ -5248,6 +5276,7 @@ input[type="number"] {
    =========================== */
 .school-edit-checklist {
   --background-color: #E1E7EE;
+  --mobile-screen-bg: #FFFFFF;
   --text-default: #4A4A4A;
   --active-green: #0B6333;
   --header-green: #016853;
@@ -5263,6 +5292,12 @@ input[type="number"] {
   --error-bg: #fee2e2;
   --success-bg: #d1fae5;
   --success-green: #089E68;
+  --mobile-frame-border-color: #1a1a1a;
+  --mobile-body-bg: #f5f5f5;
+  --section-header-bg: #F9FAFB;
+  --item-details-bg: #F9FAFB;
+  --incomplete-bg: #ebf5ff;
+  --incomplete-color: #1d77bd;
 }
 
 .school-edit-checklist * {
@@ -5317,7 +5352,16 @@ input[type="number"] {
   gap: 16px;
 }
 
+/* Desktop: bar and counts side-by-side (original layout) */
 .school-edit-checklist .progress-container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.school-edit-checklist .progress-bar-wrapper {
   width: 240px;
   position: relative;
 }
@@ -5353,16 +5397,24 @@ input[type="number"] {
 
 .school-edit-checklist .counts-container {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   gap: 12px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
+  margin-bottom: 12px;
 }
 
-.school-edit-checklist .options-count {
+/* Desktop: no extra margin when counts are in a row */
+.school-edit-checklist .progress-container .counts-container {
+  margin-bottom: 0;
+}
+
+.school-edit-checklist .counts-container .options-count {
   color: var(--header-green);
 }
 
-.school-edit-checklist .issues-count {
+.school-edit-checklist .counts-container .issues-count {
   color: var(--error-color);
 }
 
@@ -5477,6 +5529,17 @@ input[type="number"] {
 
 .school-edit-checklist .expand-button .expand-button-label {
   line-height: 1.1;
+}
+
+.school-edit-checklist .expand-button.expand-button-truncate {
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.school-edit-checklist .expand-button.expand-button-truncate .expand-button-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .school-edit-checklist .expand-button:hover {
@@ -5839,6 +5902,18 @@ input[type="number"] {
     width: 100%;
     max-width: 240px;
     flex-grow: 1;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .school-edit-checklist .progress-bar-wrapper {
+    width: 100%;
+  }
+
+  .school-edit-checklist .progress-container .counts-container {
+    margin-bottom: 12px;
   }
 
   .school-edit-checklist .item-header {
@@ -5855,6 +5930,474 @@ input[type="number"] {
 
   .school-edit-checklist .expand-dropdown {
     margin-right: 0;
+  }
+}
+
+/* ===========================
+   School Edit: General (About, FAQ, Bullet Points) – mobile-only 1:1
+   =========================== */
+@media (max-width: 767px) {
+  .school-edit-general .section-title {
+    color: #464646;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .school-edit-general .section-description {
+    color: #5F5F5F;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .school-edit-general .editor-section {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .school-edit-general .editor-section-title {
+    font-size: 16px;
+    color: #464646;
+    font-weight: 600;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #EBFCF4;
+  }
+
+  .school-edit-general .avatar-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .school-edit-general .avatar-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .school-edit-general .avatar-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .school-edit-general .upload-button {
+    padding: 8px 16px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .school-edit-general .upload-note {
+    margin-top: 8px;
+    color: #5F5F5F;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .school-edit-general .badges-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .school-edit-general .badge-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #EBFCF4;
+    color: #016853;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+  }
+
+  .school-edit-general .add-badge-form {
+    display: flex;
+    gap: 8px;
+  }
+
+  .school-edit-general .add-badge-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .school-edit-general .add-button {
+    padding: 8px 12px;
+    background: #EBFCF4;
+    color: #016853;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .school-edit-general .form-group {
+    margin-bottom: 14px;
+  }
+
+  .school-edit-general .form-label {
+    display: block;
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: #4A4A4A;
+  }
+
+  .school-edit-general .form-label-read-only {
+    color: #5F5F5F;
+  }
+
+  .school-edit-general .form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .school-edit-general .form-control:focus {
+    outline: none;
+    border-color: #016853;
+    box-shadow: 0 0 0 2px rgba(1, 104, 83, 0.1);
+  }
+
+  .school-edit-general .form-control-read-only {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+    color: #5F5F5F;
+  }
+
+  .school-edit-general .social-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .school-edit-general .social-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f5f5f5;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  .school-edit-general .social-label {
+    color: #4A4A4A;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .school-edit-general .social-url {
+    color: #346DC2;
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+  }
+
+  .school-edit-general .add-social .social-select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235F5F5F' width='18px' height='18px'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+    appearance: none;
+  }
+
+  .school-edit-general .social-url-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .school-edit-general .social-add-btn {
+    padding: 8px 12px;
+    background: #EBFCF4;
+    color: #016853;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 14px;
+    align-self: flex-end;
+  }
+
+  .school-edit-general .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-height: 44px;
+    margin-bottom: 20px;
+  }
+
+  .school-edit-general .tag-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #EBFCF4;
+    color: #016853;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .school-edit-general .tag-input {
+    border: none;
+    outline: none;
+    font-size: 13px;
+    width: 100%;
+    min-width: 60px;
+    padding: 4px 0;
+  }
+
+  .school-edit-general .btn-primary {
+    background: #016853;
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  /* FAQ mobile */
+  .school-edit-general .faq-container {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .school-edit-general .faq-left {
+    margin-bottom: 16px;
+  }
+
+  .school-edit-general .faq-left .section-title {
+    color: #1A1A1A;
+  }
+
+  .school-edit-general .faq-right {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .school-edit-general .question-list {
+    margin-bottom: 16px;
+    flex: 1;
+  }
+
+  .school-edit-general .question-item {
+    background: #F8F9FA;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+  }
+
+  .school-edit-general .question-item.pinned {
+    background: #EBFCF4;
+    border: 1px solid #D7F7E9;
+  }
+
+  .school-edit-general .drag-handle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 12px;
+    cursor: grab;
+  }
+
+  .school-edit-general .question-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1B1B1B;
+    flex: 1;
+  }
+
+  .school-edit-general .question-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .school-edit-general .action-button {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid #E5E5E5;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .school-edit-general .action-button svg {
+    width: 16px;
+    height: 16px;
+    color: #5F5F5F;
+  }
+
+  .school-edit-general .add-question {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #1B1B1B;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+  }
+
+  /* Bullet Points mobile */
+  .school-edit-general .bullets-container {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .school-edit-general .bullets-left {
+    margin-bottom: 16px;
+  }
+
+  .school-edit-general .bullets-left .section-title {
+    color: #1B1B1B;
+  }
+
+  .school-edit-general .bullets-right {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .school-edit-general .bullets-header {
+    color: #1B1B1B;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+
+  .school-edit-general .bullet-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex: 1;
+  }
+
+  .school-edit-general .bullet-item {
+    position: relative;
+  }
+
+  .school-edit-general .bullet-input {
+    width: 100%;
+    padding: 12px;
+    padding-right: 40px;
+    border: 1px solid #E5E5E5;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #4A4A4A;
+    background: white;
+  }
+
+  .school-edit-general .bullet-input:focus {
+    outline: none;
+    border-color: #1D77BD;
+    box-shadow: 0 0 0 3px rgba(29, 119, 189, 0.1);
+  }
+
+  .school-edit-general .bullet-item.error .bullet-input {
+    border-color: #EF4444;
+  }
+
+  .school-edit-general .delete-bullet {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: #EF4444;
+    opacity: 0.6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .school-edit-general .delete-bullet svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .school-edit-general .add-bullet {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #1B1B1B;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+  }
+
+  .school-edit-general .error-message {
+    color: #EF4444;
+    font-size: 12px;
+    margin-top: 4px;
+    display: none;
+  }
+
+  .school-edit-general .bullet-item.error .error-message {
+    display: block;
   }
 }
 
@@ -5934,6 +6477,7 @@ input[type="number"] {
   padding-top: 10px;
 }
 
+/* --- Announcement Item (desktop base) --- */
 .school-edit-announcements .announcement-item {
   background: #F8F9FA;
   border-radius: 8px;
@@ -5949,11 +6493,26 @@ input[type="number"] {
   border: 1px solid #D7F7E9;
 }
 
-.school-edit-announcements .author-avatar {
+/* Desktop: hide mobile-only elements */
+.school-edit-announcements .announcement-item > .status-badge {
+  display: none;
+}
+
+.school-edit-announcements .mobile-avatar {
+  display: none;
+}
+
+.school-edit-announcements .announcement-item .action-buttons {
+  display: none;
+}
+
+/* Desktop avatar (left column) */
+.school-edit-announcements .desktop-avatar {
   width: 48px;
   height: 48px;
   border-radius: 50%;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .school-edit-announcements .author-avatar img {
@@ -5962,18 +6521,21 @@ input[type="number"] {
   object-fit: cover;
 }
 
+/* Content column */
 .school-edit-announcements .announcement-content {
   flex: 1;
 }
 
-.school-edit-announcements .announcement-header {
+/* Author info row: details on left, actions on right */
+.school-edit-announcements .author-info {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 8px;
 }
 
-.school-edit-announcements .author-info {
+/* Author details (name + meta) */
+.school-edit-announcements .author-details {
   display: flex;
   flex-direction: column;
 }
@@ -6005,6 +6567,7 @@ input[type="number"] {
   color: #5F5F5F;
 }
 
+/* Desktop actions (status + pin + edit) */
 .school-edit-announcements .announcement-actions {
   display: flex;
   gap: 12px;
@@ -6060,6 +6623,7 @@ input[type="number"] {
   background: #f8f9fa;
 }
 
+/* Title & text */
 .school-edit-announcements .announcement-title {
   font-size: 18px;
   font-weight: 600;
@@ -6086,39 +6650,7 @@ input[type="number"] {
   margin-right: 2px;
 }
 
-/* Modal Styles */
-.school-edit-announcements .modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: none;
-  /* Prevent top of modal from being clipped by any app header */
-  align-items: flex-start;
-  justify-content: center;
-  padding: 24px 16px;
-  overflow-y: auto;
-  /* Must be above any sticky headers/nav */
-  z-index: 9999;
-}
-
-.school-edit-announcements .modal.active {
-  display: flex;
-}
-
-.school-edit-announcements .modal-content {
-  background: white;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-  margin: 0 auto;
-}
-
+/* Modal / Drawer Content Styles */
 .school-edit-announcements .modal-header {
   padding: 24px;
   border-bottom: 1px solid var(--border-color);
@@ -6264,7 +6796,7 @@ input[type="number"] {
   font-size: 14px;
 }
 
-.school-edit-announcements .action-buttons {
+.school-edit-announcements .action-group {
   display: flex;
   gap: 12px;
 }
@@ -6356,14 +6888,323 @@ input[type="number"] {
 }
 
 @media (max-width: 1024px) {
+  /* --- Container: vertical stack, no gap --- */
   .school-edit-announcements .announcements-container {
     flex-direction: column;
-    gap: 16px;
+    gap: 0;
   }
 
   .school-edit-announcements .announcements-left,
   .school-edit-announcements .announcements-right {
     width: 100%;
+    min-width: unset;
+    flex: unset;
+  }
+
+  /* --- Header (matches .announcements-header in HTML) --- */
+  .school-edit-announcements .announcements-left {
+    padding: 18px 16px;
+    background: transparent;
+  }
+
+  .school-edit-announcements .section-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .school-edit-announcements .section-description {
+    color: #5F5F5F;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* --- Content area (matches .announcements-content in HTML) --- */
+  .school-edit-announcements .announcements-right {
+    background: var(--background-color);
+    border-radius: 0;
+    padding: 16px;
+    box-shadow: none;
+    position: static;
+  }
+
+  /* Count: static, right-aligned */
+  .school-edit-announcements .announcements-count {
+    position: static;
+    text-align: right;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 16px;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+  }
+
+  /* List: flex column with 12px gap */
+  .school-edit-announcements .announcement-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding-top: 0;
+  }
+
+  /* --- Announcement item (matches .announcement-item in HTML) --- */
+  .school-edit-announcements .announcement-item {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 0;
+    display: block;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    gap: 0;
+  }
+
+  .school-edit-announcements .announcement-item.pinned {
+    background: #EBFCF4;
+    border: 1px solid #D7F7E9;
+  }
+
+  /* Hide desktop-only elements */
+  .school-edit-announcements .desktop-avatar {
+    display: none;
+  }
+
+  .school-edit-announcements .announcement-actions {
+    display: none;
+  }
+
+  /* Show mobile-only elements */
+  .school-edit-announcements .announcement-item > .status-badge {
+    display: flex;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .school-edit-announcements .mobile-avatar {
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .school-edit-announcements .announcement-item .action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    justify-content: flex-end;
+  }
+
+  .school-edit-announcements .action-buttons .action-button {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .school-edit-announcements .action-buttons .action-button:active {
+    background: #f8f9fa;
+  }
+
+  /* Content wrapper: no flex, just block */
+  .school-edit-announcements .announcement-content {
+    flex: unset;
+  }
+
+  /* Author info: flex row with avatar + details (matches .author-info in HTML) */
+  .school-edit-announcements .author-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    justify-content: flex-start;
+  }
+
+  .school-edit-announcements .author-details {
+    flex: 1;
+  }
+
+  .school-edit-announcements .author-name {
+    font-weight: 600;
+    color: #464646;
+    font-size: 16px;
+    display: block;
+  }
+
+  .school-edit-announcements .author-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    color: #5F5F5F;
+    font-size: 13px;
+  }
+
+  .school-edit-announcements .author-role {
+    font-size: 13px;
+  }
+
+  /* Title */
+  .school-edit-announcements .announcement-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1B1B1B;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .school-edit-announcements .announcement-emoji {
+    font-size: 18px;
+  }
+
+  /* Text */
+  .school-edit-announcements .announcement-text {
+    color: var(--text-color);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Add button: full width */
+  .school-edit-announcements .btn.btn-primary {
+    display: block;
+    width: 100%;
+    padding: 12px 0;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    border: none;
+    box-shadow: 0 2px 4px rgba(2, 197, 175, 0.2);
+  }
+
+  .school-edit-announcements .btn:active {
+    opacity: 0.9;
+  }
+
+  /* --- Mobile form/content styling (inside Vaul drawer or desktop modal) --- */
+  .school-edit-announcements .modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #E5E7EB;
+    flex-shrink: 0;
+  }
+
+  .school-edit-announcements .modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #464646;
+  }
+
+  .school-edit-announcements .close-button {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    padding: 0;
+  }
+
+  .school-edit-announcements .close-button:active {
+    background-color: #F3F4F6;
+  }
+
+  .school-edit-announcements .modal-body {
+    padding: 16px 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+  }
+
+  .school-edit-announcements .modal-footer {
+    padding: 16px 20px;
+    border-top: 1px solid #E5E7EB;
+    flex-direction: column;
+    gap: 16px;
+    flex-shrink: 0;
+    position: sticky;
+    bottom: 0;
+    background-color: white;
+  }
+
+  .school-edit-announcements .delete-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #f93a37;
+    background: none;
+    border: none;
+    padding: 12px 0;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+    border-top: 1px solid #E5E7EB;
+    margin-top: -8px;
+    order: 2;
+  }
+
+  .school-edit-announcements .action-group {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    order: 1;
+  }
+
+  .school-edit-announcements .action-group .btn {
+    flex: 1;
+  }
+
+  /* Form adjustments for mobile drawer */
+  .school-edit-announcements .form-group {
+    margin-bottom: 18px;
+  }
+
+  .school-edit-announcements .form-label {
+    margin-bottom: 6px;
+  }
+
+  .school-edit-announcements .input-group {
+    align-items: center;
+    gap: 8px;
+  }
+
+  .school-edit-announcements .emoji-button {
+    flex-shrink: 0;
+  }
+
+  .school-edit-announcements .datetime-group {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .school-edit-announcements .upload-preview {
+    gap: 16px;
+  }
+
+  .school-edit-announcements .upload-thumbnail {
+    width: 80px;
+    height: 80px;
+  }
+
+  .school-edit-announcements .upload-dimensions {
+    font-size: 13px;
   }
 }
 

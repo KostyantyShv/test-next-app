@@ -27,6 +27,9 @@ const EXPLORE_COLLECTIONS_ROUTES = [
   "/collections",
 ];
 
+// Edit listing page uses its own minimal header on mobile (no main app header)
+const EDIT_LISTING_ROUTES = ["/schools/edit"];
+
 export const RootLayoutClient = ({
   children,
 }: {
@@ -61,7 +64,11 @@ export const RootLayoutClient = ({
       pathname === route ||
       (route !== "/collections" && pathname?.startsWith(route))
   );
-  const hideDefaultMobileHeader = isMobile && isExploreOrCollectionsPage;
+  const isEditListingPage = EDIT_LISTING_ROUTES.some((route) =>
+    pathname?.startsWith(route)
+  );
+  const hideDefaultMobileHeader =
+    isMobile && (isExploreOrCollectionsPage || isEditListingPage);
 
   // Check if current route is team-members-dashboard (hide header on mobile)
   const isTeamMembersPage = pathname?.startsWith("/team-members-dashboard");

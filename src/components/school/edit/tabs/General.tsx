@@ -10,7 +10,7 @@ import FAQ from "../QA/FAQ";
 
 const General = () => {
   return (
-    <div>
+    <div className="school-edit-general">
       <Announcements />
       <About />
       <FAQ />

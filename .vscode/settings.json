@@ -10,5 +10,5 @@
     "css": "css"
   },
   "editor.suggest.showStatusBar": true,
-  "editor.hover.enabled": true
+  "editor.hover.enabled": "on"
 }

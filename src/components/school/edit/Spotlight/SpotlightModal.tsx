@@ -1,6 +1,9 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { DesktopModal } from "@/components/ui/DesktopModal/DesktopModal";
 import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
-import React from "react";
 import { Spotlight, SpotlightFormData } from "./types";
 import SpotlightModalContent from "./SpotlightModalContent";
 
@@ -19,35 +22,49 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({
   onSave,
   spotlight,
 }) => {
-  return (
-    <>
-      <div className="max-md:block hidden">
-        <MobileDrawer isOpen={isOpen} onClose={onClose}>
-          <div className="h-[70vh] max-h-[70vh] overflow-hidden flex flex-col">
-            <SpotlightModalContent
-              onClose={onClose}
-              onDelete={onDelete}
-              onSave={onSave}
-              spotlight={spotlight}
-            />
-          </div>
-        </MobileDrawer>
-      </div>
-      <div className="max-md:hidden block">
-        <DesktopModal
-          isOpen={isOpen}
-          onClose={onClose}
-          className="max-w-[850px] w-[90%] h-[90vh] overflow-hidden"
-        >
+  const isMobile = useIsMobile();
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  if (!hasMounted || !isOpen) {
+    return null;
+  }
+
+  if (isMobile) {
+    return (
+      <MobileDrawer
+        isOpen={true}
+        onClose={onClose}
+        title={spotlight ? "Edit Spotlight" : "Create Spotlight"}
+      >
+        <div className="h-[70vh] max-h-[70vh] overflow-hidden flex flex-col">
           <SpotlightModalContent
             onClose={onClose}
             onDelete={onDelete}
             onSave={onSave}
             spotlight={spotlight}
           />
-        </DesktopModal>
-      </div>
-    </>
+        </div>
+      </MobileDrawer>
+    );
+  }
+
+  return (
+    <DesktopModal
+      isOpen={true}
+      onClose={onClose}
+      className="max-w-[850px] w-[90%] h-[90vh] overflow-hidden"
+    >
+      <SpotlightModalContent
+        onClose={onClose}
+        onDelete={onDelete}
+        onSave={onSave}
+        spotlight={spotlight}
+      />
+    </DesktopModal>
   );
 };
 

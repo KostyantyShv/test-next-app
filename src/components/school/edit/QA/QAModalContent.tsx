@@ -20,6 +20,7 @@ export default function QAModalContent({
 }: QAModalProps) {
   const [title, setTitle] = useState("");
   const answerEditorRef = useRef<HTMLDivElement>(null);
+  const selectionRef = useRef<Range | null>(null);
   const isEdit = !!currentQuestion;
 
   useEffect(() => {
@@ -34,7 +35,33 @@ export default function QAModalContent({
         answerEditorRef.current.innerHTML = "";
       }
     }
+    selectionRef.current = null;
   }, [currentQuestion, isOpen]);
+
+  const saveSelection = () => {
+    const editor = answerEditorRef.current;
+    if (!editor) return;
+
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    const anchorNode = selection.anchorNode;
+    if (!anchorNode || !editor.contains(anchorNode)) return;
+
+    selectionRef.current = range.cloneRange();
+  };
+
+  const restoreSelection = () => {
+    const selection = window.getSelection();
+    if (!selection) return;
+
+    const range = selectionRef.current;
+    if (!range) return;
+
+    selection.removeAllRanges();
+    selection.addRange(range);
+  };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -47,11 +74,88 @@ export default function QAModalContent({
   };
 
   const handleEditorCommand = (command: string) => {
+    const editor = answerEditorRef.current;
+    if (!editor) return;
+
     if (command === "link") {
+      editor.focus();
+      restoreSelection();
+
+      const selection = window.getSelection();
+      let range = selectionRef.current;
+
+      if (!range && selection && selection.rangeCount > 0) {
+        const candidate = selection.getRangeAt(0);
+        const anchorNode = selection.anchorNode;
+        if (anchorNode && editor.contains(anchorNode)) {
+          range = candidate.cloneRange();
+        }
+      }
+
+      const selectedText = range?.toString() || "";
+
+      if (!selectedText) {
+        alert("Please select some text first to create a link.");
+        return;
+      }
+
       const url = prompt("Enter URL:");
-      if (url) document.execCommand("createLink", false, url);
+      if (url) {
+        if (!range) return;
+
+        const activeSelection = window.getSelection();
+        if (activeSelection) {
+          activeSelection.removeAllRanges();
+          activeSelection.addRange(range);
+        }
+
+        // Create the anchor element
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.textContent = selectedText;
+        anchor.title = url;
+        anchor.target = "_blank";
+        anchor.rel = "noopener noreferrer";
+
+        // Delete the selected content and insert the anchor
+        range.deleteContents();
+        range.insertNode(anchor);
+
+        // Move cursor after the link
+        const newRange = document.createRange();
+        newRange.setStartAfter(anchor);
+        newRange.collapse(true);
+        if (activeSelection) {
+          activeSelection.removeAllRanges();
+          activeSelection.addRange(newRange);
+        }
+        selectionRef.current = newRange.cloneRange();
+      }
     } else {
+      // Focus the editor first for other commands
+      editor.focus();
       document.execCommand(command, false, "");
+    }
+  };
+
+  const handleEditorClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const editor = answerEditorRef.current;
+    if (!editor) return;
+
+    const target = event.target as HTMLElement | null;
+    if (!target) return;
+
+    const link = target.closest("a");
+    if (!link || !editor.contains(link)) return;
+
+    event.preventDefault();
+
+    const href = link.getAttribute("href");
+    if (!href) return;
+
+    const shouldOpen = window.confirm(`Open this link?\n\n${href}`);
+    if (shouldOpen) {
+      window.open(href, "_blank", "noopener,noreferrer");
     }
   };
 
@@ -109,7 +213,10 @@ export default function QAModalContent({
             <button
               type="button"
               className="p-1.5 bg-transparent border-none rounded cursor-pointer text-default hover:bg-hover"
-              onClick={() => handleEditorCommand("bold")}
+              onMouseDown={(event) => {
+                event.preventDefault();
+                handleEditorCommand("bold");
+              }}
               title="Bold"
             >
               B
@@ -117,7 +224,10 @@ export default function QAModalContent({
             <button
               type="button"
               className="p-1.5 bg-transparent border-none rounded cursor-pointer text-default hover:bg-hover"
-              onClick={() => handleEditorCommand("italic")}
+              onMouseDown={(event) => {
+                event.preventDefault();
+                handleEditorCommand("italic");
+              }}
               title="Italic"
             >
               I
@@ -125,7 +235,10 @@ export default function QAModalContent({
             <button
               type="button"
               className="p-1.5 bg-transparent border-none rounded cursor-pointer text-default hover:bg-hover"
-              onClick={() => handleEditorCommand("underline")}
+              onMouseDown={(event) => {
+                event.preventDefault();
+                handleEditorCommand("underline");
+              }}
               title="Underline"
             >
               U
@@ -133,7 +246,10 @@ export default function QAModalContent({
             <button
               type="button"
               className="p-1.5 bg-transparent border-none rounded cursor-pointer text-default hover:bg-hover"
-              onClick={() => handleEditorCommand("link")}
+              onMouseDown={(event) => {
+                event.preventDefault();
+                handleEditorCommand("link");
+              }}
               title="Link"
             >
               🔗
@@ -142,8 +258,13 @@ export default function QAModalContent({
           <div
             ref={answerEditorRef}
             contentEditable
-            className="min-h-[200px] p-3 border border-theme rounded-b-lg text-default bg-surface"
+            className="qa-richtext__content min-h-[200px] p-3 border border-theme rounded-b-lg text-default bg-surface"
             style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}
+            onKeyUp={saveSelection}
+            onMouseUp={saveSelection}
+            onTouchEnd={saveSelection}
+            onBlur={saveSelection}
+            onClick={handleEditorClick}
           ></div>
         </div>
       </form>

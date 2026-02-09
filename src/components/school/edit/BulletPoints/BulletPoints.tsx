@@ -63,7 +63,7 @@ export default function BulletPoints() {
   };
 
   return (
-    <div className="text-default my-5 max-md:my-0">
+    <div className="bullets-container text-default my-5 max-md:my-0">
       <div className="mx-auto w-full flex max-md:flex-col gap-6 max-md:px-4">
         {/* Desktop Header */}
         <div className="max-w-[350px] max-md:hidden pr-6">
@@ -77,32 +77,32 @@ export default function BulletPoints() {
         </div>
         
         {/* Mobile Header */}
-        <div className="hidden max-md:block pt-[18px] pb-4">
-          <h1 className="text-2xl font-semibold mb-2" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', color: 'var(--bold-text)' }}>
+        <div className="bullets-left hidden max-md:block pt-[18px] pb-4">
+          <h1 className="section-title text-2xl font-semibold mb-2" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', color: 'var(--bold-text)' }}>
             Bullet Points
           </h1>
-          <p className="text-sm leading-6" style={{ color: 'var(--subtle-text)' }}>
+          <p className="section-description text-sm leading-6" style={{ color: 'var(--subtle-text)' }}>
             Highlight key features and achievements of your school to help
             parents and students understand what makes your institution unique.
           </p>
         </div>
 
-        <div className="w-full bg-surface max-md:bg-white rounded-lg max-md:rounded-lg shadow-[0_1px_3px_rgba(0,_0,_0,_0.1)] max-md:shadow-none p-6 max-md:p-4">
-          <h2 className="text-dark text-lg max-md:text-base font-medium mb-5 max-md:mb-4">
+        <div className="bullets-right w-full bg-surface max-md:bg-white rounded-lg max-md:rounded-lg shadow-[0_1px_3px_rgba(0,_0,_0,_0.1)] max-md:shadow-none p-6 max-md:p-4">
+          <h2 className="bullets-header text-dark text-lg max-md:text-base font-medium mb-5 max-md:mb-4">
             What makes your school stand out?
           </h2>
 
-          <div className="flex flex-col gap-3 mb-5">
+          <div className="bullet-list flex flex-col gap-3 mb-5">
             {bullets.map((bullet, index) => (
               <div
                 key={bullet.id}
-                className={`relative ${
-                  bullet.error ? "bullet-item error" : "bullet-item"
+                className={`bullet-item relative ${
+                  bullet.error ? "error" : ""
                 }`}
               >
                 <input
                   type="text"
-                  className={`w-full p-3 pr-10 border rounded-lg text-sm text-default bg-surface transition-all duration-200 focus:outline-none ${
+                  className={`bullet-input w-full p-3 pr-10 border rounded-lg text-sm text-default bg-surface transition-all duration-200 focus:outline-none ${
                     bullet.error ? "border-[#EF4444]" : "border-theme"
                   }`}
                   style={{ 
@@ -128,7 +128,7 @@ export default function BulletPoints() {
                   onChange={(e) => validateBullet(bullet.id, e.target.value)}
                 />
                 <button
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-transparent border-none p-1 cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center"
+                  className="delete-bullet absolute right-3 top-1/2 transform -translate-y-1/2 bg-transparent border-none p-1 cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center"
                   style={{ color: '#EF4444' }}
                   onClick={() => deleteBullet(bullet.id)}
                 >
@@ -147,7 +147,7 @@ export default function BulletPoints() {
                   </svg>
                 </button>
                 {bullet.error && (
-                  <div className="text-[#EF4444] text-sm mt-1">
+                  <div className="error-message text-[#EF4444] text-sm mt-1">
                     This field is required
                   </div>
                 )}
@@ -156,7 +156,7 @@ export default function BulletPoints() {
           </div>
 
           <button
-            className="inline-flex max-md:w-full max-md:justify-center items-center gap-2 py-3 px-5 max-md:py-3 max-md:px-5 text-white border-none rounded-md text-base max-md:text-base font-medium cursor-pointer transition-all duration-200 max-md:active:opacity-90"
+            className="add-bullet inline-flex max-md:w-full max-md:justify-center items-center gap-2 py-3 px-5 max-md:py-3 max-md:px-5 text-white border-none rounded-md text-base max-md:text-base font-medium cursor-pointer transition-all duration-200 max-md:active:opacity-90"
             style={{ 
               backgroundColor: 'var(--btn-dark-bg)',
               fontFamily: 'var(--font-inter), Inter, sans-serif'

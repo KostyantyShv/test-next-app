@@ -202,16 +202,16 @@ export default function Announcements() {
           </div>
         </div>
 
-        {/* Keep modal inside scope so `.school-edit-announcements .modal` CSS applies */}
-        <AnnouncementsModal
-          isModalOpen={isModalOpen}
-          onClose={closeModal}
-          onSubmit={handleSubmit}
-          onDelete={deleteAnnouncement}
-          editId={currentEditId}
-          announcements={announcements}
-        />
       </div>
+
+      <AnnouncementsModal
+        isModalOpen={isModalOpen}
+        onClose={closeModal}
+        onSubmit={handleSubmit}
+        onDelete={deleteAnnouncement}
+        editId={currentEditId}
+        announcements={announcements}
+      />
     </>
   );
 }

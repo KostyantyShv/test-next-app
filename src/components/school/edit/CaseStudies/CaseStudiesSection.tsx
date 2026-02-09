@@ -83,7 +83,7 @@ export default function CaseStudiesSection() {
             highlight successful projects, and demonstrate your expertise.
           </p>
         </div>
-        
+
         {/* Mobile Header */}
         <div className="hidden max-md:block px-4 pt-4 pb-4">
           <h1 className="text-2xl font-semibold mb-2" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', color: 'var(--bold-text)' }}>
@@ -94,11 +94,16 @@ export default function CaseStudiesSection() {
             highlight successful projects, and demonstrate your expertise.
           </p>
         </div>
-        
-        <div className="w-[750px] max-md:w-full bg-white max-md:bg-transparent rounded-lg max-md:rounded-none p-6 max-md:p-0 shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:shadow-none relative max-md:mx-0 max-md:mb-0" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
-          <div className="max-md:bg-white max-md:rounded-lg max-md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:p-4 max-md:relative max-md:mx-4 max-md:mb-4">
+
+        <div className="relative w-[750px] bg-white p-[24px] rounded-[8px] shadow-[0_1px_3px_rgba(0,0,0,0.1)] font-sans max-md:w-full max-md:bg-transparent max-md:p-0 max-md:rounded-none max-md:shadow-none">
+          <div className="relative max-md:bg-white max-md:rounded-lg max-md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:p-4 max-md:mx-4 max-md:mb-4">
+            <div className="case-studies-count-wrapper">
+              <div className="case-studies-count">
+                {caseStudies.length}/10
+              </div>
+            </div>
             <CaseStudyList
-              caseStudies={caseStudies}
+              caseStudies={[...caseStudies].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0))}
               onEdit={handleEditCaseStudy}
               onTogglePin={handleTogglePin}
             />

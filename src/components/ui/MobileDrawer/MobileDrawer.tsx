@@ -1,54 +1,55 @@
 'use client';
 
-import { ReactNode, useEffect, useRef } from "react";
-import { Portal } from "@/components/ui/Portal";
+import { ReactNode, useEffect, useState } from "react";
+import { Drawer } from "vaul";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 
 interface MobileDrawerProps {
   children: ReactNode;
   isOpen: boolean;
   onClose: () => void;
+  /** Accessible title for screen readers (required by Radix Dialog). */
+  title?: string;
 }
 
-export function MobileDrawer({ children, isOpen, onClose }: MobileDrawerProps) {
-  const openedAtRef = useRef(0);
+export function MobileDrawer({ children, isOpen, onClose, title = "Dialog" }: MobileDrawerProps) {
+  const [isDesktopViewport, setIsDesktopViewport] = useState(false);
 
   useEffect(() => {
-    if (isOpen) {
-      openedAtRef.current = Date.now();
-    }
-  }, [isOpen]);
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktopViewport(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
-  const handleOverlayPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      // Guard against the immediate "ghost" pointer event right after opening on mobile emulation.
-      if (isOpen && Date.now() - openedAtRef.current < 250) {
-        return;
-      }
-      onClose();
-    }
-  };
+  if (!isOpen) return null;
+  if (isDesktopViewport) return null;
 
   return (
-    <Portal containerId="mobile-modal-root">
-      <div className="block md:hidden">
-        {/* Overlay — matches Actions drawer: rgba(0,0,0,0.5), visibility delay when closing */}
-        <div
-          className={`fixed inset-0 bg-black/50 z-[2500] transition-[opacity,visibility] duration-300 ease-out ${
-            isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-          }`}
-          style={isOpen ? undefined : { transitionDelay: "0s, 0.3s" }}
-          onPointerDown={handleOverlayPointerDown}
-        />
-        {/* Drawer — 90% width, max 420px, centered; same shell as Actions drawer */}
-        <div
-          className={`fixed bottom-0 left-1/2 w-[90%] max-w-[420px] max-h-[85vh] bg-white rounded-t-[20px] shadow-[0_-2px_16px_rgba(0,0,0,0.15)] z-[3000] flex flex-col overflow-y-auto overflow-x-hidden transition-[transform,visibility] duration-300 ease-out scrollbar-hide ${
-            isOpen ? "-translate-x-1/2 translate-y-0 visible" : "-translate-x-1/2 translate-y-full invisible"
-          }`}
-          style={isOpen ? undefined : { transitionDelay: "0s, 0.3s" }}
+    <Drawer.Root
+      open={true}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
+      <Drawer.Portal>
+        <Drawer.Overlay className="fixed inset-0 bg-[rgba(27,27,27,0.4)] backdrop-blur-[4px] z-[2500]" />
+        <Drawer.Content
+          className="fixed bottom-0 left-0 right-0 z-[3000] flex flex-col bg-white rounded-t-[24px] max-h-[85%] outline-none"
+          style={{
+            boxShadow: '0 -8px 32px rgba(0, 0, 0, 0.12), 0 -2px 8px rgba(0, 0, 0, 0.04)',
+          }}
+          aria-describedby={undefined}
         >
+          <VisuallyHidden.Root asChild>
+            <Drawer.Title>{title}</Drawer.Title>
+          </VisuallyHidden.Root>
+          {/* Pull indicator */}
+          <div className="mx-auto mt-3 mb-2 w-9 h-1 rounded-full bg-[#DFDDDB] flex-shrink-0" />
           {children}
-        </div>
-      </div>
-    </Portal>
+        </Drawer.Content>
+      </Drawer.Portal>
+    </Drawer.Root>
   );
 }

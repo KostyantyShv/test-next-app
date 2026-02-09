@@ -1,4 +1,7 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import CaseStudyModalContent from "./CaseStudiesModalContent";
 import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 import { CaseStudy } from "./types/caseStudy";
@@ -19,29 +22,42 @@ const CaseStudiesModal: React.FC<CaseStudyModalProps> = ({
   onSave,
   caseStudy,
 }) => {
+  const isMobile = useIsMobile();
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  if (!hasMounted || !isOpen) {
+    return null;
+  }
+
+  const content = (
+    <CaseStudyModalContent
+      onClose={onClose}
+      onDelete={onDelete}
+      onSave={onSave}
+      caseStudy={caseStudy}
+    />
+  );
+
+  if (isMobile) {
+    return (
+      <MobileDrawer
+        isOpen={true}
+        onClose={onClose}
+        title={caseStudy ? "Edit Case Study" : "Create Case Study"}
+      >
+        {content}
+      </MobileDrawer>
+    );
+  }
+
   return (
-    <>
-      <div className="max-md:block hidden">
-        <MobileDrawer onClose={onClose} isOpen={isOpen}>
-          <CaseStudyModalContent
-            onClose={onClose}
-            onDelete={onDelete}
-            onSave={onSave}
-            caseStudy={caseStudy}
-          />
-        </MobileDrawer>
-      </div>
-      <div className="max-md:hidden block">
-        <DesktopModal onClose={onClose} isOpen={isOpen} className="max-w-[1200px] w-[90%]">
-          <CaseStudyModalContent
-            onClose={onClose}
-            onDelete={onDelete}
-            onSave={onSave}
-            caseStudy={caseStudy}
-          />
-        </DesktopModal>
-      </div>
-    </>
+    <DesktopModal isOpen={true} onClose={onClose} className="max-w-[950px] w-[90%]">
+      {content}
+    </DesktopModal>
   );
 };
 

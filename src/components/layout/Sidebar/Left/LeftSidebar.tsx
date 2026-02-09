@@ -280,7 +280,7 @@ export const LeftSidebar: FC = () => {
         {/* Logo Container */}
         <div
           className={cn(
-            "sidebar-logo flex items-center gap-3 border-b border-transparent relative flex-shrink-0 h-16"
+            "sidebar-logo flex items-center gap-3 border-b border-transparent relative flex-shrink-0 h-[76px]"
           )}
         >
           <Logo collapsed={isCollapsed} />
@@ -523,7 +523,7 @@ export const LeftSidebar: FC = () => {
                       {hasSubmenu && !isCollapsed && (
                         <div
                           className={cn(
-                            " mt-0 relative bg-white py-1",
+                            "sidebar-submenu mt-0 relative bg-white py-1",
                             isSubmenuOpen ? "block" : "hidden"
                           )}
                         >

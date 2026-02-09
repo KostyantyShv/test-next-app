@@ -18,7 +18,7 @@ export default function QuestionList({
 }: QuestionListProps) {
   return (
     <div style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
-      <div className="mt-6">
+      <div className="question-list mt-6">
         {questions
           .sort((a, b) => {
             // Sort: pinned items first, then by id
@@ -37,7 +37,7 @@ export default function QuestionList({
       </div>
 
       <button
-        className="inline-flex max-md:w-full justify-center items-center gap-2 px-5 py-3 mt-4 bg-[#1B1B1B] text-white border-none rounded-md text-base font-medium cursor-pointer transition-all duration-200 hover:bg-[#2D2D2D]"
+        className="add-question inline-flex max-md:w-full justify-center items-center gap-2 px-5 py-3 mt-4 bg-[#1B1B1B] text-white border-none rounded-md text-base font-medium cursor-pointer transition-all duration-200 hover:bg-[#2D2D2D]"
         onClick={onAddQuestion}
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">

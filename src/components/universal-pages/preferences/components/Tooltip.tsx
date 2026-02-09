@@ -3,6 +3,7 @@
 import { FC, useState } from 'react';
 import { Modal } from '@/components/ui/Modal/Modal';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import { useTooltipForceDesktop } from '@/context/TooltipForceDesktopContext';
 
 interface TooltipProps {
   text: string;
@@ -10,9 +11,12 @@ interface TooltipProps {
 
 export const Tooltip: FC<TooltipProps> = ({ text }) => {
   const isMobile = useIsMobile();
+  const forceDesktop = useTooltipForceDesktop();
   const [isOpen, setIsOpen] = useState(false);
 
-  if (isMobile) {
+  const useDesktopTooltip = forceDesktop || !isMobile;
+
+  if (!useDesktopTooltip) {
     return (
       <>
         <button

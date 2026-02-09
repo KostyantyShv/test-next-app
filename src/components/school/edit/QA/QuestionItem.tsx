@@ -15,19 +15,19 @@ export default function QuestionItem({
 }: QuestionItemProps) {
   return (
     <div
-      className={`flex justify-between items-center p-5 mb-4 rounded-lg ${
+      className={`question-item flex justify-between items-center p-5 mb-4 rounded-lg ${
         question.pinned
-          ? "bg-[#EBFCF4] border border-[#D7F7E9]"
+          ? "pinned bg-[#EBFCF4] border border-[#D7F7E9]"
           : "bg-[#F8F9FA]"
       }`}
       style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}
     >
-      <div className="flex-1 text-base font-semibold text-[#262B3D]">
+      <div className="question-title flex-1 text-base font-semibold text-[#262B3D]">
         {question.title}
       </div>
-      <div className="flex gap-3">
+      <div className="question-actions flex gap-3">
         <button
-          className="w-9 h-9 rounded-full border border-[#E5E5E5] bg-white flex items-center justify-center transition-all duration-200 hover:bg-[#f8f9fa]"
+          className="action-button w-9 h-9 rounded-full border border-[#E5E5E5] bg-white flex items-center justify-center transition-all duration-200 hover:bg-[#f8f9fa]"
           onClick={() => onTogglePin(question.id)}
         >
           <svg
@@ -59,7 +59,7 @@ export default function QuestionItem({
           </svg>
         </button>
         <button
-          className="w-9 h-9 rounded-full border border-[#E5E5E5] bg-white flex items-center justify-center transition-all duration-200 hover:bg-[#f8f9fa]"
+          className="action-button w-9 h-9 rounded-full border border-[#E5E5E5] bg-white flex items-center justify-center transition-all duration-200 hover:bg-[#f8f9fa]"
           onClick={() => onEdit(question.id)}
         >
           <svg

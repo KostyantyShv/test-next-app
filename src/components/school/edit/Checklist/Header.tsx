@@ -41,21 +41,22 @@ export const Header: React.FC<HeaderProps> = ({
 
         <div className="header-progress">
           <div className="progress-container">
-            <div className="progress-bar">
-              <div
-                className="progress-fill-options"
-                style={{ width: `${optionsPercent}%` }}
-              />
-              <div
-                className="progress-fill-issues"
-                style={{ width: `${issuesPercent}%` }}
-              />
+            <div className="progress-bar-wrapper">
+              <div className="progress-bar">
+                <div
+                  className="progress-fill-options"
+                  style={{ width: `${optionsPercent}%` }}
+                />
+                <div
+                  className="progress-fill-issues"
+                  style={{ width: `${issuesPercent}%` }}
+                />
+              </div>
             </div>
-          </div>
-
-          <div className="counts-container">
-            <span className="options-count">{incompleteCount} incomplete</span>
-            <span className="issues-count">{issuesCount} issues</span>
+            <div className="counts-container">
+              <span className="options-count">{incompleteCount} incomplete</span>
+              <span className="issues-count">{issuesCount} issues</span>
+            </div>
           </div>
         </div>
       </div>

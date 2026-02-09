@@ -98,7 +98,7 @@ export default function CaseStudyModalContent({
           </svg>
         </button>
       </div>
-      <form id="caseStudyForm" onSubmit={handleSubmit} className="px-6 py-6" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
+      <form id="caseStudyForm" onSubmit={handleSubmit} className="px-6 pt-3 pb-6" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
         <div className="flex items-center gap-3 mb-6">
           <span className="text-sm font-semibold text-default">Status:</span>
           <label className="relative inline-block w-[50px] h-[26px]">
@@ -111,10 +111,21 @@ export default function CaseStudyModalContent({
                   status: e.target.checked ? "published" : "draft",
                 }))
               }
-              className="peer sr-only"
+              className="opacity-0 w-0 h-0 peer"
             />
-            <span className="absolute inset-0 cursor-pointer rounded-[34px] bg-[#E5E7EB] transition-colors peer-checked:bg-[#0B6333]" />
-            <span className="absolute left-1 bottom-1 h-[18px] w-[18px] rounded-full bg-white transition-transform peer-checked:translate-x-6" />
+            <span
+              className="absolute cursor-pointer inset-0 rounded-[34px] transition-all duration-300"
+              style={{
+                backgroundColor: formData.status === "published" ? "#0B6333" : "#ccc"
+              }}
+            />
+            <span
+              className="absolute h-[18px] w-[18px] rounded-full bg-white transition-all duration-300"
+              style={{
+                left: formData.status === "published" ? "28px" : "4px",
+                bottom: "4px"
+              }}
+            />
           </label>
           <span className="text-sm font-medium">
             {formData.status === "published" ? "Published" : "Draft"}
@@ -231,24 +242,23 @@ export default function CaseStudyModalContent({
             </div>
           </div>
         </div>
-        <div className="flex border-b max-md:overflow-x-scroll scrollbar-hide border-theme mb-6">
+        <div className="flex border-b max-md:overflow-x-scroll scrollbar-hide border-theme mb-6 mt-8">
           {["hero", "content", "gallery", "testimonial"].map((tab) => (
             <div
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 text-sm font-semibold cursor-pointer border-b-2 transition-colors ${
-                activeTab === tab
+              className={`px-6 py-3 text-sm font-semibold cursor-pointer border-b-2 transition-colors ${activeTab === tab
                   ? "text-[var(--brand-teal)] border-[var(--brand-teal)]"
                   : "text-[#5F5F5F] border-transparent"
-              }`}
+                }`}
             >
               {tab === "hero"
                 ? "Hero Section"
                 : tab === "content"
-                ? "Content Sections"
-                : tab === "gallery"
-                ? "Gallery"
-                : "Testimonial"}
+                  ? "Content Sections"
+                  : tab === "gallery"
+                    ? "Gallery"
+                    : "Testimonial"}
             </div>
           ))}
         </div>

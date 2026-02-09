@@ -1,4 +1,7 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { Event } from "./types/event";
 import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 import EventModalContent from "./EventModalContent";
@@ -21,33 +24,38 @@ const EventModal: React.FC<EventModalProps> = ({
   currentEditId,
   maxEvents,
 }) => {
+  const isMobile = useIsMobile();
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  if (!hasMounted || !isOpen) return null;
+
+  const content = (
+    <EventModalContent
+      isOpen={true}
+      closeModal={closeModal}
+      events={events}
+      setEvents={setEvents}
+      currentEditId={currentEditId}
+      maxEvents={maxEvents}
+    />
+  );
+
+  if (isMobile) {
+    return (
+      <MobileDrawer isOpen={true} onClose={closeModal} title="Edit Event">
+        {content}
+      </MobileDrawer>
+    );
+  }
+
   return (
-    <>
-      <div className="max-md:block hidden">
-        <MobileDrawer isOpen={isOpen} onClose={closeModal}>
-          <EventModalContent
-            isOpen={isOpen}
-            closeModal={closeModal}
-            events={events}
-            setEvents={setEvents}
-            currentEditId={currentEditId}
-            maxEvents={maxEvents}
-          />
-        </MobileDrawer>
-      </div>
-      <div className="max-md:hidden block">
-        <DesktopModal isOpen={isOpen} onClose={closeModal} className="max-w-3xl w-[90%] max-h-[90vh]">
-          <EventModalContent
-            isOpen={isOpen}
-            closeModal={closeModal}
-            events={events}
-            setEvents={setEvents}
-            currentEditId={currentEditId}
-            maxEvents={maxEvents}
-          />
-        </DesktopModal>
-      </div>
-    </>
+    <DesktopModal isOpen={true} onClose={closeModal} className="max-w-3xl w-[90%] max-h-[90vh]">
+      {content}
+    </DesktopModal>
   );
 };
 
