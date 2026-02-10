@@ -23,14 +23,17 @@ export const EventCard: React.FC<EventCardProps> = ({ event, onEventClick }) => 
   const getEventBg = (type: string) =>
     `color-mix(in srgb, ${getEventColor(type)} 18%, var(--surface-color))`;
 
+  const handleClick = () => {
+    if (onEventClick && event.id) onEventClick(event.id);
+  };
+
   return (
     <div
-      onClick={() => {
-        if (event.id && onEventClick) {
-          onEventClick(event.id);
-        }
-      }}
-      className={`flex items-center gap-3 border-l-2 p-3 rounded-e-xl shadow-[0_2px_8px_rgba(0,_0,_0,_0.05)] bg-[var(--surface-color)] w-full cursor-pointer hover:bg-[var(--hover-bg)] ${event.type}`}
+      role={onEventClick ? "button" : undefined}
+      tabIndex={onEventClick ? 0 : undefined}
+      onClick={onEventClick ? handleClick : undefined}
+      onKeyDown={onEventClick ? (e) => e.key === "Enter" && handleClick() : undefined}
+      className={`flex items-center gap-3 border-l-2 p-3 rounded-e-xl shadow-[0_2px_8px_rgba(0,_0,_0,_0.05)] bg-[var(--surface-color)] w-full ${event.type} ${onEventClick ? "cursor-pointer" : ""}`}
       style={{ borderLeftColor: getEventColor(event.type) }}
     >
       <div
@@ -50,23 +53,19 @@ export const EventCard: React.FC<EventCardProps> = ({ event, onEventClick }) => 
           <span>{event.time}</span>
           <div className="flex items-center gap-1">
             <div className="flex -space-x-2">
-              <Image
-                height={24}
-                width={24}
-                src={event.avatar1}
-                className="w-6 h-6 rounded-full border-2 border-[var(--surface-color)]"
-                alt="Attendee 1"
-              />
-              <Image
-                height={24}
-                width={24}
-                src={event.avatar2}
-                className="w-6 h-6 rounded-full border-2 border-[var(--surface-color)]"
-                alt="Attendee 2"
-              />
+              {(event.participants?.slice(0, 2) || []).length > 0 ? (
+                event.participants!.slice(0, 2).map((p, i) => (
+                  <Image key={p.id} height={24} width={24} src={p.avatarUrl} className="w-6 h-6 rounded-full border-2 border-[var(--surface-color)] object-cover" alt={`${p.firstName} ${p.lastName}`} />
+                ))
+              ) : (
+                <>
+                  <Image height={24} width={24} src={event.avatar1} className="w-6 h-6 rounded-full border-2 border-[var(--surface-color)]" alt="Attendee 1" />
+                  <Image height={24} width={24} src={event.avatar2} className="w-6 h-6 rounded-full border-2 border-[var(--surface-color)]" alt="Attendee 2" />
+                </>
+              )}
             </div>
             <span className="text-xs bg-[var(--surface-secondary)] text-[var(--subtle-text)] px-2 py-0.5 rounded-full">
-              {event.attendees > 2 ? `${event.attendees}+` : event.attendees}
+              {event.attendeeCount || (event.attendees > 2 ? `${event.attendees}+` : `${event.attendees}`)}
             </span>
           </div>
         </div>

@@ -253,13 +253,17 @@ export const LeftSidebar: FC = () => {
       <aside
         data-collapsed={isCollapsed ? "true" : "false"}
         className={cn(
-          "left-sidebar h-screen bg-white border-r border-gray-200 shrink-0 sticky top-0 left-0",
-          "transition-none",
+          "sticky top-0 left-0 z-20 h-screen w-64 shrink-0 bg-white border-r border-gray-200 transition-all duration-300 ease-in-out",
           isCollapsed ? "w-20" : "w-64"
         )}
       >
         <div className="flex h-full flex-col">
-          <div className="sidebar-logo flex items-center gap-3 border-b border-transparent relative flex-shrink-0 h-16">
+          <div
+            className={cn(
+              "sidebar-logo flex items-center gap-3 border-b border-transparent relative flex-shrink-0 h-[76px]",
+              isCollapsed && "justify-center"
+            )}
+          >
             <Logo collapsed={isCollapsed} />
           </div>
         </div>
@@ -271,8 +275,7 @@ export const LeftSidebar: FC = () => {
     <aside
       data-collapsed={isCollapsed ? "true" : "false"}
       className={cn(
-        "left-sidebar h-screen bg-white border-r border-gray-200 shrink-0 sticky top-0 left-0",
-        "transition-all duration-300 ease-in-out",
+        "sticky top-0 left-0 z-20 h-screen w-64 shrink-0 bg-white border-r border-gray-200 transition-all duration-300 ease-in-out",
         isCollapsed ? "w-20" : "w-64"
       )}
     >
@@ -280,7 +283,8 @@ export const LeftSidebar: FC = () => {
         {/* Logo Container */}
         <div
           className={cn(
-            "sidebar-logo flex items-center gap-3 border-b border-transparent relative flex-shrink-0 h-[76px]"
+            "sidebar-logo flex items-center gap-3 border-b border-transparent relative flex-shrink-0 h-[76px]",
+            isCollapsed && "justify-center"
           )}
         >
           <Logo collapsed={isCollapsed} />

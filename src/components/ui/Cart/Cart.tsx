@@ -163,7 +163,7 @@ export const Cart: React.FC<CartProps> = ({
         >
           {/* Arrow pointer */}
           <div
-            className="cart-modal-arrow absolute -top-2 w-4 h-4 bg-[var(--surface-color)] border border-[var(--modal-arrow-border)] border-b-0 border-r-0 transform rotate-45"
+            className="cart-modal-arrow absolute -top-2 w-4 h-4 bg-[var(--surface-color)] border border-[var(--border-color)] border-b-0 border-r-0 transform rotate-45"
             style={{ left: `${arrowLeft}px` }}
           />
 

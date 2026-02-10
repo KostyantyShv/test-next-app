@@ -8,8 +8,7 @@ interface ListItemProps {
   month: string;
   isCurrent?: boolean;
   events: Event[];
-  onDateClick?: (date: number) => void;
-  onEventClick?: (eventId: string) => void;
+  onDeleteEvent?: (eventId: string) => void;
 }
 
 export const ListItem: React.FC<ListItemProps> = ({
@@ -18,8 +17,7 @@ export const ListItem: React.FC<ListItemProps> = ({
   month,
   isCurrent,
   events,
-  onDateClick,
-  onEventClick,
+  onDeleteEvent,
 }) => {
   const eventColorMap: Record<string, string> = {
     "zoom-meeting": "var(--event-zoom)",
@@ -40,9 +38,8 @@ export const ListItem: React.FC<ListItemProps> = ({
     <div className="flex flex-col py-2 w-full items-start px-4">
       <div className={`text-center relative w-full ${events[0].type}`}>
         <div
-          className={`w-full font-semibold mb-3 pb-3 border-b border-[var(--border-color)] flex gap-2 items-center ${
-            isCurrent ? "text-[var(--active-green)]" : "text-[var(--subtle-text)]"
-          }`}
+          className={`w-full font-semibold mb-3 pb-3 border-b border-[var(--border-color)] flex gap-2 items-center ${isCurrent ? "text-[var(--active-green)]" : "text-[var(--subtle-text)]"
+            }`}
         >
           <svg fill="none" viewBox="0 0 20 20" width={20} height={20}>
             <path
@@ -52,10 +49,7 @@ export const ListItem: React.FC<ListItemProps> = ({
               fillRule="evenodd"
             ></path>
           </svg>
-          <span
-            onClick={() => onDateClick && onDateClick(date)}
-            className="cursor-pointer hover:bg-[var(--hover-bg)] rounded px-2"
-          >
+          <span className="px-2">
             {weekday}, {month} {date}
           </span>
         </div>
@@ -63,13 +57,8 @@ export const ListItem: React.FC<ListItemProps> = ({
       <div className="flex-1 flex flex-col w-full gap-3">
         {events.map((event, index) => (
           <div
-            key={index}
-            onClick={() => {
-              if (event.id && onEventClick) {
-                onEventClick(event.id);
-              }
-            }}
-            className={`flex items-center gap-3 border-l-2 p-3 rounded-e-xl shadow-[0_2px_8px_rgba(0,_0,_0,_0.05)] bg-[var(--surface-color)] w-full cursor-pointer hover:bg-[var(--hover-bg)] ${event.type}`}
+            key={event.id || index}
+            className={`flex items-center gap-3 border-l-2 p-3 rounded-e-xl shadow-[0_2px_8px_rgba(0,_0,_0,_0.05)] bg-[var(--surface-color)] w-full ${event.type}`}
             style={{ borderLeftColor: getEventColor(event.type) }}
           >
             <div
@@ -90,23 +79,19 @@ export const ListItem: React.FC<ListItemProps> = ({
               <div className="flex items-center gap-1.5 text-xs text-[var(--subtle-text)] flex-wrap">
                 <span>{event.time}</span>
                 <div className="flex items-center">
-                  <Image
-                    height={24}
-                    width={24}
-                    src={event.avatar1}
-                    className="w-5 h-5 rounded-full border-2 border-[var(--surface-color)] -ml-1.5 first:ml-0"
-                    alt="Attendee 1"
-                  />
-                  <Image
-                    height={24}
-                    width={24}
-                    src={event.avatar2}
-                    className="w-5 h-5 rounded-full border-2 border-[var(--surface-color)] -ml-1.5"
-                    alt="Attendee 2"
-                  />
+                  {(event.participants?.slice(0, 2) || []).length > 0 ? (
+                    event.participants!.slice(0, 2).map((p, i) => (
+                      <Image key={p.id} height={24} width={24} src={p.avatarUrl} className={`w-5 h-5 rounded-full border-2 border-[var(--surface-color)] object-cover ${i > 0 ? '-ml-1.5' : ''}`} alt={`${p.firstName} ${p.lastName}`} />
+                    ))
+                  ) : (
+                    <>
+                      <Image height={24} width={24} src={event.avatar1} className="w-5 h-5 rounded-full border-2 border-[var(--surface-color)] -ml-1.5 first:ml-0" alt="Attendee 1" />
+                      <Image height={24} width={24} src={event.avatar2} className="w-5 h-5 rounded-full border-2 border-[var(--surface-color)] -ml-1.5" alt="Attendee 2" />
+                    </>
+                  )}
                 </div>
                 <span className="text-xs text-[var(--subtle-text)] px-1.5 py-0.5 bg-[var(--surface-secondary)] rounded-xl">
-                  {event.attendees}+
+                  {event.attendeeCount || (event.attendees > 2 ? `${event.attendees}+` : `${event.attendees}`)}
                 </span>
               </div>
             </div>

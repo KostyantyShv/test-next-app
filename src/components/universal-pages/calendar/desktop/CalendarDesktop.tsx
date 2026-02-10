@@ -9,8 +9,8 @@ import { CalendarHeader } from "./Header";
 import { CalendarGrid } from "./CalendarGrid";
 import { ListView } from "./ListView";
 import { ViewControls } from "./ViewToggle";
-import CalendarEventModal from "../components/CalendarEventModal";
 import { useCalendarEvents } from "@/hooks/useCalendarEvents.hook";
+import DeleteConfirmModal from "../components/DeleteConfirmModal";
 
 const CalendarDesktop: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -21,10 +21,9 @@ const CalendarDesktop: React.FC = () => {
   const [view, setView] = useState<ViewType>("calendar");
   const [currentDate, setCurrentDate] = useState(today);
   const [filter, setFilter] = useState<FilterType>("ALL");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [selectedEventId, setSelectedEventId] = useState<string | undefined>(undefined);
-  const { events, refreshEvents } = useCalendarEvents();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteEventId, setDeleteEventId] = useState<string | null>(null);
+  const { events, deleteEvent, refreshEvents } = useCalendarEvents();
 
   const handlePrevMonth = () => {
     setCurrentDate(
@@ -42,6 +41,25 @@ const CalendarDesktop: React.FC = () => {
     setCurrentDate(new Date(today.getFullYear(), today.getMonth()));
   };
 
+  const handleDeleteEvent = (eventId: string) => {
+    setDeleteEventId(eventId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteEventId) {
+      await deleteEvent(deleteEventId);
+      await refreshEvents();
+    }
+    setIsDeleteModalOpen(false);
+    setDeleteEventId(null);
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteModalOpen(false);
+    setDeleteEventId(null);
+  };
+
   const { calendarData, listData } = useCalendarData(
     currentDate,
     today,
@@ -49,22 +67,8 @@ const CalendarDesktop: React.FC = () => {
     events
   );
 
-  const currentMonthDisplay = `${
-    MONTHS[currentDate.getMonth()]
-  } ${currentDate.getFullYear()}`;
-
-  const handleDateClick = (date: number) => {
-    const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), date);
-    setSelectedDate(clickedDate);
-    setSelectedEventId(undefined);
-    setIsModalOpen(true);
-  };
-
-  const handleEventClick = (eventId: string) => {
-    setSelectedEventId(eventId);
-    setSelectedDate(undefined);
-    setIsModalOpen(true);
-  };
+  const currentMonthDisplay = `${MONTHS[currentDate.getMonth()]
+    } ${currentDate.getFullYear()}`;
 
   return (
     <div className="calendar-page min-h-screen bg-[var(--background-color)] flex justify-center px-5 py-5 font-sans">
@@ -97,30 +101,21 @@ const CalendarDesktop: React.FC = () => {
           {view === "calendar" ? (
             <CalendarGrid
               calendarData={calendarData}
-              onDateClick={handleDateClick}
-              onEventClick={handleEventClick}
+              onDeleteEvent={handleDeleteEvent}
             />
           ) : (
             <ListView
               listData={listData}
-              onDateClick={handleDateClick}
-              onEventClick={handleEventClick}
+              onDeleteEvent={handleDeleteEvent}
             />
           )}
         </div>
       </div>
 
-      <CalendarEventModal
-        isOpen={isModalOpen}
-        onClose={async () => {
-          setIsModalOpen(false);
-          setSelectedDate(undefined);
-          setSelectedEventId(undefined);
-          // Refresh events after modal closes to ensure new events appear
-          await refreshEvents();
-        }}
-        selectedDate={selectedDate}
-        eventId={selectedEventId}
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
       />
     </div>
   );

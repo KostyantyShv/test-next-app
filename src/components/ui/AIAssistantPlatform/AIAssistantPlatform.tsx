@@ -181,7 +181,7 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
     { id: 'collectionsBtn', title: 'Collections', icon: 'collections' }
   ];
 
-  const promptPills: PromptPill[] = [
+  const basePromptPills: PromptPill[] = [
     { id: 'write', title: 'Write', desc: 'Help me write content', icon: 'write' },
     { id: 'translate', title: 'Translate', desc: 'Help me translate', icon: 'translate' },
     { id: 'calendar', title: 'Calendar', desc: 'Help with calendar', icon: 'calendar' },
@@ -239,27 +239,34 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
     }
   };
 
-  const handleClickOutside = useCallback((event: MouseEvent) => {
-    const target = event.target as HTMLElement;
-    
-    // Не закриваємо панель, якщо відкрита будь-яка модалка або chat history
-    if (showContextModal || showCollectionsModal || showCreatePromptModal || showChatHistory) {
-      return;
-    }
-    
-    // Перевіряємо, чи клік не на панелі, не на header, і не на модалках
-    if (
-      panelRef.current && 
-      !panelRef.current.contains(target as Node) && 
-      !target.closest('header') &&
-      !target.closest('#ai-context-modal-portal') &&
-      !target.closest('#ai-collections-modal-portal') &&
-      !target.closest('#ai-create-prompt-modal-portal')
-    ) {
-      // Закриваємо панель при кліку поза нею
-      onClose();
-    }
-  }, [onClose, showContextModal, showCollectionsModal, showCreatePromptModal, showChatHistory]);
+  const handleClickOutside = useCallback(
+    (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+
+      const tooltipOpen =
+        showAllPromptsInline || showPromptsInline || showCollectionsInline;
+
+      const clickedInsideAnyTooltip =
+        !!target.closest(".all-prompts-inline") ||
+        !!target.closest(".inline-modal");
+
+      const clickedInsidePanel =
+        panelRef.current && panelRef.current.contains(target as Node);
+
+      // If any prompt tooltip is open and user clicks INSIDE the assistant panel
+      // but OUTSIDE of the tooltip area, close the tooltip only (keep panel open).
+      if (tooltipOpen && clickedInsidePanel && !clickedInsideAnyTooltip) {
+        setShowAllPromptsInline(false);
+        setShowPromptsInline(false);
+        setShowCollectionsInline(false);
+        return;
+      }
+
+      // We no longer auto-close the main AI panel on outside clicks.
+      // Panel should close ONLY via the explicit close button.
+    },
+    [showAllPromptsInline, showPromptsInline, showCollectionsInline]
+  );
 
   useEffect(() => {
     if (isOpen) {
@@ -468,7 +475,24 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
             {/* Prompt Pills */}
             <div className="prompt-pills">
               <div className="pills-container">
-                {promptPills.map((pill) => (
+                {(() => {
+                  // Order primary pills (write / translate / calendar) based on
+                  // current `allPromptsData` order; keep "All" pill always last.
+                  const idIndexMap = new Map<string, number>();
+                  allPromptsData.forEach((p, index) => idIndexMap.set(p.id, index));
+
+                  const primaryPills = basePromptPills.filter((p) => p.id !== 'all');
+                  primaryPills.sort((a, b) => {
+                    const ai = idIndexMap.has(a.id) ? (idIndexMap.get(a.id) as number) : Number.MAX_SAFE_INTEGER;
+                    const bi = idIndexMap.has(b.id) ? (idIndexMap.get(b.id) as number) : Number.MAX_SAFE_INTEGER;
+                    return ai - bi;
+                  });
+
+                  const allPill = basePromptPills.find((p) => p.id === 'all')!;
+                  const orderedPills = [...primaryPills, allPill];
+
+                  return orderedPills;
+                })().map((pill) => (
                   <button
                     key={pill.id}
                     onClick={() => handlePromptPillClick(pill.id)}
@@ -1116,34 +1140,64 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
               }}
             >
               <div className="modal" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <button
-                  onClick={() => {
-                    setCollectionsItemsView(null);
-                    setSelectedCollectionItems([]);
-                  }}
-                  className={cn("modal-back-btn", !collectionsItemsView && "hidden")}
-                >
-                  <span className="icon">←</span>
-                </button>
-                <h2 className={cn("modal-title", collectionsItemsView && "with-back")}>
-                  {collectionsItemsView
-                    ? `${collectionsData[collectionsItemsView as keyof typeof collectionsData]?.name} Items`
-                    : 'Collections'}
-                </h2>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowCollectionsModal(false);
-                    setCollectionsItemsView(null);
-                    setSelectedCollectionItems([]);
-                  }}
-                  className="modal-close"
-                  title="Close"
-                >
-                  <span className="icon">{renderIcon('close')}</span>
-                </button>
-              </div>
+                <div className="modal-header">
+                  {collectionsItemsView && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCollectionsItemsView(null);
+                        setSelectedCollectionItems([]);
+                      }}
+                      className="modal-back-btn"
+                      title="Back"
+                    >
+                      <span className="icon">
+                        {/* Simple left arrow to match reference HTML */}
+                        <svg viewBox="0 0 16 16" fill="none">
+                          <path
+                            d="M9.5 3.5L5 8l4.5 4.5"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  )}
+                  <h2 className={cn("modal-title", collectionsItemsView && "with-back")}>
+                    {collectionsItemsView
+                      ? collectionsData[collectionsItemsView as keyof typeof collectionsData]?.name
+                      : 'Collections'}
+                  </h2>
+                  <button
+  onClick={(e) => {
+    e.stopPropagation();
+    setShowCollectionsModal(false);
+    setCollectionsItemsView(null);
+    setSelectedCollectionItems([]);
+  }}
+  className="modal-close"
+  title="Close"
+>
+  <span className="icon">
+    <svg 
+      width="18" 
+      height="18" 
+      viewBox="0 0 18 18" 
+      fill="none" 
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path 
+        fillRule="evenodd" 
+        clipRule="evenodd" 
+        d="M4.51025 3.51594C4.2386 3.23845 3.79343 3.23372 3.51594 3.50537C3.23845 3.77702 3.23372 4.22219 3.50537 4.49968L8.00075 9.09168L3.5155 13.4902C3.23825 13.7621 3.2339 14.2072 3.50579 14.4845C3.77769 14.7617 4.22286 14.7661 4.50012 14.4942L9 10.0814L13.4999 14.4942C13.7771 14.7661 14.2223 14.7617 14.4942 14.4845C14.7661 14.2072 14.7617 13.7621 14.4845 13.4902L9.99924 9.09168L14.4946 4.49968C14.7663 4.22219 14.7615 3.77702 14.4841 3.50537C14.2066 3.23372 13.7614 3.23845 13.4897 3.51594L9 8.10217L4.51025 3.51594Z" 
+        fill="currentColor"
+      />
+    </svg>
+  </span>
+</button>
+                </div>
 
               <div className="modal-body">
                 {!collectionsItemsView ? (

@@ -137,16 +137,6 @@ export const RootLayoutClient = ({
               </div>
             )}
 
-            {/* Desktop header gap bar (full width, under header, behind sidebar) */}
-            {showDesktopHeader && (
-              <div className="hidden md:block">
-                <div
-                  className="header-gap-bar fixed top-[64px] right-0 h-[12px] bg-[var(--background-color)] z-[900] pointer-events-none"
-                  style={{ left: sidebarOffset }}
-                />
-              </div>
-            )}
-
             {/* Main Content */}
             <main
               className={cn(

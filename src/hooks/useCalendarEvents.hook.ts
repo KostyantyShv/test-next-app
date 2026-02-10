@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase_utils/client";
 import { Event } from "@/components/universal-pages/calendar/types/event";
-import { events as mockEvents } from "@/components/universal-pages/calendar/mock/event";
 
 interface CalendarEvent {
   id: string;
@@ -96,7 +95,7 @@ export const useCalendarEvents = (): UseCalendarEventsReturn => {
 
       const { data: { user } } = await supabase.auth.getUser();
       
-      let dbEvents: Event[] = [];
+      let uiEvents: Event[] = [];
       
       if (user) {
       const { data, error: fetchError } = await supabase
@@ -107,12 +106,13 @@ export const useCalendarEvents = (): UseCalendarEventsReturn => {
 
       if (fetchError) throw fetchError;
 
-        dbEvents = (data || []).map(convertToUIEvent);
+        uiEvents = (data || []).map(convertToUIEvent);
       }
 
-      // Always combine DB events with mock events
-      const allEvents = [...dbEvents, ...mockEvents];
-      setEvents(allEvents);
+      // Only show per-user calendar events loaded from the database.
+      // Events are created via other flows (e.g. Upcoming Events on listings),
+      // not directly from the Calendar UI.
+      setEvents(uiEvents);
     } catch (err: any) {
       console.error("Error loading calendar events:", err);
       setError(err.message || "Failed to load events");

@@ -16,7 +16,7 @@ const PageContainer: React.FC<{ children: React.ReactNode }> = ({
   return (
     <div className="flex flex-1 min-w-0">
       <div
-        className={`flex-1 w-full min-w-0 px-0 pb-0 md:pt-3 md:px-4 md:pb-4 ${
+        className={`flex-1 w-full min-w-0 px-0 pb-0 md:pt-3 md:pl-0 md:pr-4 md:pb-4 ${
           noTopPadding ? "pt-0" : "pt-3"
         }`}
       >

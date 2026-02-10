@@ -2162,13 +2162,12 @@ export default function Monitors() {
         Copied to clipboard!
       </div>
 
-      {/* Click outside handler for dropdowns and tooltips */}
-      {(openDropdown || showFieldsTooltip) && (
+      {/* Click outside handler for dropdowns (do not affect field tooltips) */}
+      {openDropdown && (
         <div 
           className="fixed inset-0 z-0" 
           onClick={() => {
             setOpenDropdown(null);
-            setShowFieldsTooltip(null);
           }} 
         />
       )}
