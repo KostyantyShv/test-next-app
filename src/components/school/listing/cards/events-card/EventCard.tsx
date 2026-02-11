@@ -2,8 +2,21 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Event } from "./types";
 
-const EventCard: React.FC<{ event: Event }> = ({ event }) => {
-  const [isAttending, setIsAttending] = useState(false);
+interface EventCardProps {
+  event: Event;
+  isInCalendar: boolean;
+  isMutating?: boolean;
+  onAddToCalendar: () => Promise<void> | void;
+  onRemoveFromCalendar: () => Promise<void> | void;
+}
+
+const EventCard: React.FC<EventCardProps> = ({
+  event,
+  isInCalendar,
+  isMutating = false,
+  onAddToCalendar,
+  onRemoveFromCalendar,
+}) => {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const buttonRef = useRef<HTMLDivElement>(null);
 
@@ -17,10 +30,18 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (!isInCalendar) {
+      setShowConfirmDialog(false);
+    }
+  }, [isInCalendar]);
+
   const handleJoinClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent event bubbling
-    if (!isAttending) {
-      setIsAttending(true);
+    if (isMutating) return;
+
+    if (!isInCalendar) {
+      void onAddToCalendar();
     } else {
       setShowConfirmDialog(!showConfirmDialog); // Toggle dialog on click
     }
@@ -28,7 +49,8 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
 
   const handleConfirmYes = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsAttending(false);
+    if (isMutating) return;
+    void onRemoveFromCalendar();
     setShowConfirmDialog(false);
   };
 
@@ -49,14 +71,14 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
         </h3>
         <div
           ref={buttonRef}
-          className={`w-8 h-8 rounded-md flex items-center justify-center shrink-0 transition-all duration-200 ease-in-out relative ${
-            isAttending
+          className={`w-8 h-8 rounded-md flex items-center justify-center shrink-0 transition-all duration-200 ease-in-out relative ${isMutating ? "opacity-60 cursor-not-allowed" : ""} ${
+            isInCalendar
               ? "bg-[#00e28f] md:bg-[#00e28f] text-white md:text-white"
               : "bg-[rgba(59,110,145,0.08)] hover:bg-[rgba(59,110,145,0.12)]"
           }`}
           onClick={handleJoinClick}
         >
-          {isAttending ? (
+          {isInCalendar ? (
             <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24">
               <path
                 stroke="currentColor"

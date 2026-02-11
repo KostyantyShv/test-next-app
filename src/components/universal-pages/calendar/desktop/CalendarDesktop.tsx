@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ViewType } from "../types/view";
 import { FilterType } from "../types/filter";
 import { useCalendarData } from "./useCalendarData.hook";
@@ -13,17 +13,53 @@ import { useCalendarEvents } from "@/hooks/useCalendarEvents.hook";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 
 const CalendarDesktop: React.FC = () => {
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth();
-  const currentDay = new Date().getDate();
-  const today = new Date(currentYear, currentMonth, currentDay);
+  const today = useMemo(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  }, []);
 
   const [view, setView] = useState<ViewType>("calendar");
-  const [currentDate, setCurrentDate] = useState(today);
+  const [currentDate, setCurrentDate] = useState(
+    new Date(today.getFullYear(), today.getMonth(), 1)
+  );
   const [filter, setFilter] = useState<FilterType>("ALL");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteEventId, setDeleteEventId] = useState<string | null>(null);
+  const [hasInitializedMonth, setHasInitializedMonth] = useState(false);
   const { events, deleteEvent, refreshEvents } = useCalendarEvents();
+
+  useEffect(() => {
+    if (hasInitializedMonth || events.length === 0) return;
+
+    const hasCurrentMonthEvents = events.some(
+      (event) =>
+        event.month === today.getMonth() && event.year === today.getFullYear()
+    );
+
+    if (hasCurrentMonthEvents) {
+      setHasInitializedMonth(true);
+      return;
+    }
+
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const sortedEvents = [...events].sort((a, b) => {
+      const aDate = new Date(a.year, a.month, a.date).getTime();
+      const bDate = new Date(b.year, b.month, b.date).getTime();
+      return aDate - bDate;
+    });
+
+    const nearestUpcomingEvent = sortedEvents.find((event) => {
+      const eventDate = new Date(event.year, event.month, event.date);
+      return eventDate >= todayStart;
+    });
+
+    const targetEvent = nearestUpcomingEvent || sortedEvents[0];
+    if (targetEvent) {
+      setCurrentDate(new Date(targetEvent.year, targetEvent.month, 1));
+    }
+
+    setHasInitializedMonth(true);
+  }, [events, hasInitializedMonth, today]);
 
   const handlePrevMonth = () => {
     setCurrentDate(

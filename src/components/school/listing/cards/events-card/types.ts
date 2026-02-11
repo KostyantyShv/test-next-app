@@ -18,6 +18,7 @@ export interface Event {
   type: EventType;
   date: string;
   time: string;
+  externalUrl?: string;
   attendees: Attendee[];
   attendeeCount: number;
 }

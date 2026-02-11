@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CalendarGrid } from "./CalendarGrig";
 import { EventList } from "./EventList";
 import { MobileHeader } from "./Header";
@@ -14,7 +14,43 @@ const CalendarMobile: React.FC = () => {
   const [view, setView] = useState<"calendar" | "list">("calendar");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date().getDate());
-  const { events, loading } = useCalendarEvents();
+  const [hasInitializedMonth, setHasInitializedMonth] = useState(false);
+  const { events } = useCalendarEvents();
+
+  useEffect(() => {
+    if (hasInitializedMonth || events.length === 0) return;
+
+    const now = new Date();
+    const hasCurrentMonthEvents = events.some(
+      (event) =>
+        event.month === now.getMonth() && event.year === now.getFullYear()
+    );
+
+    if (hasCurrentMonthEvents) {
+      setHasInitializedMonth(true);
+      return;
+    }
+
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const sortedEvents = [...events].sort((a, b) => {
+      const aDate = new Date(a.year, a.month, a.date).getTime();
+      const bDate = new Date(b.year, b.month, b.date).getTime();
+      return aDate - bDate;
+    });
+
+    const nearestUpcomingEvent = sortedEvents.find((event) => {
+      const eventDate = new Date(event.year, event.month, event.date);
+      return eventDate >= todayStart;
+    });
+
+    const targetEvent = nearestUpcomingEvent || sortedEvents[0];
+    if (targetEvent) {
+      setCurrentDate(new Date(targetEvent.year, targetEvent.month, 1));
+      setSelectedDate(targetEvent.date);
+    }
+
+    setHasInitializedMonth(true);
+  }, [events, hasInitializedMonth]);
 
   const generateListData = () => {
     const year = currentDate.getFullYear();

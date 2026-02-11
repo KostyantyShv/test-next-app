@@ -1,8 +1,181 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import CardWrapper from "../../card-wrapper/CardWrapper";
-import { events } from "./mock";
+import { events as listingEvents } from "./mock";
 import EventCard from "./EventCard";
+import { Event } from "./types";
+import { useCalendarEvents } from "@/hooks/useCalendarEvents.hook";
+import {
+  Event as CalendarEvent,
+  EventParticipant,
+} from "@/components/universal-pages/calendar/types/event";
+
+type CalendarEventType =
+  | "zoom-meeting"
+  | "zoom-webinar"
+  | "teams-meeting"
+  | "one-on-one"
+  | "webex-meeting"
+  | "group-session";
+
+const DEFAULT_EVENT_URLS: Record<CalendarEventType, string> = {
+  "zoom-meeting": "https://zoom.us",
+  "zoom-webinar": "https://zoom.us/webinar",
+  "teams-meeting": "https://teams.microsoft.com",
+  "one-on-one": "https://calendly.com",
+  "webex-meeting": "https://webex.com",
+  "group-session": "https://meet.google.com",
+};
+
+const mapListingTypeToCalendarType = (event: Event): CalendarEventType => {
+  const normalizedName = event.type.name.toLowerCase();
+
+  if (normalizedName.includes("webinar")) return "zoom-webinar";
+  if (normalizedName.includes("teams")) return "teams-meeting";
+  if (normalizedName.includes("webex")) return "webex-meeting";
+  if (normalizedName.includes("1:1") || normalizedName.includes("one")) {
+    return "one-on-one";
+  }
+
+  if (event.type.color === "#608CFD") return "teams-meeting";
+  if (event.type.color === "#E47EF4") return "one-on-one";
+  if (event.type.color === "#F89E6C") return "webex-meeting";
+  if (event.type.color === "#EE4206") return "group-session";
+  if (event.type.color === "#22C376") return "zoom-webinar";
+
+  return "zoom-meeting";
+};
+
+const parseListingDateTime = (dateLabel: string, timeLabel: string): Date => {
+  const hasYear = /\b\d{4}\b/.test(dateLabel);
+  const normalizedDate = hasYear
+    ? dateLabel
+    : `${dateLabel}, ${new Date().getFullYear()}`;
+  const parsed = new Date(`${normalizedDate} ${timeLabel}`);
+
+  return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+};
+
+const toParticipants = (event: Event): EventParticipant[] => {
+  return event.attendees.map((attendee, index) => {
+    const fallbackName = `Participant ${index + 1}`;
+    const fullName = attendee.alt?.trim() || fallbackName;
+    const [firstName, ...rest] = fullName.split(" ");
+
+    return {
+      id: `${event.id}-participant-${index + 1}`,
+      firstName: firstName || "Participant",
+      lastName: rest.join(" ") || `${index + 1}`,
+      avatarUrl: attendee.image,
+    };
+  });
+};
+
+const buildCalendarPayload = (event: Event, listingId: string) => {
+  const eventType = mapListingTypeToCalendarType(event);
+
+  return {
+    sourceEventId: event.id,
+    listingId,
+    title: event.title,
+    start_time: parseListingDateTime(event.date, event.time),
+    eventType,
+    participants: toParticipants(event),
+    externalUrl: event.externalUrl || DEFAULT_EVENT_URLS[eventType],
+    eventImageUrl: event.image,
+    attendeeCount: event.attendeeCount,
+    attendeeCountLabel: String(event.attendeeCount),
+  };
+};
+
+const toListingId = (pathname: string, queryString: string): string => {
+  if (!queryString) return pathname;
+  return `${pathname}?${queryString}`;
+};
+
+const getMatchedCalendarEventId = (
+  calendarEvents: CalendarEvent[],
+  listingEvent: Event,
+  listingId: string
+): string | null => {
+  const bySource = calendarEvents.find(
+    (calendarEvent) =>
+      calendarEvent.listingId === listingId &&
+      calendarEvent.sourceEventId === listingEvent.id
+  );
+
+  if (bySource?.id) {
+    return bySource.id;
+  }
+
+  const listingDate = parseListingDateTime(listingEvent.date, listingEvent.time);
+
+  const byDateAndTitle = calendarEvents.find(
+    (calendarEvent) =>
+      calendarEvent.listingId === listingId &&
+      calendarEvent.title === listingEvent.title &&
+      calendarEvent.year === listingDate.getFullYear() &&
+      calendarEvent.month === listingDate.getMonth() &&
+      calendarEvent.date === listingDate.getDate() &&
+      calendarEvent.time === listingEvent.time
+  );
+
+  return byDateAndTitle?.id || null;
+};
 
 const EventsCards = ({ id }: { id: string }) => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const queryString = searchParams.toString();
+  const listingId = useMemo(
+    () => toListingId(pathname, queryString),
+    [pathname, queryString]
+  );
+
+  const { events, createListingEvent, deleteEvent } = useCalendarEvents();
+  const [pendingSourceEventId, setPendingSourceEventId] = useState<string | null>(
+    null
+  );
+
+  const calendarEventIdBySource = useMemo(() => {
+    const ids = new Map<string, string>();
+    listingEvents.forEach((event) => {
+      const calendarEventId = getMatchedCalendarEventId(events, event, listingId);
+      if (calendarEventId) {
+        ids.set(event.id, calendarEventId);
+      }
+    });
+    return ids;
+  }, [events, listingId]);
+
+  const handleAddToCalendar = async (event: Event) => {
+    try {
+      setPendingSourceEventId(event.id);
+      const payload = buildCalendarPayload(event, listingId);
+      await createListingEvent(payload);
+    } catch (error) {
+      console.error("Failed to add listing event to calendar:", error);
+    } finally {
+      setPendingSourceEventId(null);
+    }
+  };
+
+  const handleRemoveFromCalendar = async (
+    event: Event,
+    calendarEventId: string
+  ) => {
+    try {
+      setPendingSourceEventId(event.id);
+      await deleteEvent(calendarEventId);
+    } catch (error) {
+      console.error("Failed to remove listing event from calendar:", error);
+    } finally {
+      setPendingSourceEventId(null);
+    }
+  };
+
   return (
     <CardWrapper id={id}>
       <div className="flex justify-between items-center mb-8 md:px-0">
@@ -26,9 +199,24 @@ const EventsCards = ({ id }: { id: string }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 md:px-0">
-        {events.map((event) => (
-          <EventCard key={event.id} event={event} />
-        ))}
+        {listingEvents.map((event) => {
+          const calendarEventId = calendarEventIdBySource.get(event.id) || null;
+          const isInCalendar = Boolean(calendarEventId);
+
+          return (
+            <EventCard
+              key={event.id}
+              event={event}
+              isInCalendar={isInCalendar}
+              isMutating={pendingSourceEventId === event.id}
+              onAddToCalendar={() => handleAddToCalendar(event)}
+              onRemoveFromCalendar={() => {
+                if (!calendarEventId) return Promise.resolve();
+                return handleRemoveFromCalendar(event, calendarEventId);
+              }}
+            />
+          );
+        })}
       </div>
     </CardWrapper>
   );

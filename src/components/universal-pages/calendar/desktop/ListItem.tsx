@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Event } from "../types/event";
+import { resolveListingUrl } from "../utils/resolveListingUrl";
 
 interface ListItemProps {
   date: number;
@@ -30,9 +31,9 @@ export const ListItem: React.FC<ListItemProps> = ({
 
   const handleViewListing = (event: Event, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (event.listingId) {
-      window.open(`/schools/listing`, '_blank');
-    }
+    const listingUrl = resolveListingUrl(event.listingId);
+    if (!listingUrl) return;
+    window.open(listingUrl, "_blank");
   };
 
   const handleDeleteClick = (event: Event, e: React.MouseEvent) => {

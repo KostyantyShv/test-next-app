@@ -19,6 +19,7 @@ export interface Event {
   year: number;
   externalUrl?: string;
   listingId?: string;
+  sourceEventId?: string;
   eventImageUrl?: string;
   participants?: EventParticipant[];
   hidden?: boolean;

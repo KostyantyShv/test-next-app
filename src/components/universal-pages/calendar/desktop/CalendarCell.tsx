@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { Event } from "../types/event";
 import Image from "next/image";
+import { resolveListingUrl } from "../utils/resolveListingUrl";
 
 interface CalendarCellProps {
   date: number;
@@ -29,7 +30,6 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
 }) => {
   const [showMore, setShowMore] = useState(false);
   const [timeHoveredId, setTimeHoveredId] = useState<string | null>(null);
-  const cellRef = useRef<HTMLDivElement>(null);
   const eventColorMap: Record<string, string> = {
     "zoom-meeting": "var(--event-zoom)",
     "zoom-webinar": "var(--event-zoom-webinar)",
@@ -67,10 +67,11 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
 
   const handleViewListing = (event: Event, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!event.listingId) return;
+    const listingUrl = resolveListingUrl(event.listingId);
+    if (!listingUrl) return;
 
     // Link directly to the Listing Details page for this event.
-    window.open(`/schools/listing/${event.listingId}`, "_blank");
+    window.open(listingUrl, "_blank");
   };
 
   const handleDeleteClick = (event: Event, e: React.MouseEvent) => {
@@ -87,12 +88,6 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
     }
   };
 
-  useEffect(() => {
-    if (cellRef.current && cellIndex !== undefined) {
-      (cellRef.current as any).__cellIndex = cellIndex;
-    }
-  }, [cellIndex]);
-
   const visibleEvents = events?.filter(e => !e.hidden) || [];
   const hiddenEvents = events?.filter(e => e.hidden) || [];
   const displayEvents = showMore ? [...visibleEvents, ...hiddenEvents] : visibleEvents;
@@ -101,7 +96,6 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
 
   return (
     <div
-      ref={cellRef}
       className={`calendar-cell flex flex-col min-h-[120px] p-2 gap-0.5 relative bg-[var(--surface-color)] ${isToday ? "border-2 border-[var(--active-green)]" : ""
         }`}
       style={needsPaddingForButton ? { paddingBottom: "32px" } : undefined}
