@@ -937,7 +937,7 @@ const Header: React.FC<HeaderProps> = ({
 
             {/* Mobile Filter Drawer */}
             {isFilterDrawerOpen && (
-              <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-[var(--surface-color)] rounded-t-[20px] z-[1001] shadow-[0_-8px_18px_var(--shadow-color)] flex flex-col">
+              <div className="fixed inset-x-0 bottom-0 h-[85vh] bg-[var(--surface-color)] rounded-t-[20px] z-[1001] shadow-[0_-8px_18px_var(--shadow-color)] flex flex-col">
                 <div className="p-4 border-b border-[var(--border-color)] flex justify-between items-center flex-shrink-0">
                   <h2 className="text-lg font-semibold text-[var(--bold-text)]">Filters</h2>
                   <button

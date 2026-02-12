@@ -80,9 +80,9 @@ export function MobileActionsDrawer({
       <div className="md:hidden">
         {/* No overlay here — Header's shared overlay is used when isOptionsDrawerOpen is true */}
         <div
-          className="fixed bottom-0 left-1/2 z-[1001] flex max-h-[85vh] w-full max-w-[420px] -translate-x-1/2 flex-col overflow-hidden rounded-t-[20px] bg-white shadow-[0_-8px_18px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-out"
+          className="fixed bottom-0 inset-x-0 z-[1001] flex max-h-[85vh] w-full flex-col overflow-hidden rounded-t-[20px] bg-white shadow-[0_-8px_18px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-out"
           style={{
-            transform: active ? "translateX(-50%) translateY(0)" : "translateX(-50%) translateY(100%)",
+            transform: active ? "translateY(0)" : "translateY(100%)",
             visibility: active ? "visible" : "hidden",
           }}
         >
@@ -113,9 +113,8 @@ export function MobileActionsDrawer({
                   onKeyDown={(e) =>
                     e.key === "Enter" && handleSortSelect(opt.value)
                   }
-                  className={`flex items-center px-4 py-3 transition-colors hover:bg-[#f5f5f7] ${
-                    sort === opt.value ? "bg-transparent" : ""
-                  }`}
+                  className={`flex items-center px-4 py-3 transition-colors hover:bg-[#f5f5f7] ${sort === opt.value ? "bg-transparent" : ""
+                    }`}
                 >
                   <div className="flex flex-1 items-center justify-between">
                     <span className="text-sm text-[#4A4A4A]">{opt.label}</span>
@@ -151,9 +150,8 @@ export function MobileActionsDrawer({
                   onKeyDown={(e) =>
                     e.key === "Enter" && handleSearchTypeSelect(opt.value)
                   }
-                  className={`flex items-center px-4 py-3 transition-colors hover:bg-[#f5f5f7] ${
-                    searchType === opt.value ? "bg-transparent" : ""
-                  }`}
+                  className={`flex items-center px-4 py-3 transition-colors hover:bg-[#f5f5f7] ${searchType === opt.value ? "bg-transparent" : ""
+                    }`}
                 >
                   <div className="flex flex-1 items-center justify-between">
                     <span className="text-sm text-[#4A4A4A]">{opt.label}</span>
@@ -184,34 +182,31 @@ export function MobileActionsDrawer({
                 {drawerLayouts.map(({ type, icon }) => {
                   const label = type.charAt(0).toUpperCase() + type.slice(1);
                   return (
-                  <button
-                    key={type}
-                    type="button"
-                    title={label}
-                    onClick={() => handleLayoutSelect(type)}
-                    className={`flex flex-col items-center justify-center rounded-lg border transition-all h-[72px] w-[72px] ${
-                      layout === type
-                        ? "border-[#0093B0] bg-[rgba(0,147,176,0.1)]"
-                        : "border-[rgba(0,0,0,0.1)] bg-white hover:bg-[#f5f5f7]"
-                    }`}
-                  >
-                    <span
-                      className={`mb-1 h-6 w-6 flex items-center justify-center ${
-                        layout === type ? "text-[#0093B0]" : "text-[#4A4A4A]"
-                      }`}
+                    <button
+                      key={type}
+                      type="button"
+                      title={label}
+                      onClick={() => handleLayoutSelect(type)}
+                      className={`flex flex-col items-center justify-center rounded-lg border transition-all h-[72px] w-[72px] ${layout === type
+                          ? "border-[#0093B0] bg-[rgba(0,147,176,0.1)]"
+                          : "border-[rgba(0,0,0,0.1)] bg-white hover:bg-[#f5f5f7]"
+                        }`}
                     >
-                      {icon}
-                    </span>
-                    <span
-                      className={`text-xs ${
-                        layout === type
-                          ? "text-[#0093B0] font-medium"
-                          : "text-[#4A4A4A]"
-                      }`}
-                    >
-                      {label}
-                    </span>
-                  </button>
+                      <span
+                        className={`mb-1 h-6 w-6 flex items-center justify-center ${layout === type ? "text-[#0093B0]" : "text-[#4A4A4A]"
+                          }`}
+                      >
+                        {icon}
+                      </span>
+                      <span
+                        className={`text-xs ${layout === type
+                            ? "text-[#0093B0] font-medium"
+                            : "text-[#4A4A4A]"
+                          }`}
+                      >
+                        {label}
+                      </span>
+                    </button>
                   );
                 })}
               </div>

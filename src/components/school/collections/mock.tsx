@@ -531,6 +531,17 @@ export const layouts = [
     ),
   },
   {
+    type: "magazine",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none">
+        <path
+          d="M3 5h18v14H3V5Zm2 2v10h7V7H5Zm9 0h5v2h-5V7Zm0 4h5v2h-5v-2Zm0 4h5v2h-5v-2Z"
+          fill="currentColor"
+        />
+      </svg>
+    ),
+  },
+  {
     type: "hybrid",
     icon: (
       <svg viewBox="0 0 24 24" fill="none">

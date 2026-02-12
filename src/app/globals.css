@@ -5312,6 +5312,304 @@ input[type="number"] {
   color: var(--text-default);
 }
 
+/* Collections page: unified status dropdown (colored dot + text + chevron, option list) */
+.school-edit-checklist .collections-status-trigger,
+.collections-status-trigger {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+.school-edit-checklist .collections-status-options,
+.collections-status-options {
+  padding: 8px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.school-edit-checklist .collections-status-option,
+.collections-status-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #4a4a4a;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+.school-edit-checklist .collections-status-option:hover,
+.collections-status-option:hover {
+  background-color: #f5f5f7;
+}
+
+/* Collections page: mobile table layout body (1:1 with reference HTML) */
+.collections-mobile-table-list.table-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.collections-mobile-table-list .table-row {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+.collections-mobile-table-list .row-header {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  gap: 10px;
+  position: relative;
+}
+.collections-mobile-table-list .expand-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: #F1F3F6;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+}
+.collections-mobile-table-list .expand-button:hover {
+  background: #E5E7EB;
+}
+.collections-mobile-table-list .expand-button svg {
+  stroke: #6b7280;
+}
+.collections-mobile-table-list .school-info {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+.collections-mobile-table-list .school-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  margin-right: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.collections-mobile-table-list .school-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.collections-mobile-table-list .school-name {
+  font-weight: 600;
+  color: #464646;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+.collections-mobile-table-list .ranking-text {
+  color: #089E68;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.collections-mobile-table-list .options-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: relative;
+}
+.collections-mobile-table-list .options-button:hover {
+  background-color: #F5F5F7;
+}
+.collections-mobile-table-list .row-body {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 12px 12px;
+  gap: 12px;
+}
+.collections-mobile-table-list .row-section {
+  flex: 1 0 45%;
+  min-width: 120px;
+}
+.collections-mobile-table-list .section-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #5F5F5F;
+  margin-bottom: 4px;
+  letter-spacing: 0.05em;
+}
+.collections-mobile-table-list .view-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.collections-mobile-table-list .view-link {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #F5F5F7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.2s ease;
+}
+.collections-mobile-table-list .view-link:hover {
+  background-color: #EBFCF4;
+}
+.collections-mobile-table-list .view-link svg {
+  width: 16px;
+  height: 16px;
+  color: #464646;
+}
+.collections-mobile-table-list .view-link[data-type="rating"] svg {
+  width: 18px;
+  height: 18px;
+}
+.collections-mobile-table-list .tooltip::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #333;
+}
+.collections-mobile-table-list .specialty-badge-small {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #F5F5F7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.2s ease;
+}
+.collections-mobile-table-list .specialty-badge-small:hover {
+  transform: translateY(-2px);
+}
+.collections-mobile-table-list .specialty-badge-small.hot {
+  background-color: rgba(255, 77, 77, 0.1);
+}
+.collections-mobile-table-list .specialty-badge-small.instant-book {
+  background-color: rgba(29, 119, 189, 0.1);
+}
+.collections-mobile-table-list .specialty-badge-small.sponsored {
+  background-color: rgba(255, 153, 0, 0.1);
+}
+.collections-mobile-table-list .specialty-badge-small svg {
+  width: 16px;
+  height: 16px;
+}
+.collections-mobile-table-list .status-dropdown {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  width: fit-content;
+  transform: scale(0.8);
+  transform-origin: left center;
+}
+.collections-mobile-table-list .status-dropdown:hover {
+  background-color: #F5F5F7;
+}
+.collections-mobile-table-list .status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.collections-mobile-table-list .status-text {
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.collections-mobile-table-list .status-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+.collections-mobile-table-list .status-dropdown .dropdown-arrow {
+  margin-left: 3px;
+  width: 10px;
+  height: 10px;
+}
+.collections-mobile-table-list .status-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 200px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 8px 0;
+  margin-top: 4px;
+  z-index: 100;
+  display: none;
+}
+.collections-mobile-table-list .status-dropdown.open .status-options {
+  display: block;
+}
+.collections-mobile-table-list .status-option {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #4A4A4A;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.collections-mobile-table-list .status-option:hover {
+  background-color: #F5F5F7;
+}
+.collections-mobile-table-list .status-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+.collections-mobile-table-list .rating-filter {
+  display: flex;
+  align-items: center;
+}
+.collections-mobile-table-list .rating-checkmark {
+  width: 20px;
+  height: 20px;
+  margin-right: 1px;
+  cursor: pointer;
+}
+.collections-mobile-table-list .rating-checkmark.active {
+  fill: #07bc44;
+}
+.collections-mobile-table-list .notes-count {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #5F5F5F;
+  cursor: pointer;
+}
+.collections-mobile-table-list .notes-count svg {
+  width: 16px;
+  height: 16px;
+  color: #089E68;
+}
+
 .school-edit-checklist .container {
   width: 1150px;
   max-width: 100%;
@@ -5872,6 +6170,533 @@ input[type="number"] {
   border-radius: 4px;
   font-weight: 500;
   font-size: 12px;
+}
+
+/* ===========================
+   School Edit: Checklist MOBILE (1:1 reference replica)
+   =========================== */
+.school-edit-checklist .checklist-mobile {
+  max-width: 100%;
+}
+
+.school-edit-checklist .checklist-mobile .mobile-screen {
+  height: 100%;
+  min-height: 60vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  background: var(--background-color);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.school-edit-checklist .checklist-mobile .mobile-screen::-webkit-scrollbar {
+  display: none;
+}
+
+.school-edit-checklist .checklist-mobile .mobile-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--mobile-screen-bg);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.school-edit-checklist .checklist-mobile .header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--header-green);
+  margin-bottom: 12px;
+}
+
+.school-edit-checklist .checklist-mobile .progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.school-edit-checklist .checklist-mobile .progress-bar-wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.school-edit-checklist .checklist-mobile .progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.school-edit-checklist .checklist-mobile .progress-bar .progress-fill-options,
+.school-edit-checklist .checklist-mobile .progress-bar .progress-fill-issues {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: width 0.3s ease;
+}
+
+.school-edit-checklist .checklist-mobile .progress-bar .progress-fill-options {
+  background: var(--header-green);
+  z-index: 1;
+}
+
+.school-edit-checklist .checklist-mobile .progress-bar .progress-fill-issues {
+  background: var(--error-color);
+  z-index: 2;
+}
+
+.school-edit-checklist .checklist-mobile .counts-container {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.school-edit-checklist .checklist-mobile .counts-container .options-count {
+  color: var(--header-green);
+}
+
+.school-edit-checklist .checklist-mobile .counts-container .issues-count {
+  color: var(--error-color);
+}
+
+.school-edit-checklist .checklist-mobile .controls-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.school-edit-checklist .checklist-mobile .toggle-controls-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.school-edit-checklist .checklist-mobile .view-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--subtle-text);
+}
+
+.school-edit-checklist .checklist-mobile .toggle-label {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.school-edit-checklist .checklist-mobile .toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.school-edit-checklist .checklist-mobile .toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.school-edit-checklist .checklist-mobile .toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #E5E7EB;
+  transition: 0.4s;
+  border-radius: 20px;
+}
+
+.school-edit-checklist .checklist-mobile .toggle-slider::before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.school-edit-checklist .checklist-mobile .toggle-switch input:checked + .toggle-slider {
+  background-color: var(--active-green);
+}
+
+.school-edit-checklist .checklist-mobile .toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(16px);
+}
+
+.school-edit-checklist .checklist-mobile .expand-dropdown {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.school-edit-checklist .checklist-mobile .expand-button {
+  padding: 6px 10px;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--dark-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.school-edit-checklist .checklist-mobile .expand-button svg {
+  width: 12px;
+  height: 12px;
+}
+
+.school-edit-checklist .checklist-mobile .expand-button:hover {
+  background: var(--apply-button-hover);
+}
+
+.school-edit-checklist .checklist-mobile .expand-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  min-width: 160px;
+  z-index: 10;
+  display: none;
+}
+
+.school-edit-checklist .checklist-mobile .expand-menu.active {
+  display: block;
+}
+
+.school-edit-checklist .checklist-mobile .expand-menu button {
+  width: 100%;
+  padding: 8px 12px;
+  text-align: left;
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: var(--dark-text);
+  cursor: pointer;
+}
+
+.school-edit-checklist .checklist-mobile .expand-menu button:hover {
+  background: var(--apply-button-hover);
+}
+
+.school-edit-checklist .checklist-mobile .section {
+  margin: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--mobile-screen-bg);
+}
+
+.school-edit-checklist .checklist-mobile .section-header {
+  padding: 12px;
+  background: var(--section-header-bg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.school-edit-checklist .checklist-mobile .section-header .header-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.school-edit-checklist .checklist-mobile .section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--header-green);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.school-edit-checklist .checklist-mobile .status-badge {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.school-edit-checklist .checklist-mobile .status-badge svg {
+  width: 10px;
+  height: 10px;
+}
+
+.school-edit-checklist .checklist-mobile .status-badge.status-success {
+  background: var(--success-bg);
+  color: var(--success-green);
+}
+
+.school-edit-checklist .checklist-mobile .status-badge.status-error {
+  background: var(--error-bg);
+  color: var(--error-color);
+}
+
+.school-edit-checklist .checklist-mobile .status-badge.status-incomplete {
+  background-color: var(--incomplete-bg);
+  color: var(--incomplete-color);
+}
+
+.school-edit-checklist .checklist-mobile .section-header .header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.school-edit-checklist .checklist-mobile .progress-circle {
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.school-edit-checklist .checklist-mobile .progress-circle svg {
+  transform: rotate(-90deg);
+  width: 20px;
+  height: 20px;
+}
+
+.school-edit-checklist .checklist-mobile .progress-circle circle {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.school-edit-checklist .checklist-mobile .progress-circle .bg {
+  stroke: #e5e7eb;
+}
+
+.school-edit-checklist .checklist-mobile .progress-circle .progress {
+  stroke: var(--header-green);
+  transition: stroke-dashoffset 0.3s ease;
+}
+
+.school-edit-checklist .checklist-mobile .chevron {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s;
+  color: var(--dark-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.school-edit-checklist .checklist-mobile .chevron svg {
+  width: 100%;
+  height: 100%;
+}
+
+.school-edit-checklist .checklist-mobile .section.expanded .chevron {
+  transform: rotate(180deg);
+}
+
+.school-edit-checklist .checklist-mobile .section-content {
+  display: none;
+  padding: 12px;
+  border-top: 1px solid var(--border-color);
+}
+
+.school-edit-checklist .checklist-mobile .section.expanded .section-content {
+  display: block;
+}
+
+.school-edit-checklist .checklist-mobile .checklist-item {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  background: var(--mobile-screen-bg);
+}
+
+.school-edit-checklist .checklist-mobile .checklist-item:last-child {
+  margin-bottom: 0;
+}
+
+.school-edit-checklist .checklist-mobile .checklist-item.expanded .item-details {
+  display: block;
+}
+
+.school-edit-checklist .checklist-mobile .item-header {
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 28px 1fr 24px;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.school-edit-checklist .checklist-mobile .item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.school-edit-checklist .checklist-mobile .item-icon svg {
+  width: 20px;
+  height: 20px;
+  color: var(--header-green);
+}
+
+.school-edit-checklist .checklist-mobile .item-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--bold-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.school-edit-checklist .checklist-mobile .item-expand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.school-edit-checklist .checklist-mobile .item-expand-icon svg {
+  width: 18px;
+  height: 18px;
+  color: var(--dark-text);
+  transition: transform 0.2s;
+}
+
+.school-edit-checklist .checklist-mobile .checklist-item.expanded .item-expand-icon svg {
+  transform: rotate(180deg);
+}
+
+.school-edit-checklist .checklist-mobile .item-action-row {
+  padding: 0 12px 12px 12px;
+}
+
+.school-edit-checklist .checklist-mobile .item-button,
+.school-edit-checklist .checklist-mobile .item-status {
+  padding: 8px 12px;
+  width: 100%;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.school-edit-checklist .checklist-mobile .item-button svg,
+.school-edit-checklist .checklist-mobile .item-status svg {
+  width: 14px;
+  height: 14px;
+}
+
+.school-edit-checklist .checklist-mobile .add-button {
+  background: var(--apply-button-bg);
+  border: 1px solid var(--border-color);
+  color: var(--header-green);
+}
+
+.school-edit-checklist .checklist-mobile .add-button:hover {
+  background: var(--apply-button-hover);
+}
+
+.school-edit-checklist .checklist-mobile .fix-button {
+  background: #F3F4F6;
+  border: 1px solid var(--border-color);
+  color: var(--dark-text);
+}
+
+.school-edit-checklist .checklist-mobile .fix-button:hover {
+  background: #E5E7EB;
+}
+
+.school-edit-checklist .checklist-mobile .item-status.status-completed {
+  background: var(--success-bg);
+  color: var(--success-green);
+  border: 1px solid var(--success-green);
+  cursor: default;
+}
+
+.school-edit-checklist .checklist-mobile .item-details {
+  display: none;
+  padding: 12px;
+  background: var(--item-details-bg);
+  border-top: 1px solid var(--border-color);
+}
+
+.school-edit-checklist .checklist-mobile .option-description,
+.school-edit-checklist .checklist-mobile .issue-description {
+  padding: 10px;
+  background: var(--mobile-screen-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-default);
+}
+
+.school-edit-checklist .checklist-mobile .affected-items {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.school-edit-checklist .checklist-mobile .affected-group {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border-color);
+}
+
+.school-edit-checklist .checklist-mobile .affected-title {
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: var(--bold-text);
+  font-size: 13px;
+}
+
+.school-edit-checklist .checklist-mobile .keyword-highlight {
+  background: var(--error-bg);
+  color: var(--error-color);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 11px;
+}
+
+.school-edit-checklist .checklist-mobile .missing-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
 }
 
 @media (max-width: 768px) {

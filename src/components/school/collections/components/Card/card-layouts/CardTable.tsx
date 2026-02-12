@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { CollectionsSchool, Note, RatingCheckmarks } from "../Card";
-import { useDisclosure } from "@/hooks/useDisclosure";
 import { NotesModal } from "../../modals/NotesModal";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
 
@@ -25,11 +25,45 @@ export const CardTable: React.FC<SchoolCardProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const {
-    isOpened: isStatusOpen,
-    ref: statusRef,
-    setIsOpened: setIsStatusOpen,
-  } = useDisclosure();
+  const [isStatusOpen, setIsStatusOpen] = useState(false);
+  const statusTriggerRef = useRef<HTMLDivElement | null>(null);
+  const portalRef = useRef<HTMLDivElement | null>(null);
+  const [portalPos, setPortalPos] = useState<{ top: number; left: number } | null>(null);
+
+  const updatePortalPosition = useCallback(() => {
+    if (statusTriggerRef.current) {
+      const rect = statusTriggerRef.current.getBoundingClientRect();
+      setPortalPos({
+        top: rect.bottom + window.scrollY + 4,
+        left: rect.left + window.scrollX,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as Node;
+      const clickedInsideTrigger = statusTriggerRef.current?.contains(target);
+      const clickedInsidePortal = portalRef.current?.contains(target);
+      if (!clickedInsideTrigger && !clickedInsidePortal) {
+        setIsStatusOpen(false);
+      }
+    };
+    document.addEventListener("click", handleOutsideClick);
+    return () => document.removeEventListener("click", handleOutsideClick);
+  }, []);
+
+  useEffect(() => {
+    if (isStatusOpen) {
+      updatePortalPosition();
+      window.addEventListener("scroll", updatePortalPosition, true);
+      window.addEventListener("resize", updatePortalPosition);
+      return () => {
+        window.removeEventListener("scroll", updatePortalPosition, true);
+        window.removeEventListener("resize", updatePortalPosition);
+      };
+    }
+  }, [isStatusOpen, updatePortalPosition]);
   const truncateText = (
     text: string | undefined,
     maxLength: number,
@@ -56,7 +90,7 @@ export const CardTable: React.FC<SchoolCardProps> = ({
 
   const handleStatusChange = (status: string): void => {
     onStatusChange(index, status);
-    setIsStatusOpen(true);
+    setIsStatusOpen(false);
   };
 
   const specialtyIcons: Record<string, React.ReactElement> = {
@@ -98,22 +132,20 @@ export const CardTable: React.FC<SchoolCardProps> = ({
   const specialtyIcon = school.specialty ? specialtyIcons[school.specialty] : null;
   const specialtyBadgeSmall = school.specialty && specialtyIcon ? (
     <div
-      className={`specialty-badge-small flex items-center justify-center w-8 h-8 rounded-full border-2 border-white relative group ${
-        school.specialty === "hot"
+      className={`specialty-badge-small flex items-center justify-center w-8 h-8 rounded-full border-2 border-white relative group ${school.specialty === "hot"
           ? "bg-[rgba(255,77,77,0.1)]"
           : school.specialty === "instant-book"
-          ? "bg-[rgba(29,119,189,0.1)]"
-          : "bg-[rgba(255,153,0,0.1)]"
-      } hover:-translate-y-0.5 transition-all duration-200`}
+            ? "bg-[rgba(29,119,189,0.1)]"
+            : "bg-[rgba(255,153,0,0.1)]"
+        } hover:-translate-y-0.5 transition-all duration-200`}
     >
       {React.cloneElement(specialtyIcon as React.ReactElement<{ className?: string }>, {
-        className: `fill-current ${
-          school.specialty === "hot"
+        className: `fill-current ${school.specialty === "hot"
             ? "text-[#FF4D4D]"
             : school.specialty === "instant-book"
-            ? "text-[#1D77BD]"
-            : "text-[#FF9900]"
-        }`,
+              ? "text-[#1D77BD]"
+              : "text-[#FF9900]"
+          }`,
       })}
       <div className="tooltip absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-[#333] text-white text-xs rounded px-2.5 py-1.5 whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-10">
         {specialtyText[school.specialty] || school.specialty}
@@ -147,9 +179,8 @@ export const CardTable: React.FC<SchoolCardProps> = ({
                   strokeWidth="2"
                   viewBox="0 0 24 24"
                   fill="none"
-                  className={`stroke-[#6b7280] transition-transform duration-200 ${
-                    isExpanded ? "rotate-180" : ""
-                  }`}
+                  className={`stroke-[#6b7280] transition-transform duration-200 ${isExpanded ? "rotate-180" : ""
+                    }`}
                 >
                   <path
                     d="M19 9l-7 7-7-7"
@@ -267,6 +298,7 @@ export const CardTable: React.FC<SchoolCardProps> = ({
             </td>
             <td className="p-4 bg-white border-b border-[#e5e7eb]">
               <div
+                ref={statusTriggerRef}
                 onClick={toggleStatusDropdown}
                 className={`status-dropdown relative cursor-pointer flex items-start px-2.5 py-1.5 rounded transition-all duration-200 hover:bg-[#F5F5F7] `}
                 data-school-id={index}
@@ -299,36 +331,61 @@ export const CardTable: React.FC<SchoolCardProps> = ({
                     />
                   </svg>
                 </div>
-                <div
-                  ref={statusRef}
-                  className={`status-options absolute top-full left-0 w-[200px] bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.15)] p-2 mt-1 z-[1000] transition-all duration-200 ${
-                    isStatusOpen ? "opacity-100 visible" : "opacity-0 invisible"
-                  }`}
-                >
-                  {[
-                    { status: "Researching", color: "#395da0" },
-                    { status: "Scheduled Tour", color: "#008ac2" },
-                    { status: "Visited Campus", color: "#00817c" },
-                    { status: "Started Application", color: "#009666" },
-                    { status: "Applied", color: "#068c2e" },
-                    { status: "Accepted", color: "#4f8a2a" },
-                    { status: "Enrolled", color: "#e27800" },
-                    { status: "", color: "#787878", label: "Clear Status" },
-                  ].map(({ status, color, label }) => (
+                {isStatusOpen && portalPos && createPortal(
+                  <div
+                    ref={portalRef}
+                    style={{
+                      position: 'absolute',
+                      top: portalPos.top,
+                      left: portalPos.left,
+                      zIndex: 99999,
+                    }}
+                  >
                     <div
-                      key={status || "clear"}
-                      className="status-option flex items-center px-3 py-2 text-sm text-[#4A4A4A] cursor-pointer hover:bg-[#F5F5F7] transition-all duration-200"
-                      data-status={status}
-                      onClick={() => handleStatusChange(status)}
+                      style={{
+                        width: 200,
+                        background: 'white',
+                        borderRadius: 8,
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        padding: '8px 0',
+                      }}
                     >
-                      <div
-                        className="status-color w-3 h-3 rounded-full mr-2"
-                        style={{ backgroundColor: color }}
-                      />
-                      <span>{label || status}</span>
+                      {[
+                        { status: "Researching", color: "#395da0" },
+                        { status: "Scheduled Tour", color: "#008ac2" },
+                        { status: "Visited Campus", color: "#00817c" },
+                        { status: "Started Application", color: "#009666" },
+                        { status: "Applied", color: "#068c2e" },
+                        { status: "Accepted", color: "#4f8a2a" },
+                        { status: "Enrolled", color: "#e27800" },
+                        { status: "", color: "#787878", label: "Clear Status" },
+                      ].map(({ status, color, label }) => (
+                        <div
+                          key={status || "clear"}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            padding: '8px 12px',
+                            fontSize: 14,
+                            color: '#4A4A4A',
+                            cursor: 'pointer',
+                            transition: 'background 0.2s ease',
+                          }}
+                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F5F5F7')}
+                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                          data-status={status}
+                          onClick={(e) => { e.stopPropagation(); handleStatusChange(status); }}
+                        >
+                          <div
+                            style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: color, marginRight: 8, flexShrink: 0 }}
+                          />
+                          <span>{label || status}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>,
+                  document.body
+                )}
               </div>
             </td>
             <td className="p-4 bg-white border-b border-[#e5e7eb]">

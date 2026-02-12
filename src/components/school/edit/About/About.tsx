@@ -202,7 +202,364 @@ const About: React.FC = () => {
   };
 
   return (
-    <div className="py-6 max-md:py-0 w-full flex justify-center" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif' }}>
+    <>
+      <div
+        className="md:hidden"
+        style={{
+          backgroundColor: "#E1E7EE",
+          fontFamily:
+            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
+        }}
+      >
+        <form onSubmit={handleSubmit}>
+          <div className="px-4 pt-4 pb-0">
+            <h1
+              className="mb-2 text-2xl font-semibold"
+              style={{ color: "#464646" }}
+            >
+              About
+            </h1>
+            <p
+              className="mb-4 text-sm leading-[1.6]"
+              style={{ color: "#5F5F5F" }}
+            >
+              Share information about your institution, qualifications, and
+              areas of expertise to establish credibility and build connections
+              with your audience.
+            </p>
+
+            <div
+              className="mb-4 rounded-lg bg-white p-4"
+              style={{ boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}
+            >
+              <h2
+                className="mb-3 border-b pb-2 text-base font-semibold"
+                style={{ color: "#464646", borderBottomColor: "#EBFCF4" }}
+              >
+                Profile Avatar
+              </h2>
+              <div className="flex flex-col items-center gap-4">
+                <div
+                  className="h-[100px] w-[100px] overflow-hidden rounded-full border-4 border-white"
+                  style={{ boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}
+                >
+                  <Image
+                    src={avatarSrc}
+                    alt="Profile Avatar"
+                    width={100}
+                    height={100}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={handleAvatarUpload}
+                  className="flex items-center gap-2 rounded border px-4 py-2 text-sm"
+                  style={{
+                    backgroundColor: "#f5f5f5",
+                    borderColor: "#ddd",
+                    color: "#4A4A4A",
+                  }}
+                >
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+                    <path
+                      fill="#4A4A4A"
+                      d="M11 14.9861C11 15.5384 11.4477 15.9861 12 15.9861C12.5523 15.9861 13 15.5384 13 14.9861V7.82831L16.2428 11.0711C16.6333 11.4616 17.2665 11.4616 17.657 11.0711C18.0475 10.6806 18.0475 10.0474 17.657 9.65692L12.7071 4.70701C12.3166 4.31649 11.6834 4.31649 11.2929 4.70701L6.34315 9.65692C5.95262 10.0474 5.95262 10.6806 6.34315 11.0711C6.73367 11.4616 7.36684 11.4616 7.75736 11.0711L11 7.82831V14.9861Z"
+                      clipRule="evenodd"
+                      fillRule="evenodd"
+                    ></path>
+                    <path
+                      fill="#4A4A4A"
+                      d="M3 14C3 13.4477 3.44772 13 4 13C4.55228 13 5 13.4477 5 14V18C5 18.5523 5.44772 19 6 19H18C18.5523 19 19 18.5523 19 18V14C19 13.4477 19.4477 13 20 13C20.5523 13 21 13.4477 21 14V18C21 19.6569 19.6569 21 18 21H6C4.34315 21 3 19.6569 3 18V14Z"
+                      clipRule="evenodd"
+                      fillRule="evenodd"
+                    ></path>
+                  </svg>
+                  Choose Image
+                </button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className="hidden"
+                  accept="image/*"
+                />
+                <div className="text-center text-xs" style={{ color: "#5F5F5F" }}>
+                  Recommended size: 250x250 pixels
+                </div>
+              </div>
+            </div>
+
+            <div
+              className="mb-4 rounded-lg bg-white p-4"
+              style={{ boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}
+            >
+              <h2
+                className="mb-3 border-b pb-2 text-base font-semibold"
+                style={{ color: "#464646", borderBottomColor: "#EBFCF4" }}
+              >
+                Achievements/Badges
+              </h2>
+              <div className="mb-3 flex flex-wrap gap-2">
+                {badges.map((badge, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-1 rounded-[20px] px-[10px] py-1.5 text-xs"
+                    style={{ backgroundColor: "#EBFCF4", color: "#016853" }}
+                  >
+                    <span>{badge.text}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveBadge(index)}
+                      className="text-sm font-semibold"
+                      style={{ color: "#016853" }}
+                    >
+                      &times;
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newBadge}
+                  onChange={(e) => setNewBadge(e.target.value)}
+                  placeholder="Add new achievement badge"
+                  className="flex-1 rounded border px-3 py-2 text-sm"
+                  style={{ borderColor: "#ddd" }}
+                />
+                <button
+                  type="button"
+                  onClick={handleAddBadge}
+                  className="rounded border-none px-3 py-2 text-sm font-semibold"
+                  style={{ backgroundColor: "#EBFCF4", color: "#016853" }}
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+
+            <div
+              className="mb-4 rounded-lg bg-white p-4"
+              style={{ boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}
+            >
+              <h2
+                className="mb-3 border-b pb-2 text-base font-semibold"
+                style={{ color: "#464646", borderBottomColor: "#EBFCF4" }}
+              >
+                Contact Information
+              </h2>
+              <div className="mb-[14px]">
+                <label
+                  className="mb-1.5 block text-[13px] font-semibold"
+                  style={{ color: "#5F5F5F" }}
+                >
+                  Joined Date
+                </label>
+                <input
+                  type="text"
+                  id="joinedDate-mobile"
+                  value={contactInfo.joinedDate}
+                  readOnly
+                  onFocus={(e) => e.target.blur()}
+                  className="w-full rounded border px-3 py-2.5 text-sm"
+                  style={{
+                    borderColor: "#ddd",
+                    backgroundColor: "#f8f9fa",
+                    color: "#5F5F5F",
+                  }}
+                />
+              </div>
+              <div className="mb-[14px]">
+                <label
+                  className="mb-1.5 block text-[13px] font-semibold"
+                  style={{ color: "#4A4A4A" }}
+                >
+                  Location
+                </label>
+                <input
+                  type="text"
+                  id="location"
+                  value={contactInfo.location}
+                  onChange={handleContactChange}
+                  className="w-full rounded border px-3 py-2.5 text-sm"
+                  style={{ borderColor: "#ddd" }}
+                />
+              </div>
+              <div className="mb-[14px]">
+                <label
+                  className="mb-1.5 block text-[13px] font-semibold"
+                  style={{ color: "#4A4A4A" }}
+                >
+                  Website
+                </label>
+                <input
+                  type="text"
+                  id="website"
+                  value={contactInfo.website}
+                  onChange={handleContactChange}
+                  className="w-full rounded border px-3 py-2.5 text-sm"
+                  style={{ borderColor: "#ddd" }}
+                />
+              </div>
+              <div>
+                <label
+                  className="mb-1.5 block text-[13px] font-semibold"
+                  style={{ color: "#4A4A4A" }}
+                >
+                  Phone
+                </label>
+                <input
+                  type="text"
+                  id="phone"
+                  value={contactInfo.phone}
+                  onChange={handleContactChange}
+                  className="w-full rounded border px-3 py-2.5 text-sm"
+                  style={{ borderColor: "#ddd" }}
+                />
+              </div>
+            </div>
+
+            <div
+              className="mb-4 rounded-lg bg-white p-4"
+              style={{ boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}
+            >
+              <h2
+                className="mb-3 border-b pb-2 text-base font-semibold"
+                style={{ color: "#464646", borderBottomColor: "#EBFCF4" }}
+              >
+                Social Media
+              </h2>
+              <div className="mb-3 flex flex-col gap-2">
+                {socialMedia.map((social, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-2 rounded px-3 py-2 text-[13px]"
+                    style={{ backgroundColor: "#f5f5f5" }}
+                  >
+                    <span
+                      className="shrink-0 font-semibold"
+                      style={{ color: "#4A4A4A" }}
+                    >
+                      {socialLabels[social.type]}
+                    </span>
+                    <span
+                      className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
+                      style={{ color: "#346DC2" }}
+                    >
+                      {formatUrl(social.url)}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSocial(index)}
+                      className="shrink-0 text-sm"
+                      style={{ color: "#5F5F5F" }}
+                    >
+                      &times;
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-col gap-2">
+                <select
+                  value={newSocialType}
+                  onChange={(e) => setNewSocialType(e.target.value)}
+                  className="w-full appearance-none rounded border bg-no-repeat px-3 py-2 pr-[30px] text-sm"
+                  style={{
+                    borderColor: "#ddd",
+                    backgroundImage:
+                      "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235F5F5F' width='18px' height='18px'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E\")",
+                    backgroundPosition: "right 10px center",
+                  }}
+                >
+                  <option value="">-- Select Social Media --</option>
+                  <option value="twitter">Twitter (X)</option>
+                  <option value="facebook">Facebook</option>
+                  <option value="instagram">Instagram</option>
+                  <option value="linkedin">LinkedIn</option>
+                  <option value="youtube">YouTube</option>
+                  <option value="tiktok">TikTok</option>
+                </select>
+                <input
+                  type="text"
+                  value={newSocialUrl}
+                  onChange={(e) => setNewSocialUrl(e.target.value)}
+                  placeholder="Enter profile URL"
+                  className="w-full rounded border px-3 py-2 text-sm"
+                  style={{ borderColor: "#ddd" }}
+                />
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={handleAddSocial}
+                    className="rounded border-none px-3 py-2 text-sm font-semibold"
+                    style={{ backgroundColor: "#EBFCF4", color: "#016853" }}
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className="mb-0 rounded-lg bg-white p-4"
+              style={{ boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}
+            >
+              <h2
+                className="mb-3 border-b pb-2 text-base font-semibold"
+                style={{ color: "#464646", borderBottomColor: "#EBFCF4" }}
+              >
+                Areas of Expertise
+              </h2>
+              <div
+                className="mb-5 flex min-h-[44px] flex-wrap gap-2 rounded border p-[10px]"
+                style={{ borderColor: "#ddd" }}
+              >
+                {expertise.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="flex items-center gap-1.5 rounded px-[10px] py-1 text-xs"
+                    style={{ backgroundColor: "#EBFCF4", color: "#016853" }}
+                  >
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTag(index)}
+                      className="text-sm font-semibold"
+                      style={{ color: "#016853" }}
+                    >
+                      &times;
+                    </button>
+                  </span>
+                ))}
+                <input
+                  type="text"
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                  onKeyDown={handleAddTag}
+                  placeholder="Type and press Enter"
+                  className="min-w-[60px] flex-1 border-none bg-transparent py-1 text-[13px] outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            className="sticky bottom-0 px-4 pb-4 pt-3"
+            style={{ backgroundColor: "#E1E7EE" }}
+          >
+            <button
+              type="submit"
+              className="w-full rounded border-none px-5 py-3 text-sm font-semibold text-white"
+              style={{ backgroundColor: "#016853" }}
+            >
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div className="py-6 w-full max-md:hidden flex justify-center" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif' }}>
       <div className="w-full flex max-md:flex-col gap-6">
         {/* Desktop Header */}
         <div className="max-w-[350px] max-md:hidden">
@@ -550,7 +907,8 @@ const About: React.FC = () => {
           </form>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

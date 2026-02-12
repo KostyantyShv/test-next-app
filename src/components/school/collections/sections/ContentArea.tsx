@@ -8,11 +8,16 @@ import {
 import MapContainer from "../../explore/main-content/MapContainer";
 import { School } from "../../explore/types";
 import { CardList } from "../components/Card/card-layouts/CardList";
-import { CardGrid } from "../components/Card/card-layouts/CardGrid";
 import { CardHybrid } from "../components/Card/card-layouts/CardHybrid";
 import { CardTable } from "../components/Card/card-layouts/CardTable";
+import { CardGrid } from "../components/Card/card-layouts/CardGrid";
 import { CardCard } from "../components/Card/card-layouts/CardCard";
 import { CardClassic } from "../components/Card/card-layouts/CardClassic";
+import { CardGridMobile } from "../components/Card/card-layouts/CardGridMobile";
+import { CardListMobile } from "../components/Card/card-layouts/CardListMobile";
+import { CardMagazine } from "../components/Card/card-layouts/CardMagazine";
+import { CardMagazineMobile } from "../components/Card/card-layouts/CardMagazineMobile";
+import { CardTableMobile } from "../components/Card/card-layouts/CardTableMobile";
 
 interface ContentAreaProps {
   isMapActive: boolean;
@@ -93,8 +98,8 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
           const newId =
             newData[currentSchoolId].notes.length > 0
               ? Math.max(
-                  ...newData[currentSchoolId].notes.map((note) => note.id)
-                ) + 1
+                ...newData[currentSchoolId].notes.map((note) => note.id)
+              ) + 1
               : 1;
           newData[currentSchoolId].notes.push({
             id: newId,
@@ -142,6 +147,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
     list: 4,
     hybrid: 4,
     classic: 8,
+    magazine: 4,
   };
 
   // Match Explore behavior: grid columns change when map is open (and "card" behaves like grid for sizing).
@@ -161,6 +167,55 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
     return isMapActive
       ? "grid-cols-2 max-[900px]:grid-cols-1"
       : "grid-cols-4 max-[1200px]:grid-cols-3 max-[1000px]:grid-cols-2 max-[800px]:grid-cols-1";
+  };
+
+  const handleCreateNoteDirect = (schoolIndex: number, text: string) => {
+    if (!text.trim()) return;
+    setSchoolData((prev) => {
+      const next = [...prev];
+      const notes = next[schoolIndex].notes ?? [];
+      const newId =
+        notes.length > 0 ? Math.max(...notes.map((note) => note.id)) + 1 : 1;
+      notes.push({
+        id: newId,
+        author: "You",
+        content: text.trim(),
+        timestamp: "Just now",
+        time: "0:00",
+      });
+      next[schoolIndex].notes = notes;
+      return next;
+    });
+  };
+
+  const handleEditNoteDirect = (
+    schoolIndex: number,
+    noteId: number,
+    text: string
+  ) => {
+    if (!text.trim()) return;
+    setSchoolData((prev) => {
+      const next = [...prev];
+      const idx = next[schoolIndex].notes.findIndex((note) => note.id === noteId);
+      if (idx !== -1) {
+        next[schoolIndex].notes[idx] = {
+          ...next[schoolIndex].notes[idx],
+          content: text.trim(),
+          timestamp: "Just now",
+        };
+      }
+      return next;
+    });
+  };
+
+  const handleDeleteNoteDirect = (schoolIndex: number, noteId: number) => {
+    setSchoolData((prev) => {
+      const next = [...prev];
+      next[schoolIndex].notes = next[schoolIndex].notes.filter(
+        (note) => note.id !== noteId
+      );
+      return next;
+    });
   };
 
   // Keep map prop shape identical to Explore map component (even though we render collections cards).
@@ -184,59 +239,119 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
   }));
 
   return (
-    <div className="flex flex-col md:flex-row items-start min-h-[400px] min-w-0">
+    <div className="flex min-h-[400px] min-w-0 flex-col items-stretch md:flex-row md:items-start">
       <div
-        className={`flex-1 min-w-0 p-6 transition-all duration-300 ${
-          isMapExpanded ? "hidden" : ""
-        }`}
+        className={`min-w-0 flex-1 p-0 transition-all duration-300 md:p-6 ${isMapExpanded ? "hidden" : ""
+          }`}
         aria-hidden={isMapExpanded}
       >
         <div
-          className={`grid gap-6 min-w-0 ${
-            layout === "card" ? getExploreLikeGridCols("grid") : "hidden"
-          }`}
+          className={`min-w-0 ${layout === "card"
+              ? "flex flex-col gap-4 py-4 px-3 md:grid md:gap-6 md:px-0 md:py-0 md:[grid-template-columns:repeat(auto-fill,minmax(250px,1fr))]"
+              : "hidden"
+            }`}
         >
           {schoolData
-            .slice(0, cardCounts.grid)
+            .slice(0, cardCounts.classic)
             .map((school: CollectionsSchool, i: number) => (
-              <CardGrid
-                key={i}
-                school={school}
-                index={i}
-                layout={layout}
-                onRatingChange={handleRatingChange}
-                onStatusChange={handleStatusChange}
-                onCreateNote={handleCreateNote}
-                onEditNote={handleEditNote}
-                onDeleteNote={handleDeleteNote}
-              />
+              <React.Fragment key={i}>
+                <div className="w-full md:hidden">
+                  <CardGridMobile
+                    school={school}
+                    index={i}
+                    onRatingChange={handleRatingChange}
+                    onStatusChange={handleStatusChange}
+                    onCreateNoteDirect={handleCreateNoteDirect}
+                    onEditNoteDirect={handleEditNoteDirect}
+                    onDeleteNoteDirect={handleDeleteNoteDirect}
+                  />
+                </div>
+                <div className="hidden h-full md:block">
+                  <CardCard
+                    school={school}
+                    index={i}
+                    layout="card"
+                    onRatingChange={handleRatingChange}
+                    onStatusChange={handleStatusChange}
+                    onCreateNote={handleCreateNote}
+                    onEditNote={handleEditNote}
+                    onDeleteNote={handleDeleteNote}
+                  />
+                </div>
+              </React.Fragment>
             ))}
         </div>
         <div
-          className={`flex flex-col gap-4 min-w-0 ${
-            layout === "list" ? "block" : "hidden"
-          }`}
+          className={`flex flex-col gap-4 min-w-0 ${layout === "list" ? "py-4 pl-4 pr-5 md:py-0 md:pl-0 md:pr-0 block" : "hidden"
+            }`}
         >
           {schoolData
             .slice(0, cardCounts.list)
             .map((school: CollectionsSchool, i: number) => (
-              <CardList
-                key={i}
-                school={school}
-                index={i}
-                layout={layout}
-                onRatingChange={handleRatingChange}
-                onStatusChange={handleStatusChange}
-                onCreateNote={handleCreateNote}
-                onEditNote={handleEditNote}
-                onDeleteNote={handleDeleteNote}
-              />
+              <React.Fragment key={i}>
+                <div className="w-full md:hidden">
+                  <CardListMobile
+                    school={school}
+                    index={i}
+                    onRatingChange={handleRatingChange}
+                    onStatusChange={handleStatusChange}
+                    onCreateNoteDirect={handleCreateNoteDirect}
+                    onEditNoteDirect={handleEditNoteDirect}
+                    onDeleteNoteDirect={handleDeleteNoteDirect}
+                  />
+                </div>
+                <div className="hidden md:block">
+                  <CardList
+                    school={school}
+                    index={i}
+                    layout={layout}
+                    onRatingChange={handleRatingChange}
+                    onStatusChange={handleStatusChange}
+                    onCreateNote={handleCreateNote}
+                    onEditNote={handleEditNote}
+                    onDeleteNote={handleDeleteNote}
+                  />
+                </div>
+              </React.Fragment>
             ))}
         </div>
         <div
-          className={`grid gap-6 min-w-0 ${
-            layout === "hybrid" ? getExploreLikeGridCols("hybrid") : "hidden"
-          }`}
+          className={`flex flex-col gap-4 min-w-0 ${layout === "magazine" ? "py-4 pl-4 pr-5 md:py-0 md:pl-0 md:pr-0 block" : "hidden"
+            }`}
+        >
+          {schoolData
+            .slice(0, cardCounts.magazine)
+            .map((school: CollectionsSchool, i: number) => (
+              <React.Fragment key={i}>
+                <div className="w-full md:hidden">
+                  <CardMagazineMobile
+                    school={school}
+                    index={i}
+                    onRatingChange={handleRatingChange}
+                    onStatusChange={handleStatusChange}
+                    onCreateNoteDirect={handleCreateNoteDirect}
+                    onEditNoteDirect={handleEditNoteDirect}
+                    onDeleteNoteDirect={handleDeleteNoteDirect}
+                  />
+                </div>
+                <div className="hidden md:block">
+                  <CardMagazine
+                    school={school}
+                    index={i}
+                    layout={layout}
+                    onRatingChange={handleRatingChange}
+                    onStatusChange={handleStatusChange}
+                    onCreateNote={handleCreateNote}
+                    onEditNote={handleEditNote}
+                    onDeleteNote={handleDeleteNote}
+                  />
+                </div>
+              </React.Fragment>
+            ))}
+        </div>
+        <div
+          className={`grid gap-6 min-w-0 ${layout === "hybrid" ? getExploreLikeGridCols("hybrid") : "hidden"
+            }`}
         >
           {schoolData
             .slice(0, cardCounts.hybrid)
@@ -254,30 +369,42 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
               />
             ))}
         </div>
-        <div
-          className={`grid gap-6 min-w-0 ${
-            layout === "table" ? "grid-cols-1" : "hidden"
-          }`}
-        >
-          {schoolData
-            .slice(0, cardCounts.classic)
-            .map((school: CollectionsSchool, i: number) => (
-              <CardTable
-                key={i}
-                school={school}
-                index={i}
+        {/* Table layout: mobile = table-list body (CardTableMobile); desktop = existing table rows (CardTable). Header unchanged. */}
+        {layout === "table" ? (
+          <>
+            <div className="min-w-0 md:hidden">
+              <CardTableMobile
+                schools={schoolData.slice(0, cardCounts.classic)}
                 onRatingChange={handleRatingChange}
                 onStatusChange={handleStatusChange}
                 onCreateNote={handleCreateNote}
                 onEditNote={handleEditNote}
                 onDeleteNote={handleDeleteNote}
               />
-            ))}
-        </div>
+            </div>
+            <div
+              className={`grid gap-6 min-w-0 hidden md:grid grid-cols-1`}
+            >
+              {schoolData
+                .slice(0, cardCounts.classic)
+                .map((school: CollectionsSchool, i: number) => (
+                  <CardTable
+                    key={i}
+                    school={school}
+                    index={i}
+                    onRatingChange={handleRatingChange}
+                    onStatusChange={handleStatusChange}
+                    onCreateNote={handleCreateNote}
+                    onEditNote={handleEditNote}
+                    onDeleteNote={handleDeleteNote}
+                  />
+                ))}
+            </div>
+          </>
+        ) : null}
         <div
-          className={`grid gap-6 min-w-0 ${
-            layout === "classic" ? getExploreLikeGridCols("classic") : "hidden"
-          }`}
+          className={`grid gap-6 min-w-0 ${layout === "classic" ? getExploreLikeGridCols("classic") : "hidden"
+            }`}
         >
           {schoolData
             .slice(0, cardCounts.classic)
@@ -296,24 +423,39 @@ const ContentArea: React.FC<ContentAreaProps> = ({ isMapActive, layout }) => {
             ))}
         </div>
         <div
-          className={`grid gap-6 min-w-0 ${
-            layout === "grid" ? getExploreLikeGridCols("grid") : "hidden"
-          }`}
+          className={`min-w-0 ${layout === "grid"
+              ? "flex flex-col gap-4 py-4 px-3 md:grid md:gap-6 md:px-0 md:py-0 md:[grid-template-columns:repeat(auto-fill,minmax(250px,1fr))]"
+              : "hidden"
+            }`}
         >
           {schoolData
             .slice(0, cardCounts.classic)
             .map((school: CollectionsSchool, i: number) => (
-              <CardCard
-                key={i}
-                school={school}
-                index={i}
-                layout={layout}
-                onRatingChange={handleRatingChange}
-                onStatusChange={handleStatusChange}
-                onCreateNote={handleCreateNote}
-                onEditNote={handleEditNote}
-                onDeleteNote={handleDeleteNote}
-              />
+              <React.Fragment key={i}>
+                <div className="w-full md:hidden">
+                  <CardGridMobile
+                    school={school}
+                    index={i}
+                    onRatingChange={handleRatingChange}
+                    onStatusChange={handleStatusChange}
+                    onCreateNoteDirect={handleCreateNoteDirect}
+                    onEditNoteDirect={handleEditNoteDirect}
+                    onDeleteNoteDirect={handleDeleteNoteDirect}
+                  />
+                </div>
+                <div className="hidden h-full md:block">
+                  <CardGrid
+                    school={school}
+                    index={i}
+                    layout={layout}
+                    onRatingChange={handleRatingChange}
+                    onStatusChange={handleStatusChange}
+                    onCreateNote={handleCreateNote}
+                    onEditNote={handleEditNote}
+                    onDeleteNote={handleDeleteNote}
+                  />
+                </div>
+              </React.Fragment>
             ))}
         </div>
       </div>

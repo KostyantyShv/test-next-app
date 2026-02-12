@@ -117,7 +117,6 @@ const FiltersWrapper: React.FC<FiltersWrapperProps> = ({
       <div 
         className="hidden md:block w-full mb-5 bg-white rounded-xl border border-[rgba(0,0,0,0.1)]"
         style={{
-          maxWidth: '1055px',
           padding: '16px 32px',
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
         }}

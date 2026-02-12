@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { CollectionsSchool, Note, RatingCheckmarks, truncateText } from "../Card";
 import Image from "next/image";
+import { CollectionsSchool, Note, RatingCheckmarks, truncateText } from "../Card";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
 
 const STATUS_OPTIONS = [
@@ -61,7 +61,7 @@ const specialtyText = (specialty?: string) => {
   return "";
 };
 
-export const CardList: React.FC<{
+export const CardMagazine: React.FC<{
   school: CollectionsSchool;
   index: number;
   layout: string;
@@ -125,135 +125,112 @@ export const CardList: React.FC<{
     const statusColor = getStatusColor(school.status);
 
     return (
-      <div className="relative z-[1]" data-layout={_layout}>
-        <div className="flex w-full rounded-xl border border-[#E5E7EB] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] overflow-visible max-[1024px]:flex-col">
-          <div className="relative flex w-[280px] shrink-0 flex-col pt-6 pr-6 max-[1024px]:w-full max-[1024px]:p-6">
-            {school.specialty ? (
-              <div
-                className={`absolute left-6 top-9 z-[2] flex h-8 items-center rounded-2xl bg-white px-3 text-xs font-medium shadow-[0_2px_4px_rgba(0,0,0,0.1)] ${school.specialty === "hot"
-                  ? "text-[#FF4D4D]"
-                  : school.specialty === "instant-book"
-                    ? "text-[#1D77BD]"
-                    : "text-[#FF9900]"
-                  }`}
-              >
-                {specialtyIcon(school.specialty)}
-                <span className="ml-1">{specialtyText(school.specialty)}</span>
-              </div>
-            ) : null}
+      <div className="relative z-[1] w-full" data-layout={_layout}>
+        <div className="relative z-[1] flex min-h-[280px] w-full overflow-visible rounded-xl border border-[#E5E7EB] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
+          <div className="flex min-w-0 flex-1 flex-col justify-between overflow-visible p-6">
+            <div className="flex-1">
+              {school.ranking ? (
+                <div className="mb-2 text-[13px] font-medium text-[#089E68]">{school.ranking}</div>
+              ) : null}
 
-            <Image
-              src={school.image}
-              alt={school.name}
-              width={280}
-              height={148}
-              className="ml-3 h-[9.25rem] w-full rounded-lg object-cover max-[1024px]:ml-0 max-[1024px]:h-[200px]"
-            />
+              <div className="mb-3 flex items-start gap-3">
+                <div className="flex min-w-0 flex-1 items-center">
+                  <h3 className="flex-1 cursor-pointer text-[20px] font-semibold leading-[1.4] text-[#464646] transition-colors hover:text-[#346DC2]">
+                    {school.name}
+                  </h3>
 
-            <div className="ml-3 flex w-full gap-2 bg-transparent py-3 max-[1024px]:ml-0">
-              <button
-                type="button"
-                className="flex-1 whitespace-nowrap rounded-lg bg-[#F5F5F7] px-4 py-2 text-center text-sm font-medium text-[#464646] transition-colors hover:bg-[#E8E8EA]"
-              >
-                Compare
-              </button>
-              <button
-                type="button"
-                className="flex-1 whitespace-nowrap rounded-lg bg-[#EBFCF4] px-4 py-2 text-center text-sm font-medium text-[#016853] transition-colors hover:bg-[#D7F7E9]"
-              >
-                Virtual Tour
-              </button>
-            </div>
-          </div>
+                  <div className="ml-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+                    <SchoolCardContextMenu
+                      schoolName={school.name}
+                      buttonClassName="flex h-8 w-8 items-center justify-center rounded-full text-[#5F5F5F] transition-colors hover:bg-[#F5F5F7] hover:text-[#464646]"
+                      iconClassName="w-5 h-5"
+                      preferredPlacement="bottom"
+                    />
+                  </div>
+                </div>
 
-          <div className="flex min-w-0 flex-1 flex-col overflow-visible p-6">
-            <div className="mb-2 text-[13px] font-medium text-[#089E68]">{school.ranking}</div>
-
-            <div className="mb-3 flex min-w-0 items-center">
-              <h3 className="flex-1 cursor-pointer text-[20px] font-semibold leading-[1.4] text-[#464646] transition-all hover:text-[#016853] hover:underline hover:decoration-[#016853]">
-                {school.name}
-              </h3>
-              <SchoolCardContextMenu
-                schoolName={school.name}
-                buttonClassName="ml-2 relative flex h-8 w-8 items-center justify-center rounded-full text-[#5F5F5F] transition-all hover:bg-[#F5F5F7] hover:text-[#464646]"
-                iconClassName="h-4 w-4"
-                preferredPlacement="bottom"
-              />
-            </div>
-
-            <div className="mb-4 flex flex-wrap gap-6">
-              <div className="flex items-center gap-2 text-sm text-[#5F5F5F]">
-                <svg fill="currentColor" viewBox="0 0 24 24" className="h-4 w-4 text-[#565656]">
-                  <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z" />
-                  <path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8C21.3,8.2,19.9,4.7,17,2.5L17,2.5z" />
-                </svg>
-                <span className="font-medium text-[#464646]">{school.location}</span>
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[rgba(29,119,189,0.1)]">
+                  <svg width="16" height="16" viewBox="-2 0 24 24" fill="none" className="text-[#1D77BD]">
+                    <path fill="currentColor" d="M10 0L12.4492 2.44922L15.7148 1.78125L16.3828 5.04688L19.6484 5.71484L18.9805 8.98047L21.4297 11.4297L18.9805 13.8789L19.6484 17.1445L16.3828 17.8125L15.7148 21.0781L12.4492 20.4102L10 22.8594L7.55078 20.4102L4.28516 21.0781L3.61719 17.8125L0.351562 17.1445L1.01953 13.8789L-1.42969 11.4297L1.01953 8.98047L0.351562 5.71484L3.61719 5.04688L4.28516 1.78125L7.55078 2.44922L10 0Z" />
+                    <path fill="white" d="M8.90039 14.3086L5.68359 10.9766L6.82422 9.85352L8.90039 11.9434L13.1777 7.63281L14.3184 8.75586L8.90039 14.3086Z" />
+                  </svg>
+                </div>
               </div>
 
-              <div className="flex items-center gap-2 text-sm text-[#5F5F5F]">
-                <svg viewBox="0 0 32 32" fill="none" className="h-4 w-4 text-[#565656]">
-                  <path
-                    fill="currentColor"
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M11.0251 3.98957C12.6023 3.33626 14.2928 3 16 3C17.7072 3 19.3977 3.33626 20.9749 3.98957C22.5521 4.64288 23.9852 5.60045 25.1924 6.80761C26.3995 8.01477 27.3571 9.44788 28.0104 11.0251C28.6637 12.6023 29 14.2928 29 16C29 17.7072 28.6637 19.3977 28.0104 20.9749C27.3571 22.5521 26.3995 23.9852 25.1924 25.1924C23.9852 26.3995 22.5521 27.3571 20.9749 28.0104C19.3977 28.6637 17.7072 29 16 29C14.2928 29 12.6023 28.6637 11.0251 28.0104C9.44788 27.3571 8.01477 26.3995 6.80761 25.1924C5.60045 23.9852 4.64288 22.5521 3.98957 20.9749C3.33625 19.3977 3 17.7072 3 16C3 14.2928 3.33625 12.6023 3.98957 11.0251C4.64288 9.44788 5.60045 8.01477 6.80761 6.80761C8.01477 5.60045 9.44788 4.64288 11.0251 3.98957ZM16 8.33333C16.5523 8.33333 17 8.78105 17 9.33333V15.4648L20.5547 17.8346C21.0142 18.141 21.1384 18.7618 20.8321 19.2214C20.5257 19.6809 19.9048 19.8051 19.4453 19.4987L15.4453 16.8321C15.1671 16.6466 15 16.3344 15 16V9.33333C15 8.78105 15.4477 8.33333 16 8.33333Z"
-                  />
-                </svg>
-                <span className="font-medium text-[#464646]">Added {school.dateSaved}</span>
-              </div>
+              <div className="mb-4 flex flex-wrap gap-6">
+                <div className="flex items-center gap-2 text-sm text-[#5F5F5F]">
+                  <svg fill="currentColor" viewBox="0 0 24 24" className="h-4 w-4 text-[#565656]">
+                    <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z" />
+                    <path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8C21.3,8.2,19.9,4.7,17,2.5L17,2.5z" />
+                  </svg>
+                  <span className="font-medium text-[#464646]">{school.location}</span>
+                </div>
 
-              <div className="flex items-center gap-2 text-sm text-[#5F5F5F]">
-                <svg viewBox="0 0 256 256" fill="currentColor" className="h-4 w-4 text-[#565656]">
-                  <path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Z" />
-                </svg>
-                <span className="font-medium text-[#464646]">
-                  <strong>{school.rating.split(" ")[0]}</strong> ({school.reviews} reviews)
-                </span>
-              </div>
+                <div className="flex items-center gap-2 text-sm text-[#5F5F5F]">
+                  <svg viewBox="0 0 32 32" fill="none" className="h-4 w-4 text-[#565656]">
+                    <path
+                      fill="currentColor"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M11.0251 3.98957C12.6023 3.33626 14.2928 3 16 3C17.7072 3 19.3977 3.33626 20.9749 3.98957C22.5521 4.64288 23.9852 5.60045 25.1924 6.80761C26.3995 8.01477 27.3571 9.44788 28.0104 11.0251C28.6637 12.6023 29 14.2928 29 16C29 17.7072 28.6637 19.3977 28.0104 20.9749C27.3571 22.5521 26.3995 23.9852 25.1924 25.1924C23.9852 26.3995 22.5521 27.3571 20.9749 28.0104C19.3977 28.6637 17.7072 29 16 29C14.2928 29 12.6023 28.6637 11.0251 28.0104C9.44788 27.3571 8.01477 26.3995 6.80761 25.1924C5.60045 23.9852 4.64288 22.5521 3.98957 20.9749C3.33625 19.3977 3 17.7072 3 16C3 14.2928 3.33625 12.6023 3.98957 11.0251C4.64288 9.44788 5.60045 8.01477 6.80761 6.80761C8.01477 5.60045 9.44788 4.64288 11.0251 3.98957ZM16 8.33333C16.5523 8.33333 17 8.78105 17 9.33333V15.4648L20.5547 17.8346C21.0142 18.141 21.1384 18.7618 20.8321 19.2214C20.5257 19.6809 19.9048 19.8051 19.4453 19.4987L15.4453 16.8321C15.1671 16.6466 15 16.3344 15 16V9.33333C15 8.78105 15.4477 8.33333 16 8.33333Z"
+                    />
+                  </svg>
+                  <span className="font-medium text-[#464646]">Added {school.dateSaved}</span>
+                </div>
 
-              <div className="flex items-center gap-2 text-sm text-[#5F5F5F]">
-                <svg
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  className="h-4 w-4 text-[#565656]"
-                >
-                  <path d="M20 17v-12c0 -1.121 -.879 -2 -2 -2s-2 .879 -2 2v12l2 2l2 -2z" />
-                  <path d="M16 7h4" />
-                  <path d="M18 19h-13a2 2 0 1 1 0 -4h4a2 2 0 1 0 0 -4h-3" />
-                </svg>
-                <span className="font-medium text-[#464646]">
-                  {school.notes.length}
-                  <button
-                    type="button"
-                    className="ml-1 text-[13px] font-medium text-[#346DC2] transition-colors hover:underline"
-                    onClick={() => onCreateNote(index)}
+                <div className="flex items-center gap-2 text-sm text-[#5F5F5F]">
+                  <svg viewBox="0 0 256 256" fill="currentColor" className="h-4 w-4 text-[#565656]">
+                    <path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Z" />
+                  </svg>
+                  <span className="font-medium text-[#464646]">
+                    <strong>{school.rating.split(" ")[0]}</strong> ({school.reviews} reviews)
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 text-sm text-[#5F5F5F]">
+                  <svg
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    className="h-4 w-4 text-[#565656]"
                   >
-                    (Create Note)
-                  </button>
-                </span>
+                    <path d="M20 17v-12c0 -1.121 -.879 -2 -2 -2s-2 .879 -2 2v12l2 2l2 -2z" />
+                    <path d="M16 7h4" />
+                    <path d="M18 19h-13a2 2 0 1 1 0 -4h4a2 2 0 1 0 0 -4h-3" />
+                  </svg>
+                  <span className="font-medium text-[#464646]">
+                    {school.notes.length}
+                    <button
+                      type="button"
+                      className="ml-1 text-[13px] font-medium text-[#346DC2] transition-colors hover:underline"
+                      onClick={() => onCreateNote(index)}
+                    >
+                      (Create Note)
+                    </button>
+                  </span>
+                </div>
+              </div>
+
+              <div className="mb-3 flex min-h-[40px] max-h-[60px] flex-1 flex-col overflow-y-auto">
+                {school.notes.length > 0 ? (
+                  school.notes.map((note: Note) => (
+                    <Note
+                      key={note.id}
+                      note={note}
+                      onEdit={() => onEditNote(index, note.id)}
+                      onDelete={() => onDeleteNote(index, note.id)}
+                    />
+                  ))
+                ) : (
+                  <div className="my-2.5 text-center text-sm text-[#9CA3AF]">No notes yet</div>
+                )}
               </div>
             </div>
 
-            <div className="mb-3 flex min-h-[40px] max-h-[60px] flex-1 flex-col overflow-y-auto">
-              {school.notes.length > 0 ? (
-                school.notes.map((note: Note) => (
-                  <Note
-                    key={note.id}
-                    note={note}
-                    onEdit={() => onEditNote(index, note.id)}
-                    onDelete={() => onDeleteNote(index, note.id)}
-                  />
-                ))
-              ) : (
-                <div className="my-2.5 text-center text-sm text-[#9CA3AF]">No notes yet</div>
-              )}
-            </div>
-
-            <div className="relative z-20 mt-auto flex items-center justify-between overflow-visible gap-4 max-[1024px]:flex-col max-[1024px]:items-start">
+            <div className="relative z-20 mt-4 flex items-center justify-between border-t border-[#f0f0f0] pt-4">
               <div className="flex flex-wrap items-center gap-6">
                 <div ref={statusDropdownRef} className="relative z-[200]">
                   <button
@@ -265,32 +242,15 @@ export const CardList: React.FC<{
                       setIsStatusOpen((prev) => !prev);
                     }}
                   >
-                    <svg
-                      className="h-4 w-4 shrink-0"
-                      viewBox="0 0 16 16"
-                      fill={statusColor}
-                    >
+                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 16 16" style={{ color: statusColor }}>
                       <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
-                      <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z" />
+                      <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0Z" />
                     </svg>
                     <span className="text-sm font-semibold" style={{ color: statusColor }}>
                       {truncateText(school.status || "Add Status", 10)}
                     </span>
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      style={{ color: statusColor }}
-                    >
-                      <path
-                        d="M6 9L12 15L18 9"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ color: statusColor }}>
+                      <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </button>
                   {isStatusOpen && portalPos && createPortal(
@@ -363,24 +323,43 @@ export const CardList: React.FC<{
                   rating={school.myRating}
                   onRatingChange={(rating) => onRatingChange(index, rating)}
                 />
-
-                <div className="flex items-center rounded-md bg-[#F5F5F7] px-3 py-1 text-sm font-medium text-[#464646]">
-                  {school.schoolType}
-                </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  className="flex items-center gap-2 rounded-lg bg-[#EBFCF4] px-4 py-2 text-sm font-medium text-[#016853] transition-colors hover:bg-[#D7F7E9]"
+                  className="flex h-9 items-center gap-2 rounded-lg bg-[#EBFCF4] px-4 text-sm font-medium text-[#016853] transition-colors hover:bg-[#D7F7E9]"
                 >
-                  <svg width="16" height="16" viewBox="0 0 489.8 489.8" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M438.2,0H51.6C23.1,0,0,23.2,0,51.6v386.6c0,28.5,23.2,51.6,51.6,51.6h386.6c28.5,0,51.6-23.2,51.6-51.6V51.6C489.8,23.2,466.6,0,438.2,0z" fill="currentColor" />
+                  <svg width="16" height="16" viewBox="0 0 489.8 489.8" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M438.2,0H51.6C23.1,0,0,23.2,0,51.6v386.6c0,28.5,23.2,51.6,51.6,51.6h386.6c28.5,0,51.6-23.2,51.6-51.6V51.6C489.8,23.2,466.6,0,438.2,0z" />
                     <path d="M337.4,232.7h-80.3v-80.3c0-6.8-5.5-12.3-12.3-12.3s-12.3,5.5-12.3,12.3v80.3h-80.3c-6.8,0-12.3,5.5-12.3,12.2c0,6.8,5.5,12.3,12.3,12.3h80.3v80.3c0,6.8,5.5,12.3,12.3,12.3s12.3-5.5,12.3-12.3v-80.3h80.3c6.8,0,12.3-5.5,12.3-12.3C349.7,238.1,344.2,232.7,337.4,232.7z" fill="white" />
                   </svg>
                   Apply Now
                 </button>
               </div>
+            </div>
+          </div>
+
+          <div className="relative flex w-[280px] shrink-0 flex-col overflow-hidden rounded-r-xl">
+            {school.specialty ? (
+              <div
+                className={`absolute right-0 top-6 z-[2] flex h-8 items-center rounded-l-xl bg-white px-2.5 text-xs font-medium shadow-[-1px_2px_2px_rgba(0,0,0,0.1)] ${school.specialty === "hot"
+                  ? "text-[#FF4D4D]"
+                  : school.specialty === "instant-book"
+                    ? "text-[#1D77BD]"
+                    : "text-[#FF9900]"
+                  }`}
+              >
+                {specialtyIcon(school.specialty)}
+                <span className="ml-1">{specialtyText(school.specialty)}</span>
+              </div>
+            ) : null}
+
+            <div className="relative h-full w-full min-h-[280px]">
+              <Image src={school.image} alt={school.name} fill className="object-cover" />
+            </div>
+            <div className="absolute inset-x-0 bottom-0 bg-[rgba(0,0,0,0.8)] px-4 py-3 text-center text-[13px] font-medium text-white">
+              {school.schoolType}
             </div>
           </div>
         </div>

@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import CaseStudyModalContent from "./CaseStudiesModalContent";
-import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 import { CaseStudy } from "./types/caseStudy";
 import { DesktopModal } from "@/components/ui/DesktopModal/DesktopModal";
 
@@ -44,13 +43,15 @@ const CaseStudiesModal: React.FC<CaseStudyModalProps> = ({
 
   if (isMobile) {
     return (
-      <MobileDrawer
-        isOpen={true}
-        onClose={onClose}
-        title={caseStudy ? "Edit Case Study" : "Create Case Study"}
-      >
-        {content}
-      </MobileDrawer>
+      <>
+        <div
+          className="fixed inset-0 z-[1000] bg-black/50"
+          onClick={onClose}
+        />
+        <div className="fixed inset-0 z-[1001] bg-white overflow-hidden md:hidden">
+          <div className="h-full overflow-y-auto">{content}</div>
+        </div>
+      </>
     );
   }
 

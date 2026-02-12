@@ -16,10 +16,12 @@ import ContentArea from "./ContentArea";
 
 interface MainContentSectionProps {
   onContainerExpandChange?: (isExpanded: boolean) => void;
+  isContainerExpanded?: boolean;
 }
 
 const MainContentSection: React.FC<MainContentSectionProps> = ({
   onContainerExpandChange,
+  isContainerExpanded = false,
 }) => {
   const { subcategory, setSubcategory } = useSchoolsCollection(
     (state) => state
@@ -110,6 +112,7 @@ const MainContentSection: React.FC<MainContentSectionProps> = ({
         renderActionsButton={renderActionsDropdown}
         renderItemsCount={renderItemsCount}
         onContainerExpandChange={onContainerExpandChange}
+        isContainerExpanded={isContainerExpanded}
       />
       <ContentArea isMapActive={isMapActive} layout={layout} />
       <CreateCollectionModal

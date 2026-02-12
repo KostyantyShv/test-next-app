@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { Section } from "./Section";
 import { Header } from "./Header";
+import { ChecklistMobile } from "./ChecklistMobile";
 import { ChecklistItemProps } from "./types";
+import { Icon } from "./Icon";
 
 const sections: { title: string; items: ChecklistItemProps[] }[] = [
   {
@@ -237,6 +240,7 @@ const sections: { title: string; items: ChecklistItemProps[] }[] = [
 ];
 
 export const CheckListSection: React.FC = () => {
+  const isMobile = useIsMobile();
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const [showIncomplete, setShowIncomplete] = useState(true);
@@ -245,16 +249,16 @@ export const CheckListSection: React.FC = () => {
     "all" | "incomplete" | "issues" | "completed" | null
   >(null);
   const [items, setItems] = useState(sections);
+  const [processingItem, setProcessingItem] = useState<string | null>(null);
+  const [isExpandMenuOpen, setIsExpandMenuOpen] = useState(false);
 
   const toggleSection = (title: string) => {
-    // Manual toggle of section - doesn't affect expand mode
     setExpandedSections((prev) =>
       prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]
     );
   };
 
   const toggleItem = (title: string) => {
-    // Manual toggle of item - allows user to expand/collapse individual items
     setExpandedItems((prev) =>
       prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]
     );
@@ -264,57 +268,59 @@ export const CheckListSection: React.FC = () => {
     mode: "all" | "incomplete" | "issues" | "completed"
   ) => {
     if (expandMode === mode) {
-      // Collapse everything if clicking the same mode
       setExpandedSections([]);
       setExpandedItems([]);
       setExpandMode(null);
-    } else {
-      setExpandMode(mode);
-      if (mode === "all") {
-        // Expand all sections and all items
-        setExpandedSections(items.map((s) => s.title));
-        setExpandedItems(items.flatMap((s) => s.items.map((i) => i.title)));
-      } else if (mode === "incomplete") {
-        // Only expand sections that have incomplete items, and only expand incomplete items within those sections
-        const incompleteSections = items.filter((s) =>
-          s.items.some((i) => i.button?.type === "add" && i.status !== "completed")
-        );
-        setExpandedSections(incompleteSections.map((s) => s.title));
-        setExpandedItems(
-          incompleteSections.flatMap((s) =>
-            s.items
-              .filter((i) => i.button?.type === "add" && i.status !== "completed")
-              .map((i) => i.title)
-          )
-        );
-      } else if (mode === "issues") {
-        // Only expand sections that have issues, and only expand items with issues within those sections
-        const issueSections = items.filter((s) =>
-          s.items.some((i) => i.button?.type === "fix" && i.status !== "completed")
-        );
-        setExpandedSections(issueSections.map((s) => s.title));
-        setExpandedItems(
-          issueSections.flatMap((s) =>
-            s.items
-              .filter((i) => i.button?.type === "fix" && i.status !== "completed")
-              .map((i) => i.title)
-          )
-        );
-      } else if (mode === "completed") {
-        // Only expand sections that have completed items, and only expand completed items within those sections
-        const completedSections = items.filter((s) =>
-          s.items.some((i) => i.status === "completed")
-        );
-        setExpandedSections(completedSections.map((s) => s.title));
-        setExpandedItems(
-          completedSections.flatMap((s) =>
-            s.items
-              .filter((i) => i.status === "completed")
-              .map((i) => i.title)
-          )
-        );
-      }
+      return;
     }
+
+    setExpandMode(mode);
+
+    if (mode === "all") {
+      setExpandedSections(items.map((s) => s.title));
+      setExpandedItems(items.flatMap((s) => s.items.map((i) => i.title)));
+      return;
+    }
+
+    if (mode === "incomplete") {
+      const incompleteSections = items.filter((s) =>
+        s.items.some((i) => i.button?.type === "add" && i.status !== "completed")
+      );
+      setExpandedSections(incompleteSections.map((s) => s.title));
+      setExpandedItems(
+        incompleteSections.flatMap((s) =>
+          s.items
+            .filter((i) => i.button?.type === "add" && i.status !== "completed")
+            .map((i) => i.title)
+        )
+      );
+      return;
+    }
+
+    if (mode === "issues") {
+      const issueSections = items.filter((s) =>
+        s.items.some((i) => i.button?.type === "fix" && i.status !== "completed")
+      );
+      setExpandedSections(issueSections.map((s) => s.title));
+      setExpandedItems(
+        issueSections.flatMap((s) =>
+          s.items
+            .filter((i) => i.button?.type === "fix" && i.status !== "completed")
+            .map((i) => i.title)
+        )
+      );
+      return;
+    }
+
+    const completedSections = items.filter((s) =>
+      s.items.some((i) => i.status === "completed")
+    );
+    setExpandedSections(completedSections.map((s) => s.title));
+    setExpandedItems(
+      completedSections.flatMap((s) =>
+        s.items.filter((i) => i.status === "completed").map((i) => i.title)
+      )
+    );
   };
 
   const completeItem = async (sectionTitle: string, itemTitle: string) => {
@@ -381,6 +387,26 @@ export const CheckListSection: React.FC = () => {
     );
   };
 
+  const getVisibleItems = (sectionItems: ChecklistItemProps[]) => {
+    return sectionItems.filter((item) => {
+      const isOption = item.button?.type === "add";
+      const isIssue = item.button?.type === "fix";
+      const isCompleted = item.status === "completed";
+      if (isCompleted) return true;
+      if (!showIncomplete && !showIssues) return true;
+      if (showIncomplete && showIssues) return isOption || isIssue;
+      if (showIncomplete) return isOption;
+      if (showIssues) return isIssue;
+      return true;
+    });
+  };
+
+  useEffect(() => {
+    if (!isMobile) return;
+    setShowIncomplete(false);
+    setShowIssues(false);
+  }, [isMobile]);
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const expandParam = urlParams.get("expand");
@@ -393,9 +419,9 @@ export const CheckListSection: React.FC = () => {
       );
     }
 
-    // Respect persisted toggle state from URL params
     if (optionsParam !== null) setShowIncomplete(optionsParam === "true");
     if (issuesParam !== null) setShowIssues(issuesParam === "true");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -406,6 +432,73 @@ export const CheckListSection: React.FC = () => {
     const newURL = `${window.location.pathname}?${params.toString()}`;
     history.replaceState(null, "", newURL);
   }, [expandMode, showIncomplete, showIssues]);
+
+  const renderStatusBadge = (sectionItems: ChecklistItemProps[]) => {
+    const incomplete = sectionItems.filter((item) => item.button?.type === "add").length;
+    const issues = sectionItems.filter((item) => item.button?.type === "fix").length;
+    const unresolved = incomplete + issues;
+
+    if (unresolved === 0) {
+      return (
+        <div className="inline-flex items-center gap-1 whitespace-nowrap rounded-xl bg-[#d1fae5] px-2 py-[3px] text-[11px] font-medium text-[#089E68]">
+          <svg width="10" height="10" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M10 0a10 10 0 110 20 10 10 0 010-20zm3.77 7.23l-4.95 4.95-2.59-2.59L4.77 11l3.18 3.18 5.59-5.59-1.77-1.36z" />
+          </svg>
+          All done
+        </div>
+      );
+    }
+
+    if (issues === 0) {
+      return (
+        <div className="inline-flex items-center gap-1 whitespace-nowrap rounded-xl bg-[#ebf5ff] px-2 py-[3px] text-[11px] font-medium text-[#1d77bd]">
+          <svg viewBox="0 0 448 512" width="10" height="10" fill="currentColor">
+            <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
+          </svg>
+          {incomplete} incomplete
+        </div>
+      );
+    }
+
+    return (
+      <div className="inline-flex items-center gap-1 whitespace-nowrap rounded-xl bg-[#fee2e2] px-2 py-[3px] text-[11px] font-medium text-[#ef4444]">
+        <svg viewBox="0 0 15 15" width="10" height="10" fill="currentColor">
+          <path d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z" />
+        </svg>
+        {issues > 0 && incomplete > 0
+          ? `${incomplete} inc, ${issues} iss`
+          : `${issues} issues`}
+      </div>
+    );
+  };
+
+  if (isMobile) {
+    return (
+      <section className="school-edit-checklist">
+        <div className="checklist-mobile-wrapper max-md:block hidden">
+          <ChecklistMobile
+            items={items}
+            expandedSections={expandedSections}
+            toggleSection={toggleSection}
+            expandedItems={expandedItems}
+            toggleItem={toggleItem}
+            showIncomplete={showIncomplete}
+            setShowIncomplete={setShowIncomplete}
+            showIssues={showIssues}
+            setShowIssues={setShowIssues}
+            expandMode={expandMode}
+            handleExpand={handleExpand}
+            completeItem={completeItem}
+            getVisibleItems={getVisibleItems}
+            processingItem={processingItem}
+            setProcessingItem={setProcessingItem}
+            isExpandMenuOpen={isExpandMenuOpen}
+            setIsExpandMenuOpen={setIsExpandMenuOpen}
+          />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="school-edit-checklist">
@@ -422,17 +515,7 @@ export const CheckListSection: React.FC = () => {
           />
 
           {items.map((section) => {
-            const visibleItems = section.items.filter((item) => {
-              const isOption = item.button?.type === "add";
-              const isIssue = item.button?.type === "fix";
-              const isCompleted = item.status === "completed";
-              if (isCompleted) return true;
-              if (showIncomplete && showIssues) return isOption || isIssue;
-              if (showIncomplete) return isOption;
-              if (showIssues) return isIssue;
-              return true;
-            });
-
+            const visibleItems = getVisibleItems(section.items);
             if (visibleItems.length === 0) return null;
 
             return (
