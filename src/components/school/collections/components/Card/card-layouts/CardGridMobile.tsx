@@ -321,7 +321,7 @@ export const CardGridMobile: React.FC<CardGridMobileProps> = ({
                       className="mr-2 inline-block h-3 w-3 rounded-full"
                       style={{ backgroundColor: opt.color }}
                     />
-                    {opt.label || opt.value}
+                    {("label" in opt ? opt.label : undefined) || opt.value}
                   </button>
                 ))}
               </div>

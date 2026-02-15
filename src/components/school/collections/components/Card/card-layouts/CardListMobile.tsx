@@ -296,7 +296,7 @@ export const CardListMobile: React.FC<CardListMobileProps> = ({
                     className="inline-block h-3 w-3 rounded-full"
                     style={{ backgroundColor: option.color }}
                   />
-                  {option.label || option.value}
+                  {("label" in option ? option.label : undefined) || option.value}
                 </button>
               ))}
             </div>

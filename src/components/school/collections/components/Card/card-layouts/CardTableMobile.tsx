@@ -239,7 +239,7 @@ const MobileTableRow: React.FC<{
                   onClick={(e) => { e.stopPropagation(); onStatusChange(index, opt.status); setIsStatusOpen(false); }}
                 >
                   <span className="status-color w-3 h-3 rounded-full mr-2 shrink-0" style={{ backgroundColor: opt.color }} />
-                  <span>{opt.label ?? opt.status}</span>
+                  <span>{("label" in opt ? opt.label : undefined) ?? opt.status}</span>
                 </button>
               ))}
             </div>
