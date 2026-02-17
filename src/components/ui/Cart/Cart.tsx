@@ -27,10 +27,9 @@ export const Cart: React.FC<CartProps> = ({
   buttonRef,
 }) => {
   const router = useRouter();
-  const [arrowPosition, setArrowPosition] = useState<number>(24); // kept for backward compatibility
-  const [arrowLeft, setArrowLeft] = useState<number>(24);
   const [panelRight, setPanelRight] = useState<number>(24); // default right position
   const [panelTop, setPanelTop] = useState<number>(72); // default top position
+  const [arrowRight, setArrowRight] = useState<number>(24); // dynamic arrow alignment
   const [cartItems, setCartItems] = useState<CartItem[]>([
     { id: 1, image: 'https://i.ibb.co/8DRBhzTm/product5.jpg', title: 'Master Microservices with Spring Boot and Spring Cloud', price: 149.99 },
     { id: 2, image: 'https://i.ibb.co/23PtGQWJ/product55.jpg', title: 'Java Tutorial for Complete Beginners', price: 19.99 },
@@ -60,7 +59,7 @@ export const Cart: React.FC<CartProps> = ({
           const buttonRect = button.getBoundingClientRect();
           const buttonCenterX = buttonRect.left + buttonRect.width / 2;
           const windowWidth = window.innerWidth;
-          const panelWidth = modalRef.current?.getBoundingClientRect().width ?? 400; // w-[400px]
+          const panelWidth = modalRef.current?.getBoundingClientRect().width ?? 380; // w-[380px]
 
           // Calculate panel position: align arrow (at arrowPosition from right) with button center
           const targetArrowPosition = 24; // Default arrow position from right
@@ -76,13 +75,11 @@ export const Cart: React.FC<CartProps> = ({
           const calculatedTop = buttonRect.bottom + 16;
           setPanelTop(calculatedTop);
 
-          // Calculate arrow position based on final panel position (align arrow center to button center)
-          const modalLeft = windowWidth - finalRight - panelWidth;
-          const arrowSize = 16;
-          const rawArrowLeft = buttonCenterX - modalLeft - arrowSize / 2;
-          const clampedArrowLeft = Math.max(8, Math.min(panelWidth - arrowSize - 8, rawArrowLeft));
-          setArrowLeft(clampedArrowLeft);
-          setArrowPosition(windowWidth - finalRight - buttonCenterX - 8);
+          // Keep arrow tip aligned with trigger button center after modal clamping
+          const rawArrowRight = windowWidth - finalRight - buttonCenterX - 8; // 8 = half of 16px arrow
+          const clampedArrowRight = Math.max(8, Math.min(panelWidth - 24, rawArrowRight));
+          setArrowRight(clampedArrowRight);
+
         }
       };
       updateArrowPosition();
@@ -151,7 +148,7 @@ export const Cart: React.FC<CartProps> = ({
         <div
           ref={modalRef}
           className={cn(
-            "cart-modal absolute right-0 w-[400px] bg-[var(--surface-color)] rounded-[20px] shadow-[0_20px_60px_var(--shadow-strong)] border border-[var(--border-color)] pointer-events-auto overflow-hidden",
+            "cart-modal absolute right-0 w-[380px] bg-[var(--surface-color)] rounded-[12px] shadow-[0_12px_32px_rgba(0,0,0,0.15)] border border-[var(--border-color)] pointer-events-auto overflow-visible before:content-[''] before:absolute before:-top-2 before:[right:var(--cart-arrow-right)] before:w-4 before:h-4 before:bg-[var(--surface-color)] before:border before:border-[var(--border-color)] before:border-b-0 before:border-r-0 before:rotate-45 before:pointer-events-none",
             className
           )}
           style={{
@@ -159,26 +156,21 @@ export const Cart: React.FC<CartProps> = ({
             position: 'fixed',
             top: `${panelTop}px`,
             right: `${panelRight}px`,
+            ['--cart-arrow-right' as string]: `${arrowRight}px`,
           }}
         >
-          {/* Arrow pointer */}
-          <div
-            className="cart-modal-arrow absolute -top-2 w-4 h-4 bg-[var(--surface-color)] border border-[var(--border-color)] border-b-0 border-r-0 transform rotate-45"
-            style={{ left: `${arrowLeft}px` }}
-          />
-
           {/* Modal Header */}
-          <div className="modal-header px-6 pt-5 pb-4 border-b border-[var(--border-color)] bg-[var(--surface-secondary)]">
-            <div className="modal-title flex items-center gap-2 text-[15px] font-bold text-[var(--header-green)] font-inter uppercase tracking-[0.5px]">
+          <div className="modal-header p-5 pb-4 border-b border-[var(--border-color)]">
+            <div className="modal-title flex items-center gap-2 text-base font-semibold text-[var(--header-green)] font-inter">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.5 16.14L23.92 6l-18.8-.81L4.92 4A4.43 4.43 0 002.51.8L.58 0 0 1.39l1.88.78a2.88 2.88 0 011.56 2.11l2.5 14.86a2.54 2.54 0 103.57 3h5.93a2.54 2.54 0 100-1.5H9.52a2.53 2.53 0 00-2.1-1.79l-.31-1.83 15.39-.88zm-4.65 4.21a1 1 0 11-.1 1.997 1 1 0 01.1-1.997zm4.36-12.92l-1 7.29-14.33.84-1.51-8.85 16.84.72zM8.14 21.4a1 1 0 11-2 0 1 1 0 012 0z" />
               </svg>
-              Your Cart
+              Cart Items
             </div>
           </div>
 
           {/* Cart Items List */}
-          <div className="cart-items-list max-h-[340px] overflow-y-auto">
+          <div className="cart-items-list max-h-[320px] overflow-y-auto">
             {cartItems.length === 0 ? (
               <div className="empty-cart p-10 text-center text-[var(--subtle-text)]">
                 <svg className="w-14 h-14 mx-auto mb-4 text-[var(--gray-300)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -188,23 +180,23 @@ export const Cart: React.FC<CartProps> = ({
               </div>
             ) : (
               cartItems.map((item) => (
-                <div key={item.id} className="cart-item flex items-center gap-[14px] px-6 py-[18px] border-b border-[var(--border-color)] transition-colors hover:bg-[var(--hover-bg)] relative group">
+                <div key={item.id} className="cart-item flex items-center gap-3 px-5 py-4 border-b border-[var(--border-color)] transition-colors hover:bg-[var(--hover-bg)] relative group">
                   <img
                     src={item.image}
                     alt={item.title}
-                    className="item-image w-14 h-14 rounded-[12px] object-cover flex-shrink-0 border-2 border-[var(--border-color)]"
+                    className="item-image w-12 h-12 rounded-[8px] object-cover flex-shrink-0 border border-[var(--border-color)]"
                   />
-                  <div className="item-content flex-1 min-w-0 pr-9">
-                    <div className="item-title text-[14px] font-semibold text-[var(--bold-text)] mb-2 overflow-hidden text-ellipsis whitespace-nowrap text-left font-inter leading-[1.3]">
+                  <div className="item-content flex-1 min-w-0 pr-10">
+                    <div className="item-title text-[14px] font-semibold text-[var(--bold-text)] mb-2 overflow-hidden text-ellipsis whitespace-nowrap text-left font-inter leading-[1.2]">
                       {item.title}
                     </div>
-                    <div className="item-price text-[17px] font-bold text-[var(--success-green)] text-left font-inter">
+                    <div className="item-price text-[16px] font-bold text-[var(--success-green)] text-left font-inter">
                       ${item.price.toFixed(2)}
                     </div>
                   </div>
                   <button
                     onClick={() => removeItem(item.id)}
-                    className="remove-item absolute top-1/2 right-5 -translate-y-1/2 cursor-pointer p-2 rounded-[10px] transition-all text-[var(--subtle-text)] opacity-0 group-hover:opacity-100 hover:bg-[var(--remove-hover-bg)] hover:text-[var(--active-green)] flex items-center justify-center"
+                    className="remove-item absolute top-4 right-5 cursor-pointer p-1 rounded-full transition-all text-[#9CA3AF] opacity-0 group-hover:opacity-100 hover:bg-[#f3f4f6] flex items-center justify-center"
                     title="Remove item"
                   >
                     <svg className="w-4 h-4" viewBox="0 0 15 15" fill="none">
@@ -218,23 +210,43 @@ export const Cart: React.FC<CartProps> = ({
 
           {/* Modal Footer */}
           {cartItems.length > 0 && (
-            <div className="modal-footer px-6 py-5 bg-[var(--surface-secondary)] border-t border-[var(--border-color)]">
+            <div className="modal-footer p-5 bg-[var(--surface-secondary)] border-t border-[var(--border-color)] rounded-b-[12px]">
               <div className="cart-total flex justify-between items-center mb-4">
-                <span className="total-label text-[14px] font-semibold text-[var(--subtle-text)] font-inter uppercase tracking-[0.5px]">Total</span>
-                <span className="total-amount text-[24px] font-bold text-[var(--bold-text)] font-inter">${totalAmount.toFixed(2)}</span>
+                <span className="total-label text-[16px] font-semibold text-[var(--bold-text)] font-inter">Total:</span>
+                <span className="total-amount text-[20px] font-bold text-[var(--bold-text)] font-inter">${totalAmount.toFixed(2)}</span>
               </div>
               <Link href="/checkout">
                 <button
                   onClick={goToCart}
-                  className="go-to-cart-btn w-full py-[14px] px-6 bg-[var(--btn-primary-bg)] text-white border-none rounded-[12px] text-[15px] font-bold cursor-pointer transition-all hover:bg-[var(--btn-primary-hover)] hover:-translate-y-0.5 hover:shadow-[0_8px_20px_var(--shadow-color)] font-inter tracking-[0.5px]"
+                  className="go-to-cart-btn w-full py-3 px-6 bg-[#1D77BD] text-white border-none rounded-[8px] text-[15px] font-semibold cursor-pointer transition-colors hover:bg-[#1a6ba8] font-inter"
                 >
-                  Go to Cart
+                  Go to cart
                 </button>
               </Link>
             </div>
           )}
         </div>
       </div>
+      <style jsx global>{`
+        .cart-items-list {
+          scrollbar-width: thin;
+          scrollbar-color: #e5e7eb transparent;
+        }
+        .cart-items-list::-webkit-scrollbar {
+          width: 8px;
+        }
+        .cart-items-list::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .cart-items-list::-webkit-scrollbar-thumb {
+          background-color: #e5e7eb;
+          border-radius: 10px;
+          border: 2px solid white;
+        }
+        .cart-items-list::-webkit-scrollbar-thumb:hover {
+          background-color: #9ca3af;
+        }
+      `}</style>
     </>
   );
 };

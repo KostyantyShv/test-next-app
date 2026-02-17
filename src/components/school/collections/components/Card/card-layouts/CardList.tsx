@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { CollectionsSchool, Note, RatingCheckmarks, truncateText } from "../Card";
-import Image from "next/image";
+import { CollectionImage } from "../CollectionImage";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
 
 const STATUS_OPTIONS = [
@@ -125,7 +125,7 @@ export const CardList: React.FC<{
     const statusColor = getStatusColor(school.status);
 
     return (
-      <div className="relative z-[1]" data-layout={_layout}>
+      <div className="collections-list-card relative z-[1]" data-layout={_layout}>
         <div className="flex w-full rounded-xl border border-[#E5E7EB] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] overflow-visible max-[1024px]:flex-col">
           <div className="relative flex w-[280px] shrink-0 flex-col pt-6 pr-6 max-[1024px]:w-full max-[1024px]:p-6">
             {school.specialty ? (
@@ -142,7 +142,7 @@ export const CardList: React.FC<{
               </div>
             ) : null}
 
-            <Image
+            <CollectionImage
               src={school.image}
               alt={school.name}
               width={280}
@@ -305,11 +305,13 @@ export const CardList: React.FC<{
                       }}
                     >
                       <div
+                        className="collections-grid-status-menu"
                         style={{
                           width: 200,
                           maxHeight: 300,
                           overflowY: 'auto',
-                          background: 'white',
+                          background: 'var(--surface-color, #FFFFFF)',
+                          border: '1px solid var(--border-color, rgba(0,0,0,0.1))',
                           borderRadius: 8,
                           boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                           padding: '8px 0',
@@ -317,6 +319,7 @@ export const CardList: React.FC<{
                       >
                         {STATUS_OPTIONS.map((option) => (
                           <button
+                            className="collections-grid-status-item"
                             key={option.status || "clear-status"}
                             type="button"
                             style={{
@@ -325,14 +328,14 @@ export const CardList: React.FC<{
                               gap: 8,
                               padding: '8px 16px',
                               fontSize: 14,
-                              color: '#4A4A4A',
+                              color: 'var(--text-default, #4A4A4A)',
                               width: '100%',
                               border: 'none',
                               background: 'none',
                               textAlign: 'left',
                               cursor: 'pointer',
                             }}
-                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F5F5F7')}
+                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--hover-bg, #F5F5F7)')}
                             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                             onClick={(event) => {
                               event.stopPropagation();

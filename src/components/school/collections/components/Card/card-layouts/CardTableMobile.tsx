@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import { CollectionImage } from "../CollectionImage";
 import { CollectionsSchool, RatingCheckmarks, truncateText } from "../Card";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
 
@@ -126,7 +126,7 @@ const MobileTableRow: React.FC<{
           </svg>
         </button>
         <div className="school-info flex flex-1 min-w-0">
-          <Image
+          <CollectionImage
             src={school.avatar}
             alt={school.name}
             width={40}

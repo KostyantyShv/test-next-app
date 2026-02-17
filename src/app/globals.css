@@ -12423,3 +12423,296 @@ input[type="number"] {
   border-right-color: #0B2B40 !important;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5)) !important;
 }
+
+/* ===========================
+   Collections: Midnight + Oceanic Theme Fixes
+   =========================== */
+[data-theme="midnight"] .collections-page {
+  --collections-surface: #111A2B;
+  --collections-surface-2: #0F192A;
+  --collections-text: #E2E8F0;
+  --collections-muted: #9FB0C6;
+  --collections-border: #22314a;
+  --collections-hover: rgba(148, 163, 184, 0.12);
+  --collections-link: #7DB7FF;
+  --collections-success: #34D399;
+  --collections-tooltip: #0B1220;
+  --collections-tooltip-text: #E2E8F0;
+}
+
+[data-theme="oceanic"] .collections-page {
+  --collections-surface: #0C4A6E;
+  --collections-surface-2: #075985;
+  --collections-text: #E0F2FE;
+  --collections-muted: #BAE6FD;
+  --collections-border: #0369A1;
+  --collections-hover: rgba(125, 211, 252, 0.14);
+  --collections-link: #7DD3FC;
+  --collections-success: #38BDF8;
+  --collections-tooltip: #082F49;
+  --collections-tooltip-text: #E0F2FE;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-main-shell,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .school-card,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .school-footer,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .hover-overlay,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .status-options,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-grid-status-menu,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .notes-section,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .note,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .modal-content,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .confirm-content,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .tooltip,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .bg-white {
+  background: var(--collections-surface) !important;
+  border-color: var(--collections-border) !important;
+  color: var(--collections-text) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .modal-footer,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .bg-\[\#F8F9FB\],
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .bg-\[\#FAFAFA\],
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .bg-\[\#F9FAFB\],
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .bg-\[\#F5F5F7\] {
+  background: var(--collections-surface-2) !important;
+  border-color: var(--collections-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .text-\[\#1B1B1B\],
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .text-\[\#464646\],
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .text-\[\#4A4A4A\],
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .school-name,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .hover-school-name,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .note-author,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .note-content,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .total-amount,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .total-label {
+  color: var(--collections-text) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .text-\[\#5F5F5F\],
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .text-\[\#565656\],
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .text-\[\#9CA3AF\],
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .stat,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .notes-count,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .time-display,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .note-placeholder {
+  color: var(--collections-muted) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .ranking-text,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .text-\[\#089E68\] {
+  color: var(--collections-success) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .create-note,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .note-action,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .text-\[\#346DC2\] {
+  color: var(--collections-link) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .tooltip,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .tooltip:before,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .bg-\[\#333\] {
+  background: var(--collections-tooltip) !important;
+  color: var(--collections-tooltip-text) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .border-\[\#E5E7EB\],
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .border-\[\#e5e7eb\],
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .border-\[\#EAEDF2\],
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .border-\[\#F0F0F0\],
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .border-\[\#f0f0f0\],
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .border-gray-200\/50,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .border-gray-200\/30,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .border-theme {
+  border-color: var(--collections-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .hover\:bg-\[\#F5F5F7\]:hover,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .hover\:bg-\[\#F7F9FC\]:hover,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .hover\:bg-\[\#f8f9fa\]:hover,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .hover\:bg-hover:hover,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .hover\:bg-gray-100:hover {
+  background: var(--collections-hover) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .hover\:text-gray-700:hover {
+  color: var(--collections-text) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .text-gray-700 {
+  color: var(--collections-text) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .text-gray-600,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .text-gray-500 {
+  color: var(--collections-muted) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .text-green-600 {
+  color: var(--collections-success) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .text-blue-600 {
+  color: var(--collections-link) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .bg-gray-100,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .bg-gray-50 {
+  background: var(--collections-surface-2) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-magazine-card > div,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-list-card > div,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-hybrid-card .school-card {
+  background: var(--collections-surface) !important;
+  border-color: var(--collections-border) !important;
+}
+
+/* Collections portal menus rendered outside .collections-page */
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-grid-status-menu {
+  background: var(--surface-color) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-grid-status-item {
+  color: var(--text-default) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-grid-status-item:hover {
+  background: var(--hover-bg) !important;
+}
+
+/* Collections Grid specific controls */
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .school-card .like-button {
+  background: var(--collections-surface-2) !important;
+  border: 1px solid var(--collections-border) !important;
+  color: var(--collections-muted) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .school-card .like-button:hover {
+  background: var(--collections-hover) !important;
+  color: var(--collections-text) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .school-card .specialty-label {
+  background: var(--collections-surface-2) !important;
+  border: 1px solid var(--collections-border) !important;
+  box-shadow: none !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .school-card .school-type-label {
+  background: var(--collections-surface-2) !important;
+  color: var(--collections-text) !important;
+  box-shadow: none !important;
+}
+
+/* Collections Classic layout */
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .classic-card {
+  background: var(--collections-surface) !important;
+  border-color: var(--collections-border) !important;
+  box-shadow: 0 2px 10px var(--shadow-color) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .classic-card:hover {
+  border-color: var(--collections-border) !important;
+  box-shadow: 0 8px 24px var(--shadow-color) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .classic-card .classic-hover-overlay {
+  background: var(--collections-surface) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .classic-card .classic-status-menu {
+  background: var(--collections-surface) !important;
+  border: 1px solid var(--collections-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .classic-card .classic-status-option {
+  color: var(--collections-text) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .classic-card .classic-status-option:hover,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .classic-card .classic-status-trigger:hover {
+  background: var(--collections-hover) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .classic-card .bg-\[rgba\(107\,114\,128\,0\.12\)\] {
+  background: var(--collections-surface-2) !important;
+  color: var(--collections-muted) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .classic-card .hover\:bg-\[rgba\(0\,0\,0\,0\.05\)\]:hover {
+  background: var(--collections-hover) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .classic-card .bg-\[\#F9FAFB\],
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .classic-card .bg-\[\#F5F5F7\] {
+  background: var(--collections-surface-2) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .classic-card .border-\[rgba\(0\,0\,0\,0\.06\)\] {
+  border-color: var(--collections-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .classic-card .text-\[\#6B7280\] {
+  color: var(--collections-muted) !important;
+}
+
+/* Collections Table layout */
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-table-card td {
+  background: var(--collections-surface) !important;
+  border-color: var(--collections-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-table-card .expand-button {
+  background: var(--collections-surface-2) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-table-card .expand-button:hover {
+  background: var(--collections-hover) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-table-card .item-avatar {
+  background: var(--collections-surface-2) !important;
+  border: 1px solid var(--collections-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-table-card .view-link {
+  background: var(--collections-surface-2) !important;
+  border-color: var(--collections-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-table-card .view-link:hover {
+  background: var(--collections-hover) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-table-card .status-dropdown:hover,
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-table-card .options-button:hover {
+  background: var(--collections-hover) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-table-card .edit-panel {
+  background: var(--collections-surface-2) !important;
+  border-color: var(--collections-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-table-card .create-note-btn {
+  background: var(--apply-button-bg) !important;
+  color: var(--header-green) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-table-card .create-note-btn:hover {
+  background: var(--apply-button-hover) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-table-card .tooltip {
+  background: var(--collections-tooltip) !important;
+  color: var(--collections-tooltip-text) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-table-card .border-t-\[\#333\] {
+  border-top-color: var(--collections-tooltip) !important;
+}

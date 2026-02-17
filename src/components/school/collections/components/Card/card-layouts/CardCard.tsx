@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
+import { CollectionImage } from "../CollectionImage";
 import { CollectionsSchool, RatingCheckmarks } from "../Card";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
 
@@ -182,7 +182,7 @@ export const CardCard: React.FC<SchoolCardProps> = ({
         <SpecialtyLabel specialty={school.specialty} fallbackLabel={school.schoolType} />
 
         <div className={`card-header flex items-start gap-4 px-4 pb-3 pr-[26px] ${school.specialty || school.schoolType ? "pt-10" : "pt-4"}`}>
-          <Image
+          <CollectionImage
             src={school.avatar}
             alt={school.name}
             width={72}
@@ -264,7 +264,7 @@ export const CardCard: React.FC<SchoolCardProps> = ({
 
         <div className="hover-overlay invisible absolute left-0 top-0 z-30 flex h-[calc(100%-54px)] w-full flex-col rounded-t-[12px] bg-[rgba(255,255,255,0.98)] p-6 opacity-0 transition-[opacity,visibility] duration-300 group-hover:visible group-hover:opacity-100">
           <div className="hover-header mb-3 flex shrink-0 gap-3">
-            <Image
+            <CollectionImage
               src={school.avatar}
               alt={school.name}
               width={40}
@@ -339,7 +339,8 @@ export const CardCard: React.FC<SchoolCardProps> = ({
                   <div
                     style={{
                       width: 192,
-                      background: 'white',
+                      background: 'var(--surface-color, #FFFFFF)',
+                      border: '1px solid var(--border-color, rgba(0,0,0,0.1))',
                       borderRadius: 8,
                       boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                       padding: '8px 0',
@@ -356,7 +357,7 @@ export const CardCard: React.FC<SchoolCardProps> = ({
                           gap: 8,
                           padding: '8px 12px',
                           fontSize: 14,
-                          color: '#4A4A4A',
+                          color: 'var(--text-default, #4A4A4A)',
                           width: '100%',
                           border: 'none',
                           background: 'none',
@@ -364,7 +365,7 @@ export const CardCard: React.FC<SchoolCardProps> = ({
                           cursor: 'pointer',
                           borderRadius: 4,
                         }}
-                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F5F5F7')}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--hover-bg, #F5F5F7)')}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                         onClick={(event) => {
                           event.stopPropagation();

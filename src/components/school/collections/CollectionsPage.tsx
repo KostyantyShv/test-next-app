@@ -10,7 +10,7 @@ const CollectionsPage = () => {
 
   return (
     <div
-      className="mx-auto px-3 sm:px-4 md:px-6 w-full transition-all duration-300 ease-in-out -mt-3 md:mt-0"
+      className="collections-page mx-auto px-3 sm:px-4 md:px-6 w-full transition-all duration-300 ease-in-out -mt-3 md:mt-0"
       style={{ maxWidth: isContainerExpanded ? "100%" : "1055px" }}
     >
       <div className="hidden md:block">

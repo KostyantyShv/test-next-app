@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
+import { CollectionImage } from "../CollectionImage";
 import {
   CollectionsSchool,
   Note,
@@ -115,13 +115,13 @@ export const CardHybrid: React.FC<{
       : "add-status";
 
     return (
-      <div>
+      <div className="collections-hybrid-card">
         <div className="school-card flex p-5 border border-gray-200/50 rounded-xl transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:border-green-600/20 relative overflow-visible z-[1]">
           <div
             className={`image-container flex flex-col w-[60px] mr-5 flex-shrink-0 ${school.specialty ? "has-specialty" : ""
               }`}
           >
-            <Image
+            <CollectionImage
               src={school.avatar}
               alt={school.name}
               width={60}
@@ -298,11 +298,13 @@ export const CardHybrid: React.FC<{
                       }}
                     >
                       <div
+                        className="collections-grid-status-menu"
                         style={{
                           width: 192,
                           maxHeight: 300,
                           overflowY: 'auto',
-                          background: 'white',
+                          background: 'var(--surface-color, #FFFFFF)',
+                          border: '1px solid var(--border-color, rgba(0,0,0,0.1))',
                           borderRadius: 8,
                           boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                           padding: '8px 0',
@@ -319,6 +321,7 @@ export const CardHybrid: React.FC<{
                           { status: "", color: "#787878", label: "Clear Status" },
                         ].map(({ status, color, label }) => (
                           <div
+                            className="collections-grid-status-item"
                             key={status || "clear"}
                             style={{
                               display: 'flex',
@@ -326,11 +329,11 @@ export const CardHybrid: React.FC<{
                               gap: 10,
                               padding: '10px 16px',
                               fontSize: 14,
-                              color: '#4A4A4A',
+                              color: 'var(--text-default, #4A4A4A)',
                               cursor: 'pointer',
                               transition: 'background 0.2s ease',
                             }}
-                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F5F5F7')}
+                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--hover-bg, #F5F5F7)')}
                             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                             data-status={status}
                             onClick={(e) => {

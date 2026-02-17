@@ -51,7 +51,7 @@ export const MobileActions: FC = () => {
   return (
     <div className="flex items-center gap-3">
       {/* Comparison Icon */}
-      <button 
+      <button type="button" 
         onClick={() => setIsCompareOpen(!isCompareOpen)}
         className={cn(
           "relative w-10 h-10 border border-[var(--border-color)] bg-[var(--surface-color)] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[var(--text-default)] hover:bg-[var(--apply-button-bg)] hover:border-[var(--active-green)] hover:opacity-90",
@@ -71,7 +71,7 @@ export const MobileActions: FC = () => {
       </button>
 
       {/* Notifications */}
-      <button 
+      <button type="button" 
         onClick={() => setIsNotificationsOpen(true)}
         className="relative w-10 h-10 border border-[var(--border-color)] bg-[var(--surface-color)] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[var(--text-default)] hover:bg-[var(--apply-button-bg)] hover:border-[var(--active-green)] hover:opacity-90"
         title="Notifications"
@@ -84,7 +84,7 @@ export const MobileActions: FC = () => {
       </button>
 
       {/* Cart */}
-      <button 
+      <button type="button" 
         onClick={() => {
           if (!isCartOpen) {
             setIsMonitorOpen(false);
@@ -109,7 +109,7 @@ export const MobileActions: FC = () => {
       </button>
 
       {/* Dark/Light Mode Toggle */}
-      <button 
+      <button type="button" 
         onClick={toggleTheme}
         className="relative w-10 h-10 border border-[var(--border-color)] bg-[var(--surface-color)] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[var(--text-default)] hover:bg-[var(--apply-button-bg)] hover:border-[var(--active-green)] hover:opacity-90"
         title="Toggle Theme"

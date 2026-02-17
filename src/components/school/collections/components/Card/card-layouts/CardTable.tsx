@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { CollectionImage } from "../CollectionImage";
 import { CollectionsSchool, Note, RatingCheckmarks } from "../Card";
 import { NotesModal } from "../../modals/NotesModal";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
@@ -159,7 +160,7 @@ export const CardTable: React.FC<SchoolCardProps> = ({
     : "add-status";
 
   return (
-    <div>
+    <div className="collections-table-card">
       <table className="w-full border-collapse">
         <tbody>
           <tr
@@ -192,9 +193,11 @@ export const CardTable: React.FC<SchoolCardProps> = ({
             </td>
             <td className="p-4 bg-white border-b border-[#e5e7eb]">
               <div className="item-info flex items-center">
-                <img
+                <CollectionImage
                   src={school.avatar}
                   alt={school.name}
+                  width={40}
+                  height={40}
                   className="item-avatar w-10 h-10 rounded object-cover mr-3 bg-[#f9fafb]"
                 />
                 <div className="item-details flex flex-col relative overflow-visible">
@@ -344,7 +347,8 @@ export const CardTable: React.FC<SchoolCardProps> = ({
                     <div
                       style={{
                         width: 200,
-                        background: 'white',
+                        background: 'var(--surface-color, #FFFFFF)',
+                        border: '1px solid var(--border-color, rgba(0,0,0,0.1))',
                         borderRadius: 8,
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                         padding: '8px 0',
@@ -367,11 +371,11 @@ export const CardTable: React.FC<SchoolCardProps> = ({
                             alignItems: 'center',
                             padding: '8px 12px',
                             fontSize: 14,
-                            color: '#4A4A4A',
+                            color: 'var(--text-default, #4A4A4A)',
                             cursor: 'pointer',
                             transition: 'background 0.2s ease',
                           }}
-                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F5F5F7')}
+                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--hover-bg, #F5F5F7)')}
                           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                           data-status={status}
                           onClick={(e) => { e.stopPropagation(); handleStatusChange(status); }}
@@ -432,14 +436,14 @@ export const CardTable: React.FC<SchoolCardProps> = ({
               colSpan={7}
               className="expanded-cell p-0 border-0 bg-transparent"
             >
-              <div className="edit-panel bg-[#F0F4F9] p-6 m-4 mt-0 rounded-lg border border-[#e5e7eb] border-t-0 shadow-[inset_0_1px_3px_rgba(0,0,0,0.05)]">
+              <div className="edit-panel bg-[var(--surface-secondary)] p-6 m-4 mt-0 rounded-lg border border-[var(--border-color)] border-t-0 shadow-[inset_0_1px_3px_rgba(0,0,0,0.05)]">
                 <div className="notes-section mt-4">
                   <div className="notes-header flex justify-between items-center mb-3">
-                    <h3 className="notes-title font-semibold text-[#464646] text-base flex items-center">
+                    <h3 className="notes-title font-semibold text-[var(--bold-text)] text-base flex items-center">
                       Notes ({school.notes ? school.notes.length : 0})
                     </h3>
                     <button
-                      className="create-note-btn px-3 py-1.5 bg-[#EBFCF4] text-[#016853] rounded border-none cursor-pointer font-medium text-sm flex items-center gap-1.5 hover:bg-[#D7F7E9] transition-colors duration-200"
+                      className="create-note-btn px-3 py-1.5 bg-[var(--apply-button-bg)] text-[var(--header-green)] rounded border-none cursor-pointer font-medium text-sm flex items-center gap-1.5 hover:bg-[var(--apply-button-hover)] transition-colors duration-200"
                       data-school-id={index}
                       onClick={() => onCreateNote(index)}
                     >
@@ -449,7 +453,7 @@ export const CardTable: React.FC<SchoolCardProps> = ({
                         height="14"
                         viewBox="0 0 24 24"
                         fill="none"
-                        stroke="#016853"
+                        stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -470,7 +474,7 @@ export const CardTable: React.FC<SchoolCardProps> = ({
                         />
                       ))
                     ) : (
-                      <div className="note-placeholder mt-2.5 text-sm text-gray-400">
+                      <div className="note-placeholder mt-2.5 text-sm text-[var(--subtle-text)]">
                         No notes yet
                       </div>
                     )}

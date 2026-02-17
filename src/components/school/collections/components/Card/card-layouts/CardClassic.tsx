@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { CollectionsSchool, Note, RatingCheckmarks } from "../Card";
 import { NotesModal } from "../../modals/NotesModal";
-import Image from "next/image";
+import { CollectionImage } from "../CollectionImage";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
 
 interface Props {
@@ -148,8 +148,8 @@ export const CardClassic: React.FC<Props> = ({
   const ratingValue = school.rating ? school.rating.split(" ")[0] : "4.9";
 
   return (
-    <div className="relative">
-      <div className="group relative z-[1] flex flex-col overflow-visible rounded-[12px] border border-[rgba(0,0,0,0.08)] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all duration-200 hover:-translate-y-1 hover:border-[rgba(1,104,83,0.2)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:z-10">
+    <div className="collections-classic-card relative">
+      <div className="classic-card group relative z-[1] flex flex-col overflow-visible rounded-[12px] border border-[rgba(0,0,0,0.08)] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-all duration-200 hover:-translate-y-1 hover:border-[rgba(1,104,83,0.2)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:z-10">
         {school.specialty ? (
           <div
             className={`absolute left-0 right-0 top-0 z-[2] flex items-center justify-center gap-1.5 rounded-t-[12px] px-3 py-2 text-[13px] font-medium ${specialtyStyles[school.specialty]?.bg || "bg-gray-100"
@@ -188,7 +188,7 @@ export const CardClassic: React.FC<Props> = ({
         </div>
 
         <div className="relative px-3 pt-3">
-          <Image
+          <CollectionImage
             src={school.image}
             alt={school.name}
             width={560}
@@ -261,11 +261,11 @@ export const CardClassic: React.FC<Props> = ({
         </div>
 
         <div
-          className="invisible absolute left-0 top-0 z-10 flex w-full flex-col rounded-t-[12px] bg-[rgba(255,255,255,0.98)] p-6 opacity-0 transition-all duration-300 group-hover:visible group-hover:opacity-100"
+          className="classic-hover-overlay invisible absolute left-0 top-0 z-10 flex w-full flex-col rounded-t-[12px] bg-[rgba(255,255,255,0.98)] p-6 opacity-0 transition-all duration-300 group-hover:visible group-hover:opacity-100"
           style={{ height: "calc(100% - 60px)" }}
         >
           <div className="mb-3 flex w-full items-center gap-3">
-            <Image
+            <CollectionImage
               src={school.avatar}
               alt={school.name}
               width={40}
@@ -300,7 +300,7 @@ export const CardClassic: React.FC<Props> = ({
             <div ref={statusRef} className="relative">
               <button
                 type="button"
-                className="flex items-center gap-1.5 rounded-md px-2 py-1 transition-colors hover:bg-[rgba(0,0,0,0.05)]"
+                className="classic-status-trigger flex items-center gap-1.5 rounded-md px-2 py-1 transition-colors hover:bg-[rgba(0,0,0,0.05)]"
                 onClick={(event) => {
                   event.stopPropagation();
                   setIsStatusOpen((prev) => !prev);
@@ -328,14 +328,14 @@ export const CardClassic: React.FC<Props> = ({
               </button>
 
               <div
-                className={`absolute left-0 top-[calc(100%+4px)] z-[9999] w-[200px] overflow-hidden rounded-lg bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] ${isStatusOpen ? "block" : "hidden"
+                className={`classic-status-menu absolute left-0 top-[calc(100%+4px)] z-[9999] w-[200px] overflow-hidden rounded-lg bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] ${isStatusOpen ? "block" : "hidden"
                   }`}
               >
                 {STATUS_OPTIONS.map((option) => (
                   <button
                     key={`${option.label}-${option.value}`}
                     type="button"
-                    className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-[#4A4A4A] transition-colors hover:bg-[#F5F5F7]"
+                    className="classic-status-option flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-[#4A4A4A] transition-colors hover:bg-[#F5F5F7]"
                     onClick={(event) => {
                       event.stopPropagation();
                       onStatusChange(index, option.value);

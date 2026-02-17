@@ -36,11 +36,11 @@ const MainContentSection: React.FC<MainContentSectionProps> = ({
       {DROPDOWN_CATEGORIES.map((category, index) => {
         return (
           <div key={index} className="mb-6">
-            <div className="flex flex-row gap-3 m-[12px_16px_0px] pb-3 border-b-2 items-center">
-              <span className="text-[#4A4A4A]">
+            <div className="flex flex-row gap-3 m-[12px_16px_0px] pb-3 border-b-2 items-center border-theme">
+              <span className="text-default">
                 {DROPDOWN_CATEGORIES_ICONS[category]}
               </span>
-              <span className="text-[#464646] font-semibold text-sm">
+              <span className="text-bold font-semibold text-sm">
                 {category}
               </span>
             </div>
@@ -50,12 +50,12 @@ const MainContentSection: React.FC<MainContentSectionProps> = ({
                 return (
                   <div
                     key={item.id}
-                    className="flex flex-row gap-3 p-[12px_16px_8px] hover:bg-[rgba(0,0,0,0.04)] items-center"
+                    className="flex flex-row gap-3 p-[12px_16px_8px] hover:bg-hover items-center"
                     data-dropdown-select="true"
                     onClick={() => setSubcategory(subcategory)}
                   >
-                    <span className="text-[#4A4A4A]">{item.icon}</span>
-                    <span className="text-[#464646] text-sm">{item.title}</span>
+                    <span className="text-default">{item.icon}</span>
+                    <span className="text-bold text-sm">{item.title}</span>
                   </div>
                 );
               })}
@@ -75,7 +75,7 @@ const MainContentSection: React.FC<MainContentSectionProps> = ({
   );
 
   const renderItemsCount = () => (
-    <div className="text-sm text-[#4A4A4A]">
+    <div className="text-sm text-default">
       <span className="flex items-center whitespace-nowrap gap-2">
         <strong>75</strong> items ·
         <div className="w-4 h-4">
@@ -96,7 +96,7 @@ const MainContentSection: React.FC<MainContentSectionProps> = ({
   );
 
   return (
-    <div className="w-full mx-auto bg-white rounded-none border-0 shadow-none md:rounded-xl md:border md:border-[rgba(0,0,0,0.1)] md:shadow-[0_2px_12px_rgba(0,0,0,0.05)] overflow-visible">
+    <div className="collections-main-shell w-full mx-auto bg-surface rounded-none border-0 shadow-none md:rounded-xl md:border border-theme md:shadow-[0_2px_12px_var(--shadow-color)] overflow-visible">
       <Header
         schools={schools}
         layouts={layouts}

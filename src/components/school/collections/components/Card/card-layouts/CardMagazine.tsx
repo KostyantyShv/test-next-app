@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
+import { CollectionImage } from "../CollectionImage";
 import { CollectionsSchool, Note, RatingCheckmarks, truncateText } from "../Card";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
 
@@ -125,7 +125,7 @@ export const CardMagazine: React.FC<{
     const statusColor = getStatusColor(school.status);
 
     return (
-      <div className="relative z-[1] w-full" data-layout={_layout}>
+      <div className="collections-magazine-card relative z-[1] w-full" data-layout={_layout}>
         <div className="relative z-[1] flex min-h-[280px] w-full overflow-visible rounded-xl border border-[#E5E7EB] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
           <div className="flex min-w-0 flex-1 flex-col justify-between overflow-visible p-6">
             <div className="flex-1">
@@ -265,11 +265,13 @@ export const CardMagazine: React.FC<{
                       }}
                     >
                       <div
+                        className="collections-grid-status-menu"
                         style={{
                           width: 200,
                           maxHeight: 300,
                           overflowY: 'auto',
-                          background: 'white',
+                          background: 'var(--surface-color, #FFFFFF)',
+                          border: '1px solid var(--border-color, rgba(0,0,0,0.1))',
                           borderRadius: 8,
                           boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                           padding: '8px 0',
@@ -277,6 +279,7 @@ export const CardMagazine: React.FC<{
                       >
                         {STATUS_OPTIONS.map((option) => (
                           <button
+                            className="collections-grid-status-item"
                             key={option.status || "clear-status"}
                             type="button"
                             style={{
@@ -285,14 +288,14 @@ export const CardMagazine: React.FC<{
                               gap: 8,
                               padding: '8px 16px',
                               fontSize: 14,
-                              color: '#4A4A4A',
+                              color: 'var(--text-default, #4A4A4A)',
                               width: '100%',
                               border: 'none',
                               background: 'none',
                               textAlign: 'left',
                               cursor: 'pointer',
                             }}
-                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F5F5F7')}
+                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--hover-bg, #F5F5F7)')}
                             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                             onClick={(event) => {
                               event.stopPropagation();
@@ -356,7 +359,7 @@ export const CardMagazine: React.FC<{
             ) : null}
 
             <div className="relative h-full w-full min-h-[280px]">
-              <Image src={school.image} alt={school.name} fill className="object-cover" />
+              <CollectionImage src={school.image} alt={school.name} fill className="object-cover" />
             </div>
             <div className="absolute inset-x-0 bottom-0 bg-[rgba(0,0,0,0.8)] px-4 py-3 text-center text-[13px] font-medium text-white">
               {school.schoolType}

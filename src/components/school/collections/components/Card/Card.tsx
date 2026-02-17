@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import Image from "next/image";
+import { useState } from "react";
+import { CollectionImage } from "./CollectionImage";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
 
 // Types
@@ -39,8 +39,8 @@ export const schools: CollectionsSchool[] = [
     schoolType: "PRIVATE SCHOOL",
     location: "Cambridge, MA",
     rating: "4.9 (875)",
-    image: "https://i.ibb.co/J8QjpbD/school1.webp",
-    avatar: "https://i.ibb.co/J8QjpbD/school1.webp",
+    image: "/images/logo-full.jpg",
+    avatar: "/images/logo-full.jpg",
     ranking: "#1 Best Private High Schools in Houston Area",
     grade: "A+",
     students: "1,756",
@@ -68,8 +68,8 @@ export const schools: CollectionsSchool[] = [
     schoolType: "CHARTER SCHOOL",
     location: "Stanford, CA",
     rating: "4.8 (923)",
-    image: "https://i.ibb.co/fVRCnNZY/school2.webp",
-    avatar: "https://i.ibb.co/fVRCnNZY/school2.webp",
+    image: "/images/cat.png",
+    avatar: "/images/cat.png",
     ranking: "#1 Best Private High Schools in America",
     grade: "A+",
     students: "1,343",
@@ -103,8 +103,8 @@ export const schools: CollectionsSchool[] = [
     schoolType: "MAGNET SCHOOL",
     location: "Cambridge, MA",
     rating: "4.7 (1k+)",
-    image: "https://i.ibb.co/fzzhd5tf/school4.webp",
-    avatar: "https://i.ibb.co/fzzhd5tf/school4.webp",
+    image: "/images/avatar.png",
+    avatar: "/images/avatar.png",
     ranking: "#1 Best Private High Schools in Houston Area",
     grade: "A+",
     students: "1,469",
@@ -145,8 +145,8 @@ export const schools: CollectionsSchool[] = [
     schoolType: "TRADITIONAL SCHOOL",
     location: "Pasadena, CA",
     rating: "4.8 (456)",
-    image: "https://i.ibb.co/B5pFBbB2/school5.webp",
-    avatar: "https://i.ibb.co/B5pFBbB2/school5.webp",
+    image: "/images/logo-semi.png",
+    avatar: "/images/logo-semi.png",
     ranking: "#3 in Best School for Physics in America",
     grade: "A+",
     students: "789",
@@ -164,8 +164,8 @@ export const schools: CollectionsSchool[] = [
     schoolType: "PRIVATE UNIVERSITY",
     location: "Chicago, IL",
     rating: "4.6 (788)",
-    image: "https://i.ibb.co/J8QjpbD/school1.webp",
-    avatar: "https://i.ibb.co/J8QjpbD/school1.webp",
+    image: "/images/logo-full.jpg",
+    avatar: "/images/logo-full.jpg",
     ranking: "#4 Best Colleges in America",
     grade: "A+",
     students: "6,734",
@@ -184,8 +184,8 @@ export const schools: CollectionsSchool[] = [
     schoolType: "PRIVATE UNIVERSITY",
     location: "New Haven, CT",
     rating: "4.8 (841)",
-    image: "https://i.ibb.co/fVRCnNZY/school2.webp",
-    avatar: "https://i.ibb.co/fVRCnNZY/school2.webp",
+    image: "/images/cat.png",
+    avatar: "/images/cat.png",
     ranking: "#3 in Best Colleges in America",
     grade: "A+",
     students: "5,964",
@@ -263,10 +263,10 @@ export const Note: React.FC<{
 }> = ({ note, onEdit, onDelete }) => (
   <div
     key={note.id}
-    className="bg-gray-50 rounded-lg p-3 mb-3 border border-gray-100"
+    className="note bg-gray-50 rounded-lg p-3 mb-3 border border-gray-100"
   >
     <div className="flex justify-between mb-2">
-      <span className="text-xs font-medium text-gray-700">{note.author}</span>
+      <span className="note-author text-xs font-medium text-gray-700">{note.author}</span>
       <div className="flex gap-2">
         <button
           className="text-xs text-blue-600 hover:underline"
@@ -282,10 +282,10 @@ export const Note: React.FC<{
         </button>
       </div>
     </div>
-    <div className="text-sm text-gray-600">{note.content}</div>
-    <div className="text-right text-[11px] text-gray-400 mt-1">
-      <span className="mr-1">{note.timestamp}</span>
-      <span>{note.time}</span>
+    <div className="note-content text-sm text-gray-600">{note.content}</div>
+    <div className="note-timestamp text-right text-[11px] text-gray-400 mt-1">
+      <span className="time-display mr-1">{note.timestamp}</span>
+      <span className="time-display">{note.time}</span>
     </div>
   </div>
 );
@@ -387,7 +387,7 @@ export const SchoolCard: React.FC<{
         </div>
       )}
       <div className="card-header flex gap-4 p-4 pr-6">
-        <Image
+        <CollectionImage
           src={school.avatar}
           alt={school.name}
           width={72}
@@ -464,7 +464,7 @@ export const SchoolCard: React.FC<{
       </div>
       <div className="hover-overlay absolute top-0 left-0 w-full h-[calc(100%-54px)] bg-white p-6 opacity-0 group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out flex flex-col rounded-t-xl z-30">
         <div className="hover-header flex gap-3 mb-3 flex-shrink-0">
-          <Image
+          <CollectionImage
             src={school.avatar}
             alt={school.name}
             width={40}

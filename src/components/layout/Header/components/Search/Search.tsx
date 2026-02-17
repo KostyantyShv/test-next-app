@@ -172,6 +172,8 @@ export const Search: FC = () => {
           </div>
 
           <input
+            id="header-search-legacy"
+            name="header_search_legacy"
             type="text"
             value={searchValue}
             onChange={handleInputChange}
@@ -182,7 +184,7 @@ export const Search: FC = () => {
           />
 
           {searchValue.length >= 2 && (
-            <button
+            <button type="button"
               onClick={handleClear}
               className="search-clear bg-transparent border-none p-0 mr-[10px] cursor-pointer flex items-center justify-center opacity-60 transition-all duration-300 rounded-full w-[26px] h-[26px] flex-shrink-0 self-center leading-none hover:opacity-100 hover:bg-[rgba(0,0,0,0.06)] hover:scale-105"
               style={{ color: "var(--header-green)" }}
@@ -209,7 +211,7 @@ export const Search: FC = () => {
             </svg>
           </div>
 
-          <button
+          <button type="button"
             className="search-button-legacy relative flex items-center justify-center border-none text-white px-6 cursor-pointer transition-all duration-200 rounded-[0_6px_6px_0] border-l before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[10px] before:rounded-[10px] before:transform before:-translate-x-[50%]"
             style={{
               backgroundColor: "var(--header-green)",
@@ -242,6 +244,8 @@ export const Search: FC = () => {
           </div>
 
           <input
+            id="header-search-midnight"
+            name="header_search_midnight"
             type="text"
             value={searchValue}
             onChange={handleInputChange}
@@ -263,7 +267,7 @@ export const Search: FC = () => {
             </svg>
           </div>
 
-          <button className="search-button" aria-label="Search">
+          <button type="button" className="search-button" aria-label="Search">
             <svg className="icon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
               <path d="M14.29 5.71c-.39.39-.39 1.02 0 1.41L18.17 11H3c-.55 0-1 .45-1 1s.45 1 1 1h15.18l-3.88 3.88c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l5.59-5.59c-.39-.39.39-1.02 0-1.41l-5.6-5.58c-.38-.39-1.02-.39-1.41 0"></path>
             </svg>
@@ -302,6 +306,8 @@ export const Search: FC = () => {
           </div>
 
           <input
+            id="header-search-oceanic"
+            name="header_search_oceanic"
             type="text"
             value={searchValue}
             onChange={handleInputChange}
@@ -323,7 +329,7 @@ export const Search: FC = () => {
             </svg>
           </div>
 
-          <button className="search-button" aria-label="Search">
+          <button type="button" className="search-button" aria-label="Search">
             <svg className="icon" viewBox="0 0 24 24" width="22" height="22" fill="white">
               <path d="M14.29 5.71c-.39.39-.39 1.02 0 1.41L18.17 11H3c-.55 0-1 .45-1 1s.45 1 1 1h15.18l-3.88 3.88c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l5.59-5.59c-.39-.39.39-1.02 0-1.41l-5.6-5.58c-.38-.39-1.02-.39-1.41 0"></path>
             </svg>
@@ -362,6 +368,8 @@ export const Search: FC = () => {
           </div>
 
           <input
+            id="header-search-teal"
+            name="header_search_teal"
             type="text"
             value={searchValue}
             onChange={handleInputChange}
@@ -383,7 +391,7 @@ export const Search: FC = () => {
             </svg>
           </div>
 
-          <button className="search-button" aria-label="Search">
+          <button type="button" className="search-button" aria-label="Search">
             <svg className="icon" viewBox="0 0 24 24" width="22" height="22" fill="white">
               <path d="M14.29 5.71c-.39.39-.39 1.02 0 1.41L18.17 11H3c-.55 0-1 .45-1 1s.45 1 1 1h15.18l-3.88 3.88c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l5.59-5.59c-.39-.39.39-1.02 0-1.41l-5.6-5.58c-.38-.39-1.02-.39-1.41 0"></path>
             </svg>
@@ -422,6 +430,8 @@ export const Search: FC = () => {
           </div>
 
           <input
+            id="header-search-mint"
+            name="header_search_mint"
             type="text"
             value={searchValue}
             onChange={handleInputChange}
@@ -443,7 +453,7 @@ export const Search: FC = () => {
             </svg>
           </div>
 
-          <button className="search-button" aria-label="Search">
+          <button type="button" className="search-button" aria-label="Search">
             <svg className="icon" viewBox="0 0 24 24" width="22" height="22" fill="white">
               <path d="M14.29 5.71c-.39.39-.39 1.02 0 1.41L18.17 11H3c-.55 0-1 .45-1 1s.45 1 1 1h15.18l-3.88 3.88c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l5.59-5.59c-.39-.39.39-1.02 0-1.41l-5.6-5.58c-.38-.39-1.02-.39-1.41 0"></path>
             </svg>
@@ -532,7 +542,7 @@ export const Search: FC = () => {
                           <span>{item.enrolled} enrolled</span>
                         </div>
                       </div>
-                      <button className="py-1.5 px-4 bg-[#EBFCF4] text-[#016853] border border-[#016853] rounded-md text-[13px] font-medium cursor-pointer transition-all hover:bg-[#D7F7E9] tracking-[-0.01em] whitespace-nowrap self-start shrink-0">VIEW</button>
+                      <button type="button" className="py-1.5 px-4 bg-[#EBFCF4] text-[#016853] border border-[#016853] rounded-md text-[13px] font-medium cursor-pointer transition-all hover:bg-[#D7F7E9] tracking-[-0.01em] whitespace-nowrap self-start shrink-0">VIEW</button>
                     </div>
                   ))}
                 </div>
@@ -562,7 +572,7 @@ export const Search: FC = () => {
                           <span>{item.enrolled} enrolled</span>
                         </div>
                       </div>
-                      <button className="py-1.5 px-4 bg-[#EBFCF4] text-[#016853] border border-[#016853] rounded-md text-[13px] font-medium cursor-pointer transition-all hover:bg-[#D7F7E9] tracking-[-0.01em] whitespace-nowrap self-start shrink-0">VIEW</button>
+                      <button type="button" className="py-1.5 px-4 bg-[#EBFCF4] text-[#016853] border border-[#016853] rounded-md text-[13px] font-medium cursor-pointer transition-all hover:bg-[#D7F7E9] tracking-[-0.01em] whitespace-nowrap self-start shrink-0">VIEW</button>
                     </div>
                   ))}
                 </div>
@@ -593,7 +603,7 @@ export const Search: FC = () => {
                           <span>{item.members} members</span>
                         </div>
                       </div>
-                      <button className="py-1.5 px-4 bg-[#EBFCF4] text-[#016853] border border-[#016853] rounded-md text-[13px] font-medium cursor-pointer transition-all hover:bg-[#D7F7E9] tracking-[-0.01em] whitespace-nowrap self-start shrink-0">JOIN</button>
+                      <button type="button" className="py-1.5 px-4 bg-[#EBFCF4] text-[#016853] border border-[#016853] rounded-md text-[13px] font-medium cursor-pointer transition-all hover:bg-[#D7F7E9] tracking-[-0.01em] whitespace-nowrap self-start shrink-0">JOIN</button>
                     </div>
                   ))}
                 </div>

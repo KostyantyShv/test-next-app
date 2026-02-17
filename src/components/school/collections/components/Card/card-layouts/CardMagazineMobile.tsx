@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
+import { CollectionImage } from "../CollectionImage";
 import {
   CollectionsSchool,
   Note,
@@ -151,7 +151,7 @@ export const CardMagazineMobile: React.FC<CardMagazineMobileProps> = ({
     <>
       <article className="relative flex h-[400px] w-full flex-col overflow-hidden rounded-2xl bg-white shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
         <div className="absolute inset-0">
-          <Image src={school.image} alt={school.name} fill className="object-cover" />
+          <CollectionImage src={school.image} alt={school.name} fill className="object-cover" />
         </div>
 
         <div className="absolute left-0 top-0 z-[3] rounded-br-xl rounded-tl-2xl bg-[rgba(8,58,155,0.9)] px-3 pb-1.5 pt-2 text-[11px] font-semibold uppercase tracking-[0.5px] text-white backdrop-blur-[4px]">
@@ -282,7 +282,7 @@ export const CardMagazineMobile: React.FC<CardMagazineMobileProps> = ({
       >
         <div className="relative flex items-center border-b border-[rgba(0,0,0,0.1)] p-4">
           <div className="flex flex-1 items-center gap-3">
-            <Image
+            <CollectionImage
               src={school.avatar || school.image}
               alt={school.name}
               width={40}

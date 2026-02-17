@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
+import { CollectionImage } from "../CollectionImage";
 import { CollectionsSchool, RatingCheckmarks, truncateText, truncateWords } from "../Card";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
 
@@ -122,7 +122,7 @@ export const CardGrid: React.FC<{
             </div>
           ) : null}
 
-          <Image src={school.image} alt={school.name} fill className="school-image" />
+          <CollectionImage src={school.image} alt={school.name} fill className="school-image" />
           <div className="school-type-label">{school.schoolType}</div>
         </div>
 
@@ -186,12 +186,12 @@ export const CardGrid: React.FC<{
 
         <div className="hover-overlay">
           <div className="hover-header">
-            <Image src={school.avatar} alt={school.name} width={40} height={40} className="school-avatar" />
+            <CollectionImage src={school.avatar} alt={school.name} width={40} height={40} className="school-avatar" />
             <div className="hover-name-row">
               <div className="hover-school-name">{truncateWords(school.name, 3)}</div>
               <SchoolCardContextMenu
                 schoolName={school.name}
-                buttonClassName="more-options-trigger flex items-center justify-center rounded text-[#5F5F5F] transition-colors hover:bg-[#F5F5F7] hover:text-[#464646] min-w-6 h-6"
+                buttonClassName="more-options-trigger flex items-center justify-center rounded text-default transition-colors hover:bg-hover hover:text-bold min-w-6 h-6"
                 iconClassName="w-4 h-4"
                 preferredPlacement="bottom"
               />

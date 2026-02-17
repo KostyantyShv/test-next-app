@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import Image from "next/image";
+import { CollectionImage } from "../CollectionImage";
 import { CollectionsSchool, Note, RatingCheckmarks } from "../Card";
 import { SchoolCardContextMenu } from "../../../../explore/SchoolCardContextMenu";
 
@@ -123,7 +123,7 @@ export const CardGridMobile: React.FC<CardGridMobileProps> = ({
         onClick={() => setIsDrawerOpen(true)}
       >
         <div className="relative h-[140px] w-full overflow-hidden">
-          <Image src={school.image} alt={school.name} fill className="object-cover" />
+          <CollectionImage src={school.image} alt={school.name} fill className="object-cover" />
 
           {school.specialty ? (
             <div
@@ -252,7 +252,7 @@ export const CardGridMobile: React.FC<CardGridMobileProps> = ({
         <div className="mx-auto my-3 h-[5px] w-10 rounded-[2.5px] bg-[#E5E7EB]" />
         <div className="flex items-center justify-between border-b border-[#E5E7EB] px-5 pb-4">
           <div className="flex items-center gap-3">
-            <Image
+            <CollectionImage
               src={school.avatar}
               alt={school.name}
               width={40}

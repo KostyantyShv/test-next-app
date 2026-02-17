@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { cn } from '@/lib/utils';
-import styles from './AIAssistantPlatform.module.css';
 import { Portal } from '@/components/ui/Portal/Portal';
 
 interface Message {
@@ -34,6 +33,157 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
   onClose,
   className,
 }) => {
+  const twMap: Record<string, string> = {
+    'ai-panel-root': 'font-sans text-[var(--text-default,#4A4A4A)]',
+    'ai-panel':
+      'fixed top-0 bottom-0 right-[-100%] md:right-[-500px] z-[9999] flex w-full md:w-[450px] bg-[var(--surface-color,#fff)] shadow-[-4px_0_20px_var(--shadow-color,rgba(0,0,0,0.1))] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]',
+    'ai-panel-left': 'flex min-h-0 flex-1 flex-col overflow-hidden bg-[var(--surface-color,#fff)]',
+    'ai-panel-right':
+      'flex w-[50px] flex-col gap-2 border-l border-[var(--border-color,rgba(0,0,0,0.1))] bg-[var(--surface-secondary,#f8f9fa)] px-2 py-3',
+    'panel-controls': 'mb-4 flex flex-col gap-1',
+    'control-btn':
+      'flex h-[34px] w-[34px] items-center justify-center rounded-md bg-transparent text-[var(--subtle-text,#5F5F5F)] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hover:bg-[var(--hover-bg,#DFDDDB)] hover:text-[var(--text-default,#4A4A4A)]',
+    'panel-actions': 'flex flex-1 flex-col gap-3',
+    'action-icon-btn':
+      'relative flex h-[34px] w-[34px] items-center justify-center rounded-lg bg-transparent text-[var(--subtle-text,#5F5F5F)] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hover:bg-[var(--apply-button-bg,#EBFCF4)] hover:text-[var(--active-green,#0B6333)]',
+    'chat-area': 'flex min-h-0 flex-1 flex-col overflow-hidden',
+    'chat-messages': 'flex flex-1 flex-col gap-4 overflow-y-auto p-4',
+    'message': 'flex flex-col gap-2',
+    'message-bubble': 'max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-[1.4]',
+    'context-pills': 'min-h-10 flex flex-wrap gap-2 px-4 py-3',
+    'context-pill':
+      'group relative flex cursor-pointer items-center gap-2 rounded-2xl border border-[var(--border-color,rgba(0,0,0,0.1))] bg-[var(--surface-secondary,#f5f5f5)] px-3 py-1.5 pr-4 text-xs text-[var(--text-default,#4A4A4A)]',
+    'context-dropdown': 'ml-auto transition-transform group-hover:rotate-180',
+    'remove-context':
+      'ml-auto hidden h-4 w-4 items-center justify-center rounded-full p-0.5 text-[var(--subtle-text,#5F5F5F)] transition-all group-hover:flex hover:bg-black/10',
+    'prompt-pills': 'relative border-b border-[var(--border-color,rgba(0,0,0,0.1))] px-4 py-3',
+    'pills-container': 'flex flex-wrap gap-2',
+    'prompt-pill':
+      'flex items-center gap-1 rounded-2xl border border-transparent bg-[var(--apply-button-bg,#EBFCF4)] px-3 py-1.5 text-[13px] text-[var(--text-default,#4A4A4A)] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hover:border-[var(--active-green,#0B6333)] hover:bg-[var(--apply-button-hover,#D7F7E9)]',
+    'all-prompts-inline':
+      'absolute bottom-full left-0 right-0 z-[100] mb-2 min-h-[300px] max-h-[400px] overflow-y-auto rounded-lg border border-[var(--border-color,rgba(0,0,0,0.1))] bg-[var(--surface-color,#fff)] shadow-[0_4px_16px_var(--shadow-color,rgba(0,0,0,0.1))]',
+    'prompt-row':
+      'flex cursor-grab items-center gap-3 border-b border-[var(--border-color,#f5f5f5)] px-4 py-3 transition-all hover:bg-[var(--hover-bg,#f8f9fa)]',
+    'drag-handle': 'flex h-4 w-4 flex-shrink-0 items-center justify-center text-[var(--subtle-text,#5F5F5F)]',
+    'prompt-row-icon':
+      'flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-[var(--apply-button-bg,#EBFCF4)] text-[var(--active-green,#0B6333)]',
+    'prompt-row-details': 'min-w-0 flex-1',
+    'prompt-row-title': 'mb-0.5 text-sm font-medium text-[var(--text-default,#4A4A4A)]',
+    'prompt-row-desc': 'text-xs leading-[1.3] text-[var(--subtle-text,#5F5F5F)]',
+    'chat-input-area': 'relative p-4',
+    'inline-modal':
+      'absolute bottom-full left-0 right-0 z-[100] mb-2 max-h-[200px] overflow-y-auto rounded-lg border border-[var(--border-color,rgba(0,0,0,0.1))] bg-[var(--surface-color,#fff)] shadow-[0_4px_16px_var(--shadow-color,rgba(0,0,0,0.1))]',
+    'inline-modal-item':
+      'flex cursor-pointer items-center gap-3 border-b border-[var(--border-color,#f5f5f5)] px-4 py-3 transition-all hover:bg-[var(--hover-bg,#f8f9fa)] last:border-b-0',
+    'inline-modal-icon':
+      'flex h-6 w-6 flex-shrink-0 items-center justify-center rounded bg-[var(--apply-button-bg,#EBFCF4)] text-xs text-[var(--active-green,#0B6333)]',
+    'inline-modal-details': 'min-w-0 flex-1',
+    'inline-modal-title': 'mb-0.5 text-[13px] font-medium text-[var(--text-default,#4A4A4A)]',
+    'inline-modal-desc': 'text-[11px] leading-[1.3] text-[var(--subtle-text,#5F5F5F)]',
+    'chat-input-container':
+      'relative rounded-xl border-[1.5px] border-[var(--border-color,rgba(0,0,0,0.1))] bg-[var(--surface-color,#fff)] transition-all focus-within:border-[var(--verification-blue,#1D77BD)] focus-within:shadow-[0_0_0_3px_rgba(29,119,189,0.1)]',
+    'chat-input-wrapper': 'flex items-end gap-2 px-3 py-[18px]',
+    'chat-input':
+      'min-h-5 max-h-[120px] flex-1 resize-none border-none !bg-[var(--surface-color,#fff)] text-sm leading-[1.4] text-[var(--text-default,#4A4A4A)] outline-none placeholder:text-[var(--subtle-text,#5F5F5F)]',
+    'submit-btn':
+      'flex h-8 w-8 scale-75 items-center justify-center rounded-full bg-[var(--verification-blue,#1D77BD)] text-white opacity-0 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] hover:bg-[#1565c0]',
+    'chat-controls':
+      'flex items-center justify-between rounded-b-xl border-t border-[var(--border-color,rgba(0,0,0,0.1))] bg-[var(--surface-secondary,#f8f9fa)] px-3 py-2',
+    'chat-controls-left': 'flex items-center gap-2',
+    'chat-controls-right': 'flex items-center gap-2',
+    'model-selector':
+      'flex items-center gap-1.5 rounded-md bg-transparent px-2 py-1 pr-3 text-xs text-[var(--subtle-text,#5F5F5F)] transition-all hover:bg-[rgba(29,119,189,0.1)] hover:text-[var(--verification-blue,#1D77BD)]',
+    'context-selector':
+      'flex items-center gap-1.5 rounded-md bg-transparent px-2 py-1 text-xs text-[var(--subtle-text,#5F5F5F)] transition-all hover:bg-[rgba(29,119,189,0.1)] hover:text-[var(--verification-blue,#1D77BD)]',
+    'chat-control-btn':
+      'flex h-6 w-6 items-center justify-center rounded bg-transparent text-[var(--subtle-text,#5F5F5F)] transition-all hover:bg-[rgba(29,119,189,0.1)] hover:text-[var(--verification-blue,#1D77BD)]',
+    'chat-history':
+      'fixed top-0 bottom-0 right-[-100%] md:right-[-400px] z-[9998] flex w-full md:w-[400px] flex-col bg-[var(--surface-color,#fff)] shadow-[-4px_0_20px_var(--shadow-color,rgba(0,0,0,0.1))] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]',
+    'chat-history-header': 'flex items-center justify-between border-b border-[var(--border-color,rgba(0,0,0,0.1))] p-5',
+    'chat-history-title': 'text-lg font-semibold text-[var(--bold-text,#464646)]',
+    'history-close':
+      'rounded bg-transparent p-1 text-[var(--subtle-text,#5F5F5F)] transition-all hover:bg-[var(--hover-bg,#f5f5f5)] hover:text-[var(--text-default,#4A4A4A)]',
+    'history-search': 'border-b border-[var(--border-color,rgba(0,0,0,0.1))] px-5 py-4',
+    'history-search-input':
+      'w-full rounded-md border border-[var(--border-color,rgba(0,0,0,0.1))] bg-[var(--surface-color,#fff)] px-3 py-2.5 text-sm text-[var(--text-default,#4A4A4A)] outline-none focus:border-[var(--verification-blue,#1D77BD)] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)]',
+    'history-list': 'flex-1 overflow-y-auto py-4',
+    'history-item':
+      'group relative cursor-pointer border-b border-[var(--border-color,#f5f5f5)] px-5 py-3 transition-all hover:bg-[var(--hover-bg,#f8f9fa)]',
+    'history-item-title-row': 'mb-1 flex items-center gap-2.5',
+    'history-item-title': 'min-w-0 flex-1 truncate text-sm font-medium text-[var(--text-default,#4A4A4A)]',
+    'history-title-edit-btn':
+      'flex h-5 w-5 flex-shrink-0 items-center justify-center rounded bg-transparent text-[var(--subtle-text,#5F5F5F)] opacity-0 transition-all group-hover:opacity-100 hover:bg-[var(--hover-bg,#DFDDDB)] hover:text-[var(--text-default,#4A4A4A)]',
+    'history-item-preview': 'mb-1 truncate text-xs leading-[1.3] text-[var(--subtle-text,#5F5F5F)]',
+    'history-item-meta-row': 'flex items-center justify-between gap-2.5',
+    'history-item-meta': 'min-w-0 flex-1 truncate whitespace-nowrap text-[11px] text-[var(--subtle-text,#5F5F5F)]',
+    'history-item-actions': 'flex flex-shrink-0 gap-1 opacity-0 transition-all group-hover:opacity-100',
+    'history-action-btn':
+      'flex h-5 w-5 items-center justify-center rounded bg-transparent text-[var(--subtle-text,#5F5F5F)] transition-all hover:bg-[var(--hover-bg,#DFDDDB)] hover:text-[var(--text-default,#4A4A4A)]',
+    'modal-backdrop': 'fixed inset-0 z-[1500] flex items-center justify-center bg-black/40',
+    'modal':
+      'flex w-full max-w-[400px] max-h-[80vh] flex-col overflow-hidden rounded-xl bg-[var(--surface-color,#fff)] shadow-[0_20px_60px_rgba(0,0,0,0.15)]',
+    'modal-header': 'relative flex-shrink-0 border-b border-[var(--border-color,rgba(0,0,0,0.1))] px-5 pb-4 pt-5',
+    'modal-title': 'm-0 text-base font-semibold text-[var(--bold-text,#464646)]',
+    'modal-close':
+      'absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded bg-transparent p-1 text-[var(--subtle-text,#5F5F5F)] transition-all hover:bg-[var(--hover-bg,#f5f5f5)] hover:text-[var(--text-default,#4A4A4A)]',
+    'modal-back-btn':
+      'absolute left-4 top-4 flex h-7 w-7 items-center justify-center rounded bg-transparent p-1 text-[var(--subtle-text,#5F5F5F)] transition-all hover:bg-[var(--hover-bg,#f5f5f5)] hover:text-[var(--text-default,#4A4A4A)]',
+    'modal-body': 'flex-1 overflow-y-auto p-5',
+    'context-tabs': 'mb-4 flex border-b border-[var(--border-color,rgba(0,0,0,0.1))]',
+    'context-tab':
+      'flex-1 border-b-2 border-transparent bg-transparent px-4 py-3 text-sm font-medium text-[var(--subtle-text,#5F5F5F)] transition-all hover:text-[var(--text-default,#4A4A4A)]',
+    'tab-content': 'block',
+    'context-back': 'mb-4',
+    'context-back-title': 'mb-3 text-sm font-semibold text-[var(--bold-text,#464646)]',
+    'tab-list': 'flex flex-col gap-2',
+    'tab-item':
+      'flex cursor-pointer items-center gap-3 rounded-lg border border-[var(--border-color,rgba(0,0,0,0.1))] p-3 transition-all hover:border-[var(--verification-blue,#1D77BD)] hover:bg-[var(--hover-bg,#f8f9fa)]',
+    'tab-checkbox':
+      'flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-[3px] border-2 border-[var(--border-color,rgba(0,0,0,0.1))]',
+    'tab-icon':
+      'flex h-6 w-6 flex-shrink-0 items-center justify-center rounded bg-[var(--surface-secondary,#f5f5f5)] text-xs',
+    'tab-details': 'min-w-0 flex-1',
+    'tab-title': 'mb-0.5 truncate text-[13px] font-medium text-[var(--text-default,#4A4A4A)]',
+    'tab-url': 'truncate text-[11px] text-[var(--subtle-text,#5F5F5F)]',
+    'collection-list': 'flex flex-col gap-2',
+    'collection-item':
+      'flex cursor-pointer items-center gap-3 rounded-lg border border-[var(--border-color,rgba(0,0,0,0.1))] p-3 transition-all hover:border-[var(--verification-blue,#1D77BD)] hover:bg-[var(--hover-bg,#f8f9fa)]',
+    'collection-icon':
+      'flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-[var(--apply-button-bg,#EBFCF4)] text-base',
+    'collection-details': 'min-w-0 flex-1',
+    'collection-name': 'mb-0.5 truncate text-[13px] font-medium text-[var(--text-default,#4A4A4A)]',
+    'collection-meta': 'flex items-center gap-1.5 text-[11px] text-[var(--subtle-text,#5F5F5F)]',
+    'collection-count': 'text-[var(--subtle-text,#5F5F5F)]',
+    'meta-dot': 'h-[3px] w-[3px] flex-shrink-0 rounded-full bg-[var(--subtle-text,#5F5F5F)]',
+    'form-group': 'mb-5',
+    'form-label': 'mb-2 block text-sm font-medium text-[var(--text-default,#4A4A4A)]',
+    'form-input':
+      'w-full rounded-lg border border-[var(--border-color,rgba(0,0,0,0.1))] bg-[var(--surface-color,#fff)] p-3 text-sm text-[var(--text-default,#4A4A4A)] outline-none transition-all focus:border-[var(--verification-blue,#1D77BD)] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)]',
+    'form-textarea':
+      'min-h-[100px] w-full resize-y rounded-lg border border-[var(--border-color,rgba(0,0,0,0.1))] bg-[var(--surface-color,#fff)] p-3 text-sm text-[var(--text-default,#4A4A4A)] outline-none transition-all focus:border-[var(--verification-blue,#1D77BD)] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)]',
+    'form-select':
+      'w-full rounded-lg border border-[var(--border-color,rgba(0,0,0,0.1))] bg-[var(--surface-color,#fff)] p-3 text-sm text-[var(--text-default,#4A4A4A)] outline-none transition-all focus:border-[var(--verification-blue,#1D77BD)] focus:shadow-[0_0_0_3px_rgba(29,119,189,0.1)]',
+    'form-example': 'mt-1 text-xs text-[var(--subtle-text,#5F5F5F)]',
+    'modal-footer': 'flex justify-end gap-3 border-t border-[var(--border-color,rgba(0,0,0,0.1))] px-5 pb-5 pt-4',
+    'btn': 'rounded-md border-none px-5 py-2.5 text-sm font-medium transition-all',
+    'btn-primary': 'bg-[var(--verification-blue,#1D77BD)] text-white hover:bg-[#1565c0]',
+    'btn-secondary':
+      'border border-[var(--border-color,rgba(0,0,0,0.1))] bg-transparent text-[var(--text-default,#4A4A4A)] hover:border-[var(--active-green,#0B6333)] hover:bg-[var(--apply-button-bg,#EBFCF4)]',
+    'icon': 'flex h-4 w-4 items-center justify-center',
+  };
+
+  const tw = useCallback((classNames?: string) => {
+    if (!classNames) return '';
+    const mapped = classNames
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((token) => twMap[token])
+      .filter(Boolean)
+      .join(' ');
+    // Ensure contextual utility classes passed at call-site can override mapped defaults.
+    return cn(mapped, classNames);
+  }, []);
+
   const [messages, setMessages] = useState<Message[]>([
     { type: 'ai', text: "Hello! How can I assist you today? I'm here to help with writing, research, analysis, and more." }
   ]);
@@ -414,54 +564,69 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
     <>
       {typeof window !== 'undefined' && (
         <Portal containerId="ai-assistant-platform-desktop-portal">
-          <div className={styles.aiPanelRoot}>
+          <div className={tw('ai-panel-root')}>
               <div 
                 ref={panelRef}
-                className={cn(
-                  "ai-panel",
-                  isOpen && !showChatHistory && "open",
-                  isExpanded && "expanded",
-                  className
+                className={tw(
+                  cn(
+                    "ai-panel",
+                    isOpen && !showChatHistory && "right-0 md:right-0",
+                    isExpanded && "md:w-[580px]",
+                    className
+                  )
                 )}
               >
         {/* Left Column */}
-        <div className="ai-panel-left">
+        <div className={tw("ai-panel-left")}>
           {/* Chat Area */}
-          <div className="chat-area">
+          <div className={tw("chat-area")}>
             <div 
               ref={chatMessagesRef}
-              className="chat-messages"
+              className={tw("chat-messages")}
             >
               {messages.map((message, index) => (
                 <div
                   key={index}
-                  className={cn(
-                    "message",
-                    message.type === 'user' ? "user" : "ai"
+                  className={tw(
+                    cn(
+                      "message",
+                      message.type === 'user' ? "items-end" : "items-start"
+                    )
                   )}
                 >
-                  <div className="message-bubble">{message.text}</div>
+                  <div
+                    className={tw(
+                      cn(
+                        "message-bubble",
+                        message.type === 'user'
+                          ? "ml-auto rounded-br-[4px] bg-[var(--verification-blue,#1D77BD)] text-white"
+                          : "rounded-bl-[4px] bg-[var(--surface-secondary,#f5f5f5)] text-[var(--text-default,#4A4A4A)]"
+                      )
+                    )}
+                  >
+                    {message.text}
+                  </div>
                 </div>
               ))}
             </div>
             
             {/* Context Pills */}
             {contextPills.length > 0 && (
-              <div className="context-pills">
+              <div className={tw("context-pills")}>
                 {contextPills.map((pill) => (
                   <div
                     key={pill.id}
-                    className="context-pill"
+                    className={tw("context-pill")}
                   >
                     <span>{pill.name}</span>
-                    <span className="context-dropdown icon">
+                    <span className={tw("context-dropdown icon")}>
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m6 9 6 6 6-6" />
                       </svg>
                     </span>
-                    <button
+                    <button type="button"
                       onClick={() => removeContext(pill.type, pill.id)}
-                      className="remove-context"
+                      className={tw("remove-context")}
                     >
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 18 18">
                         <path fillRule="evenodd" clipRule="evenodd" d="M4.51025 3.51594C4.2386 3.23845 3.79343 3.23372 3.51594 3.50537C3.23845 3.77702 3.23372 4.22219 3.50537 4.49968L8.00075 9.09168L3.5155 13.4902C3.23825 13.7621 3.2339 14.2072 3.50579 14.4845C3.77769 14.7617 4.22286 14.7661 4.50012 14.4942L9 10.0814L13.4999 14.4942C13.7771 14.7661 14.2223 14.7617 14.4942 14.4845C14.7661 14.2072 14.7617 13.7621 14.4845 13.4902L9.99924 9.09168L14.4946 4.49968C14.7663 4.22219 14.7615 3.77702 14.4841 3.50537C14.2066 3.23372 13.7614 3.23845 13.4897 3.51594L9 8.10217L4.51025 3.51594Z" fill="currentColor"/>
@@ -473,8 +638,8 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
             )}
 
             {/* Prompt Pills */}
-            <div className="prompt-pills">
-              <div className="pills-container">
+            <div className={tw("prompt-pills")}>
+              <div className={tw("pills-container")}>
                 {(() => {
                   // Order primary pills (write / translate / calendar) based on
                   // current `allPromptsData` order; keep "All" pill always last.
@@ -493,15 +658,17 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
 
                   return orderedPills;
                 })().map((pill) => (
-                  <button
+                  <button type="button"
                     key={pill.id}
                     onClick={() => handlePromptPillClick(pill.id)}
-                    className={cn(
-                      "prompt-pill",
-                      activePrompt === pill.id && "active"
+                    className={tw(
+                      cn(
+                        "prompt-pill",
+                        activePrompt === pill.id && "bg-[var(--active-green,#0B6333)] text-white"
+                      )
                     )}
                   >
-                    <span className="icon">
+                    <span className={tw("icon")}>
                       {renderIcon(pill.icon, "w-4 h-4")}
                     </span>
                     {pill.title}
@@ -511,7 +678,7 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
               
               {/* All Prompts Inline Modal */}
               {showAllPromptsInline && (
-                <div className="all-prompts-inline show">
+                <div className={tw("all-prompts-inline")}>
                   {allPromptsData.map((prompt, index) => (
                     <div
                       key={prompt.id}
@@ -535,9 +702,9 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                           setDraggedPrompt(null);
                         }
                       }}
-                      className={cn("prompt-row", draggedPrompt === index && "dragging")}
+                      className={tw(cn("prompt-row", draggedPrompt === index && "opacity-50 cursor-grabbing"))}
                     >
-                      <div className="drag-handle">
+                      <div className={tw("drag-handle")}>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <circle cx="7.4" cy="3.5" r="1.8" />
                           <circle cx="14.6" cy="3.5" r="1.8" />
@@ -547,12 +714,12 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                           <circle cx="14.6" cy="18.3" r="1.8" />
                         </svg>
                       </div>
-                      <div className="prompt-row-icon">
+                      <div className={tw("prompt-row-icon")}>
                         {renderIcon(prompt.icon, 'w-4 h-4')}
                       </div>
-                      <div className="prompt-row-details">
-                        <div className="prompt-row-title">{prompt.title}</div>
-                        <div className="prompt-row-desc">{prompt.desc}</div>
+                      <div className={tw("prompt-row-details")}>
+                        <div className={tw("prompt-row-title")}>{prompt.title}</div>
+                        <div className={tw("prompt-row-desc")}>{prompt.desc}</div>
                       </div>
                     </div>
                   ))}
@@ -561,26 +728,26 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
             </div>
 
             {/* Chat Input */}
-            <div className="chat-input-area">
+            <div className={tw("chat-input-area")}>
               {/* Inline Modals */}
               {showPromptsInline && (
-                <div className="inline-modal show">
+                <div className={tw("inline-modal")}>
                   {allPromptsData.map((prompt) => (
                     <div
                       key={prompt.id}
-                      className="inline-modal-item"
+                      className={tw("inline-modal-item")}
                       onClick={() => {
                         setChatInput(`/${prompt.title.toLowerCase()} `);
                         setShowPromptsInline(false);
                         chatInputRef.current?.focus();
                       }}
                     >
-                      <div className="inline-modal-icon">
+                      <div className={tw("inline-modal-icon")}>
                         {renderIcon(prompt.icon, 'w-3.5 h-3.5')}
                       </div>
-                      <div className="inline-modal-details">
-                        <div className="inline-modal-title">{prompt.title}</div>
-                        <div className="inline-modal-desc">{prompt.desc}</div>
+                      <div className={tw("inline-modal-details")}>
+                        <div className={tw("inline-modal-title")}>{prompt.title}</div>
+                        <div className={tw("inline-modal-desc")}>{prompt.desc}</div>
                       </div>
                     </div>
                   ))}
@@ -588,11 +755,11 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
               )}
               
               {showCollectionsInline && (
-                <div className="inline-modal show">
+                <div className={tw("inline-modal")}>
                   {Object.entries(collectionsData).map(([id, collection]) => (
                     <div
                       key={id}
-                      className="inline-modal-item"
+                      className={tw("inline-modal-item")}
                       onClick={() => {
                         addContextPill(collection.name, 'collection', id);
                         setShowCollectionsInline(false);
@@ -600,34 +767,38 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                         chatInputRef.current?.focus();
                       }}
                     >
-                      <div className="inline-modal-icon">
+                      <div className={tw("inline-modal-icon")}>
                         {collection.icon}
                       </div>
-                      <div className="inline-modal-details">
-                        <div className="inline-modal-title">{collection.name}</div>
-                        <div className="inline-modal-desc">{collection.count} items • Updated {collection.updated}</div>
+                      <div className={tw("inline-modal-details")}>
+                        <div className={tw("inline-modal-title")}>{collection.name}</div>
+                        <div className={tw("inline-modal-desc")}>{collection.count} items • Updated {collection.updated}</div>
                       </div>
                     </div>
                   ))}
                 </div>
               )}
 
-              <div className="chat-input-container">
-                <div className="chat-input-wrapper">
+              <div className={tw("chat-input-container")}>
+                <div className={tw("chat-input-wrapper")}>
                   <textarea
+                    id="ai-chat-input"
+                    name="ai_chat_input"
                     ref={chatInputRef}
                     value={chatInput}
                     onChange={handleChatInputChange}
                     onKeyPress={handleKeyPress}
                     placeholder="Ask anything, type '/' for prompts, or '@' for collections"
-                    className="chat-input"
+                    className={tw("chat-input")}
                     rows={2}
                   />
-                  <button
+                  <button type="button"
                     onClick={submitMessage}
-                    className={cn(
-                      "submit-btn",
-                      chatInput.trim() && "visible"
+                    className={tw(
+                      cn(
+                        "submit-btn",
+                        chatInput.trim() && "scale-100 opacity-100"
+                      )
                     )}
                   >
                     <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
@@ -636,19 +807,19 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                   </button>
                 </div>
                 
-                <div className="chat-controls">
-                  <div className="chat-controls-left">
-                    <button className="model-selector">
+                <div className={tw("chat-controls")}>
+                  <div className={tw("chat-controls-left")}>
+                    <button type="button" className={tw("model-selector")}>
                       <span>{activeModel}</span>
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m6 9 6 6 6-6" />
                       </svg>
                     </button>
                   </div>
-                  <div className="chat-controls-right">
-                    <button 
+                  <div className={tw("chat-controls-right")}>
+                    <button type="button" 
                       onClick={() => setShowContextModal(true)}
-                      className="context-selector"
+                      className={tw("context-selector")}
                       title="Context"
                     >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 16 16">
@@ -656,10 +827,12 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                         <path d="M3.9872 2.19029C6.21466 2.6144 7.54224 3.50154 8.00016 4.01086C8.45809 3.50154 9.78566 2.6144 12.0131 2.19029C13.1416 1.97544 13.7058 1.86801 14.1863 2.27976C14.6668 2.69152 14.6668 3.36015 14.6668 4.69741V9.50331C14.6668 10.726 14.6668 11.3374 14.3584 11.7191C14.05 12.1008 13.3711 12.2301 12.0131 12.4886C10.8026 12.7191 9.85787 13.0864 9.17404 13.4554C8.50124 13.8185 8.16483 14 8.00016 14C7.8355 14 7.49908 13.8185 6.82628 13.4554C6.14246 13.0864 5.19772 12.7191 3.9872 12.4886C2.62926 12.2301 1.95029 12.1008 1.64189 11.7191C1.3335 11.3374 1.3335 10.726 1.3335 9.50331V4.69741C1.3335 3.36015 1.3335 2.69152 1.81402 2.27976C2.29454 1.86801 2.85876 1.97544 3.9872 2.19029Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </button>
-                    <button 
+                    <button type="button" 
                       onClick={() => {
                         const fileInput = document.createElement('input');
                         fileInput.type = 'file';
+                        fileInput.id = 'ai-upload-file-input';
+                        fileInput.name = 'ai_upload_files';
                         fileInput.multiple = true;
                         fileInput.accept = '*/*';
                         
@@ -678,14 +851,14 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                         
                         fileInput.click();
                       }}
-                      className="chat-control-btn"
+                      className={tw("chat-control-btn")}
                       title="Upload File"
                     >
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5" />
                       </svg>
                     </button>
-                    <button 
+                    <button type="button" 
                       onClick={() => {
                         if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
                           navigator.mediaDevices.getDisplayMedia({ video: true })
@@ -704,7 +877,7 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                           alert('Screenshot functionality not supported in this browser');
                         }
                       }}
-                      className="chat-control-btn"
+                      className={tw("chat-control-btn")}
                       title="Screenshot"
                     >
                       <svg className="w-4 h-4" viewBox="0 0 16 16" fill="currentColor">
@@ -719,21 +892,21 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
         </div>
 
         {/* Right Column */}
-        <div className="ai-panel-right">
+        <div className={tw("ai-panel-right")}>
           {/* Panel Controls */}
-          <div className="panel-controls">
-            <button
+          <div className={tw("panel-controls")}>
+            <button type="button"
               onClick={() => setIsExpanded(!isExpanded)}
-              className="control-btn"
+              className={tw("control-btn")}
               title="Expand"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 10 10">
                 <path fillRule="evenodd" clipRule="evenodd" d="M8.32646 1.62943C8.2758 1.62529 8.2062 1.625 8.08333 1.625H5.41667C5.20956 1.625 5.04167 1.45711 5.04167 1.25C5.04167 1.04289 5.20956 0.875002 5.41667 0.875002L8.09573 0.875001C8.2017 0.87499 8.30255 0.87498 8.38754 0.881924C8.48021 0.889495 8.5865 0.907156 8.69274 0.961288C8.84171 1.03719 8.96282 1.1583 9.03872 1.30726C9.09285 1.4135 9.11051 1.5198 9.11808 1.61247C9.12502 1.69745 9.12501 1.7983 9.125 1.90427L9.125 4.58333C9.125 4.79044 8.95711 4.95833 8.75 4.95833C8.54289 4.95833 8.375 4.79044 8.375 4.58333V1.91667C8.375 1.7938 8.37471 1.72421 8.37057 1.67354C8.36926 1.65755 8.36781 1.64748 8.36682 1.64187C8.36437 1.63856 8.36144 1.63564 8.35814 1.63319C8.35252 1.6322 8.34246 1.63074 8.32646 1.62943ZM1.25 5.04167C1.45711 5.04167 1.625 5.20956 1.625 5.41667L1.625 8.08333C1.625 8.2062 1.62529 8.2758 1.62943 8.32646C1.63074 8.34246 1.6322 8.35252 1.63319 8.35813C1.63564 8.36144 1.63856 8.36437 1.64187 8.36682C1.64748 8.36781 1.65755 8.36926 1.67354 8.37057C1.72421 8.37471 1.7938 8.375 1.91667 8.375H4.58333C4.79044 8.375 4.95833 8.54289 4.95833 8.75C4.95833 8.95711 4.79044 9.125 4.58333 9.125L1.90427 9.125C1.7983 9.12501 1.69745 9.12502 1.61247 9.11808C1.5198 9.11051 1.4135 9.09285 1.30726 9.03872C1.1583 8.96281 1.03719 8.8417 0.961288 8.69274C0.907156 8.5865 0.889495 8.48021 0.881924 8.38754C0.87498 8.30255 0.87499 8.2017 0.875001 8.09573L0.875002 5.41667C0.875002 5.20956 1.0429 5.04167 1.25 5.04167Z" fill="currentColor"/>
               </svg>
             </button>
-            <button
+            <button type="button"
               onClick={onClose}
-              className="control-btn"
+              className={tw("control-btn")}
               title="Close"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 18 18">
@@ -743,9 +916,9 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
           </div>
 
           {/* Panel Actions */}
-          <div className="panel-actions">
+          <div className={tw("panel-actions")}>
             {panelActionsData.map((action) => (
-              <button
+              <button type="button"
                 key={action.id}
                 onClick={() => {
                   setActivePanelAction(action.id);
@@ -764,9 +937,11 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                     setShowChatHistory(false);
                   }
                 }}
-                className={cn(
-                  "action-icon-btn",
-                  activePanelAction === action.id && "active"
+                className={tw(
+                  cn(
+                    "action-icon-btn",
+                    activePanelAction === action.id && "bg-[var(--apply-button-bg,#EBFCF4)] text-[var(--active-green,#0B6333)]"
+                  )
                 )}
                 title={action.title}
               >
@@ -806,13 +981,13 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
       </div>
 
       {/* Chat History Panel */}
-      <div className={cn("chat-history", showChatHistory && "open")}>
+      <div className={tw(cn("chat-history", showChatHistory && "right-0 md:right-0"))}>
         {/* Chat History Header */}
-        <div className="chat-history-header">
-          <h2 className="chat-history-title">Chat History</h2>
-          <button
+        <div className={tw("chat-history-header")}>
+          <h2 className={tw("chat-history-title")}>Chat History</h2>
+          <button type="button"
             onClick={() => setShowChatHistory(false)}
-            className="history-close"
+            className={tw("history-close")}
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 18 18">
               <path fillRule="evenodd" clipRule="evenodd" d="M4.51025 3.51594C4.2386 3.23845 3.79343 3.23372 3.51594 3.50537C3.23845 3.77702 3.23372 4.22219 3.50537 4.49968L8.00075 9.09168L3.5155 13.4902C3.23825 13.7621 3.2339 14.2072 3.50579 14.4845C3.77769 14.7617 4.22286 14.7661 4.50012 14.4942L9 10.0814L13.4999 14.4942C13.7771 14.7661 14.2223 14.7617 14.4942 14.4845C14.7661 14.2072 14.7617 13.7621 14.4845 13.4902L9.99924 9.09168L14.4946 4.49968C14.7663 4.22219 14.7615 3.77702 14.4841 3.50537C14.2066 3.23372 13.7614 3.23845 13.4897 3.51594L9 8.10217L4.51025 3.51594Z" fill="currentColor"/>
@@ -821,18 +996,20 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
         </div>
 
         {/* History Search */}
-        <div className="history-search">
+        <div className={tw("history-search")}>
           <input
+            id="ai-history-search"
+            name="ai_history_search"
             type="text"
             placeholder="Search conversations..."
             value={historySearch}
             onChange={(e) => setHistorySearch(e.target.value)}
-            
+            className={tw("history-search-input")}
           />
         </div>
 
         {/* History List */}
-        <div className="history-list">
+        <div className={tw("history-list")}>
           {historyData
             .filter(item => 
               historySearch === '' || 
@@ -842,7 +1019,13 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
             .map((item) => (
               <div
                 key={item.id}
-                className={cn("history-item", item.current && "current")}
+                className={tw(
+                  cn(
+                    "history-item",
+                    item.current &&
+                      "border-l-[3px] border-l-[var(--active-green,#0B6333)] bg-[var(--apply-button-bg,#EBFCF4)]"
+                  )
+                )}
                 onClick={() => {
                   // Set as current conversation
                   setHistoryData(prev => prev.map(h => ({ ...h, current: h.id === item.id })));
@@ -850,11 +1033,11 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                   setMessages([{ type: 'ai', text: `Loaded conversation: ${item.title}` }]);
                 }}
               >
-                <div className="history-item-title-row">
-                  <div className="history-item-title">
+                <div className={tw("history-item-title-row")}>
+                  <div className={tw("history-item-title")}>
                     {item.title}
                   </div>
-                  <button
+                  <button type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       const newTitle = prompt('Edit title:', item.title);
@@ -862,7 +1045,7 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                         setHistoryData(prev => prev.map(h => h.id === item.id ? { ...h, title: newTitle } : h));
                       }
                     }}
-                    className="history-title-edit-btn"
+                    className={tw("history-title-edit-btn")}
                     title="Edit"
                   >
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
@@ -870,20 +1053,20 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                     </svg>
                   </button>
                 </div>
-                <div className="history-item-preview">
+                <div className={tw("history-item-preview")}>
                   {item.preview}
                 </div>
-                <div className="history-item-meta-row">
-                  <div className="history-item-meta">
+                <div className={tw("history-item-meta-row")}>
+                  <div className={tw("history-item-meta")}>
                     {item.meta}
                   </div>
-                  <div className="history-item-actions">
-                    <button
+                  <div className={tw("history-item-actions")}>
+                    <button type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         alert('View files functionality would open here');
                       }}
-                      className="history-action-btn"
+                      className={tw("history-action-btn")}
                       title="View Files"
                     >
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
@@ -892,14 +1075,14 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                         </g>
                       </svg>
                     </button>
-                    <button
+                    <button type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         if (confirm('Are you sure you want to delete this conversation?')) {
                           setHistoryData(prev => prev.filter(h => h.id !== item.id));
                         }
                       }}
-                      className="history-action-btn"
+                      className={tw("history-action-btn")}
                       title="Delete"
                     >
                       <svg className="w-3.5 h-3.5" viewBox="0 0 16 16">
@@ -908,14 +1091,14 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                         </g>
                       </svg>
                     </button>
-                    <button
+                    <button type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         setHistoryData(prev => prev.map(h => 
                           h.id === item.id ? { ...h, favorite: !h.favorite } : h
                         ));
                       }}
-                      className="history-action-btn"
+                      className={tw("history-action-btn")}
                       title="Favorite"
                     >
                       {renderIcon('favorite', 'w-3.5 h-3.5')}
@@ -933,9 +1116,9 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
       {/* Context Modal */}
       {showContextModal && (
         <Portal containerId="ai-context-modal-portal">
-          <div className={styles.aiPanelRoot}>
+          <div className={tw('ai-panel-root')}>
             <div
-              className="modal-backdrop show"
+              className={tw("modal-backdrop")}
               onClick={(e) => {
                 if (e.target === e.currentTarget) {
                   setShowContextModal(false);
@@ -944,33 +1127,43 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                 }
               }}
             >
-              <div className="modal" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <h2 className="modal-title">Context</h2>
-                <button onClick={() => setShowContextModal(false)} className="modal-close" title="Close">
-                  <span className="icon">{renderIcon('close')}</span>
+              <div className={tw("modal")} onClick={(e) => e.stopPropagation()}>
+              <div className={tw("modal-header")}>
+                <h2 className={tw("modal-title")}>Context</h2>
+                <button type="button" onClick={() => setShowContextModal(false)} className={tw("modal-close")} title="Close">
+                  <span className={tw("icon")}>{renderIcon('close')}</span>
                 </button>
               </div>
 
-              <div className="modal-body">
-                <div className="context-tabs">
-                  <button
+              <div className={tw("modal-body")}>
+                <div className={tw("context-tabs")}>
+                  <button type="button"
                     onClick={() => setContextTab('tabs')}
-                    className={cn("context-tab", contextTab === 'tabs' && "active")}
+                    className={tw(
+                      cn(
+                        "context-tab",
+                        contextTab === 'tabs' && "border-[var(--verification-blue,#1D77BD)] text-[var(--verification-blue,#1D77BD)]"
+                      )
+                    )}
                   >
                     Tabs
                   </button>
-                  <button
+                  <button type="button"
                     onClick={() => setContextTab('collections')}
-                    className={cn("context-tab", contextTab === 'collections' && "active")}
+                    className={tw(
+                      cn(
+                        "context-tab",
+                        contextTab === 'collections' && "border-[var(--verification-blue,#1D77BD)] text-[var(--verification-blue,#1D77BD)]"
+                      )
+                    )}
                   >
                     Collections
                   </button>
                 </div>
 
                 {contextTab === 'tabs' && (
-                  <div className={cn("tab-content", "active")}>
-                    <div className="tab-list">
+                  <div className={tw("tab-content")}>
+                    <div className={tw("tab-list")}>
                       {[
                         { id: 'monica', title: 'Chat - Monica', url: 'monica.im', icon: '🤖', current: true },
                         { id: 'google', title: 'Google', url: 'https://www.google.com/', icon: 'G', current: false },
@@ -980,10 +1173,12 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                         return (
                           <div
                             key={tab.id}
-                            className={cn(
-                              "tab-item",
-                              tab.current && "current",
-                              isSelected && "selected"
+                            className={tw(
+                              cn(
+                                "tab-item",
+                                tab.current && "border-l-[3px] border-l-[var(--verification-blue,#1D77BD)] bg-[var(--surface-secondary,#f8f9ff)]",
+                                isSelected && "border-[var(--active-green,#0B6333)] bg-[var(--apply-button-bg,#EBFCF4)]"
+                              )
                             )}
                             onClick={() => {
                               if (isSelected) {
@@ -993,13 +1188,22 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                               }
                             }}
                           >
-                            <div className="tab-checkbox">
-                              <span className="icon">{renderIcon('check')}</span>
+                            <div
+                              className={tw(
+                                cn(
+                                  "tab-checkbox",
+                                  isSelected && "border-[var(--verification-blue,#1D77BD)] bg-[var(--verification-blue,#1D77BD)]"
+                                )
+                              )}
+                            >
+                              <span className={tw(cn("icon", isSelected ? "text-white" : "hidden"))}>
+                                {renderIcon('check')}
+                              </span>
                             </div>
-                            <div className="tab-icon">{tab.icon}</div>
-                            <div className="tab-details">
-                              <div className="tab-title">{tab.title}</div>
-                              <div className="tab-url">{tab.url}</div>
+                            <div className={tw("tab-icon")}>{tab.icon}</div>
+                            <div className={tw("tab-details")}>
+                              <div className={tw("tab-title")}>{tab.title}</div>
+                              <div className={tw("tab-url")}>{tab.url}</div>
                             </div>
                           </div>
                         );
@@ -1009,20 +1213,20 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                 )}
 
                 {contextTab === 'collections' && !contextCollectionView && (
-                  <div className={cn("tab-content", "active")}>
-                    <div className="collection-list">
+                  <div className={tw("tab-content")}>
+                    <div className={tw("collection-list")}>
                       {Object.entries(collectionsData).map(([id, collection]) => (
                         <div
                           key={id}
-                          className="collection-item"
+                          className={tw("collection-item")}
                           onClick={() => setContextCollectionView(id)}
                         >
-                          <div className="collection-icon">{collection.icon}</div>
-                          <div className="collection-details">
-                            <div className="collection-name">{collection.name}</div>
-                            <div className="collection-meta">
-                              <span className="collection-count">{collection.count} items</span>
-                              <span className="meta-dot" />
+                          <div className={tw("collection-icon")}>{collection.icon}</div>
+                          <div className={tw("collection-details")}>
+                            <div className={tw("collection-name")}>{collection.name}</div>
+                            <div className={tw("collection-meta")}>
+                              <span className={tw("collection-count")}>{collection.count} items</span>
+                              <span className={tw("meta-dot")} />
                               <span>Updated {collection.updated}</span>
                             </div>
                           </div>
@@ -1033,23 +1237,28 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                 )}
 
                 {contextTab === 'collections' && contextCollectionView && (
-                  <div className={cn("tab-content", "active")}>
-                    <div className="context-back">
-                      <button onClick={() => setContextCollectionView(null)} className="btn btn-secondary">
+                  <div className={tw("tab-content")}>
+                    <div className={tw("context-back")}>
+                      <button type="button" onClick={() => setContextCollectionView(null)} className={tw("btn btn-secondary")}>
                         ← Back to Collections
                       </button>
                     </div>
-                    <div className="context-back-title">
+                    <div className={tw("context-back-title")}>
                       {collectionsData[contextCollectionView as keyof typeof collectionsData]?.name}
                     </div>
-                    <div className="tab-list">
+                    <div className={tw("tab-list")}>
                       {collectionsData[contextCollectionView as keyof typeof collectionsData]?.items.map((item) => {
                         const itemContextId = `collection-item-${item.id}`;
                         const isSelected = selectedContexts.includes(itemContextId);
                         return (
                           <div
                             key={item.id}
-                            className={cn("tab-item", isSelected && "selected")}
+                            className={tw(
+                              cn(
+                                "tab-item",
+                                isSelected && "border-[var(--active-green,#0B6333)] bg-[var(--apply-button-bg,#EBFCF4)]"
+                              )
+                            )}
                             onClick={() => {
                               if (isSelected) {
                                 setSelectedContexts(prev => prev.filter(ctxId => ctxId !== itemContextId));
@@ -1058,13 +1267,22 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                               }
                             }}
                           >
-                            <div className="tab-checkbox">
-                              <span className="icon">{renderIcon('check')}</span>
+                            <div
+                              className={tw(
+                                cn(
+                                  "tab-checkbox",
+                                  isSelected && "border-[var(--verification-blue,#1D77BD)] bg-[var(--verification-blue,#1D77BD)]"
+                                )
+                              )}
+                            >
+                              <span className={tw(cn("icon", isSelected ? "text-white" : "hidden"))}>
+                                {renderIcon('check')}
+                              </span>
                             </div>
-                            <div className="tab-icon">{getFileTypeIcon(item.type)}</div>
-                            <div className="tab-details">
-                              <div className="tab-title">{item.title}</div>
-                              <div className="tab-url">{item.type}</div>
+                            <div className={tw("tab-icon")}>{getFileTypeIcon(item.type)}</div>
+                            <div className={tw("tab-details")}>
+                              <div className={tw("tab-title")}>{item.title}</div>
+                              <div className={tw("tab-url")}>{item.type}</div>
                             </div>
                           </div>
                         );
@@ -1074,18 +1292,18 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                 )}
               </div>
 
-              <div className="modal-footer">
-                <button
+              <div className={tw("modal-footer")}>
+                <button type="button"
                   onClick={() => {
                     setShowContextModal(false);
                     setContextCollectionView(null);
                     setSelectedContexts([]);
                   }}
-                  className="btn btn-secondary"
+                  className={tw("btn btn-secondary")}
                 >
                   Cancel
                 </button>
-                <button
+                <button type="button"
                   onClick={() => {
                     selectedContexts.forEach(id => {
                       const tab = [
@@ -1114,7 +1332,7 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                     setSelectedContexts([]);
                     setContextCollectionView(null);
                   }}
-                  className="btn btn-primary"
+                  className={tw("btn btn-primary")}
                 >
                   Apply
                 </button>
@@ -1128,9 +1346,9 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
       {/* Collections Modal */}
       {showCollectionsModal && (
         <Portal containerId="ai-collections-modal-portal">
-          <div className={styles.aiPanelRoot}>
+          <div className={tw('ai-panel-root')}>
             <div
-              className="modal-backdrop show"
+              className={tw("modal-backdrop")}
               onClick={(e) => {
                 if (e.target === e.currentTarget) {
                   setShowCollectionsModal(false);
@@ -1139,19 +1357,19 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                 }
               }}
             >
-              <div className="modal" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
+              <div className={tw("modal")} onClick={(e) => e.stopPropagation()}>
+                <div className={tw("modal-header")}>
                   {collectionsItemsView && (
-                    <button
+                    <button type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         setCollectionsItemsView(null);
                         setSelectedCollectionItems([]);
                       }}
-                      className="modal-back-btn"
+                      className={tw("modal-back-btn")}
                       title="Back"
                     >
-                      <span className="icon">
+                      <span className={tw("icon")}>
                         {/* Simple left arrow to match reference HTML */}
                         <svg viewBox="0 0 16 16" fill="none">
                           <path
@@ -1165,22 +1383,22 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                       </span>
                     </button>
                   )}
-                  <h2 className={cn("modal-title", collectionsItemsView && "with-back")}>
+                  <h2 className={tw(cn("modal-title", collectionsItemsView && "ml-10"))}>
                     {collectionsItemsView
                       ? collectionsData[collectionsItemsView as keyof typeof collectionsData]?.name
                       : 'Collections'}
                   </h2>
-                  <button
+                  <button type="button"
   onClick={(e) => {
     e.stopPropagation();
     setShowCollectionsModal(false);
     setCollectionsItemsView(null);
     setSelectedCollectionItems([]);
   }}
-  className="modal-close"
+  className={tw("modal-close")}
   title="Close"
 >
-  <span className="icon">
+  <span className={tw("icon")}>
     <svg 
       width="18" 
       height="18" 
@@ -1199,21 +1417,21 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
 </button>
                 </div>
 
-              <div className="modal-body">
+              <div className={tw("modal-body")}>
                 {!collectionsItemsView ? (
-                  <div className="collection-list">
+                  <div className={tw("collection-list")}>
                     {Object.entries(collectionsData).map(([id, collection]) => (
                       <div
                         key={id}
-                        className="collection-item"
+                        className={tw("collection-item")}
                         onClick={() => setCollectionsItemsView(id)}
                       >
-                        <div className="collection-icon">{collection.icon}</div>
-                        <div className="collection-details">
-                          <div className="collection-name">{collection.name}</div>
-                          <div className="collection-meta">
-                            <span className="collection-count">{collection.count} items</span>
-                            <span className="meta-dot" />
+                        <div className={tw("collection-icon")}>{collection.icon}</div>
+                        <div className={tw("collection-details")}>
+                          <div className={tw("collection-name")}>{collection.name}</div>
+                          <div className={tw("collection-meta")}>
+                            <span className={tw("collection-count")}>{collection.count} items</span>
+                            <span className={tw("meta-dot")} />
                             <span>Updated {collection.updated}</span>
                           </div>
                         </div>
@@ -1221,13 +1439,18 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                     ))}
                   </div>
                 ) : (
-                  <div className="tab-list">
+                  <div className={tw("tab-list")}>
                     {collectionsData[collectionsItemsView as keyof typeof collectionsData]?.items.map((item) => {
                       const isSelected = selectedCollectionItems.includes(item.id);
                       return (
                         <div
                           key={item.id}
-                          className={cn("tab-item", isSelected && "selected")}
+                          className={tw(
+                            cn(
+                              "tab-item",
+                              isSelected && "border-[var(--active-green,#0B6333)] bg-[var(--apply-button-bg,#EBFCF4)]"
+                            )
+                          )}
                           onClick={() => {
                             if (isSelected) {
                               setSelectedCollectionItems(prev => prev.filter(id => id !== item.id));
@@ -1236,13 +1459,22 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                             }
                           }}
                         >
-                          <div className="tab-checkbox">
-                            <span className="icon">{renderIcon('check')}</span>
+                          <div
+                            className={tw(
+                              cn(
+                                "tab-checkbox",
+                                isSelected && "border-[var(--verification-blue,#1D77BD)] bg-[var(--verification-blue,#1D77BD)]"
+                              )
+                            )}
+                          >
+                            <span className={tw(cn("icon", isSelected ? "text-white" : "hidden"))}>
+                              {renderIcon('check')}
+                            </span>
                           </div>
-                          <div className="tab-icon">{getFileTypeIcon(item.type)}</div>
-                          <div className="tab-details">
-                            <div className="tab-title">{item.title}</div>
-                            <div className="tab-url">{item.type}</div>
+                          <div className={tw("tab-icon")}>{getFileTypeIcon(item.type)}</div>
+                          <div className={tw("tab-details")}>
+                            <div className={tw("tab-title")}>{item.title}</div>
+                            <div className={tw("tab-url")}>{item.type}</div>
                           </div>
                         </div>
                       );
@@ -1252,17 +1484,17 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
               </div>
 
               {collectionsItemsView && (
-                <div className="modal-footer">
-                  <button
+                <div className={tw("modal-footer")}>
+                  <button type="button"
                     onClick={() => {
                       setCollectionsItemsView(null);
                       setSelectedCollectionItems([]);
                     }}
-                    className="btn btn-secondary"
+                    className={tw("btn btn-secondary")}
                   >
                     Cancel
                   </button>
-                  <button
+                  <button type="button"
                     onClick={() => {
                       const collection = collectionsData[collectionsItemsView as keyof typeof collectionsData];
                       if (collection && selectedCollectionItems.length > 0) {
@@ -1279,7 +1511,7 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                       setCollectionsItemsView(null);
                       setSelectedCollectionItems([]);
                     }}
-                    className="btn btn-primary"
+                    className={tw("btn btn-primary")}
                   >
                     Apply
                   </button>
@@ -1294,9 +1526,9 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
       {/* Create Prompt Modal */}
       {showCreatePromptModal && (
         <Portal containerId="ai-create-prompt-modal-portal">
-          <div className={styles.aiPanelRoot}>
+          <div className={tw('ai-panel-root')}>
             <div
-              className="modal-backdrop show"
+              className={tw("modal-backdrop")}
               onClick={(e) => {
                 if (e.target === e.currentTarget) {
                   setShowCreatePromptModal(false);
@@ -1304,53 +1536,59 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                 }
               }}
             >
-              <div className="modal" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <h2 className="modal-title">Create Prompt</h2>
-                <button
+              <div className={tw("modal")} onClick={(e) => e.stopPropagation()}>
+              <div className={tw("modal-header")}>
+                <h2 className={tw("modal-title")}>Create Prompt</h2>
+                <button type="button"
                   onClick={() => {
                     setShowCreatePromptModal(false);
                     setPromptForm({ name: '', text: '', model: 'GPT-4o mini', access: 'Accessible to everyone' });
                   }}
-                  className="modal-close"
+                  className={tw("modal-close")}
                   title="Close"
                 >
-                  <span className="icon">{renderIcon('close')}</span>
+                  <span className={tw("icon")}>{renderIcon('close')}</span>
                 </button>
               </div>
 
-              <div className="modal-body">
-                <div className="form-group">
-                  <label className="form-label">Name</label>
+              <div className={tw("modal-body")}>
+                <div className={tw("form-group")}>
+                  <label htmlFor="ai-prompt-name" className={tw("form-label")}>Name</label>
                   <input
+                    id="ai-prompt-name"
+                    name="ai_prompt_name"
                     type="text"
                     value={promptForm.name}
                     onChange={(e) => setPromptForm(prev => ({ ...prev, name: e.target.value }))}
                     placeholder="Enter the name"
-                    className="form-input"
+                    className={tw("form-input")}
                   />
-                  <div className="form-example">
+                  <div className={tw("form-example")}>
                     Example: Master translator, Writing expert, Code assistant
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Prompt</label>
+                <div className={tw("form-group")}>
+                  <label htmlFor="ai-prompt-text" className={tw("form-label")}>Prompt</label>
                   <textarea
+                    id="ai-prompt-text"
+                    name="ai_prompt_text"
                     value={promptForm.text}
                     onChange={(e) => setPromptForm(prev => ({ ...prev, text: e.target.value }))}
                     placeholder="Example: You are an experienced translator with skills in multiple languages around the world. You are good at translating business scenario cases, making the translation results more formal and professional."
-                    className="form-textarea"
+                    className={tw("form-textarea")}
                     rows={5}
                   />
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Model</label>
+                <div className={tw("form-group")}>
+                  <label htmlFor="ai-prompt-model" className={tw("form-label")}>Model</label>
                   <select
+                    id="ai-prompt-model"
+                    name="ai_prompt_model"
                     value={promptForm.model}
                     onChange={(e) => setPromptForm(prev => ({ ...prev, model: e.target.value }))}
-                    className="form-select"
+                    className={tw("form-select")}
                   >
                     <option>GPT-4o mini</option>
                     <option>GPT-4o</option>
@@ -1359,12 +1597,14 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                   </select>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Accessibility</label>
+                <div className={tw("form-group")}>
+                  <label htmlFor="ai-prompt-access" className={tw("form-label")}>Accessibility</label>
                   <select
+                    id="ai-prompt-access"
+                    name="ai_prompt_access"
                     value={promptForm.access}
                     onChange={(e) => setPromptForm(prev => ({ ...prev, access: e.target.value }))}
-                    className="form-select"
+                    className={tw("form-select")}
                   >
                     <option>Accessible to everyone</option>
                     <option>Private</option>
@@ -1373,17 +1613,17 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                 </div>
               </div>
 
-              <div className="modal-footer">
-                <button
+              <div className={tw("modal-footer")}>
+                <button type="button"
                   onClick={() => {
                     setShowCreatePromptModal(false);
                     setPromptForm({ name: '', text: '', model: 'GPT-4o mini', access: 'Accessible to everyone' });
                   }}
-                  className="btn btn-secondary"
+                  className={tw("btn btn-secondary")}
                 >
                   Cancel
                 </button>
-                <button
+                <button type="button"
                   onClick={() => {
                     if (!promptForm.name || !promptForm.text) {
                       alert('Please fill in all required fields');
@@ -1402,7 +1642,7 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                     setPromptForm({ name: '', text: '', model: 'GPT-4o mini', access: 'Accessible to everyone' });
                     alert('Prompt created successfully!');
                   }}
-                  className="btn btn-primary"
+                  className={tw("btn btn-primary")}
                 >
                   Create Now
                 </button>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
+import { CollectionImage } from "../CollectionImage";
 import { CollectionsSchool, Note, truncateText } from "../Card";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
 
@@ -172,7 +172,7 @@ export const CardListMobile: React.FC<CardListMobileProps> = ({
       <article className="rounded-[12px] border border-[#E5E7EB] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
         <div className="relative flex">
           <div className="relative h-[120px] w-[120px] shrink-0">
-            <Image
+            <CollectionImage
               src={school.image}
               alt={school.name}
               width={120}

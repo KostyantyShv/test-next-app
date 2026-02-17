@@ -104,6 +104,19 @@
   border-color: var(--border-color);
 }
 
+:global([data-theme="midnight"]) .aiPanelRoot :global(.chat-input),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.chat-input) {
+  background: transparent;
+  color: var(--text-default);
+  caret-color: var(--text-default);
+}
+
+:global([data-theme="midnight"]) .aiPanelRoot :global(.chat-input::placeholder),
+:global([data-theme="oceanic"]) .aiPanelRoot :global(.chat-input::placeholder) {
+  color: var(--subtle-text);
+  opacity: 1;
+}
+
 :global([data-theme="midnight"]) .aiPanelRoot :global(.chat-controls),
 :global([data-theme="oceanic"]) .aiPanelRoot :global(.chat-controls) {
   background: var(--surface-secondary);

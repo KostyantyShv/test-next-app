@@ -59,7 +59,7 @@ export const Header: FC<HeaderProps> = ({ className, onOpenSidebar, showScrollPr
         {/* Mobile Header */}
         <div className="md:hidden flex items-center justify-between px-5 py-4">
           {/* Menu Button */}
-          <button
+          <button type="button"
             onClick={onOpenSidebar}
             className="w-9 h-9 border border-[var(--border-color)] rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[var(--apply-button-bg)] hover:border-[var(--apply-button-hover)] transition-colors"
           >

@@ -56,7 +56,7 @@ export const Actions: FC = () => {
   return (
     <div className="header-actions flex items-center gap-4">
       {/* Filter Icon */}
-      <button 
+      <button type="button" 
         className="header-action-btn relative w-11 h-11 border border-[var(--border-color)] bg-[var(--surface-color)] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[var(--text-default)] hover:bg-[var(--apply-button-bg)] hover:border-[var(--active-green)] hover:opacity-90"
         title="Filters"
       >
@@ -66,7 +66,7 @@ export const Actions: FC = () => {
       </button>
 
       {/* Comparison Icon */}
-      <button 
+      <button type="button" 
         ref={compareButtonRef}
         onClick={() => setIsCompareOpen(!isCompareOpen)}
         className={cn(
@@ -87,7 +87,7 @@ export const Actions: FC = () => {
       </button>
 
       {/* Monitor Icon */}
-      <button 
+      <button type="button" 
         ref={monitorButtonRef}
         onClick={() => {
           if (!isMonitorOpen) {
@@ -114,7 +114,7 @@ export const Actions: FC = () => {
       </button>
 
       {/* Notifications */}
-      <button 
+      <button type="button" 
         onClick={() => setIsNotificationsOpen(true)}
         className="header-action-btn relative w-11 h-11 border border-[var(--border-color)] bg-[var(--surface-color)] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[var(--text-default)] hover:bg-[var(--apply-button-bg)] hover:border-[var(--active-green)] hover:opacity-90"
         title="Notifications"
@@ -127,7 +127,7 @@ export const Actions: FC = () => {
       </button>
 
       {/* Cart */}
-      <button 
+      <button type="button" 
         ref={cartButtonRef}
         onClick={() => {
           if (!isCartOpen) {
@@ -153,7 +153,7 @@ export const Actions: FC = () => {
       </button>
 
       {/* Dark/Light Mode Toggle */}
-      <button 
+      <button type="button" 
         onClick={toggleTheme}
         className="header-action-btn relative w-11 h-11 border border-[var(--border-color)] bg-[var(--surface-color)] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[var(--text-default)] hover:bg-[var(--apply-button-bg)] hover:border-[var(--active-green)] hover:opacity-90"
         title="Toggle Theme"
@@ -173,7 +173,7 @@ export const Actions: FC = () => {
       </button>
 
       {/* AI Panel */}
-      <button 
+      <button type="button" 
         onClick={() => setIsAIPanelOpen(!isAIPanelOpen)}
         className={cn(
           "header-action-btn relative w-11 h-11 border border-[var(--border-color)] bg-[var(--surface-color)] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[var(--text-default)] hover:bg-[var(--apply-button-bg)] hover:border-[var(--active-green)] hover:opacity-90",
@@ -192,7 +192,7 @@ export const Actions: FC = () => {
       </button>
 
       {/* Signup Button */}
-      <button className="header-signup-btn bg-[var(--header-green)] text-white border-none py-2.5 px-5 rounded-[24px] font-medium text-sm cursor-pointer transition-all duration-300 whitespace-nowrap h-10 flex items-center justify-center hover:bg-[var(--active-green)] hover:opacity-85">
+      <button type="button" className="header-signup-btn bg-[var(--header-green)] text-white border-none py-2.5 px-5 rounded-[24px] font-medium text-sm cursor-pointer transition-all duration-300 whitespace-nowrap h-10 flex items-center justify-center hover:bg-[var(--active-green)] hover:opacity-85">
         + Signup
       </button>
 

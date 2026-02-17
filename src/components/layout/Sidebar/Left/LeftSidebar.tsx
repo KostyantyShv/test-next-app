@@ -253,7 +253,7 @@ export const LeftSidebar: FC = () => {
       <aside
         data-collapsed={isCollapsed ? "true" : "false"}
         className={cn(
-          "sticky top-0 left-0 z-20 h-screen w-64 shrink-0 bg-white border-r border-gray-200 transition-all duration-300 ease-in-out",
+          "left-sidebar sticky top-0 left-0 z-20 h-screen w-64 shrink-0 bg-white border-r border-gray-200 transition-all duration-300 ease-in-out",
           isCollapsed ? "w-20" : "w-64"
         )}
       >
@@ -275,7 +275,7 @@ export const LeftSidebar: FC = () => {
     <aside
       data-collapsed={isCollapsed ? "true" : "false"}
       className={cn(
-        "sticky top-0 left-0 z-20 h-screen w-64 shrink-0 bg-white border-r border-gray-200 transition-all duration-300 ease-in-out",
+        "left-sidebar sticky top-0 left-0 z-20 h-screen w-64 shrink-0 bg-white border-r border-gray-200 transition-all duration-300 ease-in-out",
         isCollapsed ? "w-20" : "w-64"
       )}
     >
