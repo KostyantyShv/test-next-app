@@ -55,9 +55,8 @@ const Header: React.FC<HeaderProps> = ({ isFooterVisible }) => {
   return (
     <div className="absolute top-0 left-0 right-0 pointer-events-none z-[1001]">
       <div
-        className={`fixed top-[68px] bg-white shadow-md p-3 transition-transform duration-300 z-[1001] w-full overflow-x-auto whitespace-nowrap scrollbar-hide ${
-          isFooterVisible ? "translate-y-0" : "hidden"
-        }`}
+        className={`fixed top-[68px] bg-white border-b border-[rgba(0,0,0,0.08)] shadow-[0_2px_6px_rgba(0,0,0,0.06)] p-3 transition-transform duration-300 ease-in-out z-[1001] w-full overflow-x-auto whitespace-nowrap scrollbar-hide ${isFooterVisible ? "translate-y-0" : "-translate-y-full"
+          }`}
       >
         <div className="flex px-4">
           {Object.values(SIDE_TABS_MOBILE).map((value, index) => (
@@ -65,9 +64,8 @@ const Header: React.FC<HeaderProps> = ({ isFooterVisible }) => {
               key={index}
               href={`#${value}`}
               onClick={() => handleTabClick(value)}
-              className={`text-[#5F5F5F] text-sm px-3 py-2 relative ${
-                activeTab === value ? "text-[#0B6333] font-semibold" : ""
-              } pointer-events-auto`}
+              className={`text-[#5F5F5F] text-sm px-3 py-2 relative ${activeTab === value ? "text-[#0B6333] font-semibold" : ""
+                } pointer-events-auto`}
             >
               {removeLastWord(value)}
               {activeTab === value && (

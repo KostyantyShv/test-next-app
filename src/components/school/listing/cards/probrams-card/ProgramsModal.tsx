@@ -29,16 +29,8 @@ const ProgramsModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
   const mastersCarouselRef = useRef<HTMLDivElement>(null);
   const doctoralCarouselRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isOpen]);
+
+
 
   // Scroll handler for masters carousel with debouncing
   const handleMastersScroll = useCallback(() => {
@@ -206,21 +198,19 @@ const ProgramsModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
       {/* Tabs */}
       <div className="flex border-b border-[rgba(0,0,0,0.08)]">
         <button
-          className={`flex-1 p-3 md:p-5 text-sm md:text-lg font-semibold ${
-            activeTab === "masters"
+          className={`flex-1 p-3 md:p-5 text-sm md:text-lg font-semibold ${activeTab === "masters"
               ? "text-[#016853] border-b-2 border-[#016853]"
               : "text-[#5F5F5F]"
-          } transition-all`}
+            } transition-all`}
           onClick={() => setActiveTab("masters")}
         >
           Master`s programs
         </button>
         <button
-          className={`flex-1 p-3 md:p-5 text-sm md:text-lg font-semibold ${
-            activeTab === "doctoral"
+          className={`flex-1 p-3 md:p-5 text-sm md:text-lg font-semibold ${activeTab === "doctoral"
               ? "text-[#016853] border-b-2 border-[#016853]"
               : "text-[#5F5F5F]"
-          } transition-all`}
+            } transition-all`}
           onClick={() => setActiveTab("doctoral")}
         >
           Doctoral programs
@@ -247,11 +237,10 @@ const ProgramsModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
             ].map((category) => (
               <button
                 key={category}
-                className={`border px-3 md:px-5 py-1 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
-                  activeCategory === category
+                className={`border px-3 md:px-5 py-1 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${activeCategory === category
                     ? "bg-[#016853] text-white border-[#016853]"
                     : "text-[#464646] border-[#016853] hover:bg-[#016853] hover:text-white"
-                }`}
+                  }`}
                 onClick={() => setActiveCategory(category)}
               >
                 {category}
@@ -284,9 +273,8 @@ const ProgramsModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
               <div
                 key={index}
                 onClick={() => scrollToSlide(index)}
-                className={`w-2 h-2 rounded-full cursor-pointer transition-colors ${
-                  index === mastersActiveSlide ? "bg-[#0B6333]" : "bg-[#DFDDDB]"
-                }`}
+                className={`w-2 h-2 rounded-full cursor-pointer transition-colors ${index === mastersActiveSlide ? "bg-[#0B6333]" : "bg-[#DFDDDB]"
+                  }`}
               />
             ))}
           </div>
@@ -327,11 +315,10 @@ const ProgramsModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
             ].map((category) => (
               <button
                 key={category}
-                className={`border px-3 md:px-5 py-1 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
-                  activeCategory === category
+                className={`border px-3 md:px-5 py-1 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${activeCategory === category
                     ? "bg-[#016853] text-white border-[#016853]"
                     : "text-[#464646] border-[#016853] hover:bg-[#016853] hover:text-white"
-                }`}
+                  }`}
                 onClick={() => setActiveCategory(category)}
               >
                 {category}
@@ -364,11 +351,10 @@ const ProgramsModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
               <div
                 key={index}
                 onClick={() => scrollToSlide(index, true)}
-                className={`w-2 h-2 rounded-full cursor-pointer transition-colors ${
-                  index === doctoralActiveSlide
+                className={`w-2 h-2 rounded-full cursor-pointer transition-colors ${index === doctoralActiveSlide
                     ? "bg-[#0B6333]"
                     : "bg-[#DFDDDB]"
-                }`}
+                  }`}
               />
             ))}
           </div>

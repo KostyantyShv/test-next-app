@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 interface DesktopModalProps {
   children: ReactNode;
@@ -8,7 +8,28 @@ interface DesktopModalProps {
 }
 
 export function DesktopModal({ children, isOpen, onClose, className = "" }: DesktopModalProps) {
-  if (!isOpen) return null;
+  const [isDesktopViewport, setIsDesktopViewport] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktopViewport(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  // Lock body scroll when modal is visible on desktop
+  const shouldRender = isOpen && isDesktopViewport;
+  useEffect(() => {
+    if (!shouldRender) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [shouldRender]);
+
+  if (!shouldRender) return null;
 
   return (
     <div

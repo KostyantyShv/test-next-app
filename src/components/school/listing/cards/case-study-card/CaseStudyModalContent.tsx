@@ -26,10 +26,10 @@ const caseStudies: CaseStudy[] = [
     subtitle: "Web Design for Construction Firms",
     heroImage: "https://i.ibb.co/nMwVdhDY/hero1.webp",
     galleryImages: [
-  "https://i.ibb.co/jJ4GHXP/img1.jpg",
-  "https://i.ibb.co/LJwrLdW/coaching-image.webp",
-  "https://i.ibb.co/fVRCnNZY/school2.webp",
-  "https://i.ibb.co/zh3VFyBg/thumbnail1.webp",
+      "https://i.ibb.co/jJ4GHXP/img1.jpg",
+      "https://i.ibb.co/LJwrLdW/coaching-image.webp",
+      "https://i.ibb.co/fVRCnNZY/school2.webp",
+      "https://i.ibb.co/zh3VFyBg/thumbnail1.webp",
     ],
     testimonial: {
       quote:
@@ -127,16 +127,12 @@ export default function CaseStudyModalContent({
   const [currentPage, setCurrentPage] = useState(0);
   const totalSlides = caseStudies.length;
   const imagesPerPage = 3;
-  
+
   const currentCaseStudy = caseStudies[currentSlide];
   const galleryImages = currentCaseStudy.galleryImages;
 
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, []);
+
+
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -191,8 +187,6 @@ export default function CaseStudyModalContent({
       </button>
       {/* Mobile Header - Sticky */}
       <div className="md:hidden sticky top-0 bg-white z-[1001]">
-        {/* Drawer Handle */}
-        <div className="w-10 h-1 bg-[#E0E0E0] rounded-[2.5px] mx-auto mt-[10px] mb-2"></div>
         {/* Header with Navigation */}
         <div className="flex items-center justify-between px-4 pb-[10px] border-b border-[#E0E0E0]">
           <div className="text-base font-semibold text-[#262B3D]">Case Study</div>
@@ -506,8 +500,8 @@ export default function CaseStudyModalContent({
         {/* Gallery */}
         <div className="w-full md:max-w-[1200px] mx-auto px-4 md:px-20 py-4 md:py-10">
 
-{/* Thumbnails */}
-        <div className="relative mb-4 md:mb-6 overflow-hidden">
+          {/* Thumbnails */}
+          <div className="relative mb-4 md:mb-6 overflow-hidden">
             <div
               className="flex gap-2.5 md:gap-4 transition-transform px-1"
               style={{
@@ -521,19 +515,17 @@ export default function CaseStudyModalContent({
                   key={i}
                   src={src}
                   alt={`Gallery ${i}`}
-                  className={`w-[60px] h-[60px] md:w-[180px] md:h-[120px] object-cover rounded-full md:rounded-lg cursor-pointer border-2 flex-shrink-0 ${
-                    i === currentImageIndex
-                      ? "border-[#016853] shadow-[0_2px_8px_rgba(1,104,83,0.15)]"
-                      : "border-transparent"
-                  } hover:opacity-90 transition-all`}
+                  className={`w-[60px] h-[60px] md:w-[180px] md:h-[120px] object-cover rounded-full md:rounded-lg cursor-pointer border-2 flex-shrink-0 ${i === currentImageIndex
+                    ? "border-[#016853] shadow-[0_2px_8px_rgba(1,104,83,0.15)]"
+                    : "border-transparent"
+                    } hover:opacity-90 transition-all`}
                   onClick={() => setGalleryImage(i)}
                 />
               ))}
             </div>
             <button
-              className={`absolute top-1/2 -translate-y-1/2 left-[-4px] md:left-0 w-7 h-7 md:w-10 md:h-10 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center hover:bg-gray-100 transition-all z-[2] ${
-                currentPage === 0 ? "hidden" : ""
-              }`}
+              className={`absolute top-1/2 -translate-y-1/2 left-[-4px] md:left-0 w-7 h-7 md:w-10 md:h-10 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center hover:bg-gray-100 transition-all z-[2] ${currentPage === 0 ? "hidden" : ""
+                }`}
               onClick={showPrevThumbnails}
             >
               <svg
@@ -551,11 +543,10 @@ export default function CaseStudyModalContent({
               </svg>
             </button>
             <button
-              className={`absolute top-1/2 -translate-y-1/2 right-[-4px] md:right-0 w-7 h-7 md:w-10 md:h-10 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center hover:bg-gray-100 transition-all z-[2] ${
-                (currentPage + 1) * imagesPerPage >= galleryImages.length
-                  ? "hidden"
-                  : ""
-              }`}
+              className={`absolute top-1/2 -translate-y-1/2 right-[-4px] md:right-0 w-7 h-7 md:w-10 md:h-10 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center hover:bg-gray-100 transition-all z-[2] ${(currentPage + 1) * imagesPerPage >= galleryImages.length
+                ? "hidden"
+                : ""
+                }`}
               onClick={showNextThumbnails}
             >
               <svg
@@ -582,8 +573,8 @@ export default function CaseStudyModalContent({
               className="w-full h-full object-cover transition-all"
             />
           </div>
-          
-          
+
+
         </div>
 
         {/* Testimonials */}

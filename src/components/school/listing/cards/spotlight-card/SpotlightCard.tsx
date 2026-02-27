@@ -13,12 +13,10 @@ const SpotlightCard: React.FC<{ id: string }> = ({ id }) => {
 
   const handleShowPopup = () => {
     setIsOpen(true);
-    document.body.style.overflow = "hidden";
   };
 
   const handleHidePopup = () => {
     setIsOpen(false);
-    document.body.style.overflow = "auto";
   };
 
   const handleProjectChange = (project: typeof projects[0]) => {
@@ -47,18 +45,18 @@ const SpotlightCard: React.FC<{ id: string }> = ({ id }) => {
         </div>
       </CardWrapper>
       <MobileDrawer isOpen={isOpen} onClose={handleHidePopup}>
-        <SpotlightModal 
-          onClose={handleHidePopup} 
-          isOpen={isOpen} 
+        <SpotlightModal
+          onClose={handleHidePopup}
+          isOpen={isOpen}
           project={selectedProject}
           allProjects={projects}
           onProjectChange={handleProjectChange}
         />
       </MobileDrawer>
       <DesktopModal isOpen={isOpen} onClose={handleHidePopup}>
-        <SpotlightModal 
-          onClose={handleHidePopup} 
-          isOpen={isOpen} 
+        <SpotlightModal
+          onClose={handleHidePopup}
+          isOpen={isOpen}
           project={selectedProject}
           allProjects={projects}
           onProjectChange={handleProjectChange}

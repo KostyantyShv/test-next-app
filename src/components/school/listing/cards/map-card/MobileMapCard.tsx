@@ -78,11 +78,10 @@ export default function MobileMapCard({ id }: { id: string }) {
               encodeURIComponent(`
                 <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="18" cy="18" r="18" fill="${getMarkerColor(
-                    school.grade
-                  )}"/>
-                  <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-weight="bold" font-size="14">${
-                    school.grade
-                  }</text>
+                school.grade
+              )}"/>
+                  <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-weight="bold" font-size="14">${school.grade
+                }</text>
                 </svg>
               `),
             scaledSize: new google.maps.Size(36, 36),
@@ -147,7 +146,7 @@ export default function MobileMapCard({ id }: { id: string }) {
           stylers: [{ color: "#d1e6ea" }],
         },
       ];
-      
+
       // Hide labels if showLabels is false
       if (!showLabels) {
         baseStyles.push({
@@ -156,7 +155,7 @@ export default function MobileMapCard({ id }: { id: string }) {
           stylers: [{ visibility: "off" } as any],
         });
       }
-      
+
       (map as any).setOptions({ styles: baseStyles });
     }
   }, [mapType, showLabels]);
@@ -202,7 +201,7 @@ export default function MobileMapCard({ id }: { id: string }) {
     <div id={id} className="block md:hidden max-w-[390px] mx-auto" style={{ scrollMarginTop: "80px" }}>
       <div className="w-full bg-white rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.05)] overflow-hidden border border-black/10">
         {/* Header with controls */}
-        <MapHeader 
+        <MapHeader
           mapType={mapType}
           setMapType={setMapType}
           onMapTypeChange={handleMapTypeChange}
@@ -242,7 +241,7 @@ export default function MobileMapCard({ id }: { id: string }) {
 
           {/* School Tooltip */}
           {selectedSchool && (
-            <div className="absolute bottom-2.5 left-1/2 transform -translate-x-1/2 z-[1000] bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.15)] p-3 w-[250px] flex gap-3">
+            <div className="absolute bottom-2.5 left-1/2 transform -translate-x-1/2 z-10 bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.15)] p-3 w-[250px] flex gap-3">
               <Image
                 src={selectedSchool.image}
                 alt={selectedSchool.name}
@@ -299,18 +298,18 @@ export default function MobileMapCard({ id }: { id: string }) {
                   </p>
                 </div>
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${gradeClass}`}
+                  className={`w-8 h-8 shrink-0 aspect-square rounded-full flex items-center justify-center text-white font-bold text-xs ${gradeClass}`}
                   style={{
                     background:
                       gradeClass === "marker-a-plus"
                         ? "#00DF8B"
                         : gradeClass === "marker-a"
-                        ? "#1ad598"
-                        : gradeClass === "marker-b-plus"
-                        ? "#4CAF50"
-                        : gradeClass === "marker-b"
-                        ? "#8BC34A"
-                        : "#FFC107",
+                          ? "#1ad598"
+                          : gradeClass === "marker-b-plus"
+                            ? "#4CAF50"
+                            : gradeClass === "marker-b"
+                              ? "#8BC34A"
+                              : "#FFC107",
                   }}
                 >
                   {school.grade}

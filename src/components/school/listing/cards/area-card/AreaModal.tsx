@@ -11,12 +11,8 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
   const [isRankingsExpanded, setIsRankingsExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState("Public Schools");
 
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, []);
+
+
 
   return (
     <div className="w-full h-full md:max-w-[1100px] md:h-[90vh] bg-white md:rounded-2xl relative shadow-[0_4px_24px_rgba(0,0,0,0.15)] transition-all duration-300 ease-in-out">
@@ -159,7 +155,7 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
 
         {/* Section 3: Panama City Rankings */}
         <div className="mb-4 md:mb-7">
-          
+
           <div className="w-full md:w-[95%] max-w-[1000px] mx-auto bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.05)] md:shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-[rgba(0,0,0,0.05)] overflow-hidden">
             <div className="h-[6px] bg-gradient-to-r from-[#016853] to-[#089E68] rounded-t-xl" />
             <div className="p-4 md:p-7">
@@ -244,9 +240,8 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
                 ))}
               </div>
               <div
-                className={`${
-                  isRankingsExpanded ? "grid" : "hidden"
-                } grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-4 md:mb-7`}
+                className={`${isRankingsExpanded ? "grid" : "hidden"
+                  } grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-4 md:mb-7`}
               >
                 {[
                   {
@@ -603,11 +598,10 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
                 {["Public Schools", "Private Schools"].map((tab) => (
                   <div
                     key={tab}
-                    className={`py-2 md:py-3 px-4 md:px-6 text-sm md:text-base font-medium text-[#4A4A4A] cursor-pointer transition-all duration-300 ${
-                      activeTab === tab
+                    className={`py-2 md:py-3 px-4 md:px-6 text-sm md:text-base font-medium text-[#4A4A4A] cursor-pointer transition-all duration-300 ${activeTab === tab
                         ? "text-[#016853] border-b-2 font-semibold md:border-b-2 border-[#016853]"
                         : ""
-                    }`}
+                      }`}
                     onClick={() => setActiveTab(tab)}
                   >
                     {tab}
@@ -620,110 +614,110 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
                 </h3>
                 {activeTab === "Public Schools"
                   ? [
-                      {
-                        grade: "A+",
-                        name: "Rising Leaders Academy",
-                        stars: "★★★★",
-                        reviews: "29 reviews",
-                        bg: "#00DF8B",
-                      },
-                      {
-                        grade: "A",
-                        name: "North Bay Haven Charter Academy High School",
-                        stars: "★★★★",
-                        reviews: "176 reviews",
-                        bg: "#1ad598",
-                      },
-                      {
-                        grade: "A",
-                        name: "University Academy",
-                        stars: "★★★★★",
-                        reviews: "2 reviews",
-                        bg: "#1ad598",
-                      },
-                      {
-                        grade: "A-",
-                        name: "North Bay Haven Charter Academy Middle School",
-                        stars: "★★",
-                        reviews: "1 review",
-                        bg: "#1ad598",
-                      },
-                      {
-                        grade: "A-",
-                        name: "Bay Haven Charter Academy Elementary School",
-                        stars: "★★★★★",
-                        reviews: "1 review",
-                        bg: "#1ad598",
-                      },
-                    ].map((item, index) => (
+                    {
+                      grade: "A+",
+                      name: "Rising Leaders Academy",
+                      stars: "★★★★",
+                      reviews: "29 reviews",
+                      bg: "#00DF8B",
+                    },
+                    {
+                      grade: "A",
+                      name: "North Bay Haven Charter Academy High School",
+                      stars: "★★★★",
+                      reviews: "176 reviews",
+                      bg: "#1ad598",
+                    },
+                    {
+                      grade: "A",
+                      name: "University Academy",
+                      stars: "★★★★★",
+                      reviews: "2 reviews",
+                      bg: "#1ad598",
+                    },
+                    {
+                      grade: "A-",
+                      name: "North Bay Haven Charter Academy Middle School",
+                      stars: "★★",
+                      reviews: "1 review",
+                      bg: "#1ad598",
+                    },
+                    {
+                      grade: "A-",
+                      name: "Bay Haven Charter Academy Elementary School",
+                      stars: "★★★★★",
+                      reviews: "1 review",
+                      bg: "#1ad598",
+                    },
+                  ].map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center py-2 md:py-3 border-b border-[rgba(0,0,0,0.08)]"
+                    >
                       <div
-                        key={index}
-                        className="flex items-center py-2 md:py-3 border-b border-[rgba(0,0,0,0.08)]"
+                        className="w-8 md:w-9 h-8 md:h-9 rounded-full flex items-center justify-center text-xs md:text-sm font-semibold text-white mr-3 md:mr-4 flex-shrink-0"
+                        style={{ backgroundColor: item.bg }}
                       >
-                        <div
-                          className="w-8 md:w-9 h-8 md:h-9 rounded-full flex items-center justify-center text-xs md:text-sm font-semibold text-white mr-3 md:mr-4 flex-shrink-0"
-                          style={{ backgroundColor: item.bg }}
-                        >
-                          {item.grade}
-                        </div>
-                        <a
-                          href="#"
-                          className="text-sm md:text-[15px] text-[#346DC2] font-medium no-underline hover:underline flex-grow"
-                        >
-                          {item.name}
-                        </a>
-                        <div className="flex items-center max-md:flex-col gap-1">
-                          <span className="text-[#00DF8B] text-sm md:text-base">
-                            {item.stars}
-                          </span>
-                          <span className="text-xs md:text-[13px] text-[#5F5F5F]">
-                            {item.reviews}
-                          </span>
-                        </div>
+                        {item.grade}
                       </div>
-                    ))
+                      <a
+                        href="#"
+                        className="text-sm md:text-[15px] text-[#346DC2] font-medium no-underline hover:underline flex-grow"
+                      >
+                        {item.name}
+                      </a>
+                      <div className="flex items-center max-md:flex-col gap-1">
+                        <span className="text-[#00DF8B] text-sm md:text-base">
+                          {item.stars}
+                        </span>
+                        <span className="text-xs md:text-[13px] text-[#5F5F5F]">
+                          {item.reviews}
+                        </span>
+                      </div>
+                    </div>
+                  ))
                   : [
-                      {
-                        grade: "A",
-                        name: "Holy Nativity Episcopal School",
-                        stars: "★★★★★",
-                        reviews: "5 reviews",
-                        bg: "#1ad598",
-                      },
-                      {
-                        grade: "B+",
-                        name: "St. John Catholic School",
-                        stars: "★★★★",
-                        reviews: "3 reviews",
-                        bg: "#4CAF50",
-                      },
-                    ].map((item, index) => (
+                    {
+                      grade: "A",
+                      name: "Holy Nativity Episcopal School",
+                      stars: "★★★★★",
+                      reviews: "5 reviews",
+                      bg: "#1ad598",
+                    },
+                    {
+                      grade: "B+",
+                      name: "St. John Catholic School",
+                      stars: "★★★★",
+                      reviews: "3 reviews",
+                      bg: "#4CAF50",
+                    },
+                  ].map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center py-2 md:py-3 border-b border-[rgba(0,0,0,0.08)]"
+                    >
                       <div
-                        key={index}
-                        className="flex items-center py-2 md:py-3 border-b border-[rgba(0,0,0,0.08)]"
+                        className="w-8 md:w-9 h-8 md:h-9 rounded-full flex items-center justify-center text-xs md:text-sm font-semibold text-white mr-3 md:mr-4 flex-shrink-0"
+                        style={{ backgroundColor: item.bg }}
                       >
-                        <div
-                          className="w-8 md:w-9 h-8 md:h-9 rounded-full flex items-center justify-center text-xs md:text-sm font-semibold text-white mr-3 md:mr-4 flex-shrink-0"
-                          style={{ backgroundColor: item.bg }}
-                        >
-                          {item.grade}
-                        </div>
-                        <a
-                          href="#"
-                          className="text-sm md:text-[15px] text-[#346DC2] font-medium no-underline hover:underline flex-grow"
-                        >
-                          {item.name}
-                        </a>
-                        <div className="flex items-center gap-1">
-                          <span className="text-[#00DF8B] text-sm md:text-base">
-                            {item.stars}
-                          </span>
-                          <span className="text-xs md:text-[13px] text-[#5F5F5F]">
-                            {item.reviews}
-                          </span>
-                        </div>
+                        {item.grade}
                       </div>
-                    ))}
+                      <a
+                        href="#"
+                        className="text-sm md:text-[15px] text-[#346DC2] font-medium no-underline hover:underline flex-grow"
+                      >
+                        {item.name}
+                      </a>
+                      <div className="flex items-center gap-1">
+                        <span className="text-[#00DF8B] text-sm md:text-base">
+                          {item.stars}
+                        </span>
+                        <span className="text-xs md:text-[13px] text-[#5F5F5F]">
+                          {item.reviews}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
               </div>
               <div className="flex justify-end md:text-right mt-3 md:mt-4 mb-4 md:mb-7">
                 <a
@@ -813,9 +807,8 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
                 ))}
               </div>
               <div
-                className={`${
-                  isPlacesExpanded ? "grid" : "hidden"
-                } grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 mb-4 md:mb-5`}
+                className={`${isPlacesExpanded ? "grid" : "hidden"
+                  } grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 mb-4 md:mb-5`}
               >
                 {[
                   {

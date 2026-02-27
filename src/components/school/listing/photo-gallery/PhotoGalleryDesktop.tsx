@@ -38,16 +38,8 @@ const PhotoGalleryDesktop: React.FC<PhotoGalleryDesktopProps> = ({
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isOpen]);
+
+
 
   useEffect(() => {
     if (!isOpen) return;
@@ -139,9 +131,8 @@ const PhotoGalleryDesktop: React.FC<PhotoGalleryDesktopProps> = ({
             key={idx}
             type="button"
             onClick={() => setActiveIndex(idx)}
-            className={`w-[120px] h-[80px] flex-shrink-0 border-2 ${
-              activeIndex === idx ? "border-[#089E68]" : "border-transparent"
-            }`}
+            className={`w-[120px] h-[80px] flex-shrink-0 border-2 ${activeIndex === idx ? "border-[#089E68]" : "border-transparent"
+              }`}
             aria-label={`Thumbnail ${idx + 1}`}
           >
             <Image

@@ -40,7 +40,7 @@ export default function SchoolItem({ school, onClick }: SchoolItemProps) {
         <p className="text-[#5f5f5f] text-[13px] m-0">{school.location}</p>
       </div>
       <div
-        className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${getGradeClass(
+        className={`w-8 h-8 shrink-0 aspect-square rounded-full flex items-center justify-center text-white font-bold text-xs ${getGradeClass(
           school.grade
         )}`}
       >

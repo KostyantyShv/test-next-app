@@ -21,6 +21,7 @@ export const events: Event[] = [
       ),
     },
     date: "Nov 15",
+    fullDate: "Nov 15, 2026",
     time: "9:00 AM",
     externalUrl: "https://zoom.us/j/advanced-react-workshop",
     attendees: [
@@ -56,6 +57,7 @@ export const events: Event[] = [
       ),
     },
     date: "Nov 15",
+    fullDate: "Nov 15, 2026",
     time: "11:00 AM",
     externalUrl: "https://teams.microsoft.com/l/meetup-join/team-strategy-planning",
     attendees: [
@@ -101,6 +103,7 @@ export const events: Event[] = [
       ),
     },
     date: "Nov 15",
+    fullDate: "Nov 15, 2026",
     time: "2:00 PM",
     externalUrl: "https://calendly.com/coaching/one-on-one",
     attendees: [

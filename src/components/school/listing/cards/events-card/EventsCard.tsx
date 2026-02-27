@@ -214,6 +214,8 @@ const EventsCards = ({ id }: { id: string }) => {
                 if (!calendarEventId) return Promise.resolve();
                 return handleRemoveFromCalendar(event, calendarEventId);
               }}
+              currentUserAvatar="https://i.ibb.co/YP71Tb6/profile9.jpg"
+              currentUserName="You"
             />
           );
         })}

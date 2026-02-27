@@ -17,6 +17,7 @@ export interface Event {
   image: string;
   type: EventType;
   date: string;
+  fullDate?: string;
   time: string;
   externalUrl?: string;
   attendees: Attendee[];

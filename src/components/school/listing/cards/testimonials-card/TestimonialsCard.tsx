@@ -18,8 +18,8 @@ export default function TestimonialsCard({ id }: { id: string }) {
       <HeaderSection />
       <div className="bg-white rounded-xl md:rounded-[16px] p-4 md:p-[24px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] flex flex-col md:flex-row gap-5 md:gap-10">
         <div className="flex flex-col md:flex-[0_0_57%]">
-          <QuoteSection />
-          <ProfileSection />
+          <QuoteSection currentSlide={currentSlide} />
+          <ProfileSection currentSlide={currentSlide} />
           <NavigationControls
             currentSlide={currentSlide}
             updateDots={updateDots}

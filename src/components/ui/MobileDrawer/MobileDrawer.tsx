@@ -47,7 +47,12 @@ export function MobileDrawer({ children, isOpen, onClose, title = "Dialog" }: Mo
           </VisuallyHidden.Root>
           {/* Pull indicator */}
           <div className="mx-auto mt-3 mb-2 w-9 h-1 rounded-full bg-[#DFDDDB] flex-shrink-0" />
-          {children}
+          <div
+            className="flex-1 overflow-y-auto overscroll-contain"
+            style={{ WebkitOverflowScrolling: 'touch' }}
+          >
+            {children}
+          </div>
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>

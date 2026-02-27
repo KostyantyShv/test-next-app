@@ -7,12 +7,10 @@ export default function ReviewsModal() {
   const [isOpen, setIsOpen] = useState(false);
   const openReviews = () => {
     setIsOpen(true);
-    document.body.style.overflow = "hidden";
   };
 
   const closeReviews = () => {
     setIsOpen(false);
-    document.body.style.overflow = "auto";
   };
 
   return (

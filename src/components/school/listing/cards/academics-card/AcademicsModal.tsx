@@ -25,12 +25,8 @@ const AcademicsPopup: React.FC<{ isOpen: boolean; closeModal: () => void }> = ({
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "auto";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isOpen]);
+
+
 
   return (
     <>

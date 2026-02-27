@@ -10,12 +10,8 @@ interface StudentModalProps {
 }
 
 const StudentModal: React.FC<StudentModalProps> = ({ isOpen, closeModal }) => {
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
+
+
 
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
