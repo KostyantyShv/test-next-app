@@ -10,9 +10,16 @@ interface MobileDrawerProps {
   onClose: () => void;
   /** Accessible title for screen readers (required by Radix Dialog). */
   title?: string;
+  showPullIndicator?: boolean;
 }
 
-export function MobileDrawer({ children, isOpen, onClose, title = "Dialog" }: MobileDrawerProps) {
+export function MobileDrawer({
+  children,
+  isOpen,
+  onClose,
+  title = "Dialog",
+  showPullIndicator = true,
+}: MobileDrawerProps) {
   const [isDesktopViewport, setIsDesktopViewport] = useState(false);
 
   useEffect(() => {
@@ -22,6 +29,29 @@ export function MobileDrawer({ children, isOpen, onClose, title = "Dialog" }: Mo
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
+
+  useEffect(() => {
+    if (isDesktopViewport || !isOpen) return;
+
+    const body = document.body;
+    const currentCount = Number(body.dataset.mobileDrawerOpenCount || "0");
+    const nextCount = currentCount + 1;
+
+    body.dataset.mobileDrawerOpenCount = String(nextCount);
+    body.dataset.mobileDrawerOpen = "true";
+
+    return () => {
+      const latestCount = Number(body.dataset.mobileDrawerOpenCount || "1");
+      const decremented = Math.max(0, latestCount - 1);
+
+      if (decremented === 0) {
+        delete body.dataset.mobileDrawerOpenCount;
+        delete body.dataset.mobileDrawerOpen;
+      } else {
+        body.dataset.mobileDrawerOpenCount = String(decremented);
+      }
+    };
+  }, [isDesktopViewport, isOpen]);
 
   if (!isOpen) return null;
   if (isDesktopViewport) return null;
@@ -46,7 +76,9 @@ export function MobileDrawer({ children, isOpen, onClose, title = "Dialog" }: Mo
             <Drawer.Title>{title}</Drawer.Title>
           </VisuallyHidden.Root>
           {/* Pull indicator */}
-          <div className="mx-auto mt-3 mb-2 w-9 h-1 rounded-full bg-[#DFDDDB] flex-shrink-0" />
+          {showPullIndicator && (
+            <div className="mx-auto mt-3 mb-2 w-9 h-1 rounded-full bg-[#DFDDDB] flex-shrink-0" />
+          )}
           <div
             className="flex-1 overflow-y-auto overscroll-contain"
             style={{ WebkitOverflowScrolling: 'touch' }}

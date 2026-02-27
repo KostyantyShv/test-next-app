@@ -3,6 +3,7 @@ import { Article } from "./types";
 
 export const articlesMock: Article[] = [
   {
+    id: "article-1",
     title:
       "Having Recently Started at New Companies, These TA Leaders Have Ambitious Goals",
     category: "Business",
@@ -15,6 +16,7 @@ export const articlesMock: Article[] = [
     avatar: AVATARS[0],
   },
   {
+    id: "article-2",
     title: "Before New York Auto Show, Cars Take Their Own Star Turns",
     category: "Business",
     excerpt:
@@ -27,6 +29,7 @@ export const articlesMock: Article[] = [
   },
   // Politics Articles
   {
+    id: "article-3",
     title: "U.S. Risks Roiling Oil Markets in Trying to Tighten Sanctions",
     category: "Politics",
     excerpt:
@@ -38,6 +41,7 @@ export const articlesMock: Article[] = [
     avatar: AVATARS[2],
   },
   {
+    id: "article-4",
     title: "New Climate Policy Faces Opposition in Congress",
     category: "Politics",
     excerpt:
@@ -50,6 +54,7 @@ export const articlesMock: Article[] = [
   },
   // Travel Articles
   {
+    id: "article-5",
     title: "Duna de Bolonia: The Spanish sand dune hiding ancient Roman ruins",
     category: "Travel",
     excerpt:
@@ -61,6 +66,7 @@ export const articlesMock: Article[] = [
     avatar: AVATARS[1],
   },
   {
+    id: "article-6",
     title: "Exploring Hidden Gems of Southeast Asia",
     category: "Travel",
     excerpt:
@@ -74,6 +80,7 @@ export const articlesMock: Article[] = [
 ];
 
 export const featuredArticle: Article = {
+  id: "article-1",
   title:
     "Having Recently Started at New Companies, These TA Leaders Have Ambitious Goals",
   category: "Business",

@@ -54,21 +54,6 @@ export default function CaseStudyListMobile({
     }
   };
 
-  const handleFooterButtonClick = (index: number) => {
-    switch (index) {
-      case 0:
-        console.log("View button clicked");
-        onViewClick(index);
-        break;
-      case 1:
-        console.log("Download button clicked");
-        break;
-      case 2:
-        console.log("Share button clicked");
-        break;
-    }
-  };
-
   return (
     <div className="flex flex-col items-center justify-center text-[#4A4A4A]">
       <div className="w-full h-fit bg-[#E1E7EE] overflow-y-auto relative shadow-[0_12px_24px_rgba(0,0,0,0.15)] rounded-[30px] scrollbar-hidden">
@@ -101,9 +86,10 @@ export default function CaseStudyListMobile({
                   <span className="text-sm opacity-80">
                     {caseStudies[currentIndex].date}
                   </span>
-                  <a
-                    href="#"
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-white no-underline"
+                  <button
+                    type="button"
+                    onClick={() => onViewClick(caseStudies[currentIndex].id)}
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-white no-underline bg-transparent border-none p-0 cursor-pointer"
                   >
                     View Case Study
                     <svg
@@ -121,7 +107,7 @@ export default function CaseStudyListMobile({
                         strokeLinejoin="round"
                       />
                     </svg>
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>

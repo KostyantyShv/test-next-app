@@ -11,15 +11,15 @@ export function ProfileSection({ currentSlide }: ProfileSectionProps) {
   return (
     <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-5">
       <Image
-        src={testimonial.avatar}
-        alt={`${testimonial.firstName} ${testimonial.lastName}`}
+        src={testimonial.thumbnailImage}
+        alt={`${testimonial.authorFirstName} ${testimonial.authorLastName}`}
         width={40}
         height={40}
         className="rounded-full flex-shrink-0 md:w-12 md:h-12"
       />
       <div className="flex-grow">
         <div className="text-base md:text-lg font-semibold text-[#464646] mb-0.5 md:mb-1">
-          {testimonial.firstName} {testimonial.lastName}
+          {testimonial.authorFirstName} {testimonial.authorLastName}
         </div>
         <div className="text-xs md:text-sm font-medium text-[#5F5F5F]">
           {testimonial.role}

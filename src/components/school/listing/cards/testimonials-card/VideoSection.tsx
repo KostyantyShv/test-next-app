@@ -1,18 +1,28 @@
 import Image from "next/image";
+import { testimonials } from "./testimonials-data";
 
-export function VideoSection() {
+interface VideoSectionProps {
+  currentSlide: number;
+}
+
+export function VideoSection({ currentSlide }: VideoSectionProps) {
+  const testimonial = testimonials[currentSlide];
+  const possessiveLabel = testimonial.authorFirstName.endsWith("s")
+    ? `${testimonial.authorFirstName}'`
+    : `${testimonial.authorFirstName}'s`;
+
   return (
     <div className="md:flex-[0_0_43%] relative aspect-[16/9] md:aspect-[4/3] pr-0 md:pr-5">
       <div className="w-full h-full relative">
         <Image
-          src="https://i.ibb.co/vcJmbRn/japan.webp"
-          alt="Steve's Video"
+          src={testimonial.thumbnailImage}
+          alt={`${testimonial.authorFirstName} ${testimonial.authorLastName} video thumbnail`}
           fill
           className="rounded-xl object-cover"
         />
         <div className="absolute bottom-3 left-3 md:bottom-4 md:left-2 bg-white py-1.5 px-2.5 md:py-2 md:px-3 rounded-lg flex items-center gap-1.5 md:gap-2 cursor-pointer shadow-[0_4px_10px_rgba(0,0,0,0.1)] transition-transform duration-300 hover:-translate-y-0.5">
           <span className="text-[#346DC2] font-semibold text-xs md:text-sm whitespace-nowrap">
-            Watch Steve`s story
+            {`Watch ${possessiveLabel} video`}
           </span>
           <svg
             xmlns="http://www.w3.org/2000/svg"

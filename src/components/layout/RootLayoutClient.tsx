@@ -36,6 +36,8 @@ export const RootLayoutClient = ({
   children: React.ReactNode;
 }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isListingMobileOverlayOpen, setIsListingMobileOverlayOpen] =
+    useState(false);
   const [hasMounted, setHasMounted] = useState(false);
   const { isPlayerVisible, isPlaylistVisible } = useAudioPlayer();
   const isLeftSidebarCollapsed = useLeftSidebar((s) => s.isCollapsed);
@@ -84,6 +86,61 @@ export const RootLayoutClient = ({
       : 256
     : 256;
 
+  useEffect(() => {
+    if (!isMobile) {
+      setIsListingMobileOverlayOpen(false);
+      return;
+    }
+
+    const detectOpenOverlay = () => {
+      const hasListingMounted = Boolean(document.querySelector(".listing-page"));
+      if (!hasListingMounted) {
+        setIsListingMobileOverlayOpen(false);
+        return;
+      }
+
+      const hasOpenMobileDrawer =
+        document.body.dataset.mobileDrawerOpen === "true";
+      const hasOpenVaulDrawer = Boolean(
+        document.querySelector(
+          "[data-vaul-overlay][data-state='open'], [data-vaul-drawer][data-state='open']"
+        )
+      );
+      const hasOpenLegacyMobileModal = Boolean(
+        document.querySelector(
+          "#mobile-modal-root .fixed.opacity-100:not(.pointer-events-none)"
+        )
+      );
+
+      setIsListingMobileOverlayOpen(
+        hasOpenMobileDrawer || hasOpenVaulDrawer || hasOpenLegacyMobileModal
+      );
+    };
+
+    detectOpenOverlay();
+
+    const observer = new MutationObserver(detectOpenOverlay);
+    observer.observe(document.body, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: [
+        "data-state",
+        "class",
+        "style",
+        "data-mobile-drawer-open",
+        "data-mobile-drawer-open-count",
+      ],
+    });
+
+    window.addEventListener("resize", detectOpenOverlay);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", detectOpenOverlay);
+    };
+  }, [isMobile, pathname]);
+
   // If auth route, render children without layout
   if (isAuthRoute) {
     return <>{children}</>;
@@ -116,7 +173,10 @@ export const RootLayoutClient = ({
 
           <div className="flex-1 flex flex-col min-w-0">
             {/* Mobile Header - hide on Explore/Collections (they use their own); hide while mobile sidebar is open */}
-            {!(isTeamMembersPage) && !isMobileSidebarOpen && !hideDefaultMobileHeader && (
+            {!(isTeamMembersPage) &&
+              !isMobileSidebarOpen &&
+              !hideDefaultMobileHeader &&
+              !isListingMobileOverlayOpen && (
               <div className="md:hidden sticky top-0 z-[5000] bg-[var(--surface-color)]">
                 <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} showScrollProgress={isListingPage} />
               </div>

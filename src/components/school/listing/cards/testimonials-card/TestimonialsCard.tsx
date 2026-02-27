@@ -5,13 +5,17 @@ import { QuoteSection } from "./QuoteSection";
 import { ProfileSection } from "./ProfileSection";
 import { NavigationControls } from "./NavigationControls";
 import { VideoSection } from "./VideoSection";
+import { testimonials } from "./testimonials-data";
 
 export default function TestimonialsCard({ id }: { id: string }) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const totalSlides = testimonials.length;
 
   const updateDots = (index: number) => setCurrentSlide(index);
-  const handlePrev = () => setCurrentSlide((prev) => (prev - 1 + 5) % 5);
-  const handleNext = () => setCurrentSlide((prev) => (prev + 1) % 5);
+  const handlePrev = () =>
+    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+  const handleNext = () =>
+    setCurrentSlide((prev) => (prev + 1) % totalSlides);
 
   return (
     <CardWrapper id={id}>
@@ -21,13 +25,14 @@ export default function TestimonialsCard({ id }: { id: string }) {
           <QuoteSection currentSlide={currentSlide} />
           <ProfileSection currentSlide={currentSlide} />
           <NavigationControls
+            totalSlides={totalSlides}
             currentSlide={currentSlide}
             updateDots={updateDots}
             handlePrev={handlePrev}
             handleNext={handleNext}
           />
         </div>
-        <VideoSection />
+        <VideoSection currentSlide={currentSlide} />
       </div>
     </CardWrapper>
   );

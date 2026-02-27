@@ -10,10 +10,15 @@ const ArticlesCardMobile: React.FC<{ id: string }> = ({ id }) => {
   const [likedArticles, setLikedArticles] = useState<{ [key: string]: number }>(
     {}
   );
+  const uniqueArticles = articlesMock.filter(
+    (article, index, self) =>
+      article.id !== featuredArticle.id &&
+      self.findIndex((item) => item.id === article.id) === index
+  );
 
   // Constants
   const articlesPerPage = 1;
-  const totalPages = Math.ceil(articlesMock.length / articlesPerPage);
+  const totalPages = Math.ceil(uniqueArticles.length / articlesPerPage);
 
   // Functions
   const truncateTitle = (title: string) => {
@@ -32,12 +37,12 @@ const ArticlesCardMobile: React.FC<{ id: string }> = ({ id }) => {
   };
 
   // Article like functionality
-  const handleLike = (articleTitle: string, initialLikes: number) => {
+  const handleLike = (articleId: string, initialLikes: number) => {
     setLikedArticles((prev) => {
-      const currentLikes = prev[articleTitle] || initialLikes;
+      const currentLikes = prev[articleId] || initialLikes;
       return {
         ...prev,
-        [articleTitle]: currentLikes + 1,
+        [articleId]: currentLikes + 1,
       };
     });
   };
@@ -79,7 +84,7 @@ const ArticlesCardMobile: React.FC<{ id: string }> = ({ id }) => {
   };
 
   const getLikeCount = (article: Article) => {
-    return likedArticles[article.title] || article.likes;
+    return likedArticles[article.id] || article.likes;
   };
 
   return (
@@ -138,10 +143,10 @@ const ArticlesCardMobile: React.FC<{ id: string }> = ({ id }) => {
                 <div
                   className="flex items-center gap-1.5 text-[#5F5F5F] text-sm cursor-pointer transition-colors duration-200 hover:text-[#016853]"
                   onClick={() =>
-                    handleLike(featuredArticle.title, featuredArticle.likes)
+                    handleLike(featuredArticle.id, featuredArticle.likes)
                   }
                   style={{
-                    color: likedArticles[featuredArticle.title]
+                    color: likedArticles[featuredArticle.id]
                       ? "#016853"
                       : "#5F5F5F",
                   }}
@@ -190,9 +195,9 @@ const ArticlesCardMobile: React.FC<{ id: string }> = ({ id }) => {
 
           {/* Articles Grid */}
           <div className="flex flex-col gap-4">
-            {articlesMock.map((article, index) => (
+            {uniqueArticles.map((article, index) => (
               <div
-                key={index}
+                key={article.id}
                 className={`bg-white rounded-xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.05)] border border-[#E0E0E0] flex flex-col ${
                   viewingAll ||
                   Math.floor(index / articlesPerPage) + 1 === currentPage
@@ -241,9 +246,9 @@ const ArticlesCardMobile: React.FC<{ id: string }> = ({ id }) => {
                     <div className="flex gap-4">
                       <div
                         className="flex items-center gap-1.5 text-[#5F5F5F] text-sm cursor-pointer transition-colors duration-200 hover:text-[#016853]"
-                        onClick={() => handleLike(article.title, article.likes)}
+                        onClick={() => handleLike(article.id, article.likes)}
                         style={{
-                          color: likedArticles[article.title]
+                          color: likedArticles[article.id]
                             ? "#016853"
                             : "#5F5F5F",
                         }}
@@ -353,7 +358,7 @@ const ArticlesCardMobile: React.FC<{ id: string }> = ({ id }) => {
               viewingAll ? "hidden" : "flex"
             }`}
           >
-            {articlesMock.map((_, index) => (
+            {uniqueArticles.map((_, index) => (
               <div
                 key={index}
                 className={`w-2 h-2 rounded-full cursor-pointer transition-colors duration-300 ${

@@ -15,8 +15,8 @@ const Testimonial: React.FC = () => {
     <div className="bg-[#F8F9FA] rounded-xl p-5 my-8 shadow-[0_4px_12px_rgba(0,0,0,0.05)] md:shadow-none md:p-6 md:my-8 md:mx-0">
       <div className="md:flex md:items-start md:gap-5">
         <Image
-          src={testimonial.avatar}
-          alt={`${testimonial.firstName} ${testimonial.lastName}`}
+          src={testimonial.thumbnailImage}
+          alt={`${testimonial.authorFirstName} ${testimonial.authorLastName}`}
           width={48}
           height={48}
           className="hidden md:block rounded-full object-cover w-12 h-12"
@@ -25,19 +25,19 @@ const Testimonial: React.FC = () => {
           <div className="flex md:flex-row gap-3 flex-col">
             <div>
               <div className="italic text-[#4A4A4A] leading-6 text-sm mb-4 md:text-[15px] md:leading-[1.6] md:mb-3 transition-opacity duration-300">
-                {testimonial.text}
+                {testimonial.testimonialText}
               </div>
               <div className="w-full items-center gap-3 flex flex-row mb-4 md:mb-0 md:w-12 md:h-12">
                 <Image
-                  src={testimonial.avatar}
-                  alt={`${testimonial.firstName} ${testimonial.lastName}`}
+                  src={testimonial.thumbnailImage}
+                  alt={`${testimonial.authorFirstName} ${testimonial.authorLastName}`}
                   width={48}
                   height={48}
                   className="rounded-full object-cover md:hidden block"
                 />
                 <div className="flex flex-col">
                   <div className="font-semibold text-nowrap text-[#464646] text-sm md:text-[14px] md:font-semibold">
-                    {testimonial.firstName} {testimonial.lastName}
+                    {testimonial.authorFirstName} {testimonial.authorLastName}
                   </div>
                   <div className="text-[#5F5F5F] text-xs md:hidden">{testimonial.role}</div>
                 </div>

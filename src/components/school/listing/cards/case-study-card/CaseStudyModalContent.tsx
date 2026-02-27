@@ -187,10 +187,14 @@ export default function CaseStudyModalContent({
       </button>
       {/* Mobile Header - Sticky */}
       <div className="md:hidden sticky top-0 bg-white z-[1001]">
+        {/* Pull indicator */}
+        <div className="flex justify-center pt-3 pb-2">
+          <div className="w-9 h-1 rounded-full bg-[#DFDDDB]" />
+        </div>
         {/* Header with Navigation */}
         <div className="flex items-center justify-between px-4 pb-[10px] border-b border-[#E0E0E0]">
           <div className="text-base font-semibold text-[#262B3D]">Case Study</div>
-          <div className="flex items-center ml-auto mr-[10px]">
+          <div className="flex items-center ml-auto gap-1.5">
             <button
               className="w-7 h-7 bg-white border border-[#E0E0E0] rounded-full flex items-center justify-center cursor-pointer mx-1"
               onClick={() =>
@@ -207,6 +211,9 @@ export default function CaseStudyModalContent({
                 />
               </svg>
             </button>
+            <span className="text-xs text-[#5F5F5F] whitespace-nowrap px-0.5">
+              {currentSlide + 1} of {totalSlides}
+            </span>
             <button
               className="w-7 h-7 bg-white border border-[#E0E0E0] rounded-full flex items-center justify-center cursor-pointer mx-1"
               onClick={() => setCurrentSlide((prev) => (prev + 1) % totalSlides)}
@@ -221,21 +228,21 @@ export default function CaseStudyModalContent({
                 />
               </svg>
             </button>
+            <button
+              className="w-7 h-7 bg-white border border-[#E0E0E0] rounded-full flex items-center justify-center cursor-pointer ml-1"
+              onClick={onClose}
+            >
+              <svg className="w-4 h-4 text-[#262B3D]" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M18 6L6 18M6 6l12 12"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
           </div>
-          <button
-            className="w-7 h-7 bg-white border border-[#E0E0E0] rounded-full flex items-center justify-center cursor-pointer"
-            onClick={onClose}
-          >
-            <svg className="w-4 h-4 text-[#262B3D]" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M18 6L6 18M6 6l12 12"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
         </div>
       </div>
 

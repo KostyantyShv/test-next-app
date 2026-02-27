@@ -21,7 +21,7 @@ export function QuoteSection({ currentSlide }: QuoteSectionProps) {
         />
       </svg>
       <div className="text-lg md:text-2xl font-semibold leading-relaxed text-[#464646] mb-5 md:mb-6 overflow-hidden relative line-clamp-3 transition-opacity duration-300">
-        {testimonial.text}
+        {testimonial.testimonialText}
       </div>
     </>
   );

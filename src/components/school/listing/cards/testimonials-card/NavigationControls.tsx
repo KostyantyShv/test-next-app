@@ -1,4 +1,5 @@
 interface NavigationControlsProps {
+  totalSlides: number;
   currentSlide: number;
   updateDots: (index: number) => void;
   handlePrev: () => void;
@@ -6,6 +7,7 @@ interface NavigationControlsProps {
 }
 
 export function NavigationControls({
+  totalSlides,
   currentSlide,
   updateDots,
   handlePrev,
@@ -14,7 +16,7 @@ export function NavigationControls({
   return (
     <div className="flex items-center justify-between mt-auto mb-4 md:mb-0">
       <div className="flex gap-2">
-        {[0, 1, 2, 3, 4].map((index) => (
+        {Array.from({ length: totalSlides }).map((_, index) => (
           <div
             key={index}
             onClick={() => updateDots(index)}

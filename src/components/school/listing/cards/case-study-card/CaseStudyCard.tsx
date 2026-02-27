@@ -35,11 +35,14 @@ const CaseStudyCard: React.FC<{ id: string }> = ({ id }) => {
         <MobileDrawer
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
+          showPullIndicator={false}
         >
-          <CaseStudyModalContent
-            studyId={selectedStudy}
-            onClose={() => setIsModalOpen(false)}
-          />
+          <div className="rounded-t-[24px] overflow-hidden">
+            <CaseStudyModalContent
+              studyId={selectedStudy}
+              onClose={() => setIsModalOpen(false)}
+            />
+          </div>
         </MobileDrawer>
       </div>
     </>

@@ -11,6 +11,7 @@ const Header: React.FC<HeaderProps> = ({ isFooterVisible }) => {
   const [activeTab, setActiveTab] = useState<string>(
     Object.values(SIDE_TABS_MOBILE)[0]
   );
+  const [isBlockingOverlayOpen, setIsBlockingOverlayOpen] = useState(false);
 
   const checkActiveSection = useCallback(() => {
     // Get all section elements
@@ -48,14 +49,63 @@ const Header: React.FC<HeaderProps> = ({ isFooterVisible }) => {
     };
   }, [checkActiveSection]);
 
+  useEffect(() => {
+    const detectBlockingOverlay = () => {
+      const hasOpenMobileDrawer =
+        document.body.dataset.mobileDrawerOpen === "true";
+      const hasOpenVaulDrawer = Boolean(
+        document.querySelector(
+          "[data-vaul-overlay][data-state='open'], [data-vaul-drawer][data-state='open']"
+        )
+      );
+      const hasOpenLegacyMobileModal = Boolean(
+        document.querySelector(
+          "#mobile-modal-root .fixed.opacity-100:not(.pointer-events-none)"
+        )
+      );
+      const isBodyScrollLocked = document.body.style.position === "fixed";
+
+      setIsBlockingOverlayOpen(
+        hasOpenMobileDrawer ||
+          hasOpenVaulDrawer ||
+          hasOpenLegacyMobileModal ||
+          isBodyScrollLocked
+      );
+    };
+
+    detectBlockingOverlay();
+
+    const observer = new MutationObserver(detectBlockingOverlay);
+    observer.observe(document.body, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: [
+        "data-state",
+        "style",
+        "data-mobile-drawer-open",
+        "data-mobile-drawer-open-count",
+      ],
+    });
+
+    window.addEventListener("resize", detectBlockingOverlay);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", detectBlockingOverlay);
+    };
+  }, []);
+
   const handleTabClick = (tabId: string) => {
     setActiveTab(tabId);
   };
 
+  const shouldShowHeader = isFooterVisible && !isBlockingOverlayOpen;
+
   return (
     <div className="absolute top-0 left-0 right-0 pointer-events-none z-[1001]">
       <div
-        className={`fixed top-[68px] bg-white border-b border-[rgba(0,0,0,0.08)] shadow-[0_2px_6px_rgba(0,0,0,0.06)] p-3 transition-transform duration-300 ease-in-out z-[1001] w-full overflow-x-auto whitespace-nowrap scrollbar-hide ${isFooterVisible ? "translate-y-0" : "-translate-y-full"
+        className={`fixed top-[68px] bg-white border-b border-[rgba(0,0,0,0.08)] shadow-[0_2px_6px_rgba(0,0,0,0.06)] p-3 transition-transform duration-300 ease-in-out z-[1001] w-full overflow-x-auto whitespace-nowrap scrollbar-hide ${shouldShowHeader ? "translate-y-0" : "-translate-y-full"
           }`}
       >
         <div className="flex px-4">

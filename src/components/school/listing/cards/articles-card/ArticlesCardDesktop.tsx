@@ -21,8 +21,8 @@ const ArticlesCardDesktop: React.FC<{ id: string }> = ({ id }) => {
       <FeaturedArticle article={articlesMock[0]} />
 
       <div className="articles-grid grid grid-cols-1 gap-3 mb-8 md:grid-cols-2 lg:grid-cols-3">
-        {initialArticles.map((article, index) => (
-          <ArticleCard key={index} article={article} />
+        {initialArticles.map((article) => (
+          <ArticleCard key={article.id} article={article} />
         ))}
       </div>
 
@@ -31,8 +31,8 @@ const ArticlesCardDesktop: React.FC<{ id: string }> = ({ id }) => {
           !showAll ? "hidden" : ""
         }`}
       >
-        {additionalArticles.map((article, index) => (
-          <ArticleCard key={index} article={article} />
+        {additionalArticles.map((article) => (
+          <ArticleCard key={article.id} article={article} />
         ))}
       </div>
 
