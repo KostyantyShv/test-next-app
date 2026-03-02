@@ -32,6 +32,12 @@ export default function RootLayout({
         />
       </head>
       <body>
+        {/* Set route flag before paint so explore/collections mobile has no default header flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var p=window.location.pathname||'';document.documentElement.dataset.route=(p.indexOf('/schools/explore')===0||p.indexOf('/schools/collections')===0||p==='/collections')?'explore-collections':'';})();`,
+          }}
+        />
         <ThemeProvider
           attribute="data-theme"
           defaultTheme="light"

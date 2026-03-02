@@ -45,57 +45,58 @@ const LayoutToggle: React.FC<LayoutToggleProps> = ({
   }, []);
 
   const handleButtonClick = useCallback((type: string) => {
-    console.log(`Switching to layout: ${type}`);
     setLayout(type);
-
-    setTimeout(() => {
-      setIsExpanded(false);
-      setIsTooltipReady(false);
-      setHoveredButton(null);
-    }, 500);
   }, [setLayout]);
 
   return (
     <div
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      className="explore-layout-toggle flex items-center bg-[#f5f5f7] rounded-md p-[2px] relative z-[8000]"
       style={{
         width: isExpanded ? `${width}px` : '36px',
+        overflow: isTooltipReady ? 'visible' : 'hidden',
+        transition: 'width 0.3s ease',
       }}
-      className="explore-layout-toggle flex items-center bg-[#f5f5f7] rounded-md p-[2px] transition-all duration-300 relative z-[8000]"
     >
-      {layouts.map(({ type, icon }, index) => (
+      {layouts.map(({ type, icon }, index) => {
+        const isActive = layout === type;
+        const shouldShow = isActive || isExpanded;
+        return (
         <button
           key={type}
-          className={`layout-toggle-button relative shrink-0 w-8 h-7 flex items-center justify-center rounded transition-all duration-200 overflow-visible ${layout === type
+          className={`layout-toggle-button relative items-center justify-center rounded cursor-pointer border-none overflow-visible transition-all duration-200 ${
+            isActive
               ? "bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
-              : isExpanded
-                ? "hover:bg-[rgba(0,0,0,0.05)]"
-                : "hidden"
-            }`}
-          style={{ order: layout === type ? 99 : index }}
+              : "bg-transparent hover:bg-[rgba(0,0,0,0.05)]"
+          }`}
+          style={{
+            width: '32px',
+            height: '28px',
+            flexShrink: 0,
+            display: shouldShow ? 'flex' : 'none',
+          }}
           onClick={() => handleButtonClick(type)}
           onMouseEnter={() => setHoveredButton(type)}
           onMouseLeave={() => setHoveredButton(null)}
         >
           <span
-            className={`layout-toggle-icon w-4 h-4 flex items-center justify-center ${layout === type ? "text-[#0093B0]" : "text-[var(--text-default)]"
+            className={`layout-toggle-icon w-4 h-4 flex items-center justify-center ${isActive ? "text-[#0093B0]" : "text-[var(--text-default)]"
               }`}
           >
             {icon}
           </span>
-          {/* Tooltip - visible when isTooltipReady is true and this specific button is hovered */}
           {isTooltipReady && hoveredButton === type && (
             <span
               className="layout-tooltip absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-[var(--tooltip-bg)] text-[var(--tooltip-text)] px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap pointer-events-none z-[1000] shadow-[0_2px_8px_rgba(0,0,0,0.15)]"
             >
               {capitalize(type)}
-              {/* Arrow */}
               <span className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-[var(--tooltip-bg)]"></span>
             </span>
           )}
         </button>
-      ))}
+        );
+      })}
     </div>
   );
 };

@@ -449,7 +449,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
 
             {/* Mobile: render context actions as modal/drawer */}
             {isMobile && (
-                <MobileDrawer isOpen={isOpen} onClose={closeMenu}>
+                <MobileDrawer isOpen={isOpen} onClose={closeMenu} title="Actions">
                     {/* Header — matches HTML/photo: title Actions #464646, close 32px circle */}
                     <div className="sticky top-0 z-10 bg-white border-b border-[#E5E5E5] px-5 py-4 flex items-center justify-between shrink-0">
                         <h2 className="text-lg font-semibold text-[#464646]">Actions</h2>
@@ -556,7 +556,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                     {menuPlacement === "bottom" ? (
                         // Menu is below the button → arrow on top pointing UP to button
                         <div
-                            className="school-context-menu-arrow absolute w-0 h-0 border-l-[8px] border-r-[8px] border-b-[8px] border-l-transparent border-r-transparent border-b-white"
+                            className="school-context-menu-arrow arrow-up absolute w-0 h-0 border-l-[8px] border-r-[8px] border-b-[8px] border-l-transparent border-r-transparent border-b-white"
                             style={{
                                 left: "var(--menu-arrow-left)",
                                 top: "-8px",
@@ -567,7 +567,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                     ) : (
                         // Menu is above the button → arrow on bottom pointing DOWN to button
                         <div
-                            className="school-context-menu-arrow absolute w-0 h-0 border-l-[8px] border-r-[8px] border-t-[8px] border-l-transparent border-r-transparent border-t-white"
+                            className="school-context-menu-arrow arrow-down absolute w-0 h-0 border-l-[8px] border-r-[8px] border-t-[8px] border-l-transparent border-r-transparent border-t-white"
                             style={{
                                 left: "var(--menu-arrow-left)",
                                 bottom: "-8px",
@@ -694,7 +694,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                     {moveToPosition.side === "right" ? (
                         // Nested menu is to the RIGHT of the anchor → arrow on left pointing LEFT
                         <div
-                            className="school-context-menu-arrow absolute w-0 h-0 border-t-[8px] border-b-[8px] border-r-[8px] border-t-transparent border-b-transparent border-r-white"
+                            className="school-context-menu-arrow arrow-left absolute w-0 h-0 border-t-[8px] border-b-[8px] border-r-[8px] border-t-transparent border-b-transparent border-r-white"
                             style={{
                                 top: `${moveToPosition.arrowTop}px`,
                                 left: "-8px",
@@ -704,7 +704,7 @@ export const SchoolCardContextMenu: React.FC<SchoolCardContextMenuProps> = ({ sc
                     ) : (
                         // Nested menu is to the LEFT of the anchor → arrow on right pointing RIGHT
                         <div
-                            className="absolute w-0 h-0 border-t-[8px] border-b-[8px] border-l-[8px] border-t-transparent border-b-transparent border-l-white"
+                            className="school-context-menu-arrow arrow-right absolute w-0 h-0 border-t-[8px] border-b-[8px] border-l-[8px] border-t-transparent border-b-transparent border-l-white"
                             style={{
                                 top: `${moveToPosition.arrowTop}px`,
                                 right: "-8px",

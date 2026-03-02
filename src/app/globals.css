@@ -666,6 +666,21 @@ body {
   /* 64px */
 }
 
+/* Mobile explore/collections: hide default app header on load to prevent 1–2s white space at top */
+@media (max-width: 767px) {
+  [data-route="explore-collections"] .default-app-mobile-header {
+    display: none !important;
+  }
+}
+
+/* Lock background scroll when any mobile drawer (e.g. VAUL Actions menu) is open */
+html:has(body[data-mobile-drawer-open="true"]),
+body[data-mobile-drawer-open="true"] {
+  overflow: hidden !important;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
 .pb-player {
   padding-bottom: 5rem;
   /* 80px */
@@ -12424,11 +12439,27 @@ input[type="number"] {
 }
 
 [data-theme="midnight"] .school-context-menu-arrow {
-  border-top-color: #0F172A !important;
-  border-bottom-color: #0F172A !important;
-  border-left-color: #0F172A !important;
-  border-right-color: #0F172A !important;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5)) !important;
+}
+[data-theme="midnight"] .school-context-menu-arrow.arrow-up {
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-bottom-color: #0F172A !important;
+}
+[data-theme="midnight"] .school-context-menu-arrow.arrow-down {
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-top-color: #0F172A !important;
+}
+[data-theme="midnight"] .school-context-menu-arrow.arrow-left {
+  border-top-color: transparent !important;
+  border-bottom-color: transparent !important;
+  border-right-color: #0F172A !important;
+}
+[data-theme="midnight"] .school-context-menu-arrow.arrow-right {
+  border-top-color: transparent !important;
+  border-bottom-color: transparent !important;
+  border-left-color: #0F172A !important;
 }
 
 /* Explore 3-dots tooltip (desktop context menu) — oceanic */
@@ -12464,11 +12495,27 @@ input[type="number"] {
 }
 
 [data-theme="oceanic"] .school-context-menu-arrow {
-  border-top-color: #0B2B40 !important;
-  border-bottom-color: #0B2B40 !important;
-  border-left-color: #0B2B40 !important;
-  border-right-color: #0B2B40 !important;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5)) !important;
+}
+[data-theme="oceanic"] .school-context-menu-arrow.arrow-up {
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-bottom-color: #0B2B40 !important;
+}
+[data-theme="oceanic"] .school-context-menu-arrow.arrow-down {
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-top-color: #0B2B40 !important;
+}
+[data-theme="oceanic"] .school-context-menu-arrow.arrow-left {
+  border-top-color: transparent !important;
+  border-bottom-color: transparent !important;
+  border-right-color: #0B2B40 !important;
+}
+[data-theme="oceanic"] .school-context-menu-arrow.arrow-right {
+  border-top-color: transparent !important;
+  border-bottom-color: transparent !important;
+  border-left-color: #0B2B40 !important;
 }
 
 /* ===========================

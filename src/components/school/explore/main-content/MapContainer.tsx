@@ -310,7 +310,7 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
         <div
           className={
             mode === "mobileDrawer"
-              ? `bg-[var(--surface-color)] rounded-xl overflow-hidden transition-all duration-300 flex flex-col min-w-0 ${isMapActive ? "flex-1 m-4 border border-[var(--border-color)]" : "h-0 overflow-hidden"}`
+              ? `bg-[var(--surface-color)] overflow-hidden transition-all duration-300 flex flex-col min-w-0 w-full flex-1 min-h-0 ${isMapActive ? "flex-1 border-0" : "h-0 overflow-hidden"}`
               : `bg-[var(--surface-color)] rounded-xl overflow-hidden transition-all duration-300 ${isMapActive
                   ? isExpanded
                     ? "flex-1 m-6 border border-[var(--border-color)]"

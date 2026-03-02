@@ -7,6 +7,7 @@ import K12Filters from "../filter-sidebar/filters/k12-filters";
 import CollegesFilters from "../filter-sidebar/filters/colleges-filters";
 import { ESTABLISHMENT } from "@/store/enum";
 import { Portal } from "@/components/ui/Portal";
+import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 import { useOpenMobileSidebar } from "@/context/OpenMobileSidebarContext";
 import { MobileActionsDrawer } from "./MobileActionsDrawer";
 import {
@@ -571,14 +572,15 @@ const Header: React.FC<HeaderProps> = ({
 
           <div className="w-px h-6 bg-[rgba(0,0,0,0.1)] mx-2" />
 
-          {/* Layout Toggle - 6 variants matching HTML design */}
+          {/* Layout Toggle - matching HTML design */}
           <div
-            className={`layout-toggle flex flex-row-reverse items-center bg-[#f5f5f7] relative z-[8000] ${isLayoutToggleExpanded ? "expanded" : ""
-              } ${isLayoutTooltipReady ? "tooltip-ready" : ""}`}
+            className="layout-toggle flex items-center bg-[#f5f5f7] relative z-[8000]"
             style={{
               borderRadius: '6px',
               padding: '2px',
-              overflow: 'visible',
+              width: isLayoutToggleExpanded ? `${layoutToggleExpandedWidth}px` : '36px',
+              overflow: isLayoutTooltipReady ? 'visible' : 'hidden',
+              transition: 'width 0.3s ease',
             }}
             onMouseEnter={() => {
               if (layoutToggleHoverTimeoutRef.current) clearTimeout(layoutToggleHoverTimeoutRef.current);
@@ -608,14 +610,13 @@ const Header: React.FC<HeaderProps> = ({
                   onMouseEnter={() => setHoveredLayout(item.type)}
                   onMouseLeave={() => setHoveredLayout(null)}
                   style={{
-                    order: isActive ? 0 : index + 1,
                     width: '32px',
                     height: '28px',
                     borderRadius: '4px',
                     flexShrink: 0,
+                    display: shouldShowButton ? 'flex' : 'none',
                   }}
-                  className={`layout-toggle-button relative items-center justify-center cursor-pointer border-none overflow-visible ${shouldShowButton ? "flex" : "hidden"
-                    } ${isActive
+                  className={`layout-toggle-button relative items-center justify-center cursor-pointer border-none overflow-visible transition-all duration-200 ${isActive
                       ? "active bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
                       : "bg-transparent hover:bg-[rgba(0,0,0,0.05)]"
                     }`}
@@ -864,76 +865,66 @@ const Header: React.FC<HeaderProps> = ({
               />
             )}
 
-            {/* Mobile Establishment Drawer */}
-            {isEstablishmentDrawerOpen && (
-              <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-[var(--surface-color)] rounded-t-[20px] z-[1001] shadow-[0_-8px_18px_var(--shadow-color)] overflow-hidden flex flex-col">
-                <div className="p-4 border-b border-[var(--border-color)] flex justify-between items-center">
-                  <h2 className="text-lg font-semibold text-[var(--bold-text)]">
-                    {hasCustomDropdown ? "Select Category" : "Select School Type"}
-                  </h2>
-                  <button
-                    onClick={() => setIsEstablishmentDrawerOpen(false)}
-                    className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--subtle-text)] hover:bg-[var(--hover-bg)]"
-                  >
-                    <svg viewBox="0 0 24 24" className="w-5 h-5">
-                      <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                    </svg>
-                  </button>
-                </div>
-                <div className="p-4 space-y-2 flex-1 overflow-y-auto">
-                  {hasCustomDropdown ? (
-                    <div onClick={handleCustomDropdownClick}>
-                      {_renderDropdownItems?.()}
-                    </div>
-                  ) : (
-                    establishmentTypes.map((type) => (
+            {/* Mobile Establishment Drawer - VAUL for scroll lock */}
+            <MobileDrawer
+              isOpen={isEstablishmentDrawerOpen}
+              onClose={() => setIsEstablishmentDrawerOpen(false)}
+              title={hasCustomDropdown ? "Select Category" : "Select School Type"}
+              showPullIndicator={true}
+            >
+              <div className="p-4 space-y-2">
+                {hasCustomDropdown ? (
+                  <div onClick={handleCustomDropdownClick}>
+                    {_renderDropdownItems?.()}
+                  </div>
+                ) : (
+                  establishmentTypes.map((type) => (
+                    <div
+                      key={type}
+                      onClick={() => handleEstablishmentSelect(type)}
+                      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${dropdownValue === type
+                        ? "bg-[rgba(125,211,252,0.12)] border border-[rgba(125,211,252,0.3)]"
+                        : "hover:bg-[var(--hover-bg)] border border-transparent"
+                        }`}
+                    >
                       <div
-                        key={type}
-                        onClick={() => handleEstablishmentSelect(type)}
-                        className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${dropdownValue === type
-                          ? "bg-[rgba(125,211,252,0.12)] border border-[rgba(125,211,252,0.3)]"
-                          : "hover:bg-[var(--hover-bg)] border border-transparent"
+                        className={`w-9 h-9 flex items-center justify-center rounded-lg ${dropdownValue === type ? "bg-[rgba(125,211,252,0.18)]" : "bg-[var(--surface-secondary)]"
                           }`}
                       >
+                        {getEstablishmentIcon(type)}
+                      </div>
+                      <div className="flex-1">
                         <div
-                          className={`w-9 h-9 flex items-center justify-center rounded-lg ${dropdownValue === type ? "bg-[rgba(125,211,252,0.18)]" : "bg-[var(--surface-secondary)]"
+                          className={`font-medium ${dropdownValue === type ? "text-[var(--header-green)]" : "text-[var(--bold-text)]"
                             }`}
                         >
-                          {getEstablishmentIcon(type)}
+                          {type}
                         </div>
-                        <div className="flex-1">
-                          <div
-                            className={`font-medium ${dropdownValue === type ? "text-[var(--header-green)]" : "text-[var(--bold-text)]"
-                              }`}
-                          >
-                            {type}
-                          </div>
-                          <div className="text-sm text-[var(--subtle-text)]">
-                            {type === "K-12" && "2,583 schools"}
-                            {type === "Colleges" && "1,870 colleges"}
-                            {type === "Graduates" && "642 programs"}
-                            {type === "District" && "1,234 districts"}
-                          </div>
+                        <div className="text-sm text-[var(--subtle-text)]">
+                          {type === "K-12" && "2,583 schools"}
+                          {type === "Colleges" && "1,870 colleges"}
+                          {type === "Graduates" && "642 programs"}
+                          {type === "District" && "1,234 districts"}
                         </div>
-                        {dropdownValue === type && (
-                          <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="w-5 h-5 text-[var(--verification-blue)]"
-                          >
-                            <path d="M20 6L9 17l-5-5" />
-                          </svg>
-                        )}
                       </div>
-                    ))
-                  )}
-                </div>
+                      {dropdownValue === type && (
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="w-5 h-5 text-[var(--verification-blue)]"
+                        >
+                          <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                      )}
+                    </div>
+                  ))
+                )}
               </div>
-            )}
+            </MobileDrawer>
 
             {/* Mobile Filter Drawer */}
             {isFilterDrawerOpen && (
@@ -978,33 +969,25 @@ const Header: React.FC<HeaderProps> = ({
               layouts={layouts}
             />
 
-            {/* Mobile Map Drawer */}
-            {isMapDrawerOpen && (
-              <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-[var(--surface-color)] rounded-t-[20px] z-[1001] flex flex-col shadow-[0_-8px_18px_var(--shadow-color)]">
-                <div className="p-4 border-b border-[var(--border-color)] flex justify-between items-center flex-shrink-0">
-                  <h2 className="text-lg font-semibold text-[var(--bold-text)]">Map</h2>
-                  <button
-                    onClick={() => {
-                      setIsMapDrawerOpen(false);
-                      setIsMapActive(false);
-                    }}
-                    className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--subtle-text)] hover:bg-[var(--hover-bg)]"
-                  >
-                    <svg viewBox="0 0 24 24" className="w-5 h-5">
-                      <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                    </svg>
-                  </button>
-                </div>
-                <div className="flex-1 min-h-0 bg-[var(--surface-secondary)] flex flex-col">
-                  <MapContainer
-                    isMapActive={isMapActive}
-                    schools={schools}
-                    layout={layout}
-                    mode="mobileDrawer"
-                  />
-                </div>
+            {/* Mobile Map Drawer - VAUL for scroll lock + full width */}
+            <MobileDrawer
+              isOpen={isMapDrawerOpen}
+              onClose={() => {
+                setIsMapDrawerOpen(false);
+                setIsMapActive(false);
+              }}
+              title="Map"
+              showPullIndicator={true}
+            >
+              <div className="flex flex-col flex-1 min-h-0 bg-[var(--surface-secondary)]">
+                <MapContainer
+                  isMapActive={isMapActive}
+                  schools={schools}
+                  layout={layout}
+                  mode="mobileDrawer"
+                />
               </div>
-            )}
+            </MobileDrawer>
 
           </div>
         </Portal>

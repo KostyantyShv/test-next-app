@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { Portal } from '@/components/ui/Portal';
+import { MobileDrawer } from '@/components/ui/MobileDrawer/MobileDrawer';
 import { useIsMobile } from '@/hooks/useIsMobile';
 
 // Reference CSS variables from the HTML design (1:1)
@@ -99,8 +100,10 @@ export function SaveToCollectionDrawer({
   hasSelection,
 }: SaveToCollectionDrawerProps) {
   const isMobile = useIsMobile();
-  
+
+  // Desktop only: lock body scroll when modal is open (mobile uses MobileDrawer which locks body)
   useEffect(() => {
+    if (isMobile) return;
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -109,7 +112,7 @@ export function SaveToCollectionDrawer({
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isOpen]);
+  }, [isOpen, isMobile]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -139,27 +142,6 @@ export function SaveToCollectionDrawer({
     display: 'flex',
     flexDirection: 'column',
     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-  };
-
-  // Mobile drawer styles
-  const mobileDrawerStyle: React.CSSProperties = {
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    width: '100%',
-    maxHeight: '85%',
-    transform: isOpen ? 'translateY(0)' : 'translateY(100%)',
-    visibility: isOpen ? 'visible' : 'hidden',
-    backgroundColor: COLORS.white,
-    borderRadius: '20px 20px 0 0',
-    boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.15)',
-    zIndex: 1001,
-    transition: isOpen ? 'transform 0.3s ease' : 'transform 0.3s ease, visibility 0s linear 0.3s',
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column',
-    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-    WebkitTapHighlightColor: 'transparent',
   };
 
   return (
@@ -197,7 +179,7 @@ export function SaveToCollectionDrawer({
         {/* Modal/Drawer container - desktop: centered modal, mobile: bottom drawer */}
         <div
           className="save-to-collection-drawer"
-          style={isMobile ? mobileDrawerStyle : desktopModalStyle}
+          style={desktopModalStyle}
         >
           {/* .drawer-header — padding 16px 20px, border-bottom gray-200 */}
           <div

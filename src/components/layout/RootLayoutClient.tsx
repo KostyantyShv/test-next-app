@@ -57,15 +57,22 @@ export const RootLayoutClient = ({
     setHasMounted(true);
   }, []);
 
-  // Check if current route is an auth route
-  const isAuthRoute = AUTH_ROUTES.some(route => pathname?.startsWith(route));
-
-  // Routes that use their own mobile header (Explore / Collections) — hide default app header on mobile
+  // Keep data-route in sync for client-side nav (inline script only runs on full load)
   const isExploreOrCollectionsPage = EXPLORE_COLLECTIONS_ROUTES.some(
     (route) =>
       pathname === route ||
       (route !== "/collections" && pathname?.startsWith(route))
   );
+  useEffect(() => {
+    document.documentElement.dataset.route = isExploreOrCollectionsPage
+      ? "explore-collections"
+      : "";
+  }, [isExploreOrCollectionsPage]);
+
+  // Check if current route is an auth route
+  const isAuthRoute = AUTH_ROUTES.some(route => pathname?.startsWith(route));
+
+  // Routes that use their own mobile header (Explore / Collections) — hide default app header on mobile
   const isEditListingPage = EDIT_LISTING_ROUTES.some((route) =>
     pathname?.startsWith(route)
   );
@@ -177,7 +184,7 @@ export const RootLayoutClient = ({
               !isMobileSidebarOpen &&
               !hideDefaultMobileHeader &&
               !isListingMobileOverlayOpen && (
-              <div className="md:hidden sticky top-0 z-[5000] bg-[var(--surface-color)]">
+              <div className="default-app-mobile-header md:hidden sticky top-0 z-[5000] bg-[var(--surface-color)]">
                 <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} showScrollProgress={isListingPage} />
               </div>
             )}

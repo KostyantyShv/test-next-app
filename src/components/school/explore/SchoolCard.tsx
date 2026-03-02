@@ -3,9 +3,9 @@ import Image from "next/image";
 import { School } from "./types";
 import { SchoolCardIcons } from './SchoolCardIcons';
 import { MobileOptionsDrawer } from './MobileOptionsDrawer';
+import { MobileDrawer } from '@/components/ui/MobileDrawer/MobileDrawer';
 import { SchoolCardContextMenu } from './SchoolCardContextMenu';
 import { useSchoolsExplore } from "@/store/use-schools-explore";
-import { Portal } from "@/components/ui/Portal";
 
 interface SchoolCardProps {
   school: School;
@@ -240,80 +240,67 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           </div>
         </div>
 
-        {/* Mobile Info Drawer (Grid layout) */}
-        {isInfoOpen && (
-          <Portal containerId="mobile-modal-root">
-            <>
-              <div
-                className="fixed inset-0 bg-black/50 z-[100]"
-                onClick={() => setIsInfoOpen(false)}
-              />
-              <div
-                className="fixed bottom-0 left-0 right-0 z-[101] bg-white overflow-hidden flex flex-col"
-                style={{ maxHeight: "80%", borderRadius: "16px 16px 0 0", boxShadow: "0 -2px 10px rgba(0,0,0,0.15)" }}
-              >
-                <div className="sticky top-0 bg-white border-b flex items-center relative z-10" style={{ padding: 16, borderColor: "rgba(0,0,0,0.1)" }}>
-                  <div className="flex gap-3 items-center flex-1 min-w-0">
-                    <Image src={school.avatar || school.image} alt={school.name} width={40} height={40} className="rounded-lg object-cover shrink-0" style={{ borderRadius: 8 }} />
-                    <span className="hover-school-name text-[#464646] leading-[1.3] font-semibold truncate" style={{ fontSize: 16, marginRight: 60 }}>{school.name}</span>
-                  </div>
-                  <button
-                    type="button"
-                    className="more-options absolute flex items-center justify-center cursor-pointer text-[#5F5F5F] rounded-full w-8 h-8 border-none bg-transparent hover:bg-[#f5f5f7]"
-                    style={{ right: 44, top: 12 }}
-                    aria-label="More options"
-                  >
-                    <SchoolCardIcons.VerticalDotsOutline />
-                  </button>
-                  <button
-                    className="drawer-close absolute flex items-center justify-center border-none bg-transparent cursor-pointer text-[#5F5F5F] rounded-full w-8 h-8"
-                    style={{ right: 16, top: 12 }}
-                    onClick={() => setIsInfoOpen(false)}
-                    type="button"
-                    aria-label="Close"
-                  >
-                    <SchoolCardIcons.Close />
-                  </button>
-                </div>
-                <div className="drawer-body overflow-y-auto flex-grow bg-white" style={{ padding: 16, maxHeight: "calc(100% - 120px)" }}>
-                  <div className="hover-stats flex flex-wrap mb-4" style={{ gap: "12px 16px" }}>
-                    <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                      <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]"><SchoolCardIcons.Tuition /></span>
-                      <span>{hoverStat1.text}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                      <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">{hoverStat2.icon}</span>
-                      <span>{hoverStat2.text}</span>
-                    </div>
-                  </div>
-                  <p className="school-description text-[#4A4A4A] mb-4" style={{ fontSize: 14, lineHeight: 1.6 }}>
-                    <strong className="text-[#464646]">{(school as any).reviewerType || "Parent"}:</strong> {school.description}
-                  </p>
-                  <div className="review-count text-[#346DC2] font-medium cursor-pointer hover:underline mb-4" style={{ fontSize: 13 }}>
-                    Read {reviewsCount} reviews
-                  </div>
-                </div>
-                <div className="drawer-footer border-t bg-white sticky bottom-0" style={{ padding: 16, borderColor: "rgba(0,0,0,0.1)" }}>
-                  <div className="hover-buttons flex gap-3 w-full">
-                    <button className="button-info flex-1 py-3 rounded-lg font-medium text-center cursor-pointer transition-colors border-none bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA]" style={{ fontSize: 14 }} type="button">
-                      More Info
-                    </button>
-                    <button
-                      className={`button-like flex-1 py-3 rounded-lg font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
-                        }`}
-                      style={{ fontSize: 14 }}
-                      onClick={() => setIsLiked((v) => !v)}
-                      type="button"
-                    >
-                      <SchoolCardIcons.Heart filled={isLiked} className="w-4 h-4" />
-                      {isLiked ? "Liked" : "Like"}
-                    </button>
-                  </div>
-                </div>
+        {/* Mobile Info Drawer (Grid layout) - VAUL for scroll lock */}
+        <MobileDrawer isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} title={school.name}>
+          <div className="sticky top-0 bg-white border-b flex items-center relative z-10" style={{ padding: 16, borderColor: "rgba(0,0,0,0.1)" }}>
+            <div className="flex gap-3 items-center flex-1 min-w-0">
+              <Image src={school.avatar || school.image} alt={school.name} width={40} height={40} className="rounded-lg object-cover shrink-0" style={{ borderRadius: 8 }} />
+              <span className="hover-school-name text-[#464646] leading-[1.3] font-semibold truncate" style={{ fontSize: 16, marginRight: 60 }}>{school.name}</span>
+            </div>
+            <button
+              type="button"
+              className="more-options absolute flex items-center justify-center cursor-pointer text-[#5F5F5F] rounded-full w-8 h-8 border-none bg-transparent hover:bg-[#f5f5f7]"
+              style={{ right: 44, top: 12 }}
+              aria-label="More options"
+            >
+              <SchoolCardIcons.VerticalDotsOutline />
+            </button>
+            <button
+              className="drawer-close absolute flex items-center justify-center border-none bg-transparent cursor-pointer text-[#5F5F5F] rounded-full w-8 h-8"
+              style={{ right: 16, top: 12 }}
+              onClick={() => setIsInfoOpen(false)}
+              type="button"
+              aria-label="Close"
+            >
+              <SchoolCardIcons.Close />
+            </button>
+          </div>
+          <div className="drawer-body overflow-y-auto flex-grow bg-white" style={{ padding: 16, maxHeight: "calc(100% - 120px)" }}>
+            <div className="hover-stats flex flex-wrap mb-4" style={{ gap: "12px 16px" }}>
+              <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]"><SchoolCardIcons.Tuition /></span>
+                <span>{hoverStat1.text}</span>
               </div>
-            </>
-          </Portal>
-        )}
+              <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">{hoverStat2.icon}</span>
+                <span>{hoverStat2.text}</span>
+              </div>
+            </div>
+            <p className="school-description text-[#4A4A4A] mb-4" style={{ fontSize: 14, lineHeight: 1.6 }}>
+              <strong className="text-[#464646]">{(school as any).reviewerType || "Parent"}:</strong> {school.description}
+            </p>
+            <div className="review-count text-[#346DC2] font-medium cursor-pointer hover:underline mb-4" style={{ fontSize: 13 }}>
+              Read {reviewsCount} reviews
+            </div>
+          </div>
+          <div className="drawer-footer border-t bg-white sticky bottom-0" style={{ padding: 16, borderColor: "rgba(0,0,0,0.1)" }}>
+            <div className="hover-buttons flex gap-3 w-full">
+              <button className="button-info flex-1 py-3 rounded-lg font-medium text-center cursor-pointer transition-colors border-none bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA]" style={{ fontSize: 14 }} type="button">
+                More Info
+              </button>
+              <button
+                className={`button-like flex-1 py-3 rounded-lg font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                  }`}
+                style={{ fontSize: 14 }}
+                onClick={() => setIsLiked((v) => !v)}
+                type="button"
+              >
+                <SchoolCardIcons.Heart filled={isLiked} className="w-4 h-4" />
+                {isLiked ? "Liked" : "Like"}
+              </button>
+            </div>
+          </div>
+        </MobileDrawer>
 
         {/* Hover overlay */}
         <div className="hover-overlay hidden md:flex pointer-events-none absolute inset-0 bg-[var(--surface-color)] p-6 opacity-0 invisible transition-[opacity,visibility] duration-300 ease-in-out flex-col z-[10] group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto border border-[var(--border-color)] rounded-[12px]">
@@ -700,87 +687,74 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
             </div>
           </div>
 
-          {/* Mobile Info Drawer (HTML 7 behavior) */}
-          {isInfoOpen && (
-            <Portal containerId="mobile-modal-root">
-              <>
-                <div
-                  className="fixed inset-0 bg-black/50 z-[100]"
-                  onClick={() => setIsInfoOpen(false)}
+          {/* Mobile Info Drawer (HTML 7 behavior) - VAUL for scroll lock */}
+          <MobileDrawer isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} title={school.name}>
+            {/* Drawer header */}
+            <div className="drawer-header sticky top-0 bg-white px-5 py-4 border-b border-[#e5e7eb] flex justify-between items-start z-[1] shrink-0">
+              <h2 className="drawer-title text-lg font-semibold text-[#1B1B1B] flex-1 flex items-start gap-3 overflow-visible">
+                <Image
+                  src={school.avatar || school.image}
+                  alt={school.name}
+                  width={40}
+                  height={40}
+                  className="school-avatar w-10 h-10 rounded-lg object-cover shrink-0"
                 />
-                <div
-                  className="fixed bottom-0 left-0 right-0 z-[101] bg-white overflow-hidden flex flex-col"
-                  style={{ maxHeight: '90%', borderRadius: '20px 20px 0 0', boxShadow: '0 -2px 10px rgba(0,0,0,0.15)' }}
-                >
-                  {/* Drawer header */}
-                  <div className="drawer-header sticky top-0 bg-white px-5 py-4 border-b border-[#e5e7eb] flex justify-between items-start z-[1] shrink-0">
-                    <h2 className="drawer-title text-lg font-semibold text-[#1B1B1B] flex-1 flex items-start gap-3 overflow-visible">
-                      <Image
-                        src={school.avatar || school.image}
-                        alt={school.name}
-                        width={40}
-                        height={40}
-                        className="school-avatar w-10 h-10 rounded-lg object-cover shrink-0"
-                      />
-                      <span className="leading-[1.3]">{school.name}</span>
-                    </h2>
-                    <button
-                      className="drawer-close w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] border-none bg-transparent transition-colors hover:bg-[#F5F5F7] hover:text-[#464646] shrink-0"
-                      onClick={() => setIsInfoOpen(false)}
-                      type="button"
-                      aria-label="Close"
-                    >
-                      <SchoolCardIcons.Close />
-                    </button>
-                  </div>
+                <span className="leading-[1.3]">{school.name}</span>
+              </h2>
+              <button
+                className="drawer-close w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-[#5F5F5F] border-none bg-transparent transition-colors hover:bg-[#F5F5F7] hover:text-[#464646] shrink-0"
+                onClick={() => setIsInfoOpen(false)}
+                type="button"
+                aria-label="Close"
+              >
+                <SchoolCardIcons.Close />
+              </button>
+            </div>
 
-                  {/* Drawer body */}
-                  <div className="drawer-body p-4 overflow-y-auto flex-grow bg-white">
-                    <div className="hover-stats flex flex-wrap mb-4" style={{ gap: '12px 16px' }}>
-                      <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                        <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">
-                          <SchoolCardIcons.Tuition />
-                        </span>
-                        <span>{hoverTuition}</span>
-                      </div>
-                      <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                        <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">
-                          {hoverStat2.icon}
-                        </span>
-                        <span>{hoverStat2.label}</span>
-                      </div>
-                    </div>
-                    <p className="description text-sm leading-[1.6] text-[#4A4A4A] mb-4">
-                      <span className="reviewer-type font-semibold mr-1">{(school as any).reviewerType || 'Parent'}:</span>
-                      {(school as any).review || school.description}
-                    </p>
-                    <div className="review-count text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer hover:underline">
-                      Read {reviewsCount} reviews
-                    </div>
-                  </div>
-
-                  {/* Drawer footer */}
-                  <div className="drawer-footer p-4 border-t border-[#e5e7eb] flex justify-center gap-3 bg-white shrink-0 sticky bottom-0">
-                    <button
-                      className="hover-button button-info flex-1 py-3 rounded-lg text-sm font-medium text-center cursor-pointer transition-colors border-none bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] flex items-center justify-center gap-2"
-                      type="button"
-                    >
-                      More Info
-                    </button>
-                    <button
-                      className={`hover-button button-like flex-1 py-3 rounded-lg text-sm font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? 'bg-[#298541] text-white' : 'bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]'
-                        }`}
-                      onClick={() => setIsLiked((v) => !v)}
-                      type="button"
-                    >
-                      <SchoolCardIcons.Heart filled={isLiked} className="w-4 h-4" />
-                      {isLiked ? 'Liked' : 'Like'}
-                    </button>
-                  </div>
+            {/* Drawer body */}
+            <div className="drawer-body p-4 overflow-y-auto flex-grow bg-white">
+              <div className="hover-stats flex flex-wrap mb-4" style={{ gap: '12px 16px' }}>
+                <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                  <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">
+                    <SchoolCardIcons.Tuition />
+                  </span>
+                  <span>{hoverTuition}</span>
                 </div>
-              </>
-            </Portal>
-          )}
+                <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                  <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">
+                    {hoverStat2.icon}
+                  </span>
+                  <span>{hoverStat2.label}</span>
+                </div>
+              </div>
+              <p className="description text-sm leading-[1.6] text-[#4A4A4A] mb-4">
+                <span className="reviewer-type font-semibold mr-1">{(school as any).reviewerType || 'Parent'}:</span>
+                {(school as any).review || school.description}
+              </p>
+              <div className="review-count text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer hover:underline">
+                Read {reviewsCount} reviews
+              </div>
+            </div>
+
+            {/* Drawer footer */}
+            <div className="drawer-footer p-4 border-t border-[#e5e7eb] flex justify-center gap-3 bg-white shrink-0 sticky bottom-0">
+              <button
+                className="hover-button button-info flex-1 py-3 rounded-lg text-sm font-medium text-center cursor-pointer transition-colors border-none bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] flex items-center justify-center gap-2"
+                type="button"
+              >
+                More Info
+              </button>
+              <button
+                className={`hover-button button-like flex-1 py-3 rounded-lg text-sm font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? 'bg-[#298541] text-white' : 'bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]'
+                  }`}
+                onClick={() => setIsLiked((v) => !v)}
+                type="button"
+              >
+                <SchoolCardIcons.Heart filled={isLiked} className="w-4 h-4" />
+                {isLiked ? 'Liked' : 'Like'}
+              </button>
+            </div>
+          </MobileDrawer>
         </div>
 
         {/* Hover overlay (desktop only) */}
@@ -1499,99 +1473,82 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           </div>
         </div>
 
-        {/* Mobile Magazine Info Drawer - Portal rendering outside card */}
-        {isInfoOpen && (
-          <Portal containerId="mobile-modal-root">
-            <>
-              <div
-                className="fixed inset-0 bg-black/50 z-[9999]"
-                onClick={() => setIsInfoOpen(false)}
+        {/* Mobile Magazine Info Drawer - VAUL for scroll lock */}
+        <MobileDrawer isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} title={school.name}>
+          {/* Drawer header */}
+          <div className="p-4 border-b border-black/10 flex items-center relative">
+            <div className="flex gap-3 items-center flex-1">
+              <Image
+                src={school.avatar || school.image}
+                alt={school.name}
+                width={40}
+                height={40}
+                className="w-10 h-10 rounded-lg object-cover shrink-0"
               />
-              <div
-                className="fixed bottom-0 left-0 right-0 z-[10000] bg-white overflow-hidden flex flex-col mx-auto"
-                style={{
-                  maxHeight: '80%',
-                  borderRadius: '16px 16px 0 0',
-                  boxShadow: '0 -2px 10px rgba(0,0,0,0.15)'
-                }}
-              >
-                {/* Drawer header */}
-                <div className="p-4 border-b border-black/10 flex items-center relative">
-                  <div className="flex gap-3 items-center flex-1">
-                    <Image
-                      src={school.avatar || school.image}
-                      alt={school.name}
-                      width={40}
-                      height={40}
-                      className="w-10 h-10 rounded-lg object-cover shrink-0"
-                    />
-                    <div className="text-[16px] font-semibold text-[#464646] leading-[1.3] mr-[60px]">
-                      {school.name}
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    className="absolute flex items-center justify-center cursor-pointer text-[#5F5F5F] rounded-full w-8 h-8 border-none bg-transparent hover:bg-[#f5f5f7]"
-                    style={{ right: 52, top: 12 }}
-                    onClick={() => setIsDrawerOpen(true)}
-                    aria-label="More options"
-                  >
-                    <SchoolCardIcons.VerticalDotsOutline size={16} />
-                  </button>
-                  <button
-                    className="absolute flex items-center justify-center border-none bg-transparent cursor-pointer text-[#5F5F5F] rounded-full w-8 h-8"
-                    style={{ right: 16, top: 12 }}
-                    onClick={() => setIsInfoOpen(false)}
-                    type="button"
-                    aria-label="Close"
-                  >
-                    <SchoolCardIcons.Close />
-                  </button>
-                </div>
-
-                {/* Drawer body */}
-                <div className="p-4 overflow-y-auto" style={{ maxHeight: 'calc(100% - 140px)' }}>
-                  <div className="flex flex-wrap mb-4" style={{ gap: '12px 16px' }}>
-                    {mobileDrawerStats.map((stat, idx) => (
-                      <div key={idx} className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                        <span className="[&>svg]:w-4 [&>svg]:h-4 text-[#089E68]">{stat.icon}</span>
-                        <span>{stat.text}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <p className="text-sm leading-[1.6] text-[#4A4A4A] mb-4">
-                    <strong className="font-semibold text-[#464646]">{(school as any).reviewerType || 'Parent'}:</strong>{' '}
-                    {(school as any).review || school.description}
-                  </p>
-                  <div className="text-[13px] font-medium text-[#346DC2] mb-4 cursor-pointer">
-                    Read {reviewsCount} reviews
-                  </div>
-                </div>
-
-                {/* Drawer footer */}
-                <div className="p-4 border-t border-black/10">
-                  <div className="flex gap-3 w-full">
-                    <button
-                      className="flex-1 py-3 rounded-lg text-sm font-medium text-center cursor-pointer transition-colors border-none bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA]"
-                      type="button"
-                    >
-                      More Info
-                    </button>
-                    <button
-                      className={`flex-1 py-3 rounded-lg text-sm font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? 'bg-[#298541] text-white' : 'bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]'
-                        }`}
-                      onClick={() => setIsLiked((v) => !v)}
-                      type="button"
-                    >
-                      <SchoolCardIcons.Heart filled={isLiked} className="w-4 h-4" />
-                      {isLiked ? 'Liked' : 'Like'}
-                    </button>
-                  </div>
-                </div>
+              <div className="text-[16px] font-semibold text-[#464646] leading-[1.3] mr-[60px]">
+                {school.name}
               </div>
-            </>
-          </Portal>
-        )}
+            </div>
+            <button
+              type="button"
+              className="absolute flex items-center justify-center cursor-pointer text-[#5F5F5F] rounded-full w-8 h-8 border-none bg-transparent hover:bg-[#f5f5f7]"
+              style={{ right: 52, top: 12 }}
+              onClick={() => setIsDrawerOpen(true)}
+              aria-label="More options"
+            >
+              <SchoolCardIcons.VerticalDotsOutline size={16} />
+            </button>
+            <button
+              className="absolute flex items-center justify-center border-none bg-transparent cursor-pointer text-[#5F5F5F] rounded-full w-8 h-8"
+              style={{ right: 16, top: 12 }}
+              onClick={() => setIsInfoOpen(false)}
+              type="button"
+              aria-label="Close"
+            >
+              <SchoolCardIcons.Close />
+            </button>
+          </div>
+
+          {/* Drawer body */}
+          <div className="p-4 overflow-y-auto" style={{ maxHeight: 'calc(100% - 140px)' }}>
+            <div className="flex flex-wrap mb-4" style={{ gap: '12px 16px' }}>
+              {mobileDrawerStats.map((stat, idx) => (
+                <div key={idx} className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                  <span className="[&>svg]:w-4 [&>svg]:h-4 text-[#089E68]">{stat.icon}</span>
+                  <span>{stat.text}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-sm leading-[1.6] text-[#4A4A4A] mb-4">
+              <strong className="font-semibold text-[#464646]">{(school as any).reviewerType || 'Parent'}:</strong>{' '}
+              {(school as any).review || school.description}
+            </p>
+            <div className="text-[13px] font-medium text-[#346DC2] mb-4 cursor-pointer">
+              Read {reviewsCount} reviews
+            </div>
+          </div>
+
+          {/* Drawer footer */}
+          <div className="p-4 border-t border-black/10">
+            <div className="flex gap-3 w-full">
+              <button
+                className="flex-1 py-3 rounded-lg text-sm font-medium text-center cursor-pointer transition-colors border-none bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA]"
+                type="button"
+              >
+                More Info
+              </button>
+              <button
+                className={`flex-1 py-3 rounded-lg text-sm font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? 'bg-[#298541] text-white' : 'bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]'
+                  }`}
+                onClick={() => setIsLiked((v) => !v)}
+                type="button"
+              >
+                <SchoolCardIcons.Heart filled={isLiked} className="w-4 h-4" />
+                {isLiked ? 'Liked' : 'Like'}
+              </button>
+            </div>
+          </div>
+        </MobileDrawer>
 
         {/* Desktop Magazine Layout */}
         <div className="school-card hidden md:flex bg-white rounded-xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-[transform,box-shadow] duration-300 ease-in-out border border-[#E5E7EB] relative min-h-[280px] hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
@@ -1997,76 +1954,65 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
             </div>
           </div>
 
-          {/* Mobile Info Drawer */}
-          {isInfoOpen && (
-            <Portal containerId="mobile-modal-root">
-              <div
-                className="fixed inset-0 bg-black/50 z-[1000]"
-                onClick={() => setIsInfoOpen(false)}
-              />
-              <div
-                className="fixed bottom-0 left-0 right-0 z-[1001] bg-white overflow-hidden flex flex-col"
-                style={{ maxHeight: "90%", borderRadius: "16px 16px 0 0", boxShadow: "0 -2px 10px rgba(0,0,0,0.15)" }}
-              >
-                <div className="drawer-header p-4 border-b border-[#E5E7EB] flex justify-between items-center">
-                  <h2 className="drawer-title text-[18px] font-semibold text-[#464646]">{school.name}</h2>
-                  <div className="drawer-actions flex gap-2">
-                    <button
-                      type="button"
-                      className="drawer-more-options w-8 h-8 flex items-center justify-center cursor-pointer text-[#6B7280] rounded-full hover:bg-[#F3F4F6] border-none bg-transparent"
-                      aria-label="More options"
-                    >
-                      <SchoolCardIcons.VerticalDotsOutline size={20} />
-                    </button>
-                    <button
-                      type="button"
-                      className="drawer-close w-8 h-8 flex items-center justify-center border-none bg-transparent cursor-pointer text-[#6B7280] rounded-full hover:bg-[#F3F4F6]"
-                      onClick={() => setIsInfoOpen(false)}
-                      aria-label="Close"
-                    >
-                      <SchoolCardIcons.Close size={20} />
-                    </button>
-                  </div>
+          {/* Mobile Info Drawer - VAUL for scroll lock */}
+          <MobileDrawer isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} title={school.name}>
+            <div className="drawer-header p-4 border-b border-[#E5E7EB] flex justify-between items-center">
+              <h2 className="drawer-title text-[18px] font-semibold text-[#464646]">{school.name}</h2>
+              <div className="drawer-actions flex gap-2">
+                <button
+                  type="button"
+                  className="drawer-more-options w-8 h-8 flex items-center justify-center cursor-pointer text-[#6B7280] rounded-full hover:bg-[#F3F4F6] border-none bg-transparent"
+                  aria-label="More options"
+                >
+                  <SchoolCardIcons.VerticalDotsOutline size={20} />
+                </button>
+                <button
+                  type="button"
+                  className="drawer-close w-8 h-8 flex items-center justify-center border-none bg-transparent cursor-pointer text-[#6B7280] rounded-full hover:bg-[#F3F4F6]"
+                  onClick={() => setIsInfoOpen(false)}
+                  aria-label="Close"
+                >
+                  <SchoolCardIcons.Close size={20} />
+                </button>
+              </div>
+            </div>
+            <div className="drawer-body p-4 overflow-y-auto flex-grow" style={{ maxHeight: "calc(80vh - 130px)" }}>
+              <div className="hover-header flex gap-3 mb-4">
+                <Image src={school.avatar || school.image} alt={school.name} width={40} height={40} className="rounded-lg object-cover" />
+                <div className="hover-school-name text-[16px] font-semibold text-[#464646]">{school.name}</div>
+              </div>
+              <div className="hover-stats flex flex-wrap gap-3 mb-4">
+                <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                  <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">{mobileHoverStat1.icon}</span>
+                  <span>{mobileHoverStat1.text}</span>
                 </div>
-                <div className="drawer-body p-4 overflow-y-auto flex-grow" style={{ maxHeight: "calc(80vh - 130px)" }}>
-                  <div className="hover-header flex gap-3 mb-4">
-                    <Image src={school.avatar || school.image} alt={school.name} width={40} height={40} className="rounded-lg object-cover" />
-                    <div className="hover-school-name text-[16px] font-semibold text-[#464646]">{school.name}</div>
-                  </div>
-                  <div className="hover-stats flex flex-wrap gap-3 mb-4">
-                    <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                      <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">{mobileHoverStat1.icon}</span>
-                      <span>{mobileHoverStat1.text}</span>
-                    </div>
-                    <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                      <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">{mobileHoverStat2.icon}</span>
-                      <span>{mobileHoverStat2.text}</span>
-                    </div>
-                  </div>
-                  <p className="school-description text-[14px] leading-[1.6] text-[#4A4A4A] mb-4">
-                    <strong className="text-[#464646]">{(school as any).reviewerType || "Parent"}:</strong> {school.description}
-                  </p>
-                  <div className="review-count text-[13px] font-medium text-[#346DC2] mb-4 cursor-pointer">
-                    Read {reviewsCount} reviews
-                  </div>
-                </div>
-                <div className="drawer-footer p-4 border-t border-[#E5E7EB] flex gap-3">
-                  <button className="hover-button button-info flex-1 py-3 rounded-lg text-[14px] font-medium text-center cursor-pointer transition-colors border-none bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA]" type="button">
-                    More Info
-                  </button>
-                  <button
-                    className={`hover-button button-like flex-1 py-3 rounded-lg text-[14px] font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
-                      }`}
-                    onClick={() => setIsLiked((v) => !v)}
-                    type="button"
-                  >
-                    <SchoolCardIcons.Heart filled={isLiked} className="w-4 h-4" />
-                    {isLiked ? "Liked" : "Like"}
-                  </button>
+                <div className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                  <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">{mobileHoverStat2.icon}</span>
+                  <span>{mobileHoverStat2.text}</span>
                 </div>
               </div>
-            </Portal>
-          )}
+              <p className="school-description text-[14px] leading-[1.6] text-[#4A4A4A] mb-4">
+                <strong className="text-[#464646]">{(school as any).reviewerType || "Parent"}:</strong> {school.description}
+              </p>
+              <div className="review-count text-[13px] font-medium text-[#346DC2] mb-4 cursor-pointer">
+                Read {reviewsCount} reviews
+              </div>
+            </div>
+            <div className="drawer-footer p-4 border-t border-[#E5E7EB] flex gap-3">
+              <button className="hover-button button-info flex-1 py-3 rounded-lg text-[14px] font-medium text-center cursor-pointer transition-colors border-none bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA]" type="button">
+                More Info
+              </button>
+              <button
+                className={`hover-button button-like flex-1 py-3 rounded-lg text-[14px] font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                  }`}
+                onClick={() => setIsLiked((v) => !v)}
+                type="button"
+              >
+                <SchoolCardIcons.Heart filled={isLiked} className="w-4 h-4" />
+                {isLiked ? "Liked" : "Like"}
+              </button>
+            </div>
+          </MobileDrawer>
 
           <MobileOptionsDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} schoolName={school.name} />
         </div>
@@ -2422,76 +2368,64 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
             </div>
           </div>
 
-          {/* Mobile Info Drawer */}
-          {isInfoOpen && (
-            <Portal containerId="mobile-modal-root">
-              <div
-                className="fixed inset-0 bg-black/50 z-[1000]"
-                onClick={() => setIsInfoOpen(false)}
-              />
-              <div
-                className="fixed bottom-0 left-1/2 z-[1001] w-full max-w-[420px] -translate-x-1/2 bg-white overflow-hidden flex flex-col"
-                style={{ maxHeight: "80%", borderRadius: "20px 20px 0 0", boxShadow: "0 -2px 10px rgba(0,0,0,0.15)" }}
-              >
-                <div className="drawer-handle w-10 h-[5px] bg-[#E5E7EB] rounded-[2.5px] mt-3 mb-2 mx-auto" />
-                <div className="drawer-header px-5 pb-4 border-b border-[#F0F0F0] flex justify-between items-center">
-                  <div className="drawer-school-info flex items-center gap-3">
-                    <Image
-                      src={school.avatar || school.image}
-                      alt={school.name}
-                      width={40}
-                      height={40}
-                      className="school-avatar w-10 h-10 rounded-lg object-cover"
-                    />
-                    <div className="drawer-school-name text-[16px] font-semibold text-[#464646] line-clamp-2 leading-[1.3]">
-                      {school.name}
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    className="drawer-close w-8 h-8 flex items-center justify-center border-none bg-transparent cursor-pointer text-[#5F5F5F] rounded-full hover:bg-[#F5F5F7]"
-                    onClick={() => setIsInfoOpen(false)}
-                    aria-label="Close"
-                  >
-                    <SchoolCardIcons.CloseLarge />
-                  </button>
-                </div>
-                <div className="drawer-content p-5 overflow-y-auto flex-grow">
-                  {drawerStats.length > 0 && (
-                    <div className="hover-stats flex flex-wrap gap-3 mb-4">
-                      {drawerStats.map((s, idx) => (
-                        <div key={idx} className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-                          <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">{s.icon}</span>
-                          <span>{s.text}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <p className="school-description text-[14px] leading-[1.6] text-[#4A4A4A] mb-4">
-                    <strong className="font-semibold text-[#464646] mr-1">{reviewerType}:</strong>
-                    {school.description}
-                  </p>
-                  <div className="review-count text-[13px] font-medium text-[#346DC2] mb-4 cursor-pointer">
-                    Read {reviewsCount} reviews
-                  </div>
-                </div>
-                <div className="drawer-footer p-4 border-t border-[rgba(0,0,0,0.1)] flex gap-3">
-                  <button type="button" className="hover-button button-info flex-1 py-3 rounded-lg text-[14px] font-medium text-center cursor-pointer transition-colors border-none bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA]">
-                    More Info
-                  </button>
-                  <button
-                    type="button"
-                    className={`hover-button button-like flex-1 py-3 rounded-lg text-[14px] font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
-                      }`}
-                    onClick={() => setIsLiked((v) => !v)}
-                  >
-                    <SchoolCardIcons.Heart className="w-4 h-4" />
-                    {isLiked ? "Liked" : "Like"}
-                  </button>
+          {/* Mobile Info Drawer - VAUL for scroll lock */}
+          <MobileDrawer isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} title={school.name}>
+            <div className="drawer-header px-5 pb-4 border-b border-[#F0F0F0] flex justify-between items-center">
+              <div className="drawer-school-info flex items-center gap-3">
+                <Image
+                  src={school.avatar || school.image}
+                  alt={school.name}
+                  width={40}
+                  height={40}
+                  className="school-avatar w-10 h-10 rounded-lg object-cover"
+                />
+                <div className="drawer-school-name text-[16px] font-semibold text-[#464646] line-clamp-2 leading-[1.3]">
+                  {school.name}
                 </div>
               </div>
-            </Portal>
-          )}
+              <button
+                type="button"
+                className="drawer-close w-8 h-8 flex items-center justify-center border-none bg-transparent cursor-pointer text-[#5F5F5F] rounded-full hover:bg-[#F5F5F7]"
+                onClick={() => setIsInfoOpen(false)}
+                aria-label="Close"
+              >
+                <SchoolCardIcons.CloseLarge />
+              </button>
+            </div>
+            <div className="drawer-content p-5 overflow-y-auto flex-grow">
+              {drawerStats.length > 0 && (
+                <div className="hover-stats flex flex-wrap gap-3 mb-4">
+                  {drawerStats.map((s, idx) => (
+                    <div key={idx} className="hover-stat flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                      <span className="[&>svg]:w-4 [&>svg]:h-4 [&>svg]:text-[#089E68]">{s.icon}</span>
+                      <span>{s.text}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <p className="school-description text-[14px] leading-[1.6] text-[#4A4A4A] mb-4">
+                <strong className="font-semibold text-[#464646] mr-1">{reviewerType}:</strong>
+                {school.description}
+              </p>
+              <div className="review-count text-[13px] font-medium text-[#346DC2] mb-4 cursor-pointer">
+                Read {reviewsCount} reviews
+              </div>
+            </div>
+            <div className="drawer-footer p-4 border-t border-[rgba(0,0,0,0.1)] flex gap-3">
+              <button type="button" className="hover-button button-info flex-1 py-3 rounded-lg text-[14px] font-medium text-center cursor-pointer transition-colors border-none bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA]">
+                More Info
+              </button>
+              <button
+                type="button"
+                className={`hover-button button-like flex-1 py-3 rounded-lg text-[14px] font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                  }`}
+                onClick={() => setIsLiked((v) => !v)}
+              >
+                <SchoolCardIcons.Heart className="w-4 h-4" />
+                {isLiked ? "Liked" : "Like"}
+              </button>
+            </div>
+          </MobileDrawer>
 
           <MobileOptionsDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} schoolName={school.name} />
         </div>

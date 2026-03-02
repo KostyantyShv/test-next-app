@@ -5,6 +5,7 @@ import { establishmentTypes } from "../../explore/main-content/mock";
 import K12Filters from "../../explore/filter-sidebar/filters/k12-filters";
 import CollegesFilters from "../../explore/filter-sidebar/filters/colleges-filters";
 import { ESTABLISHMENT } from "@/store/enum";
+import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 import {
   FiltersType,
   FilterValue,
@@ -526,7 +527,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
               padding: '2px',
               width: isLayoutToggleExpanded ? `${layoutToggleExpandedWidth}px` : '36px',
               transition: 'width 0.3s ease',
-              overflow: 'visible',
+              overflow: isLayoutTooltipReady ? 'visible' : 'hidden',
             }}
             onMouseEnter={() => {
               if (layoutToggleHoverTimeoutRef.current) clearTimeout(layoutToggleHoverTimeoutRef.current);
@@ -556,15 +557,13 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
                   onMouseEnter={() => setHoveredLayout(layoutOption.type)}
                   onMouseLeave={() => setHoveredLayout(null)}
                   style={{
-                    order: isActive ? desktopLayouts.length + 1 : index + 1,
                     width: '32px',
                     height: '28px',
                     borderRadius: '4px',
                     flexShrink: 0,
+                    display: shouldShowButton ? 'flex' : 'none',
                   }}
-                  className={`layout-toggle-button relative items-center justify-center cursor-pointer border-none transition-all overflow-visible ${
-                    shouldShowButton ? "flex" : "hidden"
-                  } ${
+                  className={`layout-toggle-button relative items-center justify-center cursor-pointer border-none transition-all duration-200 overflow-visible ${
                     isActive
                       ? "active bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
                       : "bg-transparent hover:bg-[rgba(0,0,0,0.05)]"
@@ -764,71 +763,63 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
           </div>
         )}
 
-        {/* Mobile Establishment Drawer */}
-        {isEstablishmentDrawerOpen && (
-          <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-white rounded-t-[20px] z-[1001] shadow-[0_-8px_18px_rgba(0,0,0,0.12)] overflow-hidden flex flex-col">
-            <div className="p-4 border-b border-[rgba(0,0,0,0.08)] flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-[#1B1B1B]">Select School Type</h2>
-              <button
-                onClick={() => setIsEstablishmentDrawerOpen(false)}
-                className="w-9 h-9 rounded-full flex items-center justify-center text-[#5F5F5F] hover:bg-[rgba(0,0,0,0.05)]"
+        {/* Mobile Establishment Drawer - VAUL for scroll lock + full width */}
+        <MobileDrawer
+          isOpen={isEstablishmentDrawerOpen}
+          onClose={() => setIsEstablishmentDrawerOpen(false)}
+          title="Select School Type"
+          showPullIndicator={true}
+        >
+          <div className="p-4 space-y-2">
+            {establishmentTypes.map((type) => (
+              <div
+                key={type}
+                onClick={() => handleEstablishmentSelect(type)}
+                className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                  dropdownValue === type
+                    ? "bg-[rgba(0,147,176,0.1)] border border-[rgba(0,147,176,0.3)]"
+                    : "hover:bg-[#f5f5f7] border border-transparent"
+                }`}
               >
-                <svg viewBox="0 0 24 24" className="w-5 h-5">
-                  <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                </svg>
-              </button>
-            </div>
-            <div className="p-4 space-y-2 flex-1 overflow-y-auto">
-              {establishmentTypes.map((type) => (
                 <div
-                  key={type}
-                  onClick={() => handleEstablishmentSelect(type)}
-                  className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
-                    dropdownValue === type
-                      ? "bg-[rgba(0,147,176,0.1)] border border-[rgba(0,147,176,0.3)]"
-                      : "hover:bg-[#f5f5f7] border border-transparent"
+                  className={`w-9 h-9 flex items-center justify-center rounded-lg ${
+                    dropdownValue === type ? "bg-[#E1F6FB]" : "bg-[#F3F4F6]"
                   }`}
                 >
+                  {getEstablishmentIcon(type)}
+                </div>
+                <div className="flex-1">
                   <div
-                    className={`w-9 h-9 flex items-center justify-center rounded-lg ${
-                      dropdownValue === type ? "bg-[#E1F6FB]" : "bg-[#F3F4F6]"
+                    className={`font-medium ${
+                      dropdownValue === type ? "text-[#016853]" : "text-[#1B1B1B]"
                     }`}
                   >
-                    {getEstablishmentIcon(type)}
+                    {type}
                   </div>
-                  <div className="flex-1">
-                    <div
-                      className={`font-medium ${
-                        dropdownValue === type ? "text-[#016853]" : "text-[#1B1B1B]"
-                      }`}
-                    >
-                      {type}
-                    </div>
-                    <div className="text-sm text-[#5F5F5F]">
-                      {type === "K-12" && "2,583 schools"}
-                      {type === "Colleges" && "1,870 colleges"}
-                      {type === "Graduates" && "642 programs"}
-                      {type === "District" && "1,234 districts"}
-                    </div>
+                  <div className="text-sm text-[#5F5F5F]">
+                    {type === "K-12" && "2,583 schools"}
+                    {type === "Colleges" && "1,870 colleges"}
+                    {type === "Graduates" && "642 programs"}
+                    {type === "District" && "1,234 districts"}
                   </div>
-                  {dropdownValue === type && (
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-5 h-5 text-[#0093B0]"
-                    >
-                      <path d="M20 6L9 17l-5-5" />
-                    </svg>
-                  )}
                 </div>
-              ))}
-            </div>
+                {dropdownValue === type && (
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-5 h-5 text-[#0093B0]"
+                  >
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                )}
+              </div>
+            ))}
           </div>
-        )}
+        </MobileDrawer>
 
         {/* Mobile Filter Drawer */}
         {isFilterDrawerOpen && (
@@ -950,64 +941,56 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
           </div>
         )}
 
-        {/* Mobile Map Drawer */}
-        {isMapDrawerOpen && (
-          <div className="fixed inset-x-0 bottom-0 h-[85vh] max-w-[420px] mx-auto bg-white rounded-t-[20px] z-[1001] flex flex-col shadow-[0_-8px_18px_rgba(0,0,0,0.12)]">
-            <div className="p-4 border-b border-[rgba(0,0,0,0.08)] flex justify-between items-center flex-shrink-0">
-              <h2 className="text-lg font-semibold text-[#1B1B1B]">Map</h2>
-              <button
-                onClick={() => {
-                  setIsMapDrawerOpen(false);
-                  setIsMapActive(false);
-                }}
-                className="w-9 h-9 rounded-full flex items-center justify-center text-[#5F5F5F] hover:bg-[rgba(0,0,0,0.05)]"
-              >
-                <svg viewBox="0 0 24 24" className="w-5 h-5">
-                  <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        {/* Mobile Map Drawer - VAUL for scroll lock + full width */}
+        <MobileDrawer
+          isOpen={isMapDrawerOpen}
+          onClose={() => {
+            setIsMapDrawerOpen(false);
+            setIsMapActive(false);
+          }}
+          title="Map"
+          showPullIndicator={true}
+        >
+          <div className="flex-1 min-h-0 relative bg-[#f5f5f7]">
+            <div
+              id="map"
+              className="w-full h-full"
+              style={{ backgroundColor: "#f5f5f7" }}
+            >
+              <div className="w-full h-full flex items-center justify-center text-[#5F5F5F]">
+                <div className="text-center">
+                  <svg
+                    fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    className="w-16 h-16 mx-auto mb-4 opacity-50"
+                  >
+                    <path d="M17.3 8.64003L21.54 10.86L21.55 10.85C21.83 11 22.01 11.28 22.01 11.6V21.13C22.01 21.43 21.86 21.7 21.61 21.86C21.47 21.94 21.32 21.99 21.16 21.99C21.02 21.99 20.9 21.96 20.78 21.9L14.79 18.89L9.64001 21.84C9.62001 21.85 9.54001 21.88 9.51001 21.88C9.46001 21.91 9.37001 21.95 9.28001 21.95H9.21001C9.06001 21.95 8.93001 21.92 8.81001 21.86L2.48001 18.69C2.20001 18.54 2.01001 18.25 2.01001 17.92V8.39003C2.01001 8.10003 2.17001 7.82003 2.42001 7.66003C2.67001 7.51003 3.00001 7.50003 3.26001 7.64003L6.83001 9.50003C6.78001 9.33003 6.74001 9.18003 6.71001 9.03003C6.28001 6.83003 6.82001 4.80003 8.21001 3.45003C10.24 1.48003 13.64 1.51003 15.64 3.51003C16.62 4.48003 17.22 5.83003 17.34 7.30003C17.38 7.72003 17.36 8.17003 17.3 8.64003ZM20.29 19.77V12.14L16.85 10.33C16.62 10.88 16.34 11.4 16 11.87L15.6 12.43V17.41L20.29 19.77ZM3.71001 17.41L8.33001 19.73V12.43L8.10001 12.11L3.71001 9.82003V17.41ZM10.04 19.66L13.89 17.44V14.77L12.84 16.21C12.44 16.78 11.48 16.78 11.07 16.21L10.04 14.78V19.66ZM11.96 14.54L14.62 10.87H14.63C15.37 9.83003 15.74 8.59003 15.64 7.45003C15.55 6.38003 15.1 5.38003 14.44 4.73003C13.78 4.08003 12.86 3.70003 11.9 3.70003C10.94 3.70003 10.04 4.06003 9.39001 4.70003C8.65001 5.41003 8.26001 6.44003 8.26001 7.60003C8.26001 7.96003 8.30001 8.34003 8.38001 8.72003C8.53001 9.53003 8.88001 10.31 9.47001 11.11L11.96 14.54Z"></path>
+                  </svg>
+                  <p className="text-sm">Map View</p>
+                  <p className="text-xs opacity-75">Interactive map coming soon</p>
+                </div>
+              </div>
+            </div>
+            <div className="absolute top-4 right-4 flex flex-col gap-2">
+              <button className="w-10 h-10 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg flex items-center justify-center shadow-sm hover:bg-[#f5f5f7] transition-colors">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-[#4A4A4A]">
+                  <path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" fill="currentColor"/>
+                </svg>
+              </button>
+              <button className="w-10 h-10 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg flex items-center justify-center shadow-sm hover:bg-[#f5f5f7] transition-colors">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-[#4A4A4A]">
+                  <path d="M5 12a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z" fill="currentColor"/>
+                </svg>
+              </button>
+              <button className="w-10 h-10 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg flex items-center justify-center shadow-sm hover:bg-[#f5f5f7] transition-colors">
+                <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5 text-[#4A4A4A]">
+                  <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7 c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z"></path><path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3 c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8 C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1 c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1 C18.6,5.5,19.8,8.4,19.2,11.2z"></path>
                 </svg>
               </button>
             </div>
-            <div className="flex-1 relative bg-[#f5f5f7]">
-              <div
-                id="map"
-                className="w-full h-full"
-                style={{ backgroundColor: "#f5f5f7" }}
-              >
-                <div className="w-full h-full flex items-center justify-center text-[#5F5F5F]">
-                  <div className="text-center">
-                    <svg
-                      fill="currentColor"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      className="w-16 h-16 mx-auto mb-4 opacity-50"
-                    >
-                      <path d="M17.3 8.64003L21.54 10.86L21.55 10.85C21.83 11 22.01 11.28 22.01 11.6V21.13C22.01 21.43 21.86 21.7 21.61 21.86C21.47 21.94 21.32 21.99 21.16 21.99C21.02 21.99 20.9 21.96 20.78 21.9L14.79 18.89L9.64001 21.84C9.62001 21.85 9.54001 21.88 9.51001 21.88C9.46001 21.91 9.37001 21.95 9.28001 21.95H9.21001C9.06001 21.95 8.93001 21.92 8.81001 21.86L2.48001 18.69C2.20001 18.54 2.01001 18.25 2.01001 17.92V8.39003C2.01001 8.10003 2.17001 7.82003 2.42001 7.66003C2.67001 7.51003 3.00001 7.50003 3.26001 7.64003L6.83001 9.50003C6.78001 9.33003 6.74001 9.18003 6.71001 9.03003C6.28001 6.83003 6.82001 4.80003 8.21001 3.45003C10.24 1.48003 13.64 1.51003 15.64 3.51003C16.62 4.48003 17.22 5.83003 17.34 7.30003C17.38 7.72003 17.36 8.17003 17.3 8.64003ZM20.29 19.77V12.14L16.85 10.33C16.62 10.88 16.34 11.4 16 11.87L15.6 12.43V17.41L20.29 19.77ZM3.71001 17.41L8.33001 19.73V12.43L8.10001 12.11L3.71001 9.82003V17.41ZM10.04 19.66L13.89 17.44V14.77L12.84 16.21C12.44 16.78 11.48 16.78 11.07 16.21L10.04 14.78V19.66ZM11.96 14.54L14.62 10.87H14.63C15.37 9.83003 15.74 8.59003 15.64 7.45003C15.55 6.38003 15.1 5.38003 14.44 4.73003C13.78 4.08003 12.86 3.70003 11.9 3.70003C10.94 3.70003 10.04 4.06003 9.39001 4.70003C8.65001 5.41003 8.26001 6.44003 8.26001 7.60003C8.26001 7.96003 8.30001 8.34003 8.38001 8.72003C8.53001 9.53003 8.88001 10.31 9.47001 11.11L11.96 14.54Z"></path>
-                    </svg>
-                    <p className="text-sm">Map View</p>
-                    <p className="text-xs opacity-75">Interactive map coming soon</p>
-                  </div>
-                </div>
-              </div>
-              <div className="absolute top-4 right-4 flex flex-col gap-2">
-                <button className="w-10 h-10 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg flex items-center justify-center shadow-sm hover:bg-[#f5f5f7] transition-colors">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-[#4A4A4A]">
-                    <path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" fill="currentColor"/>
-                  </svg>
-                </button>
-                <button className="w-10 h-10 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg flex items-center justify-center shadow-sm hover:bg-[#f5f5f7] transition-colors">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-[#4A4A4A]">
-                    <path d="M5 12a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z" fill="currentColor"/>
-                  </svg>
-                </button>
-                <button className="w-10 h-10 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg flex items-center justify-center shadow-sm hover:bg-[#f5f5f7] transition-colors">
-                  <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5 text-[#4A4A4A]">
-                    <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7 c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z"></path><path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3 c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8 C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1 c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1 C18.6,5.5,19.8,8.4,19.2,11.2z"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
           </div>
-        )}
+        </MobileDrawer>
       </div>
     </>
   );
