@@ -1,4 +1,5 @@
 import { Announcement } from "./types/announcement";
+import { getAnnouncementStatus } from "./utils/status";
 
 interface AnnouncementItemProps {
   announcement: Announcement;
@@ -66,25 +67,30 @@ export default function AnnouncementItem({
   onTogglePin,
   onEdit,
 }: AnnouncementItemProps) {
+  const displayStatus = getAnnouncementStatus(
+    announcement.startDate,
+    announcement.endDate
+  );
+
   const statusClass =
-    announcement.status === "live"
+    displayStatus === "live"
       ? "status-live"
-      : announcement.status === "scheduled"
+      : displayStatus === "scheduled"
         ? "status-scheduled"
         : "status-paused";
 
   const statusText =
-    announcement.status === "live"
+    displayStatus === "live"
       ? "Live"
-      : announcement.status === "scheduled"
+      : displayStatus === "scheduled"
         ? "Scheduled"
-        : "Paused";
+        : "Ended";
 
   return (
     <div className={`announcement-item ${announcement.pinned ? "pinned" : ""}`}>
       {/* Mobile: status badge (absolute positioned) */}
       <div className={`status-badge ${statusClass}`}>
-        {announcement.status === "live" && <span className="status-dot" />}
+        {displayStatus === "live" && <span className="status-dot" />}
         {statusText}
       </div>
 
@@ -105,7 +111,7 @@ export default function AnnouncementItem({
             <span className="author-name">{announcement.author.name}</span>
             <div className="author-meta">
               <span className="author-role">{announcement.author.role}</span>
-              {announcement.status === "scheduled" ? (
+              {displayStatus === "scheduled" ? (
                 <>
                   <span className="date-delimiter">•</span>
                   <span className="scheduled-date">
@@ -119,7 +125,7 @@ export default function AnnouncementItem({
           {/* Desktop only: inline actions */}
           <div className="announcement-actions">
             <span className={`status-indicator ${statusClass}`}>
-              <span className="status-dot" />
+              {displayStatus === "live" && <span className="status-dot" />}
               {statusText}
             </span>
             <button

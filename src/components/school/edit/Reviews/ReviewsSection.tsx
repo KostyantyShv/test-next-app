@@ -51,7 +51,7 @@ export default function ReviewsSection() {
           </div>
 
           {/* Mobile Header (HTML-match styling via globals.css) */}
-          <div className="reviews-mobile-header hidden max-md:block px-4">
+          <div className="reviews-mobile-header hidden max-md:block px-3">
             <h1>Reviews</h1>
             <p>
               Manage student feedback and respond to reviews. Keep track of

@@ -175,45 +175,47 @@ export default function BulletPoints() {
 
             <div className="mb-4 flex flex-1 flex-col gap-3">
               {bullets.map((bullet, index) => (
-                <div key={bullet.id} className={`relative ${bullet.error ? "error" : ""}`}>
-                  <input
-                    type="text"
-                    className={`w-full rounded-lg border bg-white px-3 py-3 pr-10 text-sm text-[var(--text-color)] transition-all duration-200 placeholder:text-[var(--placeholder-color)] focus:outline-none ${
-                      bullet.error ? "border-[var(--error-color)]" : "border-[var(--border-color)]"
-                    }`}
-                    placeholder={`Bullet Point ${index + 1}`}
-                    value={bullet.text}
-                    onChange={(e) => validateBullet(bullet.id, e.target.value)}
-                    onBlur={(e) => validateBullet(bullet.id, e.target.value)}
-                    onFocus={(e) => {
-                      if (bullet.error) return;
-                      e.currentTarget.style.borderColor = "var(--verification-blue)";
-                      e.currentTarget.style.boxShadow = "0 0 0 3px rgba(29, 119, 189, 0.1)";
-                    }}
-                    onBlurCapture={(e) => {
-                      if (bullet.error) {
+                <div key={bullet.id} className={bullet.error ? "error" : ""}>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      className={`w-full rounded-lg border bg-white px-3 py-3 pr-10 text-sm text-[var(--text-color)] transition-all duration-200 placeholder:text-[var(--placeholder-color)] focus:outline-none ${
+                        bullet.error ? "border-[var(--error-color)]" : "border-[var(--border-color)]"
+                      }`}
+                      placeholder={`Bullet Point ${index + 1}`}
+                      value={bullet.text}
+                      onChange={(e) => validateBullet(bullet.id, e.target.value)}
+                      onBlur={(e) => validateBullet(bullet.id, e.target.value)}
+                      onFocus={(e) => {
+                        if (bullet.error) return;
+                        e.currentTarget.style.borderColor = "var(--verification-blue)";
+                        e.currentTarget.style.boxShadow = "0 0 0 3px rgba(29, 119, 189, 0.1)";
+                      }}
+                      onBlurCapture={(e) => {
+                        if (bullet.error) {
+                          e.currentTarget.style.boxShadow = "none";
+                          return;
+                        }
+                        e.currentTarget.style.borderColor = "var(--border-color)";
                         e.currentTarget.style.boxShadow = "none";
-                        return;
-                      }
-                      e.currentTarget.style.borderColor = "var(--border-color)";
-                      e.currentTarget.style.boxShadow = "none";
-                    }}
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center justify-center border-none bg-transparent p-1 text-[var(--error-color)] opacity-60 transition-opacity duration-200 hover:opacity-100"
-                    onClick={() => deleteBullet(bullet.id)}
-                    aria-label="Delete bullet"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="h-4 w-4">
-                      <path
-                        fill="currentColor"
-                        d="M5.63603 5.63604C6.02656 5.24552 6.65972 5.24552 7.05025 5.63604L12 10.5858L16.9497 5.63604C17.3403 5.24552 17.9734 5.24552 18.364 5.63604C18.7545 6.02657 18.7545 6.65973 18.364 7.05025L13.4142 12L18.364 16.9497C18.7545 17.3403 18.7545 17.9734 18.364 18.364C17.9734 18.7545 17.3403 18.7545 16.9497 18.364L12 13.4142L7.05025 18.364C6.65972 18.7545 6.02656 18.7545 5.63603 18.364C5.24551 17.9734 5.24551 17.3403 5.63603 16.9497L10.5858 12L5.63603 7.05025C5.24551 6.65973 5.24551 6.02657 5.63603 5.63604Z"
-                        clipRule="evenodd"
-                        fillRule="evenodd"
-                      ></path>
-                    </svg>
-                  </button>
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center justify-center border-none bg-transparent p-1 text-[var(--error-color)] opacity-60 transition-opacity duration-200 hover:opacity-100"
+                      onClick={() => deleteBullet(bullet.id)}
+                      aria-label="Delete bullet"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="h-4 w-4">
+                        <path
+                          fill="currentColor"
+                          d="M5.63603 5.63604C6.02656 5.24552 6.65972 5.24552 7.05025 5.63604L12 10.5858L16.9497 5.63604C17.3403 5.24552 17.9734 5.24552 18.364 5.63604C18.7545 6.02657 18.7545 6.65973 18.364 7.05025L13.4142 12L18.364 16.9497C18.7545 17.3403 18.7545 17.9734 18.364 18.364C17.9734 18.7545 17.3403 18.7545 16.9497 18.364L12 13.4142L7.05025 18.364C6.65972 18.7545 6.02656 18.7545 5.63603 18.364C5.24551 17.9734 5.24551 17.3403 5.63603 16.9497L10.5858 12L5.63603 7.05025C5.24551 6.65973 5.24551 6.02657 5.63603 5.63604Z"
+                          clipRule="evenodd"
+                          fillRule="evenodd"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
                   {bullet.error && (
                     <div className="mt-1 text-xs text-[var(--error-color)]">This field is required</div>
                   )}
@@ -227,7 +229,13 @@ export default function BulletPoints() {
               className="inline-flex w-full items-center justify-center gap-2 rounded-md border-none px-4 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-[#2D2D2D]"
               style={{ backgroundColor: "#1B1B1B" }}
             >
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 20 20"
+            fill="none"
+            className="text-[var(--error-color)]"
+          >
                 <path d="M10 4V16M4 10H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               </svg>
               Add more to your response

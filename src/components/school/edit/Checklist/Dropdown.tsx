@@ -56,10 +56,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
   );
 
   const getButtonLabel = () => {
-    if (expandMode === "all") return "Collapse All";
-    if (expandMode === "incomplete") return "Collapse Incomplete";
-    if (expandMode === "issues") return "Collapse Issues";
-    if (expandMode === "completed") return "Collapse Completed";
+    if (expandMode === "all") return "Expand All";
+    if (expandMode === "incomplete") return "Expand Incomplete";
+    if (expandMode === "issues") return "Expand Issues";
+    if (expandMode === "completed") return "Expand Completed";
     return "Expand";
   };
 

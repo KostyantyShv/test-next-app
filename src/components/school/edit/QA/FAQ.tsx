@@ -1,7 +1,11 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { DndContext, TouchSensor, MouseSensor, useSensor, useSensors, closestCenter, DragEndEvent } from "@dnd-kit/core";
+import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 import QuestionList from "./QuestionList";
 import { Question } from "./types/question";
 import QAModal from "./QAModal";
@@ -38,10 +42,24 @@ export default function FAQ() {
   const [mobileQuestionTitle, setMobileQuestionTitle] = useState("");
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
-  const [draggedQuestionId, setDraggedQuestionId] = useState<number | null>(null);
 
   const answerEditorRef = useRef<HTMLDivElement>(null);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // dnd-kit sensors: touch requires a 200ms press-and-hold before activation
+  // to avoid accidental drags while scrolling on mobile.
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 200,
+      tolerance: 5,
+    },
+  });
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: {
+      distance: 5,
+    },
+  });
+  const sensors = useSensors(touchSensor, mouseSensor);
 
   useEffect(() => {
     return () => {
@@ -200,24 +218,132 @@ export default function FAQ() {
 
     document.execCommand(command, false);
   };
+  const handleMobileDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
 
-  const reorderMobileQuestions = (dragId: number, targetId: number) => {
-    if (dragId === targetId) return;
     setQuestions((prev) => {
-      const dragIndex = prev.findIndex((q) => q.id === dragId);
-      const targetIndex = prev.findIndex((q) => q.id === targetId);
-      if (dragIndex === -1 || targetIndex === -1) return prev;
-
-      const next = [...prev];
-      const [dragged] = next.splice(dragIndex, 1);
-      next.splice(targetIndex, 0, dragged);
-      return next;
+      const oldIndex = prev.findIndex((q) => q.id === active.id);
+      const newIndex = prev.findIndex((q) => q.id === over.id);
+      if (oldIndex === -1 || newIndex === -1) return prev;
+      return arrayMove(prev, oldIndex, newIndex);
     });
+    showMobileToast("Question order updated");
   };
 
   const mobileEditingQuestion = mobileEditingQuestionId
     ? questions.find((q) => q.id === mobileEditingQuestionId) || null
     : null;
+
+  const mobileQuestionIds = questions.map((q) => q.id);
+
+  type MobileRowProps = {
+    question: Question;
+    onTogglePin: (id: number) => void;
+    onEdit: (id: number) => void;
+  };
+
+  const MobileDraggableQuestionRow: React.FC<MobileRowProps> = ({
+    question,
+    onTogglePin,
+    onEdit,
+  }) => {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id: question.id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      zIndex: isDragging ? 5 : 0,
+    };
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={`mb-3 flex items-center rounded-lg p-4 ${
+          question.pinned
+            ? "border border-[#D7F7E9] bg-[#EBFCF4]"
+            : "bg-[#F8F9FA]"
+        } ${isDragging ? "shadow-[0_8px_20px_rgba(0,0,0,0.18)]" : ""}`}
+      >
+        <button
+          type="button"
+          className="mr-3 flex cursor-grab flex-col justify-center"
+          style={{ touchAction: "none" }}
+          aria-label="Reorder question"
+          {...attributes}
+          {...listeners}
+        >
+          <span className="grid h-[14px] w-[14px] grid-cols-2 grid-rows-3 gap-[2px]">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <span
+                key={`${question.id}-dot-${index}`}
+                className="h-[3px] w-[3px] rounded-full bg-[#5F5F5F]"
+              />
+            ))}
+          </span>
+        </button>
+
+        <div className="flex-1 text-sm font-semibold text-[#1B1B1B]">
+          {question.title}
+        </div>
+
+        <div className="ml-auto flex gap-2">
+          <button
+            type="button"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] bg-white"
+            onClick={() => onTogglePin(question.id)}
+          >
+            <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 text-[#5F5F5F]">
+              <path
+                d="M12.5007 3.75L9.16732 7.08333L5.83398 8.33333L4.58398 9.58333L10.4173 15.4167L11.6673 14.1667L12.9173 10.8333L16.2507 7.5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+              <path
+                d="M7.5 12.5L3.75 16.25"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+              <path
+                d="M12.084 3.33398L16.6673 7.91732"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] bg-white"
+            onClick={() => onEdit(question.id)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="h-4 w-4 text-[#5F5F5F]">
+              <path
+                fill="currentColor"
+                d="M13.2929 4.29291C15.0641 2.52167 17.9359 2.52167 19.7071 4.2929C21.4784 6.06414 21.4784 8.93588 19.7071 10.7071L18.7073 11.7069L11.6135 18.8007C10.8766 19.5376 9.92793 20.0258 8.89999 20.1971L4.16441 20.9864C3.84585 21.0395 3.52127 20.9355 3.29291 20.7071C3.06454 20.4788 2.96053 20.1542 3.01362 19.8356L3.80288 15.1C3.9742 14.0721 4.46243 13.1234 5.19932 12.3865L13.2929 4.29291ZM13 7.41422L6.61353 13.8007C6.1714 14.2428 5.87846 14.8121 5.77567 15.4288L5.21656 18.7835L8.57119 18.2244C9.18795 18.1216 9.75719 17.8286 10.1993 17.3865L16.5858 11L13 7.41422ZM18 9.5858L14.4142 6.00001L14.7071 5.70712C15.6973 4.71693 17.3027 4.71693 18.2929 5.70712C19.2831 6.69731 19.2831 8.30272 18.2929 9.29291L18 9.5858Z"
+                clipRule="evenodd"
+                fillRule="evenodd"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -248,7 +374,7 @@ export default function FAQ() {
             '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
         }}
       >
-        <div className="p-4">
+        <div className="px-3 py-4">
           <div className="mb-4">
             <h1 className="mb-2 text-2xl font-semibold text-[#1A1A1A]">FAQ</h1>
             <p className="text-sm text-[#5F5F5F]">
@@ -261,96 +387,24 @@ export default function FAQ() {
             className="flex flex-col rounded-lg bg-white p-4"
             style={{ boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}
           >
-            <div className="mb-4 flex-1">
-              {questions.map((question) => (
-                <div
-                  key={question.id}
-                  className={`mb-3 flex items-center rounded-lg p-4 ${
-                    question.pinned
-                      ? "border border-[#D7F7E9] bg-[#EBFCF4]"
-                      : "bg-[#F8F9FA]"
-                  } ${draggedQuestionId === question.id ? "opacity-50" : ""}`}
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    if (!draggedQuestionId) return;
-                    reorderMobileQuestions(draggedQuestionId, question.id);
-                  }}
-                >
-                  <button
-                    type="button"
-                    draggable
-                    onDragStart={() => setDraggedQuestionId(question.id)}
-                    onDragEnd={() => {
-                      setDraggedQuestionId(null);
-                      showMobileToast("Question order updated");
-                    }}
-                    className="mr-3 flex cursor-grab flex-col justify-center"
-                    style={{ touchAction: "none" }}
-                    aria-label="Reorder question"
-                  >
-                    <span className="grid h-[14px] w-[14px] grid-cols-2 grid-rows-3 gap-[2px]">
-                      {Array.from({ length: 6 }).map((_, index) => (
-                        <span
-                          key={`${question.id}-dot-${index}`}
-                          className="h-[3px] w-[3px] rounded-full bg-[#5F5F5F]"
-                        />
-                      ))}
-                    </span>
-                  </button>
-
-                  <div className="flex-1 text-sm font-semibold text-[#1B1B1B]">
-                    {question.title}
-                  </div>
-
-                  <div className="ml-auto flex gap-2">
-                    <button
-                      type="button"
-                      className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] bg-white"
-                      onClick={() => handleTogglePin(question.id)}
-                    >
-                      <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 text-[#5F5F5F]">
-                        <path
-                          d="M12.5007 3.75L9.16732 7.08333L5.83398 8.33333L4.58398 9.58333L10.4173 15.4167L11.6673 14.1667L12.9173 10.8333L16.2507 7.5"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        ></path>
-                        <path
-                          d="M7.5 12.5L3.75 16.25"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        ></path>
-                        <path
-                          d="M12.084 3.33398L16.6673 7.91732"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        ></path>
-                      </svg>
-                    </button>
-
-                    <button
-                      type="button"
-                      className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] bg-white"
-                      onClick={() => openMobileDrawerForEdit(question.id)}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="h-4 w-4 text-[#5F5F5F]">
-                        <path
-                          fill="currentColor"
-                          d="M13.2929 4.29291C15.0641 2.52167 17.9359 2.52167 19.7071 4.2929C21.4784 6.06414 21.4784 8.93588 19.7071 10.7071L18.7073 11.7069L11.6135 18.8007C10.8766 19.5376 9.92793 20.0258 8.89999 20.1971L4.16441 20.9864C3.84585 21.0395 3.52127 20.9355 3.29291 20.7071C3.06454 20.4788 2.96053 20.1542 3.01362 19.8356L3.80288 15.1C3.9742 14.0721 4.46243 13.1234 5.19932 12.3865L13.2929 4.29291ZM13 7.41422L6.61353 13.8007C6.1714 14.2428 5.87846 14.8121 5.77567 15.4288L5.21656 18.7835L8.57119 18.2244C9.18795 18.1216 9.75719 17.8286 10.1993 17.3865L16.5858 11L13 7.41422ZM18 9.5858L14.4142 6.00001L14.7071 5.70712C15.6973 4.71693 17.3027 4.71693 18.2929 5.70712C19.2831 6.69731 19.2831 8.30272 18.2929 9.29291L18 9.5858Z"
-                          clipRule="evenodd"
-                          fillRule="evenodd"
-                        ></path>
-                      </svg>
-                    </button>
-                  </div>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleMobileDragEnd}
+            >
+              <SortableContext items={mobileQuestionIds} strategy={verticalListSortingStrategy}>
+                <div className="mb-4 flex-1">
+                  {questions.map((question) => (
+                    <MobileDraggableQuestionRow
+                      key={question.id}
+                      question={question}
+                      onTogglePin={handleTogglePin}
+                      onEdit={openMobileDrawerForEdit}
+                    />
+                  ))}
                 </div>
-              ))}
-            </div>
+              </SortableContext>
+            </DndContext>
 
             <button
               type="button"
@@ -372,19 +426,14 @@ export default function FAQ() {
       </div>
 
       {isMobileDrawerOpen && (
-        <>
-          <div
-            className={`fixed inset-0 z-[1000] bg-black/50 transition-opacity duration-300 ${
-              isMobileDrawerOpen ? "visible opacity-100" : "invisible opacity-0"
-            }`}
-            onClick={closeMobileDrawer}
-          />
-          <div
-            className={`fixed bottom-0 left-1/2 z-[1001] flex max-h-[90%] w-full max-w-[358px] -translate-x-1/2 flex-col overflow-hidden rounded-t-[20px] bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.15)] transition-transform duration-300 ${
-              isMobileDrawerOpen ? "translate-y-0" : "translate-y-full"
-            }`}
-          >
-            <div className="sticky top-0 z-[1] flex items-center justify-between border-b border-[#E5E5E5] bg-white px-5 py-4">
+        <MobileDrawer
+          isOpen={isMobileDrawerOpen}
+          onClose={closeMobileDrawer}
+          title={mobileEditingQuestion ? "Edit Question" : "Create Question"}
+          showPullIndicator={true}
+        >
+          <div className="flex flex-col">
+            <div className="sticky top-0 z-[1] flex items-center justify-between border-b border-[#E5E5E5] bg-white px-5 py-4 flex-shrink-0">
               <h2 className="text-lg font-semibold text-[#464646]">
                 {mobileEditingQuestion ? "Edit Question" : "Create Question"}
               </h2>
@@ -392,6 +441,7 @@ export default function FAQ() {
                 type="button"
                 onClick={closeMobileDrawer}
                 className="flex h-8 w-8 items-center justify-center rounded-full text-[#5F5F5F]"
+                aria-label="Close"
               >
                 <svg viewBox="0 0 24 24" fill="none" className="h-[18px] w-[18px]">
                   <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2"></line>
@@ -400,8 +450,8 @@ export default function FAQ() {
               </button>
             </div>
 
-            <form onSubmit={handleSaveMobileQuestion} className="flex flex-1 flex-col overflow-hidden">
-              <div className="flex-1 overflow-y-auto px-5 py-4">
+            <form onSubmit={handleSaveMobileQuestion} className="flex flex-1 flex-col min-h-0">
+              <div className="flex-1 overflow-y-auto px-5 py-4 min-h-0">
                 <div className="mb-4">
                   <label htmlFor="mobileQuestionTitle" className="mb-2 block text-sm font-semibold text-[#4A4A4A]">
                     Question
@@ -433,7 +483,7 @@ export default function FAQ() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between border-t border-[#E5E5E5] bg-white px-5 py-4">
+              <div className="flex flex-shrink-0 items-center justify-between border-t border-[#E5E5E5] bg-white px-5 py-4">
                 <button
                   type="button"
                   onClick={handleDeleteMobileQuestion}
@@ -465,7 +515,7 @@ export default function FAQ() {
               </div>
             </form>
           </div>
-        </>
+        </MobileDrawer>
       )}
 
       <div

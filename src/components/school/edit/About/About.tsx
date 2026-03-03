@@ -212,7 +212,7 @@ const About: React.FC = () => {
         }}
       >
         <form onSubmit={handleSubmit}>
-          <div className="px-4 pt-4 pb-0">
+          <div className="px-3 pt-4 pb-0">
             <h1
               className="mb-2 text-2xl font-semibold"
               style={{ color: "#464646" }}
@@ -545,7 +545,7 @@ const About: React.FC = () => {
           </div>
 
           <div
-            className="sticky bottom-0 px-4 pb-4 pt-3"
+            className="sticky bottom-0 px-3 pb-4 pt-3"
             style={{ backgroundColor: "#E1E7EE" }}
           >
             <button
@@ -572,7 +572,7 @@ const About: React.FC = () => {
         </div>
         
         {/* Mobile Header */}
-        <div className="hidden max-md:block px-4 pt-4 pb-4">
+        <div className="hidden max-md:block px-3 pt-4 pb-4">
           <h1 className="section-title text-2xl font-semibold mb-2" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif', color: 'var(--bold-text)' }}>
             About
           </h1>
@@ -584,7 +584,7 @@ const About: React.FC = () => {
         </div>
 
         <div className="w-full bg-surface max-md:bg-transparent rounded-lg shadow-[0_1px_3px_rgba(0,_0,_0,_0.1)] max-md:shadow-none p-8 max-md:p-0 relative">
-          <form onSubmit={handleSubmit} className="max-md:flex max-md:flex-col max-md:gap-4 max-md:px-4">
+          <form onSubmit={handleSubmit} className="max-md:flex max-md:flex-col max-md:gap-4 max-md:px-3">
             {/* Profile Avatar Section */}
             <div className="editor-section mb-7 max-md:mb-4 max-md:bg-white max-md:rounded-lg max-md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:p-4">
               <h2 className="editor-section-title text-lg max-md:text-base font-semibold text-bold mb-4 max-md:mb-3 pb-2 max-md:pb-2 border-b border-apply-button">

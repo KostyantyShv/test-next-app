@@ -323,12 +323,12 @@ const LinksSection = () => {
       </div>
 
       <div className="hidden max-md:block w-full">
-        <div className="px-4 pt-4">
+        <div className="px-3 pt-4">
           <h1 className="mb-2 text-2xl font-semibold text-[#1B1B1B]">Links in Bio</h1>
           <p className="text-sm leading-[1.5] text-[#5F5F5F]">Add and manage your important links below.</p>
         </div>
 
-        <div className="mx-4 mb-4 mt-4 flex min-h-0 flex-1 flex-col rounded-xl bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
+        <div className="mx-3 mb-4 mt-4 flex min-h-0 flex-1 flex-col rounded-xl bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
           <div className="mb-4 text-xs font-medium text-[#5F5F5F]">{links.length}/{MAX_LINKS} Links</div>
 
           <div className="mb-4 flex flex-1 flex-col gap-3 overflow-y-auto">

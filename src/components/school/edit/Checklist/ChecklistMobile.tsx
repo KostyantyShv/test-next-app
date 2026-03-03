@@ -153,15 +153,18 @@ export const ChecklistMobile: React.FC<ChecklistMobileProps> = ({
   const optionsPercent = (incompleteCount / total) * 100;
   const issuesPercent = (issuesCount / total) * 100;
 
+  // Button label should reflect the currently active expand mode,
+  // not the opposite "Collapse" action. The collapse variants are
+  // only shown inside the open dropdown menu.
   const expandMenuLabel =
     expandMode === "all"
-      ? "Collapse All"
+      ? "Expand All"
       : expandMode === "incomplete"
-        ? "Collapse Incomplete"
+        ? "Expand Incomplete"
         : expandMode === "issues"
-          ? "Collapse Issues"
+          ? "Expand Issues"
           : expandMode === "completed"
-            ? "Collapse Completed"
+            ? "Expand Completed"
             : "Expand";
 
   return (

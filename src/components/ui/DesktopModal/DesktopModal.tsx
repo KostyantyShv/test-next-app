@@ -33,7 +33,7 @@ export function DesktopModal({ children, isOpen, onClose, className = "" }: Desk
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex justify-center items-center z-[2000]"
+      className="fixed inset-0 bg-black/50 flex justify-center items-center z-[6000]"
       onClick={onClose}
     >
       <div

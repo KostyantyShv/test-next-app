@@ -156,7 +156,7 @@ export default function ResponsiveHeader({
   }, []);
 
   return (
-    <header className="sticky top-0 z-10 bg-[#E1E7EE]">
+    <header className="sticky top-0 z-[200] bg-[#E1E7EE] shadow-[0_1px_0_rgba(0,0,0,0.06)]">
       {/* Mobile Header (md:hidden) — matches HTML reference */}
       <div className="md:hidden bg-white border-b border-black/10 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
         <div className="p-4 flex items-center gap-3">
@@ -184,7 +184,7 @@ export default function ResponsiveHeader({
 
         {/* Tab Navigation — matches .tab-nav in HTML */}
         <nav
-          className="overflow-x-auto whitespace-nowrap px-4 mb-2"
+          className="overflow-x-auto whitespace-nowrap px-3 mb-2"
           ref={tabNavRef}
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >

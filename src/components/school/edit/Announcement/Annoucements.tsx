@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Announcement } from "./types/announcement";
+import { getAnnouncementStatus } from "./utils/status";
 import AnnouncementItem from "./AnnouncementItem";
 import AnnouncementsModal from "./AnnouncementsModal";
 
@@ -96,11 +97,10 @@ export default function Announcements() {
       return;
     }
 
-    // Ensure status is calculated based on current date and start date
-    const now = new Date();
-    const calculatedStatus: "live" | "scheduled" | "paused" = 
-      start > now ? "scheduled" : "live";
-    
+    const calculatedStatus = getAnnouncementStatus(
+      formData.startDate,
+      formData.endDate
+    );
     const formDataWithStatus = {
       ...formData,
       status: calculatedStatus,
@@ -137,7 +137,7 @@ export default function Announcements() {
     const updateStatus = () => {
       let needsUpdate = false;
       const updated = announcements.map((a) => {
-        const newStatus = getAnnouncementStatus(a.startDate);
+        const newStatus = getAnnouncementStatus(a.startDate, a.endDate);
         if (newStatus !== a.status) {
           needsUpdate = true;
           return { ...a, status: newStatus };
@@ -152,14 +152,6 @@ export default function Announcements() {
     const interval = setInterval(updateStatus, 60000);
     return () => clearInterval(interval);
   }, [announcements]);
-
-  const getAnnouncementStatus = (
-    startDate: string
-  ): "live" | "scheduled" | "paused" => {
-    const now = new Date();
-    const start = new Date(startDate);
-    return start > now ? "scheduled" : "live";
-  };
 
   return (
     <>

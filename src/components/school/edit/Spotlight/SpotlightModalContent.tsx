@@ -418,7 +418,7 @@ export default function SpotlightModalContent({
             <button
               type="button"
               onClick={onDelete}
-              className="flex max-md:w-full max-md:justify-center items-center gap-2 max-md:gap-2 text-[#f93a37] max-md:text-[#f93a37] text-sm max-md:text-sm bg-none max-md:bg-none mb-4 max-md:mb-0 max-md:py-2"
+              className="flex items-center justify-start gap-2 text-[#f93a37] text-sm bg-none border-none cursor-pointer py-2 max-md:py-2 mb-3"
             >
               <svg width="20" height="20" fill="none" viewBox="0 0 24 24" className="max-md:w-5 max-md:h-5">
                 <path

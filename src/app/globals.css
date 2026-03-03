@@ -7080,9 +7080,8 @@ input[type="number"] {
 
   /* FAQ mobile */
   .school-edit-general .faq-container {
-    display: flex;
-    flex-direction: column;
-    padding: 16px;
+    /* Let Tailwind control visibility/layout (e.g. hidden / md:flex) */
+    padding: 16px 12px;
   }
 
   .school-edit-general .faq-left {
@@ -7790,7 +7789,7 @@ input[type="number"] {
 
   /* --- Header (matches .announcements-header in HTML) --- */
   .school-edit-announcements .announcements-left {
-    padding: 18px 16px;
+    padding: 18px 12px;
     background: transparent;
   }
 
@@ -7810,7 +7809,7 @@ input[type="number"] {
   .school-edit-announcements .announcements-right {
     background: var(--background-color);
     border-radius: 0;
-    padding: 16px;
+    padding: 16px 12px;
     box-shadow: none;
     position: static;
   }

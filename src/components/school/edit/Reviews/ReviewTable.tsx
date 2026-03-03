@@ -313,7 +313,7 @@ export default function ReviewTable({ reviews, setReviews }: ReviewTableProps) {
           }
         }}
       />
-      
+
       <ReplyDrawer
         review={activeReview}
         isOpen={isDrawerOpen}

@@ -7,6 +7,8 @@ interface ActionsDrawerProps {
   onReply: () => void;
   onView: () => void;
   onDelete: () => void;
+  /** When true, Reply to Review is hidden (overlay removed on mobile). */
+  hideReplyAction?: boolean;
 }
 
 export default function ActionsDrawer({
@@ -16,6 +18,7 @@ export default function ActionsDrawer({
   onReply,
   onView,
   onDelete,
+  hideReplyAction = false,
 }: ActionsDrawerProps) {
   if (!review) return null;
 
@@ -42,24 +45,26 @@ export default function ActionsDrawer({
         </div>
 
         <div className="actions-drawer-content">
-          <button
-            type="button"
-            className="action-item"
-            onClick={() => {
-              onReply();
-              onClose();
-            }}
-          >
-            <svg viewBox="0 0 24 24" height="20" width="20" fill="currentColor">
-              <path fill="none" d="M0 0h24v24H0z" />
-              <path
-                fillRule="nonzero"
-                fill="currentColor"
-                d="M19 1a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-1.263v4l-5.39-4H5a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h14zm0 1.5H5a.5.5 0 0 0-.5.5v14a.5.5 0 0 0 .5.5h14a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM16.25 12a.75.75 0 1 1 0 1.5h-8.5a.75.75 0 1 1 0-1.5h8.5zm0-3a.75.75 0 1 1 0 1.5h-8.5a.75.75 0 1 1 0-1.5h8.5zm0-3a.75.75 0 1 1 0 1.5h-8.5a.75.75 0 1 1 0-1.5h8.5z"
-              />
-            </svg>
-            <span className="action-item-text">Reply to Review</span>
-          </button>
+          {!hideReplyAction && (
+            <button
+              type="button"
+              className="action-item"
+              onClick={() => {
+                onReply();
+                onClose();
+              }}
+            >
+              <svg viewBox="0 0 24 24" height="20" width="20" fill="currentColor">
+                <path fill="none" d="M0 0h24v24H0z" />
+                <path
+                  fillRule="nonzero"
+                  fill="currentColor"
+                  d="M19 1a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-1.263v4l-5.39-4H5a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h14zm0 1.5H5a.5.5 0 0 0-.5.5v14a.5.5 0 0 0 .5.5h14a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM16.25 12a.75.75 0 1 1 0 1.5h-8.5a.75.75 0 1 1 0-1.5h8.5zm0-3a.75.75 0 1 1 0 1.5h-8.5a.75.75 0 1 1 0-1.5h8.5zm0-3a.75.75 0 1 1 0 1.5h-8.5a.75.75 0 1 1 0-1.5h8.5z"
+                />
+              </svg>
+              <span className="action-item-text">Reply to Review</span>
+            </button>
+          )}
 
           <button
             type="button"

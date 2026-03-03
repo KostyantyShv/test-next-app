@@ -18,19 +18,23 @@ export default function SpotlightRight({
 }: SpotlightRightProps) {
   return (
     <div className="w-full bg-white max-md:bg-transparent rounded-lg max-md:rounded-none p-6 max-md:p-0 shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:shadow-none relative">
-      <div className="absolute top-6 right-6 max-md:top-4 max-md:right-4 text-sm max-md:text-[13px] font-semibold text-[#4A4A4A] bg-[#F8F9FA] max-md:bg-[#F8F9FA] rounded-full px-3 max-md:px-3 py-1 max-md:py-[6px]">
-        {spotlights.length}/{maxSpotlights}
-      </div>
       <div className="mt-6 max-md:mt-0 pt-2 max-md:pt-0">
-        <div className="max-md:px-4 max-md:pb-4">
+        <div className="max-md:px-3 max-md:pb-4">
           <div className="bg-white max-md:bg-white rounded-lg max-md:rounded-lg p-4 max-md:p-4 shadow-[0_1px_3px_rgba(0,0,0,0.1)] max-md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative max-md:mb-4">
-            <div className="max-md:pt-2.5">
+            <div
+              className="absolute top-4 right-4 max-md:top-4 max-md:right-4 text-[13px] font-semibold text-[#4A4A4A] bg-[#F8F9FA] rounded-[16px] pt-1 px-3 pb-1.5"
+            >
+              {spotlights.length}/{maxSpotlights}
+            </div>
+            <div className="pt-10 max-md:pt-10">
               {spotlights.map((spotlight) => (
                 <SpotlightItem
                   key={spotlight.id}
                   spotlight={spotlight}
                   onEdit={() => onEditSpotlight(spotlight.id)}
                   onTogglePin={() => onTogglePin(spotlight.id)}
+                  count={spotlights.length}
+                  maxCount={maxSpotlights}
                 />
               ))}
             </div>

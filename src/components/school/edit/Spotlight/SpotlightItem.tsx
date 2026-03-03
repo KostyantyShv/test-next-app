@@ -4,6 +4,9 @@ interface SpotlightItemProps {
   spotlight: Spotlight;
   onEdit: () => void;
   onTogglePin: () => void;
+  /** Passed from parent for compatibility; count is shown in the list header, not on the card */
+  count?: number;
+  maxCount?: number;
 }
 
 export default function SpotlightItem({
