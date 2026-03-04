@@ -29,6 +29,7 @@ const EXPLORE_COLLECTIONS_ROUTES = [
 
 // Edit listing page uses its own minimal header on mobile (no main app header)
 const EDIT_LISTING_ROUTES = ["/schools/edit"];
+const MOBILE_DRAWER_VISIBILITY_EVENT = "mobile-drawer-visibility-change";
 
 export const RootLayoutClient = ({
   children,
@@ -118,9 +119,13 @@ export const RootLayoutClient = ({
           "#mobile-modal-root .fixed.opacity-100:not(.pointer-events-none)"
         )
       );
+      const isBodyScrollLocked = document.body.style.position === "fixed";
 
       setIsListingMobileOverlayOpen(
-        hasOpenMobileDrawer || hasOpenVaulDrawer || hasOpenLegacyMobileModal
+        hasOpenMobileDrawer ||
+          hasOpenVaulDrawer ||
+          hasOpenLegacyMobileModal ||
+          isBodyScrollLocked
       );
     };
 
@@ -141,10 +146,15 @@ export const RootLayoutClient = ({
     });
 
     window.addEventListener("resize", detectOpenOverlay);
+    window.addEventListener(MOBILE_DRAWER_VISIBILITY_EVENT, detectOpenOverlay);
 
     return () => {
       observer.disconnect();
       window.removeEventListener("resize", detectOpenOverlay);
+      window.removeEventListener(
+        MOBILE_DRAWER_VISIBILITY_EVENT,
+        detectOpenOverlay
+      );
     };
   }, [isMobile, pathname]);
 

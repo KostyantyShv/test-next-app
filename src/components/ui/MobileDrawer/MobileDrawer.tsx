@@ -13,6 +13,8 @@ interface MobileDrawerProps {
   showPullIndicator?: boolean;
 }
 
+const MOBILE_DRAWER_VISIBILITY_EVENT = "mobile-drawer-visibility-change";
+
 export function MobileDrawer({
   children,
   isOpen,
@@ -39,6 +41,7 @@ export function MobileDrawer({
 
     body.dataset.mobileDrawerOpenCount = String(nextCount);
     body.dataset.mobileDrawerOpen = "true";
+    window.dispatchEvent(new Event(MOBILE_DRAWER_VISIBILITY_EVENT));
 
     // First drawer opening: lock background with position:fixed and save scroll (reliable on iOS)
     let scrollY = 0;
@@ -68,11 +71,24 @@ export function MobileDrawer({
         body.style.removeProperty("width");
         if (savedScrollY !== undefined) {
           delete body.dataset.mobileDrawerScrollY;
+          const root = document.documentElement;
+          const previousScrollBehavior = root.style.scrollBehavior;
+          // Prevent the global `scroll-behavior: smooth` from animating close restoration.
+          root.style.scrollBehavior = "auto";
           window.scrollTo(0, Number(savedScrollY));
+          requestAnimationFrame(() => {
+            if (previousScrollBehavior) {
+              root.style.scrollBehavior = previousScrollBehavior;
+            } else {
+              root.style.removeProperty("scroll-behavior");
+            }
+          });
         }
       } else {
         body.dataset.mobileDrawerOpenCount = String(decremented);
       }
+
+      window.dispatchEvent(new Event(MOBILE_DRAWER_VISIBILITY_EVENT));
     };
   }, [isDesktopViewport, isOpen]);
 

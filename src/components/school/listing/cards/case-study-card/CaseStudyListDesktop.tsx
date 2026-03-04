@@ -1,53 +1,26 @@
-import { useState, useEffect } from "react";
-
-interface CaseStudy {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  image: string;
-  tags: string[];
-}
+import { useState } from "react";
+import { CASE_STUDIES } from "./caseStudies.data";
 
 interface CaseStudyListProps {
   onViewClick: (id: number) => void;
 }
-
-const caseStudies: CaseStudy[] = [
-  {
-    id: 1,
-    title: "Digital Transformation Initiative",
-    description:
-      "Led a comprehensive digital transformation project for a leading consulting firm, focusing on modernizing their workforce solutions platform and implementing cutting-edge..",
-    date: "Sep 20, 2024",
-    image: "https://i.ibb.co/J8QjpbD/school1.webp",
-    tags: ["Digital", "Enterprise"],
-  },
-  {
-    id: 2,
-    title: "EduLearn Platform Evolution",
-    description:
-      "Spearheaded the redesign and optimization of an educational technology platform, resulting in a 75% increase in organic traffic and significantly improved user engagement metrics across all key performance indicators.",
-    date: "Aug 15, 2024",
-    image: "https://i.ibb.co/fVRCnNZY/school2.webp",
-    tags: ["EdTech"],
-  },
-];
 
 export default function CaseStudyListDesktop({
   onViewClick,
 }: CaseStudyListProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  useEffect(() => {
-    updateCaseStudy(0);
-  }, []);
+  const currentStudy = CASE_STUDIES[currentIndex];
 
-  const updateCaseStudy = (index: number) => {
-    setCurrentIndex(index);
+  const goPrev = () => {
+    if (currentIndex === 0) return;
+    setCurrentIndex((prev) => prev - 1);
   };
 
-  const currentStudy = caseStudies[currentIndex];
+  const goNext = () => {
+    if (currentIndex === CASE_STUDIES.length - 1) return;
+    setCurrentIndex((prev) => prev + 1);
+  };
 
   return (
     <>
@@ -55,11 +28,10 @@ export default function CaseStudyListDesktop({
         Case Studies
       </h2>
       <div className="bg-gradient-to-br from-[#016853] to-[#089E68] rounded-[20px] p-8 flex relative min-h-[280px] mb-6">
-
         <div className="w-[355px] h-[230px] rounded-[20px] relative border-4 border-white/20 shadow-lg -translate-y-[30%] z-10 overflow-hidden">
           <img
-            src={currentStudy.image}
-            alt="Case Study"
+            src={currentStudy.heroImage}
+            alt={currentStudy.title}
             className="w-full h-full object-cover"
           />
         </div>
@@ -67,12 +39,12 @@ export default function CaseStudyListDesktop({
         <div className="flex flex-col w-80 pl-4 text-white mt-[-32px]">
           <h3 className="text-xl mt-7 font-semibold mb-4">{currentStudy.title}</h3>
           <p className="text-xs leading-relaxed opacity-90 max-w-[600px]">
-            {currentStudy.description}
+            {currentStudy.previewDescription}
           </p>
           <div className="flex justify-between items-center mt-7">
-            <span className="text-xs opacity-80">{currentStudy.date}</span>
+            <span className="text-xs opacity-80">{currentStudy.previewDate}</span>
             <div className="flex gap-3">
-              {currentStudy.tags.map((tag) => (
+              {currentStudy.previewTags.map((tag) => (
                 <span
                   key={tag}
                   className="bg-white/20 px-4 py-1.5 rounded-full text-xs"
@@ -89,7 +61,7 @@ export default function CaseStudyListDesktop({
             className={`w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md transition-transform pointer-events-auto absolute -left-5 z-10 ${
               currentIndex === 0 ? "hidden" : ""
             }`}
-            onClick={() => updateCaseStudy(currentIndex - 1)}
+            onClick={goPrev}
           >
             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
               <path
@@ -103,9 +75,9 @@ export default function CaseStudyListDesktop({
           </button>
           <button
             className={`w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md transition-transform pointer-events-auto absolute -right-5 z-10 ${
-              currentIndex === caseStudies.length - 1 ? "hidden" : ""
+              currentIndex === CASE_STUDIES.length - 1 ? "hidden" : ""
             }`}
-            onClick={() => updateCaseStudy(currentIndex + 1)}
+            onClick={goNext}
           >
             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
               <path
@@ -120,13 +92,13 @@ export default function CaseStudyListDesktop({
         </div>
       </div>
       <div className="flex justify-center gap-2 mb-6">
-        {caseStudies.map((_, i) => (
+        {CASE_STUDIES.map((study, index) => (
           <div
-            key={i}
+            key={study.id}
             className={`w-2 h-2 rounded-full cursor-pointer transition-all ${
-              i === currentIndex ? "bg-[#0B6333] scale-125" : "bg-[#DFDDDB]"
+              index === currentIndex ? "bg-[#0B6333] scale-125" : "bg-[#DFDDDB]"
             }`}
-            onClick={() => updateCaseStudy(i)}
+            onClick={() => setCurrentIndex(index)}
           />
         ))}
       </div>

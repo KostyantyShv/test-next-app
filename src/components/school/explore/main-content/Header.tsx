@@ -10,6 +10,7 @@ import { Portal } from "@/components/ui/Portal";
 import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 import { useOpenMobileSidebar } from "@/context/OpenMobileSidebarContext";
 import { MobileActionsDrawer } from "./MobileActionsDrawer";
+import { Drawer } from "vaul";
 import {
   FiltersType,
   FilterValue,
@@ -170,11 +171,9 @@ const Header: React.FC<HeaderProps> = ({
     return current ? [current, ...layouts] : layouts;
   }, [layouts, layout]);
 
-  const isOverlayVisible =
-    isEstablishmentDrawerOpen ||
-    isFilterDrawerOpen ||
-    isMapDrawerOpen ||
-    isOptionsDrawerOpen;
+  // Shared custom overlay is only for non-Vaul drawers.
+  // Vaul drawers render and manage their own overlay + interaction lock.
+  const isOverlayVisible = isFilterDrawerOpen || isOptionsDrawerOpen;
 
   const closeAllMobileLayers = () => {
     if (Date.now() - drawerOpenedAtRef.current < OVERLAY_CLOSE_GRACE_MS) return;
@@ -866,65 +865,107 @@ const Header: React.FC<HeaderProps> = ({
             )}
 
             {/* Mobile Establishment Drawer - VAUL for scroll lock */}
-            <MobileDrawer
-              isOpen={isEstablishmentDrawerOpen}
-              onClose={() => setIsEstablishmentDrawerOpen(false)}
-              title={hasCustomDropdown ? "Select Category" : "Select School Type"}
-              showPullIndicator={true}
+            <Drawer.Root
+              open={isEstablishmentDrawerOpen}
+              onOpenChange={(open) => setIsEstablishmentDrawerOpen(open)}
+              modal={true}
             >
-              <div className="p-4 space-y-2">
-                {hasCustomDropdown ? (
-                  <div onClick={handleCustomDropdownClick}>
-                    {_renderDropdownItems?.()}
-                  </div>
-                ) : (
-                  establishmentTypes.map((type) => (
-                    <div
-                      key={type}
-                      onClick={() => handleEstablishmentSelect(type)}
-                      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${dropdownValue === type
-                        ? "bg-[rgba(125,211,252,0.12)] border border-[rgba(125,211,252,0.3)]"
-                        : "hover:bg-[var(--hover-bg)] border border-transparent"
-                        }`}
+              <Drawer.Portal>
+                <Drawer.Overlay className="fixed inset-0 bg-[rgba(27,27,27,0.4)] backdrop-blur-[4px] z-[2500]" />
+                <Drawer.Content
+                  className="fixed bottom-0 left-0 right-0 z-[3000] flex flex-col bg-[var(--surface-color)] rounded-t-[24px] max-h-[85%] outline-none"
+                  style={{
+                    boxShadow:
+                      "0 -8px 32px rgba(0, 0, 0, 0.12), 0 -2px 8px rgba(0, 0, 0, 0.04)",
+                  }}
+                  aria-describedby={undefined}
+                >
+                  <div className="mx-auto mt-3 mb-2 w-9 h-1 rounded-full bg-[#DFDDDB] flex-shrink-0" />
+
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)]">
+                    <Drawer.Title className="text-[18px] font-semibold text-[var(--bold-text)]">
+                      {hasCustomDropdown ? "Select Category" : "Select School Type"}
+                    </Drawer.Title>
+                    <button
+                      type="button"
+                      onClick={() => setIsEstablishmentDrawerOpen(false)}
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--subtle-text)] hover:bg-[var(--hover-bg)] transition-colors"
+                      aria-label="Close drawer"
                     >
-                      <div
-                        className={`w-9 h-9 flex items-center justify-center rounded-lg ${dropdownValue === type ? "bg-[rgba(125,211,252,0.18)]" : "bg-[var(--surface-secondary)]"
-                          }`}
-                      >
-                        {getEstablishmentIcon(type)}
+                      <svg viewBox="0 0 24 24" className="w-5 h-5">
+                        <path
+                          fill="currentColor"
+                          d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <div
+                    className="flex-1 overflow-y-auto overscroll-contain min-h-0 p-4 space-y-2"
+                    style={{ WebkitOverflowScrolling: "touch", overscrollBehavior: "contain" }}
+                  >
+                    {hasCustomDropdown ? (
+                      <div onClick={handleCustomDropdownClick}>
+                        {_renderDropdownItems?.()}
                       </div>
-                      <div className="flex-1">
+                    ) : (
+                      establishmentTypes.map((type) => (
                         <div
-                          className={`font-medium ${dropdownValue === type ? "text-[var(--header-green)]" : "text-[var(--bold-text)]"
+                          key={type}
+                          onClick={() => handleEstablishmentSelect(type)}
+                          className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                            dropdownValue === type
+                              ? "bg-[rgba(125,211,252,0.12)] border border-[rgba(125,211,252,0.3)]"
+                              : "hover:bg-[var(--hover-bg)] border border-transparent"
+                          }`}
+                        >
+                          <div
+                            className={`w-9 h-9 flex items-center justify-center rounded-lg ${
+                              dropdownValue === type
+                                ? "bg-[rgba(125,211,252,0.18)]"
+                                : "bg-[var(--surface-secondary)]"
                             }`}
-                        >
-                          {type}
+                          >
+                            {getEstablishmentIcon(type)}
+                          </div>
+                          <div className="flex-1">
+                            <div
+                              className={`font-medium ${
+                                dropdownValue === type
+                                  ? "text-[var(--header-green)]"
+                                  : "text-[var(--bold-text)]"
+                              }`}
+                            >
+                              {type}
+                            </div>
+                            <div className="text-sm text-[var(--subtle-text)]">
+                              {type === "K-12" && "2,583 schools"}
+                              {type === "Colleges" && "1,870 colleges"}
+                              {type === "Graduates" && "642 programs"}
+                              {type === "District" && "1,234 districts"}
+                            </div>
+                          </div>
+                          {dropdownValue === type && (
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="w-5 h-5 text-[var(--verification-blue)]"
+                            >
+                              <path d="M20 6L9 17l-5-5" />
+                            </svg>
+                          )}
                         </div>
-                        <div className="text-sm text-[var(--subtle-text)]">
-                          {type === "K-12" && "2,583 schools"}
-                          {type === "Colleges" && "1,870 colleges"}
-                          {type === "Graduates" && "642 programs"}
-                          {type === "District" && "1,234 districts"}
-                        </div>
-                      </div>
-                      {dropdownValue === type && (
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="w-5 h-5 text-[var(--verification-blue)]"
-                        >
-                          <path d="M20 6L9 17l-5-5" />
-                        </svg>
-                      )}
-                    </div>
-                  ))
-                )}
-              </div>
-            </MobileDrawer>
+                      ))
+                    )}
+                  </div>
+                </Drawer.Content>
+              </Drawer.Portal>
+            </Drawer.Root>
 
             {/* Mobile Filter Drawer */}
             {isFilterDrawerOpen && (

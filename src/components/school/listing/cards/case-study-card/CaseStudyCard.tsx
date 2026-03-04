@@ -1,18 +1,22 @@
 import { useState } from "react";
-import CaseStudyModalContent from "./CaseStudyModalContent";
 import CardWrapper from "../../card-wrapper/CardWrapper";
+import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
+import { DesktopModal } from "@/components/ui/DesktopModal/DesktopModal";
 import CaseStudyListDesktop from "./CaseStudyListDesktop";
 import CaseStudyListMobile from "./CaseStudyListMobile";
-import DesktopModalWrapper from "./DesktopModalWrapper";
-import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
+import CaseStudyModalContent from "./CaseStudyModalContent";
 
 const CaseStudyCard: React.FC<{ id: string }> = ({ id }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedStudy, setSelectedStudy] = useState<number | null>(null);
+  const [selectedStudyId, setSelectedStudyId] = useState<number | null>(null);
 
-  const handleViewClick = (id: number) => {
-    setSelectedStudy(id);
+  const handleViewClick = (studyId: number) => {
+    setSelectedStudyId(studyId);
     setIsModalOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -20,28 +24,21 @@ const CaseStudyCard: React.FC<{ id: string }> = ({ id }) => {
       <div className="hidden md:block">
         <CardWrapper id={id}>
           <CaseStudyListDesktop onViewClick={handleViewClick} />
-          {isModalOpen && selectedStudy && (
-            <DesktopModalWrapper onClose={() => setIsModalOpen(false)}>
-              <CaseStudyModalContent
-                studyId={selectedStudy}
-                onClose={() => setIsModalOpen(false)}
-              />
-            </DesktopModalWrapper>
-          )}
+          <DesktopModal
+            isOpen={isModalOpen}
+            onClose={handleClose}
+            className="w-[95vw] max-w-[1240px]"
+          >
+            <CaseStudyModalContent studyId={selectedStudyId} onClose={handleClose} />
+          </DesktopModal>
         </CardWrapper>
       </div>
+
       <div className="block md:hidden">
         <CaseStudyListMobile onViewClick={handleViewClick} />
-        <MobileDrawer
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          showPullIndicator={false}
-        >
+        <MobileDrawer isOpen={isModalOpen} onClose={handleClose} showPullIndicator={false}>
           <div className="rounded-t-[24px] overflow-hidden">
-            <CaseStudyModalContent
-              studyId={selectedStudy}
-              onClose={() => setIsModalOpen(false)}
-            />
+            <CaseStudyModalContent studyId={selectedStudyId} onClose={handleClose} />
           </div>
         </MobileDrawer>
       </div>

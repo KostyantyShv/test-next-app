@@ -7,6 +7,8 @@ interface HeaderProps {
   isFooterVisible: boolean;
 }
 
+const MOBILE_DRAWER_VISIBILITY_EVENT = "mobile-drawer-visibility-change";
+
 const Header: React.FC<HeaderProps> = ({ isFooterVisible }) => {
   const [activeTab, setActiveTab] = useState<string>(
     Object.values(SIDE_TABS_MOBILE)[0]
@@ -81,6 +83,7 @@ const Header: React.FC<HeaderProps> = ({ isFooterVisible }) => {
       childList: true,
       attributes: true,
       attributeFilter: [
+        "class",
         "data-state",
         "style",
         "data-mobile-drawer-open",
@@ -89,10 +92,12 @@ const Header: React.FC<HeaderProps> = ({ isFooterVisible }) => {
     });
 
     window.addEventListener("resize", detectBlockingOverlay);
+    window.addEventListener(MOBILE_DRAWER_VISIBILITY_EVENT, detectBlockingOverlay);
 
     return () => {
       observer.disconnect();
       window.removeEventListener("resize", detectBlockingOverlay);
+      window.removeEventListener(MOBILE_DRAWER_VISIBILITY_EVENT, detectBlockingOverlay);
     };
   }, []);
 
@@ -100,7 +105,11 @@ const Header: React.FC<HeaderProps> = ({ isFooterVisible }) => {
     setActiveTab(tabId);
   };
 
-  const shouldShowHeader = isFooterVisible && !isBlockingOverlayOpen;
+  if (isBlockingOverlayOpen) {
+    return null;
+  }
+
+  const shouldShowHeader = isFooterVisible;
 
   return (
     <div className="absolute top-0 left-0 right-0 pointer-events-none z-[1001]">
