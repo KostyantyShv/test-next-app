@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { REVIEWS } from "../mock";
 import { useState } from "react";
+import { formatVoteLabel, getReviewVoteCounts } from "../vote-utils";
 
 interface ReviewsModalContentProps {
   onClose: () => void;
@@ -11,6 +12,9 @@ export function ReviewsModalContent({ onClose }: ReviewsModalContentProps) {
   const [expandedReplies, setExpandedReplies] = useState<
     Record<number, boolean>
   >({});
+  const sortLabel = "Most Relevant";
+  const mobileSortLabel =
+    sortLabel.length > 12 ? `${sortLabel.slice(0, 11)}…` : sortLabel;
 
   const toggleReply = (index: number) => {
     setExpandedReplies((prev) => ({
@@ -27,7 +31,7 @@ export function ReviewsModalContent({ onClose }: ReviewsModalContentProps) {
   return (
     <>
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-white px-6 md:px-8 py-6 border-b border-black/8 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+      <div className="sticky top-0 z-50 border-b border-black/8 bg-white px-6 py-6 md:flex md:items-center md:justify-between md:px-8">
         <div className="flex items-center gap-2 text-[#1B1B1B]">
           <span className="text-2xl font-bold tracking-[-0.02em]">
             {averageRating.toFixed(1)}
@@ -37,9 +41,9 @@ export function ReviewsModalContent({ onClose }: ReviewsModalContentProps) {
             {REVIEWS.length} Reviews
           </span>
         </div>
-        <div className="flex items-center gap-4">
-          <button className="px-4 py-2 border border-black/10 rounded-lg bg-white text-[#464646] text-sm font-medium flex items-center gap-2 hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:text-[#0B6333] transition-all">
-            Rating
+        <div className="mt-4 flex min-w-0 items-center gap-2 md:mt-0 md:gap-4">
+          <button className="flex h-11 shrink-0 items-center gap-2 rounded-lg border border-black/10 bg-white px-4 text-sm font-medium text-[#464646] transition-all hover:border-[#0B6333] hover:bg-[#EBFCF4] hover:text-[#0B6333]">
+            <span className="whitespace-nowrap">Rating</span>
             <svg
               width="16"
               height="16"
@@ -47,12 +51,17 @@ export function ReviewsModalContent({ onClose }: ReviewsModalContentProps) {
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
+              className="shrink-0"
             >
               <path d="M6 9l6 6 6-6" />
             </svg>
           </button>
-          <button className="px-4 py-2 border border-black/10 rounded-lg bg-white text-[#464646] text-sm font-medium flex items-center gap-2 hover:bg-[#EBFCF4] hover:border-[#0B6333] hover:text-[#0B6333] transition-all">
-            Sort by: Most Relevant
+          <button className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-lg border border-black/10 bg-white px-4 text-sm font-medium text-[#464646] transition-all hover:border-[#0B6333] hover:bg-[#EBFCF4] hover:text-[#0B6333] md:flex-none">
+            <span className="shrink-0 whitespace-nowrap">Sort by:</span>
+            <span className="min-w-0 max-w-[12ch] whitespace-nowrap overflow-hidden text-ellipsis md:hidden">
+              {mobileSortLabel}
+            </span>
+            <span className="hidden whitespace-nowrap md:inline">{sortLabel}</span>
             <svg
               width="16"
               height="16"
@@ -60,12 +69,13 @@ export function ReviewsModalContent({ onClose }: ReviewsModalContentProps) {
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
+              className="shrink-0"
             >
               <path d="M6 9l6 6 6-6" />
             </svg>
           </button>
           <button
-            className="w-8 h-8 flex items-center justify-center text-[#5F5F5F] rounded-full hover:bg-black/5 hover:text-[#1B1B1B] transition-all"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[#5F5F5F] transition-all hover:bg-black/5 hover:text-[#1B1B1B]"
             onClick={onClose}
           >
             <svg
@@ -85,7 +95,9 @@ export function ReviewsModalContent({ onClose }: ReviewsModalContentProps) {
       {/* Content */}
       <div className="px-6 md:px-8 py-6 overflow-y-auto">
         <div className="flex flex-col gap-6">
-          {REVIEWS.map((review, index) => (
+          {REVIEWS.map((review, index) => {
+            const voteCounts = getReviewVoteCounts(review);
+            return (
             <div
               key={`${review.author}-${review.date}-${index}`}
               className="py-6 border-b border-black/8 last:border-b-0"
@@ -155,7 +167,9 @@ export function ReviewsModalContent({ onClose }: ReviewsModalContentProps) {
                   >
                     <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
                   </svg>
-                  <span className="font-medium text-sm">Helpful</span>
+                  <span className="font-medium text-sm">
+                    {formatVoteLabel("Helpful", voteCounts.helpful)}
+                  </span>
                 </button>
                 <button className="flex items-center gap-2 text-[#5F5F5F] hover:text-[#346DC2] hover:bg-[rgba(52,109,194,0.08)] transition-all cursor-pointer py-1.5 px-2.5 rounded-md -ml-2.5">
                   <svg
@@ -168,7 +182,9 @@ export function ReviewsModalContent({ onClose }: ReviewsModalContentProps) {
                   >
                     <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path>
                   </svg>
-                  <span className="font-medium text-sm">Not Helpful</span>
+                  <span className="font-medium text-sm">
+                    {formatVoteLabel("Not Helpful", voteCounts.notHelpful)}
+                  </span>
                 </button>
                 <button className="ml-auto p-2 rounded-full text-[#5F5F5F] hover:bg-black/5 hover:text-[#1B1B1B] transition-all cursor-pointer">
                   <svg
@@ -252,7 +268,8 @@ export function ReviewsModalContent({ onClose }: ReviewsModalContentProps) {
                 </div>
               )}
             </div>
-          ))}
+          );
+          })}
         </div>
       </div>
     </>

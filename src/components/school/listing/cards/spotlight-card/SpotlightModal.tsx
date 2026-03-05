@@ -7,7 +7,6 @@ import { Project } from "./project.type";
 
 interface SpotlightModalProps {
   onClose: () => void;
-  isOpen: boolean;
   project: Project;
   allProjects: Project[];
   onProjectChange?: (project: Project) => void;
@@ -15,7 +14,6 @@ interface SpotlightModalProps {
 
 const SpotlightModal: React.FC<SpotlightModalProps> = ({ 
   onClose, 
-  isOpen, 
   project,
   allProjects,
   onProjectChange
@@ -23,20 +21,41 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({
   const currentProjectIndex = allProjects.findIndex(p => p.id === project.id) + 1;
   const totalProjects = allProjects.length;
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchMove, setTouchMove] = useState<number | null>(null);
+  const [imageLoadErrors, setImageLoadErrors] = useState<Record<string, boolean>>(
+    {}
+  );
 
   // Reset active image index when project changes
   useEffect(() => {
     setActiveImageIndex(0);
   }, [project.id]);
 
-  // Generate project images array - use coverImage and additional images
-  const projectImages = [
+  // Generate project images array from project data and known fallbacks
+  const projectImages = Array.from(
+    new Set(
+      [
     project.coverImage,
     "https://i.ibb.co/LJwrLdW/coaching-image.webp",
     "https://i.ibb.co/fVRCnNZY/school2.webp",
-  ].slice(0, project.imageCount || 3);
+      ].filter((src): src is string => typeof src === "string" && src.trim().length > 0)
+    )
+  ).slice(0, Math.max(1, project.imageCount || 3));
+
+  useEffect(() => {
+    if (activeImageIndex >= projectImages.length) {
+      setActiveImageIndex(0);
+    }
+  }, [activeImageIndex, projectImages.length]);
+
+  const activeImageSrc = projectImages[activeImageIndex];
+  const isActiveImageBroken = Boolean(activeImageSrc && imageLoadErrors[activeImageSrc]);
+
+  const handleImageError = (src: string) => {
+    setImageLoadErrors((prev) => ({
+      ...prev,
+      [src]: true,
+    }));
+  };
 
   const handlePrev = () => {
     const currentIndex = allProjects.findIndex(p => p.id === project.id);
@@ -176,29 +195,64 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({
 
           <div className="mb-6 md:mb-8 md:flex md:flex-col-reverse">
             <div className="w-full h-[200px] md:h-[400px] rounded-lg overflow-hidden mb-3 md:mb-4">
-              <Image
-                src={projectImages[activeImageIndex]}
-                alt="Active Project Preview"
-                width={800}
-                height={400}
-                className="w-full h-full object-cover rounded-lg transition-all duration-300"
-              />
+              {activeImageSrc && !isActiveImageBroken ? (
+                <Image
+                  src={activeImageSrc}
+                  alt="Active Project Preview"
+                  width={800}
+                  height={400}
+                  className="w-full h-full object-cover rounded-lg transition-all duration-300"
+                  onError={() => handleImageError(activeImageSrc)}
+                />
+              ) : (
+                <div className="flex h-full w-full flex-col items-center justify-center rounded-lg border border-[#E0E0E0] bg-[#F8F9FD] text-[#5F5F5F]">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="mb-2 h-6 w-6"
+                  >
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="9" cy="9" r="1.5" />
+                    <path d="M21 15l-5-5L5 21" />
+                  </svg>
+                  <span className="text-sm font-medium">Preview unavailable</span>
+                </div>
+              )}
             </div>
             <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2 md:grid md:grid-cols-3">
               {projectImages.map((src, index) => (
-                <Image
-                  key={index}
-                  src={src}
-                  alt={`Project Preview ${index + 1}`}
-                  width={100}
-                  height={100}
-                  className={`w-10 h-10 md:w-full md:h-[120px] rounded-full md:rounded-lg object-cover cursor-pointer border-2 ${
-                    activeImageIndex === index
-                      ? "border-[#0B6333]"
-                      : "border-transparent"
-                  } hover:opacity-90 transition-all duration-300 flex-shrink-0`}
-                  onClick={() => handleSetActiveImage(index)}
-                />
+                imageLoadErrors[src] ? (
+                  <button
+                    key={index}
+                    type="button"
+                    className={`w-10 h-10 md:w-full md:h-[120px] rounded-full md:rounded-lg cursor-pointer border-2 flex-shrink-0 bg-[#F8F9FD] border-[#E0E0E0] flex items-center justify-center text-[#9CA3AF] ${
+                      activeImageIndex === index ? "border-[#0B6333]" : ""
+                    }`}
+                    onClick={() => handleSetActiveImage(index)}
+                    aria-label={`Project Preview ${index + 1} unavailable`}
+                  >
+                    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
+                      <path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14l-4-4-3 3-4-4-5 5V5z" />
+                    </svg>
+                  </button>
+                ) : (
+                  <Image
+                    key={index}
+                    src={src}
+                    alt={`Project Preview ${index + 1}`}
+                    width={100}
+                    height={100}
+                    className={`w-10 h-10 md:w-full md:h-[120px] rounded-full md:rounded-lg object-cover cursor-pointer border-2 ${
+                      activeImageIndex === index
+                        ? "border-[#0B6333]"
+                        : "border-transparent"
+                    } hover:opacity-90 transition-all duration-300 flex-shrink-0`}
+                    onClick={() => handleSetActiveImage(index)}
+                    onError={() => handleImageError(src)}
+                  />
+                )
               ))}
             </div>
           </div>

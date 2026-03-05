@@ -1,7 +1,8 @@
 // components/BioLink.tsx
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface StatDotProps {
   value: string;
@@ -51,8 +52,56 @@ const LinkItem: React.FC<LinkItemProps> = ({
   href,
   alt,
 }) => {
+  const isPlaceholderHref = href === "#" || href.trim() === "";
+
+  if (isPlaceholderHref) {
+    return (
+      <button
+        type="button"
+        className="w-full flex items-center p-3 md:p-4 md:px-5 bg-[#F8FCFF] rounded-xl no-underline transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] text-left border-0"
+      >
+        <div
+          className={`w-9 h-9 md:w-10 md:h-10 rounded-[10px] md:rounded-xl flex items-center justify-center mr-3 md:mr-4 ${iconBg}`}
+        >
+          <Image
+            src={icon}
+            alt={alt}
+            width={18}
+            height={18}
+            className="object-contain md:w-[20px] md:h-[20px]"
+          />
+        </div>
+        <div className="flex-1 flex items-center justify-between">
+          <span className="text-sm md:text-base font-semibold text-[#262B3D]">
+            {title}
+          </span>
+          <div className="flex items-center gap-2 md:gap-4 text-[#5F5F5F]">
+            <StatDot value={clicks} type="clicks" tooltip={`${clicks} Clicks`} />
+            <StatDot
+              value={upvotes}
+              type="upvotes"
+              tooltip={`${upvotes} Upvotes`}
+            />
+            <StatDot value={ctr} type="ctr" tooltip={`${ctr} CTR`} />
+          </div>
+        </div>
+        <div className="text-[#5F5F5F] ml-2 md:ml-4 group">
+          <svg
+            className="w-4 h-4 md:w-5 md:h-5 transition-transform duration-200 group-hover:translate-x-1"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill="currentColor"
+              d="M13.5371 8.26367C13.5371 8.44727 13.4688 8.60742 13.332 8.74414L9.46484 12.5996C9.32812 12.7324 9.17383 12.7988 9.00195 12.7988C8.82227 12.7988 8.67188 12.7402 8.55078 12.623C8.43359 12.5059 8.375 12.3594 8.375 12.1836C8.375 12.0938 8.39062 12.0098 8.42188 11.9316C8.45703 11.8535 8.50391 11.7852 8.5625 11.7266L9.875 10.4023L12.0605 8.41016L12.2656 8.78516L10.2324 8.90234H3.11328C2.91797 8.90234 2.75977 8.84375 2.63867 8.72656C2.52148 8.60547 2.46289 8.45117 2.46289 8.26367C2.46289 8.07227 2.52148 7.91797 2.63867 7.80078C2.75977 7.67969 2.91797 7.61914 3.11328 7.61914H10.2324L12.2656 7.74219L12.0605 8.12305L9.875 6.125L8.5625 4.79492C8.50391 4.73633 8.45703 4.66992 8.42188 4.5957C8.39062 4.51758 8.375 4.43164 8.375 4.33789C8.375 4.16211 8.43359 4.01562 8.55078 3.89844C8.67188 3.78125 8.82227 3.72266 9.00195 3.72266C9.08789 3.72266 9.16992 3.74023 9.24805 3.77539C9.32617 3.81055 9.40039 3.86328 9.4707 3.93359L13.332 7.7832C13.4688 7.91992 13.5371 8.08008 13.5371 8.26367Z"
+            />
+          </svg>
+        </div>
+      </button>
+    );
+  }
+
   return (
-    <Link
+    <a
       href={href}
       className="flex items-center p-3 md:p-4 md:px-5 bg-[#F8FCFF] rounded-xl no-underline transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)]"
     >
@@ -92,27 +141,89 @@ const LinkItem: React.FC<LinkItemProps> = ({
           />
         </svg>
       </div>
-    </Link>
+    </a>
   );
 };
 
 interface StatItemProps {
+  id: "clicks" | "upvotes" | "ctr";
   value: string;
   label: string;
+  tooltip: string;
+  isOpen: boolean;
+  onToggle: (id: "clicks" | "upvotes" | "ctr") => void;
 }
 
-const StatItem: React.FC<StatItemProps> = ({ value, label }) => {
+const StatItem: React.FC<StatItemProps> = ({
+  id,
+  value,
+  label,
+  tooltip,
+  isOpen,
+  onToggle,
+}) => {
+  const tooltipId = `listing-stat-tooltip-${id}`;
+
   return (
-    <div className="flex items-center md:flex-row flex-col gap-1 md:gap-2">
-      <div className="text-base md:text-lg font-semibold text-[#016853]">
-        {value}
+    <div className="relative flex items-center justify-center">
+      <button
+        type="button"
+        onClick={() => onToggle(id)}
+        className="w-full rounded-lg px-2 py-2 text-center transition-colors hover:bg-[#F5FAF7]"
+        aria-expanded={isOpen}
+        aria-describedby={isOpen ? tooltipId : undefined}
+      >
+        <div className="text-base md:text-lg font-semibold text-[#016853]">
+          {value}
+        </div>
+        <div className="text-xs md:text-sm text-[#5F5F5F]">{label}</div>
+      </button>
+      <div
+        id={tooltipId}
+        role="tooltip"
+        className={`absolute left-1/2 top-full z-20 mt-2 w-max max-w-[180px] -translate-x-1/2 rounded-md bg-[#333] px-2 py-1 text-[11px] text-white transition-all duration-150 ${
+          isOpen
+            ? "visible opacity-100"
+            : "invisible pointer-events-none opacity-0"
+        }`}
+      >
+        {tooltip}
+        <span className="absolute bottom-full left-1/2 -translate-x-1/2 border-x-[5px] border-b-[5px] border-x-transparent border-b-[#333]" />
       </div>
-      <div className="text-xs md:text-sm text-[#5F5F5F]">{label}</div>
     </div>
   );
 };
 
 const LinksCard = ({ id }: { id: string }) => {
+  const [activeTooltip, setActiveTooltip] = useState<
+    "clicks" | "upvotes" | "ctr" | null
+  >(null);
+  const statsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleOutsidePress = (event: MouseEvent | TouchEvent) => {
+      if (!statsRef.current) return;
+      const targetNode = event.target as Node;
+      if (!statsRef.current.contains(targetNode)) {
+        setActiveTooltip(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsidePress);
+    document.addEventListener("touchstart", handleOutsidePress, {
+      passive: true,
+    });
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsidePress);
+      document.removeEventListener("touchstart", handleOutsidePress);
+    };
+  }, []);
+
+  const handleStatToggle = (id: "clicks" | "upvotes" | "ctr") => {
+    setActiveTooltip((current) => (current === id ? null : id));
+  };
+
   return (
     <div
       id={id}
@@ -132,10 +243,36 @@ const LinksCard = ({ id }: { id: string }) => {
         </div>
 
         <div className="pt-[50px] md:pt-20 pb-8 md:pb-10 px-5 md:px-10">
-          <div className="flex justify-around md:justify-start md:gap-8 mb-8 md:mb-10">
-            <StatItem value="128" label="Clicks" />
-            <StatItem value="166" label="Upvotes" />
-            <StatItem value="64.67%" label="Avg. CTR" />
+          <div
+            ref={statsRef}
+            className="relative z-[3] mb-8 md:mb-10"
+          >
+            <div className="grid grid-cols-3 items-start gap-1 rounded-xl px-1 py-1 md:flex md:justify-start md:gap-8 md:rounded-none md:px-0 md:py-0">
+              <StatItem
+                id="clicks"
+                value="128"
+                label="Clicks"
+                tooltip="Number of profile link taps."
+                isOpen={activeTooltip === "clicks"}
+                onToggle={handleStatToggle}
+              />
+              <StatItem
+                id="upvotes"
+                value="166"
+                label="Upvotes"
+                tooltip="Total positive votes from visitors."
+                isOpen={activeTooltip === "upvotes"}
+                onToggle={handleStatToggle}
+              />
+              <StatItem
+                id="ctr"
+                value="64.67%"
+                label="Avg. CTR"
+                tooltip="Average click-through rate across links."
+                isOpen={activeTooltip === "ctr"}
+                onToggle={handleStatToggle}
+              />
+            </div>
           </div>
 
           <div className="grid gap-3.5 md:gap-4">

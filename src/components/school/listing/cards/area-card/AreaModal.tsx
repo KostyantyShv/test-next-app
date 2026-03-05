@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 interface AreaModalProps {
   onClose: () => void;
@@ -11,13 +11,10 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
   const [isRankingsExpanded, setIsRankingsExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState("Public Schools");
 
-
-
-
   return (
-    <div className="w-full h-full md:max-w-[1100px] md:h-[90vh] bg-white md:rounded-2xl relative shadow-[0_4px_24px_rgba(0,0,0,0.15)] transition-all duration-300 ease-in-out">
+    <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-white shadow-[0_4px_24px_rgba(0,0,0,0.15)] transition-all duration-300 ease-in-out md:h-[90vh] md:max-w-[1100px] md:rounded-2xl">
       {/* Header - Sticky */}
-      <div className="sticky top-0 bg-[#016853] text-white p-4 md:p-6 flex justify-between items-center z-50 border-b border-white/10">
+      <div className="sticky top-0 z-50 flex items-center justify-between border-b border-white/10 bg-[#016853] p-4 text-white md:p-6">
         <div>
           <h1 className="text-xl md:text-3xl font-bold m-0">Panama City</h1>
           <p className="mt-1 md:mt-2 text-sm md:text-base font-normal opacity-90">
@@ -33,7 +30,10 @@ const AreaModal: React.FC<AreaModalProps> = ({ onClose }) => {
       </div>
 
       {/* Content */}
-      <div className="h-[calc(100%-93px)] md:max-h-[calc(90vh-93px)] overflow-y-auto p-4 md:p-8">
+      <div
+        className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain touch-pan-y p-4 pb-[calc(env(safe-area-inset-bottom)+16px)] md:p-8"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
         {/* Section 1: Living in the Area */}
         <div className="mb-4 md:mb-7">
           <h2 className="mb-3 md:mb-4 text-lg md:text-[22px] text-[#016853] font-semibold">

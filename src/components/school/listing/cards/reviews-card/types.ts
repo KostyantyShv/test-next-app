@@ -7,6 +7,7 @@ export interface Review {
   content: string;
   published: string;
   helpful: number;
+  notHelpful?: number;
   hasReply: boolean;
   replyAvatar?: string;
   replyAuthor?: string;

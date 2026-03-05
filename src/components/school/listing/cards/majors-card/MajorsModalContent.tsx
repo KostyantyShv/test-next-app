@@ -17,9 +17,9 @@ const MajorsModalContent: React.FC<MajorsModalContentProps> = ({
     "Trades and Personal Services",
   ];
   return (
-    <div className="flex flex-col h-full font-['Inter'] relative">
+    <div className="relative flex h-full min-h-0 flex-col font-['Inter']">
       {/* Fixed Header within Modal */}
-      <div className="sticky top-0 z-50 bg-white">
+      <div className="sticky top-0 z-50 flex-shrink-0 bg-white">
         <div className="h-2 bg-gradient-to-r from-[#016853] to-[#089E68] md:h-[11px] md:mb-[-1px]" />
         <div className="relative p-5 md:p-8 md:border-b md:border-black/8">
           <h1 className="text-[#016853] text-[22px] font-bold mb-2 md:text-[28px]">
@@ -48,8 +48,11 @@ const MajorsModalContent: React.FC<MajorsModalContentProps> = ({
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="p-5 md:p-8">
+      <div
+        className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain touch-pan-y"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
+        <div className="p-5 pb-[calc(env(safe-area-inset-bottom)+20px)] md:p-8">
           {/* Category Navigation */}
           <nav className="flex gap-2.5 pb-3 mb-6 overflow-x-auto md:flex-wrap md:m-[-8px] md:mb-8 md:p-2 scrollbar-none">
             {categories.map((category) => (

@@ -10,6 +10,7 @@ import { testimonials } from "./testimonials-data";
 export default function TestimonialsCard({ id }: { id: string }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const totalSlides = testimonials.length;
+  const activeTestimonial = testimonials[currentSlide];
 
   const updateDots = (index: number) => setCurrentSlide(index);
   const handlePrev = () =>
@@ -22,8 +23,8 @@ export default function TestimonialsCard({ id }: { id: string }) {
       <HeaderSection />
       <div className="bg-white rounded-xl md:rounded-[16px] p-4 md:p-[24px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] flex flex-col md:flex-row gap-5 md:gap-10">
         <div className="flex flex-col md:flex-[0_0_57%]">
-          <QuoteSection currentSlide={currentSlide} />
-          <ProfileSection currentSlide={currentSlide} />
+          <QuoteSection testimonial={activeTestimonial} />
+          <ProfileSection testimonial={activeTestimonial} />
           <NavigationControls
             totalSlides={totalSlides}
             currentSlide={currentSlide}
@@ -32,7 +33,7 @@ export default function TestimonialsCard({ id }: { id: string }) {
             handleNext={handleNext}
           />
         </div>
-        <VideoSection currentSlide={currentSlide} />
+        <VideoSection testimonial={activeTestimonial} />
       </div>
     </CardWrapper>
   );

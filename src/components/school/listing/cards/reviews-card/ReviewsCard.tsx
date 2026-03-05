@@ -4,17 +4,74 @@ import ReviewsModal from "./reviews-modal/ReviewsModal";
 import CardWrapper from "../../card-wrapper/CardWrapper";
 import { useState } from "react";
 import { RATING_DISTRIBUTION, REVIEWS } from "./mock";
+import { formatVoteLabel, getReviewVoteCounts } from "./vote-utils";
 
 export default function Reviews({ id }: { id: string }) {
   const [expandedReplies, setExpandedReplies] = useState<
     Record<number, boolean>
   >({});
+  const [voteError, setVoteError] = useState<string | null>(null);
+  const [helpfulVotes, setHelpfulVotes] = useState(() =>
+    REVIEWS.map((review) => ({
+      count: getReviewVoteCounts(review).helpful,
+      hasVoted: false,
+      isSubmitting: false,
+    }))
+  );
 
   const toggleReply = (index: number) => {
     setExpandedReplies((prev) => ({
       ...prev,
       [index]: !prev[index],
     }));
+  };
+
+  const submitHelpfulVote = async () => {
+    // TODO: wire this to a real mutation when review voting API is available.
+    return Promise.resolve();
+  };
+
+  const handleHelpfulVote = async (reviewIndex: number) => {
+    const currentVote = helpfulVotes[reviewIndex];
+    if (!currentVote || currentVote.hasVoted || currentVote.isSubmitting) return;
+
+    setVoteError(null);
+    setHelpfulVotes((prev) =>
+      prev.map((vote, index) =>
+        index === reviewIndex
+          ? {
+              ...vote,
+              count: vote.count + 1,
+              hasVoted: true,
+              isSubmitting: true,
+            }
+          : vote
+      )
+    );
+
+    try {
+      await submitHelpfulVote();
+      setHelpfulVotes((prev) =>
+        prev.map((vote, index) =>
+          index === reviewIndex ? { ...vote, isSubmitting: false } : vote
+        )
+      );
+    } catch (error) {
+      console.error("Failed to register helpful vote", error);
+      setVoteError("Could not save vote. Please try again.");
+      setHelpfulVotes((prev) =>
+        prev.map((vote, index) =>
+          index === reviewIndex
+            ? {
+                ...vote,
+                count: Math.max(0, vote.count - 1),
+                hasVoted: false,
+                isSubmitting: false,
+              }
+            : vote
+        )
+      );
+    }
   };
 
   return (
@@ -82,6 +139,16 @@ export default function Reviews({ id }: { id: string }) {
         </div>
       </div>
 
+      {voteError && (
+        <div
+          className="mb-4 rounded-lg border border-[#FCA5A5] bg-[#FEF2F2] px-3 py-2 text-sm text-[#B91C1C]"
+          role="status"
+          aria-live="polite"
+        >
+          {voteError}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
         {REVIEWS.map((review, index) => (
           <div
@@ -117,17 +184,32 @@ export default function Reviews({ id }: { id: string }) {
               {review.published}
             </div>
             <div className="flex gap-4 md:gap-6">
-              <button className="flex items-center gap-1.5 cursor-pointer transition-all duration-200 py-1.5 px-2 md:px-2.5 rounded-md text-[#5F5F5F] hover:bg-[#F8F9FA] hover:text-[#016853]">
+              <button
+                type="button"
+                onClick={() => handleHelpfulVote(index)}
+                disabled={
+                  helpfulVotes[index]?.hasVoted || helpfulVotes[index]?.isSubmitting
+                }
+                aria-pressed={helpfulVotes[index]?.hasVoted ?? false}
+                className={`flex items-center gap-1.5 transition-all duration-200 py-1.5 px-2 md:px-2.5 rounded-md ${
+                  helpfulVotes[index]?.hasVoted
+                    ? "bg-[#EBFCF4] text-[#016853] cursor-not-allowed"
+                    : "text-[#5F5F5F] hover:bg-[#F8F9FA] hover:text-[#016853] cursor-pointer"
+                } ${helpfulVotes[index]?.isSubmitting ? "opacity-80" : ""}`}
+              >
                 <svg
                   viewBox="0 0 24 24"
-                  fill="none"
+                  fill={helpfulVotes[index]?.hasVoted ? "currentColor" : "none"}
                   stroke="currentColor"
                   className="w-3.5 h-3.5 stroke-2"
                 >
                   <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
                 </svg>
                 <span className="font-medium text-xs md:text-sm">
-                  Helpful ({review.helpful})
+                  {formatVoteLabel(
+                    "Helpful",
+                    helpfulVotes[index]?.count ?? getReviewVoteCounts(review).helpful
+                  )}
                 </span>
               </button>
               <button className="flex items-center gap-1.5 cursor-pointer transition-all duration-200 py-1.5 px-2 md:px-2.5 rounded-md text-[#5F5F5F] hover:bg-[#F8F9FA] hover:text-[#016853]">

@@ -105,7 +105,7 @@ export function MobileDrawer({
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-[rgba(27,27,27,0.4)] backdrop-blur-[4px] z-[2500]" />
         <Drawer.Content
-          className="fixed bottom-0 left-0 right-0 z-[3000] flex flex-col bg-white rounded-t-[24px] max-h-[85%] outline-none"
+          className="fixed bottom-0 left-0 right-0 z-[3000] flex max-h-[calc(100dvh-16px)] flex-col rounded-t-[24px] bg-white outline-none"
           style={{
             boxShadow: '0 -8px 32px rgba(0, 0, 0, 0.12), 0 -2px 8px rgba(0, 0, 0, 0.04)',
           }}
@@ -119,8 +119,8 @@ export function MobileDrawer({
             <div className="mx-auto mt-3 mb-2 w-9 h-1 rounded-full bg-[#DFDDDB] flex-shrink-0" />
           )}
           <div
-            className="flex-1 overflow-y-auto overscroll-contain min-h-0"
-            style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}
+            className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain touch-pan-y"
+            style={{ WebkitOverflowScrolling: "touch" }}
           >
             {children}
           </div>

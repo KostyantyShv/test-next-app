@@ -7,6 +7,8 @@ const Testimonial: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const total = testimonials.length;
   const testimonial = testimonials[currentSlide];
+  const authorFullName = `${testimonial.author.firstName} ${testimonial.author.lastName}`;
+  const avatarSrc = testimonial.author.avatarImage || "/images/avatar.png";
 
   const handlePrev = () => setCurrentSlide((prev) => (prev - 1 + total) % total);
   const handleNext = () => setCurrentSlide((prev) => (prev + 1) % total);
@@ -15,8 +17,8 @@ const Testimonial: React.FC = () => {
     <div className="bg-[#F8F9FA] rounded-xl p-5 my-8 shadow-[0_4px_12px_rgba(0,0,0,0.05)] md:shadow-none md:p-6 md:my-8 md:mx-0">
       <div className="md:flex md:items-start md:gap-5">
         <Image
-          src={testimonial.thumbnailImage}
-          alt={`${testimonial.authorFirstName} ${testimonial.authorLastName}`}
+          src={avatarSrc}
+          alt={authorFullName}
           width={48}
           height={48}
           className="hidden md:block rounded-full object-cover w-12 h-12"
@@ -29,17 +31,17 @@ const Testimonial: React.FC = () => {
               </div>
               <div className="w-full items-center gap-3 flex flex-row mb-4 md:mb-0 md:w-12 md:h-12">
                 <Image
-                  src={testimonial.thumbnailImage}
-                  alt={`${testimonial.authorFirstName} ${testimonial.authorLastName}`}
+                  src={avatarSrc}
+                  alt={authorFullName}
                   width={48}
                   height={48}
                   className="rounded-full object-cover md:hidden block"
                 />
                 <div className="flex flex-col">
                   <div className="font-semibold text-nowrap text-[#464646] text-sm md:text-[14px] md:font-semibold">
-                    {testimonial.authorFirstName} {testimonial.authorLastName}
+                    {authorFullName}
                   </div>
-                  <div className="text-[#5F5F5F] text-xs md:hidden">{testimonial.role}</div>
+                  <div className="text-[#5F5F5F] text-xs md:hidden">{testimonial.author.achievement}</div>
                 </div>
               </div>
             </div>

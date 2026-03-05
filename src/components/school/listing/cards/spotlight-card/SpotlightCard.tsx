@@ -6,10 +6,12 @@ import { projects } from "./mock";
 import SpotlightModal from "./SpotlightModal";
 import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 import { DesktopModal } from "@/components/ui/DesktopModal/DesktopModal";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 const SpotlightCard: React.FC<{ id: string }> = ({ id }) => {
   const [selectedProject, setSelectedProject] = useState(projects[0]);
   const [isOpen, setIsOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   const handleShowPopup = () => {
     setIsOpen(true);
@@ -44,24 +46,25 @@ const SpotlightCard: React.FC<{ id: string }> = ({ id }) => {
           />
         </div>
       </CardWrapper>
-      <MobileDrawer isOpen={isOpen} onClose={handleHidePopup}>
-        <SpotlightModal
-          onClose={handleHidePopup}
-          isOpen={isOpen}
-          project={selectedProject}
-          allProjects={projects}
-          onProjectChange={handleProjectChange}
-        />
-      </MobileDrawer>
-      <DesktopModal isOpen={isOpen} onClose={handleHidePopup}>
-        <SpotlightModal
-          onClose={handleHidePopup}
-          isOpen={isOpen}
-          project={selectedProject}
-          allProjects={projects}
-          onProjectChange={handleProjectChange}
-        />
-      </DesktopModal>
+      {isMobile ? (
+        <MobileDrawer isOpen={isOpen} onClose={handleHidePopup}>
+          <SpotlightModal
+            onClose={handleHidePopup}
+            project={selectedProject}
+            allProjects={projects}
+            onProjectChange={handleProjectChange}
+          />
+        </MobileDrawer>
+      ) : (
+        <DesktopModal isOpen={isOpen} onClose={handleHidePopup}>
+          <SpotlightModal
+            onClose={handleHidePopup}
+            project={selectedProject}
+            allProjects={projects}
+            onProjectChange={handleProjectChange}
+          />
+        </DesktopModal>
+      )}
     </>
   );
 };

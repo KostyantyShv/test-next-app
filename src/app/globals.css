@@ -677,7 +677,6 @@ body {
 html:has(body[data-mobile-drawer-open="true"]),
 body[data-mobile-drawer-open="true"] {
   overflow: hidden !important;
-  touch-action: none;
   overscroll-behavior: none;
 }
 

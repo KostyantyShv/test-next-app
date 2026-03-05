@@ -1,12 +1,10 @@
-import { testimonials } from "./testimonials-data";
+import { Testimonial } from "./testimonials-data";
 
 interface QuoteSectionProps {
-  currentSlide: number;
+  testimonial: Testimonial;
 }
 
-export function QuoteSection({ currentSlide }: QuoteSectionProps) {
-  const testimonial = testimonials[currentSlide];
-
+export function QuoteSection({ testimonial }: QuoteSectionProps) {
   return (
     <>
       <svg
