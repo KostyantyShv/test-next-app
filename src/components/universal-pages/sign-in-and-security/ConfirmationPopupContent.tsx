@@ -6,13 +6,46 @@ interface ConfirmationPopupContentProps {
   onClose: () => void;
   providerName: string;
   onConfirm: () => void;
+  variant?: "dialog" | "action-sheet";
 }
 
 const ConfirmationPopupContent: React.FC<ConfirmationPopupContentProps> = ({
   onClose,
   providerName,
   onConfirm,
+  variant = "dialog",
 }) => {
+  if (variant === "action-sheet") {
+    return (
+      <div className="pb-2 pt-1">
+        <div className="overflow-hidden rounded-[20px] bg-[#F2F2F7] shadow-[0_16px_40px_rgba(0,0,0,0.16)]">
+          <div className="border-b border-black/10 px-6 py-4 text-center">
+            <h3 className="text-[14px] font-semibold tracking-[-0.01em] text-[#1B1B1B]">
+              Disconnect {providerName}?
+            </h3>
+            <p className="mt-2 text-[13px] leading-[1.4] text-[#6B7280]">
+              Are you sure you want to disconnect your {providerName} account? You
+              will no longer be able to sign in using this method.
+            </p>
+          </div>
+          <button
+            className="w-full bg-white px-6 py-4 text-[17px] font-semibold text-[#DC3545] transition-colors duration-200 active:bg-[#F5F5F7]"
+            onClick={onConfirm}
+          >
+            Disconnect {providerName}
+          </button>
+        </div>
+
+        <button
+          className="mt-2 w-full rounded-[20px] bg-white px-6 py-4 text-[17px] font-semibold text-[#1B1B1B] shadow-[0_10px_30px_rgba(0,0,0,0.08)] transition-colors duration-200 active:bg-[#F5F5F7]"
+          onClick={onClose}
+        >
+          Cancel
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="confirmation-popup text-center p-2.5">
       <h3 className="confirmation-title text-lg font-semibold mb-2.5 text-[#1B1B1B]">

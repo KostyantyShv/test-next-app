@@ -418,13 +418,15 @@ export default function BillingInformation({
               <div className="text-[#4A4A4A] text-sm">
                 Your free trial ends on Mon, December 5th 2023
               </div>
-              <div className="flex items-center gap-2">
-                <button className="bg-white max-md:w-full text-[#4A4A4A] border border-[#E5E7EB] rounded px-4 py-2 text-sm font-medium">
-                  Cancel Trial
+              <div className="flex items-stretch gap-2">
+                <button className="bg-white flex-1 md:flex-none text-[#4A4A4A] border border-[#E5E7EB] rounded px-4 py-2 text-sm font-medium">
+                  <span className="md:hidden">Cancel</span>
+                  <span className="hidden md:inline">Cancel Trial</span>
                 </button>
-                <Link href="/billing/pricing">
-                  <button className="bg-[#1D77BD] max-md:w-full text-white border-none rounded px-4 py-2 text-sm font-medium">
-                    Upgrade Plan
+                <Link href="/billing/pricing" className="flex-1 md:flex-none">
+                  <button className="bg-[#1D77BD] w-full md:w-auto text-white border-none rounded px-4 py-2 text-sm font-medium">
+                    <span className="md:hidden">Upgrade</span>
+                    <span className="hidden md:inline">Upgrade Plan</span>
                   </button>
                 </Link>
               </div>

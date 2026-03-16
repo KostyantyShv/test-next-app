@@ -1,0 +1,433 @@
+[
+  {
+    "id": 1,
+    "title": "Digital Consulting Firm Website",
+    "description": "The website belongs to Inspire Workforce, a consulting firm specializing in digital transformation and workforce development solutions.",
+    "date": "March 2023",
+    "coverImage": "https://i.ibb.co/J8QjpbD/school1.webp",
+    "authorName": "Sarah Anderson",
+    "authorAvatar": "https://i.ibb.co/ccsFWF1c/AVATAR-midtone-ux-instrgram.jpg",
+    "tags": ["Business Consulting", "Digital Transformation"],
+    "tagCount": 10,
+    "cost": "$1000-$2500",
+    "duration": "7-30 days",
+    "imageCount": 3,
+    "galleryImages": [
+      "https://i.ibb.co/J8QjpbD/school1.webp",
+      "https://i.ibb.co/LJwrLdW/coaching-image.webp",
+      "https://i.ibb.co/dJDHGnDz/student1.webp"
+    ],
+    "stats": [
+      { "label": "Client Offices", "value": "14 Regions" },
+      { "label": "Lead Conversion", "value": "+38%" },
+      { "label": "Workshop Attendance", "value": "1,200/mo" }
+    ],
+    "actionItems": [
+      {
+        "title": "Schedule a Discovery Call",
+        "buttonLabel": "Book Now",
+        "href": "https://example.com/inspire-workforce/discovery-call"
+      },
+      {
+        "title": "Download Strategy Brief",
+        "buttonLabel": "Download",
+        "href": "https://example.com/inspire-workforce/strategy-brief"
+      },
+      {
+        "title": "Explore Workforce Audit",
+        "buttonLabel": "View Audit",
+        "href": "https://example.com/inspire-workforce/workforce-audit"
+      }
+    ],
+    "contactCard": {
+      "logoImage": "/images/abc-logo.png",
+      "title": "Contact Inspire Workforce",
+      "description": "Planning a modernization project for your consulting operation or academic team? Let’s scope the right rollout.",
+      "buttonLabel": "Start Conversation",
+      "buttonHref": "https://example.com/inspire-workforce/contact"
+    },
+    "sidebar": {
+      "bannerImage": "https://i.ibb.co/jJ4GHXP/img1.jpg",
+      "title": "Inspire Workforce",
+      "description": "Advisory firm focused on digital transformation, career pathways, and workforce enablement programs for education-led organizations.",
+      "resourceLinks": [
+        {
+          "label": "View Transformation Programs",
+          "href": "https://example.com/inspire-workforce/programs"
+        },
+        {
+          "label": "Read Client Success Stories",
+          "href": "https://example.com/inspire-workforce/case-studies"
+        },
+        {
+          "label": "See Capability Overview",
+          "href": "https://example.com/inspire-workforce/capabilities"
+        }
+      ],
+      "socialLinks": [
+        {
+          "platform": "twitter",
+          "href": "https://twitter.com/inspireworkforce",
+          "label": "Inspire Workforce on X"
+        },
+        {
+          "platform": "facebook",
+          "href": "https://facebook.com/inspireworkforce",
+          "label": "Inspire Workforce on Facebook"
+        },
+        {
+          "platform": "linkedin",
+          "href": "https://linkedin.com/company/inspire-workforce",
+          "label": "Inspire Workforce on LinkedIn"
+        }
+      ],
+      "primaryActionLabel": "Contact Inspire Workforce",
+      "primaryActionHref": "https://example.com/inspire-workforce/contact"
+    }
+  },
+  {
+    "id": 2,
+    "title": "Educational Platform Redesign",
+    "description": "A comprehensive redesign of an educational technology platform focusing on improving user experience and accessibility.",
+    "date": "April 2023",
+    "coverImage": "https://i.ibb.co/fVRCnNZY/school2.webp",
+    "authorName": "Michael Chen",
+    "authorAvatar": "https://i.ibb.co/HfFsXY8C/AVATAR-playright.png",
+    "tags": ["Education", "UX Design"],
+    "tagCount": 8,
+    "cost": "$2000-$3500",
+    "duration": "14-45 days",
+    "imageCount": 3,
+    "galleryImages": [
+      "https://i.ibb.co/fVRCnNZY/school2.webp",
+      "https://i.ibb.co/LJwrLdW/coaching-image.webp",
+      "https://i.ibb.co/fzzhd5tf/school4.webp"
+    ],
+    "stats": [
+      { "label": "Active Users", "value": "25,000+" },
+      { "label": "Course Completion Rate", "value": "94.2%" },
+      { "label": "Student Satisfaction", "value": "4.8/5.0" }
+    ],
+    "actionItems": [
+      {
+        "title": "Schedule a Demo Session",
+        "buttonLabel": "Book Now",
+        "href": "https://example.com/edutech-solutions/demo"
+      },
+      {
+        "title": "Download Technical Documentation",
+        "buttonLabel": "Download",
+        "href": "https://example.com/edutech-solutions/docs"
+      },
+      {
+        "title": "View Implementation Guide",
+        "buttonLabel": "View Guide",
+        "href": "https://example.com/edutech-solutions/implementation"
+      }
+    ],
+    "contactCard": {
+      "logoImage": "/images/cnn-logo.png",
+      "title": "Contact EduTech Solutions",
+      "description": "Ready to transform your educational institution? Our team can map the redesign to your enrollment and retention goals.",
+      "buttonLabel": "Send Message",
+      "buttonHref": "https://example.com/edutech-solutions/contact"
+    },
+    "sidebar": {
+      "bannerImage": "https://i.ibb.co/LJwrLdW/coaching-image.webp",
+      "title": "EduTech Solutions",
+      "description": "Leading provider of innovative educational technology solutions, specializing in learning management systems and digital learning environments for higher education.",
+      "resourceLinks": [
+        {
+          "label": "View Course Catalog",
+          "href": "https://example.com/edutech-solutions/catalog"
+        },
+        {
+          "label": "Student Success Stories",
+          "href": "https://example.com/edutech-solutions/success-stories"
+        },
+        {
+          "label": "Analytics Dashboard",
+          "href": "https://example.com/edutech-solutions/analytics"
+        }
+      ],
+      "socialLinks": [
+        {
+          "platform": "twitter",
+          "href": "https://twitter.com/edutechsolutions",
+          "label": "EduTech Solutions on X"
+        },
+        {
+          "platform": "facebook",
+          "href": "https://facebook.com/edutechsolutions",
+          "label": "EduTech Solutions on Facebook"
+        },
+        {
+          "platform": "linkedin",
+          "href": "https://linkedin.com/company/edutech-solutions",
+          "label": "EduTech Solutions on LinkedIn"
+        }
+      ],
+      "primaryActionLabel": "Contact EduTech Solutions",
+      "primaryActionHref": "https://example.com/edutech-solutions/contact"
+    }
+  },
+  {
+    "id": 3,
+    "title": "Corporate Training Portal",
+    "description": "Development of an interactive corporate training portal with integrated learning management system and progress tracking.",
+    "date": "May 2023",
+    "coverImage": "https://i.ibb.co/fzzhd5tf/school4.webp",
+    "authorName": "Emily Rodriguez",
+    "authorAvatar": "https://i.ibb.co/ksVGZWz8/avatr1.jpg",
+    "tags": ["Corporate Learning", "E-learning"],
+    "tagCount": 12,
+    "cost": "$3000-$5000",
+    "duration": "21-60 days",
+    "imageCount": 4,
+    "galleryImages": [
+      "https://i.ibb.co/fzzhd5tf/school4.webp",
+      "https://i.ibb.co/B5pFBbB2/school5.webp",
+      "https://i.ibb.co/dJDHGnDz/student1.webp",
+      "https://i.ibb.co/J8QjpbD/school1.webp"
+    ],
+    "stats": [
+      { "label": "Learners Onboarded", "value": "8,400+" },
+      { "label": "Certification Completion", "value": "89%" },
+      { "label": "Manager Adoption", "value": "97 Teams" }
+    ],
+    "actionItems": [
+      {
+        "title": "Book Training Platform Demo",
+        "buttonLabel": "Book Demo",
+        "href": "https://example.com/skillbridge-learning/demo"
+      },
+      {
+        "title": "Download LMS Roadmap",
+        "buttonLabel": "Download",
+        "href": "https://example.com/skillbridge-learning/lms-roadmap"
+      },
+      {
+        "title": "Review Rollout Timeline",
+        "buttonLabel": "View Plan",
+        "href": "https://example.com/skillbridge-learning/rollout"
+      }
+    ],
+    "contactCard": {
+      "logoImage": "/images/cbs-logo.png",
+      "title": "Talk to SkillBridge Learning",
+      "description": "Need a scalable corporate training portal with certifications, reporting, and cohort management built in?",
+      "buttonLabel": "Request Proposal",
+      "buttonHref": "https://example.com/skillbridge-learning/contact"
+    },
+    "sidebar": {
+      "bannerImage": "https://i.ibb.co/B5pFBbB2/school5.webp",
+      "title": "SkillBridge Learning",
+      "description": "Enterprise learning partner building onboarding, certification, and compliance platforms for distributed workforce teams.",
+      "resourceLinks": [
+        {
+          "label": "Browse Training Library",
+          "href": "https://example.com/skillbridge-learning/library"
+        },
+        {
+          "label": "Read Client Rollout Stories",
+          "href": "https://example.com/skillbridge-learning/client-stories"
+        },
+        {
+          "label": "Explore Reporting Stack",
+          "href": "https://example.com/skillbridge-learning/reporting"
+        }
+      ],
+      "socialLinks": [
+        {
+          "platform": "twitter",
+          "href": "https://twitter.com/skillbridgelearn",
+          "label": "SkillBridge Learning on X"
+        },
+        {
+          "platform": "facebook",
+          "href": "https://facebook.com/skillbridgelearning",
+          "label": "SkillBridge Learning on Facebook"
+        },
+        {
+          "platform": "linkedin",
+          "href": "https://linkedin.com/company/skillbridge-learning",
+          "label": "SkillBridge Learning on LinkedIn"
+        }
+      ],
+      "primaryActionLabel": "Contact SkillBridge Learning",
+      "primaryActionHref": "https://example.com/skillbridge-learning/contact"
+    }
+  },
+  {
+    "id": 4,
+    "title": "Student Success Dashboard",
+    "description": "An analytics dashboard designed to track and visualize student performance metrics and learning outcomes.",
+    "date": "June 2023",
+    "coverImage": "https://i.ibb.co/B5pFBbB2/school5.webp",
+    "authorName": "David Park",
+    "authorAvatar": "https://i.ibb.co/BKststd4/AVATAR-Dribble.jpg",
+    "tags": ["Analytics", "Education"],
+    "tagCount": 6,
+    "cost": "$1500-$3000",
+    "duration": "10-40 days",
+    "imageCount": 3,
+    "galleryImages": [
+      "https://i.ibb.co/B5pFBbB2/school5.webp",
+      "https://i.ibb.co/fVRCnNZY/school2.webp",
+      "https://i.ibb.co/dJDHGnDz/student1.webp"
+    ],
+    "stats": [
+      { "label": "Schools Reporting", "value": "62 Campuses" },
+      { "label": "Risk Alerts Sent", "value": "4,850/mo" },
+      { "label": "Advisor Response Time", "value": "< 18 hrs" }
+    ],
+    "actionItems": [
+      {
+        "title": "Schedule Dashboard Walkthrough",
+        "buttonLabel": "Book Tour",
+        "href": "https://example.com/northstar-analytics/walkthrough"
+      },
+      {
+        "title": "Download KPI Template",
+        "buttonLabel": "Download",
+        "href": "https://example.com/northstar-analytics/kpi-template"
+      },
+      {
+        "title": "Review Alert Logic",
+        "buttonLabel": "View Logic",
+        "href": "https://example.com/northstar-analytics/alert-logic"
+      }
+    ],
+    "contactCard": {
+      "logoImage": "/images/tc-logo.png",
+      "title": "Contact NorthStar Analytics",
+      "description": "Looking for a student success dashboard that gives advisors the right signal at the right time?",
+      "buttonLabel": "Book Consultation",
+      "buttonHref": "https://example.com/northstar-analytics/contact"
+    },
+    "sidebar": {
+      "bannerImage": "https://i.ibb.co/fzzhd5tf/school4.webp",
+      "title": "NorthStar Analytics",
+      "description": "Data platform for enrollment, retention, and intervention teams that need clear cohort visibility and actionable alerts.",
+      "resourceLinks": [
+        {
+          "label": "See Intervention Playbooks",
+          "href": "https://example.com/northstar-analytics/playbooks"
+        },
+        {
+          "label": "Read Advisor Case Studies",
+          "href": "https://example.com/northstar-analytics/advisor-stories"
+        },
+        {
+          "label": "Open Metrics Dictionary",
+          "href": "https://example.com/northstar-analytics/metrics"
+        }
+      ],
+      "socialLinks": [
+        {
+          "platform": "twitter",
+          "href": "https://twitter.com/northstaranlytcs",
+          "label": "NorthStar Analytics on X"
+        },
+        {
+          "platform": "facebook",
+          "href": "https://facebook.com/northstaranalytics",
+          "label": "NorthStar Analytics on Facebook"
+        },
+        {
+          "platform": "linkedin",
+          "href": "https://linkedin.com/company/northstar-analytics",
+          "label": "NorthStar Analytics on LinkedIn"
+        }
+      ],
+      "primaryActionLabel": "Contact NorthStar Analytics",
+      "primaryActionHref": "https://example.com/northstar-analytics/contact"
+    }
+  },
+  {
+    "id": 5,
+    "title": "Learning Management System",
+    "description": "A modern learning management system with focus on mobile-first design and seamless content delivery.",
+    "date": "July 2023",
+    "coverImage": "https://i.ibb.co/dJDHGnDz/student1.webp",
+    "authorName": "Lisa Thompson",
+    "authorAvatar": "https://i.ibb.co/W4YnsHJX/AVATAR-couponcodefinder.jpg",
+    "tags": ["Mobile Learning", "LMS"],
+    "tagCount": 9,
+    "cost": "$2500-$4500",
+    "duration": "15-50 days",
+    "imageCount": 3,
+    "galleryImages": [
+      "https://i.ibb.co/dJDHGnDz/student1.webp",
+      "https://i.ibb.co/J8QjpbD/school1.webp",
+      "https://i.ibb.co/B5pFBbB2/school5.webp"
+    ],
+    "stats": [
+      { "label": "Daily Learners", "value": "31,500+" },
+      { "label": "Mobile Completion Rate", "value": "91%" },
+      { "label": "Offline Lessons Served", "value": "12,400" }
+    ],
+    "actionItems": [
+      {
+        "title": "Schedule LMS Demo",
+        "buttonLabel": "Book Demo",
+        "href": "https://example.com/pulse-campus/demo"
+      },
+      {
+        "title": "Download Mobile App Overview",
+        "buttonLabel": "Download",
+        "href": "https://example.com/pulse-campus/mobile-overview"
+      },
+      {
+        "title": "View Content Delivery Stack",
+        "buttonLabel": "View Stack",
+        "href": "https://example.com/pulse-campus/content-stack"
+      }
+    ],
+    "contactCard": {
+      "logoImage": "/images/fox-logo.png",
+      "title": "Contact Pulse Campus",
+      "description": "Want a mobile-first LMS with offline lessons, flexible pacing, and clean instructor workflows?",
+      "buttonLabel": "Talk to Sales",
+      "buttonHref": "https://example.com/pulse-campus/contact"
+    },
+    "sidebar": {
+      "bannerImage": "https://i.ibb.co/J8QjpbD/school1.webp",
+      "title": "Pulse Campus",
+      "description": "Modern learning platform helping schools ship course content faster across desktop, tablet, and mobile student journeys.",
+      "resourceLinks": [
+        {
+          "label": "Browse Course Templates",
+          "href": "https://example.com/pulse-campus/templates"
+        },
+        {
+          "label": "See Mobile UX Examples",
+          "href": "https://example.com/pulse-campus/mobile-ux"
+        },
+        {
+          "label": "Explore Delivery Architecture",
+          "href": "https://example.com/pulse-campus/architecture"
+        }
+      ],
+      "socialLinks": [
+        {
+          "platform": "twitter",
+          "href": "https://twitter.com/pulsecampus",
+          "label": "Pulse Campus on X"
+        },
+        {
+          "platform": "facebook",
+          "href": "https://facebook.com/pulsecampus",
+          "label": "Pulse Campus on Facebook"
+        },
+        {
+          "platform": "linkedin",
+          "href": "https://linkedin.com/company/pulse-campus",
+          "label": "Pulse Campus on LinkedIn"
+        }
+      ],
+      "primaryActionLabel": "Contact Pulse Campus",
+      "primaryActionHref": "https://example.com/pulse-campus/contact"
+    }
+  }
+]

@@ -132,10 +132,13 @@ const BasicPricing: React.FC = () => {
     tiers: PackTier[] | number[],
     action: 'increase' | 'decrease'
   ) => {
-    if (Array.isArray(tiers[0])) {
+    if (typeof tiers[0] === 'number') {
       // For credit tiers (number array)
       const tierArray = tiers as number[];
       const currentIndex = tierArray.indexOf(current);
+      if (currentIndex === -1) {
+        return current;
+      }
       if (action === 'increase' && currentIndex < tierArray.length - 1) {
         return tierArray[currentIndex + 1];
       } else if (action === 'decrease' && currentIndex > 0) {
@@ -145,6 +148,9 @@ const BasicPricing: React.FC = () => {
       // For pack tiers (object array)
       const tierArray = tiers as PackTier[];
       const currentIndex = tierArray.findIndex(t => t.count === current);
+      if (currentIndex === -1) {
+        return current;
+      }
       if (action === 'increase' && currentIndex < tierArray.length - 1) {
         return tierArray[currentIndex + 1].count;
       } else if (action === 'decrease' && currentIndex > 0) {
@@ -320,7 +326,7 @@ const BasicPricing: React.FC = () => {
 
         {/* Individual User Plans */}
         {activePlan === 'individual-plans' && (
-          <div className="flex flex-col md:flex-row md:justify-center gap-6 mb-12 md:flex-wrap max-w-[1400px] mx-auto mt-4 max-md:px-4 max-md:items-center">
+          <div className="flex flex-col md:flex-row md:justify-center gap-6 mb-12 md:flex-wrap max-w-[1400px] mx-auto mt-4 max-md:items-center">
             {/* Explorer Plan */}
             <PricingCard
               title="Explorer"
@@ -427,7 +433,7 @@ const BasicPricing: React.FC = () => {
 
         {/* Listing Owner Plans */}
         {activePlan === 'owner-plans' && (
-          <div className="flex flex-col items-center gap-6 mb-12 mt-4 max-md:px-4">
+          <div className="flex flex-col items-center gap-6 mb-12 mt-4">
             {/* Basic Listing */}
             <div className="w-full max-w-[900px] max-md:max-w-[390px] mx-auto bg-white rounded-2xl shadow-md border border-[#E7E7E7] flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-8 p-6 md:p-8 hover:shadow-lg hover:-translate-y-1 transition-all">
               <div className="flex flex-col gap-5 order-1">
@@ -628,7 +634,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
 
   return (
     <div
-      className={`w-full max-md:max-w-[360px] md:w-[340px] bg-white rounded-2xl p-6 md:p-8 relative overflow-hidden flex flex-col min-h-auto md:min-h-[520px] shadow-md transition-all hover:-translate-y-1 hover:shadow-lg border border-[#E7E7E7] ${
+      className={`w-full max-md:max-w-[390px] md:w-[340px] bg-white rounded-2xl p-6 md:p-8 relative overflow-hidden flex flex-col min-h-auto md:min-h-[520px] shadow-md transition-all hover:-translate-y-1 hover:shadow-lg border border-[#E7E7E7] ${
         accentColor ? 'border-t-4' : ''
       }`}
       style={accentColor ? { borderTopColor: accentColors[accentColor] } : {}}
@@ -1242,4 +1248,3 @@ const ImageIcon = () => (
 );
 
 export default BasicPricing;
-

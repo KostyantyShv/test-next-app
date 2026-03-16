@@ -37,11 +37,23 @@ function generate(type: LeaderboardType): LBItem[] {
   }));
 }
 
+function getPointsTooltipText(type: LeaderboardType, points: number) {
+  switch (type) {
+    case "reviews":
+      return `+${points} new reviews`;
+    case "followers":
+      return `+${points} new followers`;
+    case "events":
+      return `+${points} new attendees`;
+  }
+}
+
 export default function LeaderboardMobile() {
   const [active, setActive] = useState<LeaderboardType>("reviews");
   const [items, setItems] = useState<LBItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(true);
+  const [openTooltipId, setOpenTooltipId] = useState<string | null>(null);
 
   const metricCards = useMemo(
     () => [
@@ -61,10 +73,45 @@ export default function LeaderboardMobile() {
     return () => clearTimeout(timer);
   }, [active]);
 
+  useEffect(() => {
+    if (!openTooltipId) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element) || !target.closest("[data-mobile-leaderboard-tooltip-trigger]")) {
+        setOpenTooltipId(null);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpenTooltipId(null);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [openTooltipId]);
+
+  useEffect(() => {
+    setOpenTooltipId(null);
+  }, [active]);
+
+  useEffect(() => {
+    if (!isExpanded) {
+      setOpenTooltipId(null);
+    }
+  }, [isExpanded]);
+
   return (
-    <div className="md:hidden w-full max-w-[420px] mx-auto px-3 pb-5">
+    <div className="md:hidden w-full max-w-[390px] mx-auto pb-5">
       {/* Header */}
-      <div className="pt-6 pb-3 text-[#464646]">
+      <div className="pt-[14px] pb-4 text-[#464646]">
         <h1 className="text-[20px] font-bold">Leaderboard</h1>
       </div>
 
@@ -141,7 +188,7 @@ export default function LeaderboardMobile() {
       </div>
 
       {/* Leaderboard section */}
-      <div className="w-full max-w-[366px] mx-auto bg-white rounded-2xl shadow-md overflow-hidden">
+      <div className="w-full bg-white rounded-2xl shadow-md overflow-hidden">
         <button
           className="w-full flex items-center justify-between px-5 py-5 border-b border-[#F8F9FA] bg-white cursor-pointer"
           onClick={() => setIsExpanded(!isExpanded)}
@@ -236,7 +283,30 @@ export default function LeaderboardMobile() {
                     className="w-10 h-10 rounded-[10px] object-cover mr-3 flex-shrink-0"
                   />
                   <div className="flex-1 text-[14px] font-semibold text-[#464646] truncate">{it.schoolName}</div>
-                  <div className="text-[16px] font-bold text-[#1D77BD] flex-shrink-0">+{it.points}</div>
+                  <div className="relative ml-3 flex-shrink-0">
+                    <button
+                      type="button"
+                      data-mobile-leaderboard-tooltip-trigger
+                      className="relative text-[16px] font-bold text-[#1D77BD] transition-colors duration-200 active:text-[#165f95]"
+                      aria-expanded={openTooltipId === `${active}-${it.rank}`}
+                      aria-describedby={openTooltipId === `${active}-${it.rank}` ? `leaderboard-tooltip-${active}-${it.rank}` : undefined}
+                      onClick={() =>
+                        setOpenTooltipId((current) => (current === `${active}-${it.rank}` ? null : `${active}-${it.rank}`))
+                      }
+                    >
+                      +{it.points}
+                      {openTooltipId === `${active}-${it.rank}` && (
+                        <span
+                          id={`leaderboard-tooltip-${active}-${it.rank}`}
+                          role="tooltip"
+                          className="pointer-events-none absolute bottom-[calc(100%+8px)] right-0 z-20 whitespace-nowrap rounded-md bg-[#464646] px-4 py-2 text-xs font-normal text-white shadow-[0_8px_24px_rgba(0,0,0,0.18)]"
+                        >
+                          {getPointsTooltipText(active, it.points)}
+                          <span className="absolute right-3 top-full border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[#464646]" />
+                        </span>
+                      )}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -246,5 +316,3 @@ export default function LeaderboardMobile() {
     </div>
   );
 }
-
-

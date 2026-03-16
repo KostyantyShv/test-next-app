@@ -155,10 +155,13 @@ const Listing: React.FC<ListingProps> = ({
   return (
     <div 
       className="listing-page min-h-screen w-full flex flex-col"
-      style={{ backgroundColor: 'var(--background-color)' }}
+      style={{ backgroundColor: "var(--listing-page-shell, var(--background-color))" }}
     >
       {/* School Info Section with ref for mobile footer visibility */}
-      <div ref={schoolInfoRef} className="w-full max-w-[1077px] mx-auto">
+      <div
+        ref={schoolInfoRef}
+        className="listing-theme-content w-full max-w-[1077px] mx-auto"
+      >
         {/* Mobile - separate components */}
         <div className="block md:hidden">
           <SchoolInfo 
@@ -170,7 +173,7 @@ const Listing: React.FC<ListingProps> = ({
         
         {/* Desktop - combined in one wrapper */}
         <div className="hidden md:block">
-          <div className="school-info-wrapper block text-[0] leading-none bg-white rounded-lg">
+          <div className="school-info-wrapper block text-[0] leading-none bg-cardBackground rounded-lg">
             <div className="school-photos flex gap-[2px] w-full rounded-t-lg overflow-hidden text-base leading-normal max-w-[1077px]">
               <ImagesGrigDesktop images={images} />
             </div>
@@ -216,7 +219,7 @@ const Listing: React.FC<ListingProps> = ({
       
       {/* Main Content */}
       <div
-        className="w-full"
+        className="listing-theme-content w-full"
         // When the fixed header is visible, prevent content from being hidden under it.
         style={isDesktopStickyHeaderVisible ? { paddingTop: 112 } : undefined}
       >

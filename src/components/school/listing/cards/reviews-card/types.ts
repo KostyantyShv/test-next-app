@@ -17,3 +17,9 @@ export interface Review {
   flagUrl?: string;
   tags?: string[];
 }
+
+export interface ReviewHelpfulVoteState {
+  count: number;
+  hasVoted: boolean;
+  isSubmitting: boolean;
+}

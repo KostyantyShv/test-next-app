@@ -35,7 +35,6 @@ interface SaveToCollectionDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   schoolName?: string;
-  collections: CollectionItem[];
   filteredCollections: CollectionItem[];
   searchQuery: string;
   onSearchChange: (value: string) => void;
@@ -81,6 +80,44 @@ function CheckIconSvg() {
   );
 }
 
+function SaveToCollectionHeader({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-[#E5E7EB] bg-white px-5 py-4">
+      <h2 className="text-lg font-semibold leading-none text-[#464646]">
+        Save to <span className="text-[#346DC2]">Collection</span>
+      </h2>
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Close collections"
+        className="flex h-8 w-8 items-center justify-center rounded-full text-[#5F5F5F] transition-colors active:bg-[#F3F4F6]"
+      >
+        <CloseIcon />
+      </button>
+    </div>
+  );
+}
+
+function SaveToCollectionSearch({
+  searchQuery,
+  onSearchChange,
+}: {
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
+}) {
+  return (
+    <div className="shrink-0 border-b border-[#E5E7EB] px-5 py-4">
+      <input
+        type="text"
+        placeholder="Filter collections"
+        value={searchQuery}
+        onChange={(e) => onSearchChange(e.target.value)}
+        className="w-full rounded-lg border border-[#D1D5DB] bg-white px-4 py-3 text-[15px] text-[#4A4A4A] outline-none transition-all placeholder:text-[#5F5F5F] focus:border-[#1D77BD] focus:ring-4 focus:ring-[#1D77BD]/10"
+      />
+    </div>
+  );
+}
+
 /**
  * Save to Collection drawer — 1:1 visual and functional replica of the HTML/CSS/JS reference.
  * Mobile: drawer slides up from bottom with overlay
@@ -89,8 +126,6 @@ function CheckIconSvg() {
 export function SaveToCollectionDrawer({
   isOpen,
   onClose,
-  schoolName = '',
-  collections,
   filteredCollections,
   searchQuery,
   onSearchChange,
@@ -122,6 +157,100 @@ export function SaveToCollectionDrawer({
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [isOpen, onClose]);
 
+  if (!isOpen) return null;
+
+  const mobileContent = (
+    <div className="flex min-h-0 flex-1 flex-col bg-white">
+      <SaveToCollectionHeader onClose={onClose} />
+      <SaveToCollectionSearch
+        searchQuery={searchQuery}
+        onSearchChange={onSearchChange}
+      />
+
+      <div className="min-h-0 flex-1 overflow-y-auto py-2">
+        {filteredCollections.length > 0 ? (
+          filteredCollections.map((collection) => (
+            <div
+              key={collection.id}
+              role="button"
+              tabIndex={0}
+              onClick={() => onToggleCollection(collection.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onToggleCollection(collection.id);
+                }
+              }}
+              className="group relative flex cursor-pointer items-center px-5 py-3.5 transition-colors active:bg-[#F3F4F6]"
+            >
+              <div className="relative mr-3.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-[#DFDDDB] text-xl">
+                {collection.icon}
+                {collection.selected && (
+                  <div className="absolute -right-0.5 -top-0.5 flex h-[18px] w-[18px] items-center justify-center rounded-full border-2 border-white bg-[#1D77BD]">
+                    <CheckIconSvg />
+                  </div>
+                )}
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <div className="mb-0.5 truncate text-[15px] font-medium text-[#464646]">
+                  {collection.name}
+                </div>
+                <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                  <span>
+                    {collection.itemCount} {collection.itemCount === 1 ? 'item' : 'items'}
+                  </span>
+                  <div className="h-[3px] w-[3px] shrink-0 rounded-full bg-[#5F5F5F]" />
+                  <span>Updated {collection.updatedAgo}</span>
+                </div>
+              </div>
+
+              <div
+                className={`ml-3 flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200 ${
+                  collection.selected
+                    ? 'scale-100 border-[#1D77BD] bg-[#1D77BD] opacity-100'
+                    : 'scale-75 border-[#D1D5DB] bg-white opacity-0 group-active:opacity-50'
+                }`}
+              >
+                <CheckIconSvg />
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="py-10 text-center text-sm text-[#5F5F5F]">
+            No collections found
+          </div>
+        )}
+      </div>
+
+      <div className="sticky bottom-0 shrink-0 border-t border-[#E5E7EB] bg-white p-5 pb-safe">
+        <button
+          type="button"
+          onClick={onCreateCollection}
+          className="mb-3.5 flex w-full items-center gap-3 rounded-lg py-3.5 text-left text-[#4A4A4A] transition-colors active:bg-[#F3F4F6]"
+        >
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#DFDDDB] text-[#5F5F5F]">
+            <PlusIcon />
+          </div>
+          <span className="text-[15px] font-medium">Create a new collection</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={onDone}
+          disabled={!hasSelection}
+          className={`w-full rounded-lg py-3 text-[15px] font-medium text-white transition-colors ${
+            hasSelection
+              ? 'bg-[#1D77BD] active:bg-[#1565c0]'
+              : 'cursor-not-allowed bg-[#D1D5DB]'
+          }`}
+        >
+          Done
+        </button>
+      </div>
+    </div>
+  );
+
   // Desktop modal styles
   const desktopModalStyle: React.CSSProperties = {
     position: 'fixed',
@@ -143,6 +272,18 @@ export function SaveToCollectionDrawer({
     flexDirection: 'column',
     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
   };
+
+  if (isMobile) {
+    return (
+      <MobileDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Save to Collection"
+      >
+        {mobileContent}
+      </MobileDrawer>
+    );
+  }
 
   return (
     <>

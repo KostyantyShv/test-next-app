@@ -112,7 +112,7 @@ export const Preferences: FC = () => {
 
   return (
     <div className="min-h-screen preferences-page">
-      <div className="w-full md:max-w-[1220px] mx-auto px-4 md:px-5 py-5 md:py-10 pb-24 md:pb-10 overflow-x-hidden">
+      <div className="w-full md:max-w-[1220px] mx-auto px-4 md:px-5 py-5 md:py-10 pb-28 md:pb-10 overflow-x-hidden">
         <h1 className="text-[20px] md:text-[28px] font-semibold md:font-bold mb-5 md:mb-10" style={{ color: 'var(--bold-text)' }}>Preferences</h1>
 
         <GeneralPreferences
@@ -137,8 +137,8 @@ export const Preferences: FC = () => {
           isSaving={isSaving}
         />
 
-        {/* Mobile Sticky Save Button */}
-        <div className="md:hidden fixed bottom-[88px] left-4 right-4 z-50">
+        {/* Mobile Save Button */}
+        <div className="md:hidden mt-6 mb-[calc(96px+env(safe-area-inset-bottom))]">
           <button
             onClick={handleSave}
             disabled={isSaving}

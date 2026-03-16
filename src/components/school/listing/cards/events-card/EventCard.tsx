@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { useState } from "react";
+import { DesktopModal } from "@/components/ui/DesktopModal/DesktopModal";
+import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 import { Event } from "./types";
-import { Drawer } from "vaul";
 
 interface EventCardProps {
   event: Event;
@@ -48,6 +49,126 @@ const EventCard: React.FC<EventCardProps> = ({
     setShowLeaveDrawer(false);
   };
 
+  const closeLeaveConfirmation = () => {
+    setShowLeaveDrawer(false);
+  };
+
+  const leaveConfirmationContent = (variant: "mobile" | "desktop") => (
+    <div className={variant === "mobile" ? "px-5 pb-6 pt-2" : "p-6"}>
+      {variant === "desktop" ? (
+        <div className="mb-5 flex items-start justify-between gap-4">
+          <div>
+            <h4 className="m-0 text-[20px] font-semibold text-[#262B3D]">
+              Leave event?
+            </h4>
+            <p className="mt-1 text-sm leading-6 text-[#5F5F5F]">
+              This will remove the event from your calendar and attendee list.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={closeLeaveConfirmation}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-black/[0.08] text-[#5F5F5F] transition-colors hover:bg-[#F5F5F7]"
+            aria-label="Close leave event dialog"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      ) : null}
+
+      <div className="mb-5 flex items-center gap-3 rounded-[18px] border border-black/[0.06] bg-[#F9FAFB] p-3">
+        <Image
+          src={event.image}
+          alt={event.title}
+          width={48}
+          height={48}
+          className="h-12 w-12 rounded-lg object-cover"
+        />
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-[15px] font-semibold text-[#262B3D]">
+            {event.title}
+          </div>
+          <div className="mt-0.5 text-xs text-[#5F5F5F]">
+            {event.date} · {event.time}
+          </div>
+        </div>
+      </div>
+
+      {variant === "mobile" ? null : (
+        <p className="mb-6 text-sm leading-6 text-[#5F5F5F]">
+          You can join again later from the events section if you change your
+          mind.
+        </p>
+      )}
+
+      {variant === "mobile" ? (
+        <div className="space-y-2">
+          <button
+            type="button"
+            onClick={handleLeaveConfirm}
+            disabled={isMutating}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#FEE2E2] text-[#991B1B] font-semibold text-[15px] transition-colors hover:bg-[#FECACA] active:bg-[#FCA5A5] disabled:opacity-50"
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24">
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
+            </svg>
+            Leave Event
+          </button>
+
+          <button
+            type="button"
+            onClick={closeLeaveConfirmation}
+            className="w-full px-4 py-3 rounded-xl text-[#5F5F5F] font-medium text-[15px] transition-colors hover:bg-[#F5F5F7] active:bg-[#EFEFEF]"
+          >
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <div className="flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={closeLeaveConfirmation}
+            className="rounded-xl border border-black/[0.08] px-4 py-2.5 text-sm font-medium text-[#5F5F5F] transition-colors hover:bg-[#F5F5F7]"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            onClick={handleLeaveConfirm}
+            disabled={isMutating}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#E94B4B] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#D93E3E] disabled:opacity-50"
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24">
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
+            </svg>
+            Leave Event
+          </button>
+        </div>
+      )}
+    </div>
+  );
+
   const titleAndAddButton = (version: "mobile" | "desktop") => {
     return (
       <div
@@ -58,11 +179,12 @@ const EventCard: React.FC<EventCardProps> = ({
           {event.title}
         </h3>
         <div
-          className={`w-8 h-8 rounded-md flex items-center justify-center shrink-0 transition-all duration-200 ease-in-out cursor-pointer relative ${isMutating ? "opacity-60 cursor-not-allowed" : ""} ${isInCalendar
+          className={`listing-event-action w-8 h-8 rounded-md flex items-center justify-center shrink-0 transition-all duration-200 ease-in-out cursor-pointer relative ${isMutating ? "opacity-60 cursor-not-allowed" : ""} ${isInCalendar
             ? "bg-[#00e28f] md:bg-[#00e28f] text-white md:text-white"
             : "bg-[rgba(59,110,145,0.08)] hover:bg-[rgba(59,110,145,0.12)]"
             }`}
           onClick={handleJoinClick}
+          data-joined={isInCalendar ? "true" : "false"}
         >
           {isInCalendar ? (
             <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24">
@@ -96,7 +218,7 @@ const EventCard: React.FC<EventCardProps> = ({
 
   return (
     <>
-      <div className="flex flex-col md:flex-row gap-3 md:gap-4 p-4 rounded-lg md:rounded-xl border border-black/[0.08] bg-white transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:border-black/[0.12]">
+      <div className="listing-dark-panel listing-event-card flex flex-col md:flex-row gap-3 md:gap-4 p-4 rounded-lg md:rounded-xl border border-black/[0.08] bg-white transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:border-black/[0.12]">
         <div className="w-full flex gap-3 flex-row md:w-10 h-12 md:h-10 rounded-md overflow-hidden shrink-0">
           <Image
             src={event.image}
@@ -188,79 +310,21 @@ const EventCard: React.FC<EventCardProps> = ({
         </div>
       </div>
 
-      {/* Leave Event VAUL Drawer (mobile) */}
-      <Drawer.Root
-        open={showLeaveDrawer}
-        onOpenChange={(open) => {
-          if (!open) setShowLeaveDrawer(false);
-        }}
+      <MobileDrawer
+        isOpen={showLeaveDrawer}
+        onClose={closeLeaveConfirmation}
+        title="Leave Event"
       >
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-[rgba(27,27,27,0.4)] backdrop-blur-[4px] z-[2500]" />
-          <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-[3000] flex flex-col bg-white rounded-t-[24px] outline-none"
-            style={{
-              boxShadow:
-                "0 -8px 32px rgba(0, 0, 0, 0.12), 0 -2px 8px rgba(0, 0, 0, 0.04)",
-            }}
-            aria-describedby={undefined}
-          >
-            <Drawer.Title className="sr-only">Leave Event</Drawer.Title>
-            {/* Pull indicator */}
-            <div className="mx-auto mt-3 mb-2 w-9 h-1 rounded-full bg-[#DFDDDB] flex-shrink-0" />
+        {leaveConfirmationContent("mobile")}
+      </MobileDrawer>
 
-            {/* Drawer content */}
-            <div className="px-5 pb-6 pt-2">
-              {/* Event preview */}
-              <div className="flex items-center gap-3 mb-5">
-                <Image
-                  src={event.image}
-                  alt={event.title}
-                  width={48}
-                  height={48}
-                  className="w-12 h-12 object-cover rounded-lg"
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="text-[15px] font-semibold text-[#262B3D] truncate">
-                    {event.title}
-                  </div>
-                  <div className="text-xs text-[#5F5F5F] mt-0.5">
-                    {event.date} · {event.time}
-                  </div>
-                </div>
-              </div>
-
-              {/* Leave button */}
-              <button
-                type="button"
-                onClick={handleLeaveConfirm}
-                disabled={isMutating}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#FEE2E2] text-[#991B1B] font-semibold text-[15px] hover:bg-[#FECACA] active:bg-[#FCA5A5] transition-colors disabled:opacity-50"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  />
-                </svg>
-                Leave Event
-              </button>
-
-              {/* Cancel */}
-              <button
-                type="button"
-                onClick={() => setShowLeaveDrawer(false)}
-                className="w-full mt-2 px-4 py-3 rounded-xl text-[#5F5F5F] font-medium text-[15px] hover:bg-[#F5F5F7] active:bg-[#EFEFEF] transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
+      <DesktopModal
+        isOpen={showLeaveDrawer}
+        onClose={closeLeaveConfirmation}
+        className="w-full max-w-[440px]"
+      >
+        {leaveConfirmationContent("desktop")}
+      </DesktopModal>
     </>
   );
 };

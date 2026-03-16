@@ -5,13 +5,14 @@ import CardWrapper from "../../card-wrapper/CardWrapper";
 import { useState } from "react";
 import { RATING_DISTRIBUTION, REVIEWS } from "./mock";
 import { formatVoteLabel, getReviewVoteCounts } from "./vote-utils";
+import { ReviewHelpfulVoteState } from "./types";
 
 export default function Reviews({ id }: { id: string }) {
   const [expandedReplies, setExpandedReplies] = useState<
     Record<number, boolean>
   >({});
   const [voteError, setVoteError] = useState<string | null>(null);
-  const [helpfulVotes, setHelpfulVotes] = useState(() =>
+  const [helpfulVotes, setHelpfulVotes] = useState<ReviewHelpfulVoteState[]>(() =>
     REVIEWS.map((review) => ({
       count: getReviewVoteCounts(review).helpful,
       hasVoted: false,
@@ -26,14 +27,18 @@ export default function Reviews({ id }: { id: string }) {
     }));
   };
 
-  const submitHelpfulVote = async () => {
+  const submitHelpfulVote = async (nextHasVoted: boolean) => {
     // TODO: wire this to a real mutation when review voting API is available.
+    void nextHasVoted;
     return Promise.resolve();
   };
 
   const handleHelpfulVote = async (reviewIndex: number) => {
     const currentVote = helpfulVotes[reviewIndex];
-    if (!currentVote || currentVote.hasVoted || currentVote.isSubmitting) return;
+    if (!currentVote || currentVote.isSubmitting) return;
+
+    const nextHasVoted = !currentVote.hasVoted;
+    const voteDelta = nextHasVoted ? 1 : -1;
 
     setVoteError(null);
     setHelpfulVotes((prev) =>
@@ -41,8 +46,8 @@ export default function Reviews({ id }: { id: string }) {
         index === reviewIndex
           ? {
               ...vote,
-              count: vote.count + 1,
-              hasVoted: true,
+              count: Math.max(0, vote.count + voteDelta),
+              hasVoted: nextHasVoted,
               isSubmitting: true,
             }
           : vote
@@ -50,7 +55,7 @@ export default function Reviews({ id }: { id: string }) {
     );
 
     try {
-      await submitHelpfulVote();
+      await submitHelpfulVote(nextHasVoted);
       setHelpfulVotes((prev) =>
         prev.map((vote, index) =>
           index === reviewIndex ? { ...vote, isSubmitting: false } : vote
@@ -64,8 +69,8 @@ export default function Reviews({ id }: { id: string }) {
           index === reviewIndex
             ? {
                 ...vote,
-                count: Math.max(0, vote.count - 1),
-                hasVoted: false,
+                count: Math.max(0, vote.count - voteDelta),
+                hasVoted: currentVote.hasVoted,
                 isSubmitting: false,
               }
             : vote
@@ -187,19 +192,17 @@ export default function Reviews({ id }: { id: string }) {
               <button
                 type="button"
                 onClick={() => handleHelpfulVote(index)}
-                disabled={
-                  helpfulVotes[index]?.hasVoted || helpfulVotes[index]?.isSubmitting
-                }
+                disabled={helpfulVotes[index]?.isSubmitting}
                 aria-pressed={helpfulVotes[index]?.hasVoted ?? false}
                 className={`flex items-center gap-1.5 transition-all duration-200 py-1.5 px-2 md:px-2.5 rounded-md ${
                   helpfulVotes[index]?.hasVoted
-                    ? "bg-[#EBFCF4] text-[#016853] cursor-not-allowed"
+                    ? "text-[#016853] hover:text-[#016853] hover:bg-[#F1FBF6] cursor-pointer"
                     : "text-[#5F5F5F] hover:bg-[#F8F9FA] hover:text-[#016853] cursor-pointer"
                 } ${helpfulVotes[index]?.isSubmitting ? "opacity-80" : ""}`}
               >
                 <svg
                   viewBox="0 0 24 24"
-                  fill={helpfulVotes[index]?.hasVoted ? "currentColor" : "none"}
+                  fill="none"
                   stroke="currentColor"
                   className="w-3.5 h-3.5 stroke-2"
                 >
@@ -287,7 +290,10 @@ export default function Reviews({ id }: { id: string }) {
       </div>
 
       <div className="flex justify-center mt-6 md:mt-8">
-        <ReviewsModal />
+        <ReviewsModal
+          helpfulVotes={helpfulVotes}
+          onHelpfulVote={handleHelpfulVote}
+        />
       </div>
     </CardWrapper>
   );

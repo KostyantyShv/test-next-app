@@ -221,72 +221,76 @@ export const AddMemberDrawer: React.FC<AddMemberDrawerProps> = ({
             Admin access
           </label>
         </div>
-        <div className="h-px bg-gray-200 my-5" />
-        <div>
-          <h3 
-            className="mb-4"
-            style={{
-              fontSize: '16px',
-              fontWeight: 500,
-              color: '#464646',
-              fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
-            }}
-          >
-            Assign to Listings
-          </h3>
-          {listings.map((listing) => {
-            const isChecked = selectedListingIds.includes(listing.id);
-            return (
-            <label
-                className="flex items-center gap-3 py-3 border-b border-gray-200 last:border-b-0 cursor-pointer"
-              htmlFor={`listing${listing.id}`}
-              key={listing.id}
-            >
-                <div className="relative flex-shrink-0">
-              <input
-                type="checkbox"
-                id={`listing${listing.id}`}
-                    className="appearance-none h-5 w-5 border-2 border-gray-300 rounded focus:outline-none"
-                    style={{
-                      backgroundColor: isChecked ? '#0B6333' : 'white',
-                      borderColor: isChecked ? '#0B6333' : '#D1D5DB',
-                    }}
-                    checked={isChecked}
-                    onChange={() => handleToggleListing(listing.id)}
-                  />
-                  {isChecked && (
-                    <svg
-                      className="absolute top-0 left-0 pointer-events-none"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      style={{ width: '20px', height: '20px' }}
-                    >
-                      <path
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        fill="white"
+        {!isAdmin && (
+          <>
+            <div className="h-px bg-gray-200 my-5" />
+            <div>
+              <h3
+                className="mb-4"
+                style={{
+                  fontSize: '16px',
+                  fontWeight: 500,
+                  color: '#464646',
+                  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+                }}
+              >
+                Assign to Listings
+              </h3>
+              {listings.map((listing) => {
+                const isChecked = selectedListingIds.includes(listing.id);
+                return (
+                  <label
+                    className="flex items-center gap-3 py-3 border-b border-gray-200 last:border-b-0 cursor-pointer"
+                    htmlFor={`listing${listing.id}`}
+                    key={listing.id}
+                  >
+                    <div className="relative flex-shrink-0">
+                      <input
+                        type="checkbox"
+                        id={`listing${listing.id}`}
+                        className="appearance-none h-5 w-5 border-2 border-gray-300 rounded focus:outline-none"
+                        style={{
+                          backgroundColor: isChecked ? '#0B6333' : 'white',
+                          borderColor: isChecked ? '#0B6333' : '#D1D5DB',
+                        }}
+                        checked={isChecked}
+                        onChange={() => handleToggleListing(listing.id)}
                       />
-                    </svg>
-                  )}
-                </div>
-              <img
-                src={listing.image}
-                alt={listing.name}
-                className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-              />
-                <span 
-                  className="flex-1 truncate"
-                  style={{
-                    fontSize: '15px',
-                    color: '#4A4A4A',
-                    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
-                  }}
-                >
-                {listing.name}
-              </span>
-            </label>
-            );
-          })}
-        </div>
+                      {isChecked && (
+                        <svg
+                          className="absolute top-0 left-0 pointer-events-none"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          style={{ width: '20px', height: '20px' }}
+                        >
+                          <path
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            fill="white"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                    <img
+                      src={listing.image}
+                      alt={listing.name}
+                      className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+                    />
+                    <span
+                      className="flex-1 truncate"
+                      style={{
+                        fontSize: '15px',
+                        color: '#4A4A4A',
+                        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+                      }}
+                    >
+                      {listing.name}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </>
+        )}
       </form>
     </Drawer>
   );

@@ -126,7 +126,7 @@ const UniversalSchoolCard: React.FC<UniversalSchoolCardProps> = ({
         </div>
 
         {/* Polls Section */}
-        <div className="bg-[#F8FCFF] rounded-xl p-6">
+        <div className="listing-dark-panel bg-[#F8FCFF] rounded-xl p-6">
           <div className="flex items-center gap-2 mb-6">
             <div className={styles.pollIcon}></div>
             <div className="text-[#1D77BD] text-base font-semibold uppercase tracking-[0.05em]">

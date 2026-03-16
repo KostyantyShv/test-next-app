@@ -1,7 +1,7 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
-import { DndContext, TouchSensor, MouseSensor, useSensor, useSensors, closestCenter, DragEndEvent } from "@dnd-kit/core";
+import { CSSProperties, FormEvent, useEffect, useRef, useState } from "react";
+import { DndContext, TouchSensor, useSensor, useSensors, closestCenter, DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -54,12 +54,7 @@ export default function FAQ() {
       tolerance: 5,
     },
   });
-  const mouseSensor = useSensor(MouseSensor, {
-    activationConstraint: {
-      distance: 5,
-    },
-  });
-  const sensors = useSensors(touchSensor, mouseSensor);
+  const sensors = useSensors(touchSensor);
 
   useEffect(() => {
     return () => {
@@ -252,15 +247,32 @@ export default function FAQ() {
       attributes,
       listeners,
       setNodeRef,
+      setActivatorNodeRef,
       transform,
       transition,
       isDragging,
     } = useSortable({ id: question.id });
 
+    const activeTransform = transform
+      ? {
+          ...transform,
+          scaleX: isDragging ? 1.02 : 1,
+          scaleY: isDragging ? 1.02 : 1,
+        }
+      : null;
+
     const style = {
-      transform: CSS.Transform.toString(transform),
+      transform: CSS.Transform.toString(activeTransform),
       transition,
       zIndex: isDragging ? 5 : 0,
+    };
+
+    const dragHandleStyle: CSSProperties = {
+      touchAction: "none",
+      WebkitTouchCallout: "none",
+      WebkitUserSelect: "none",
+      userSelect: "none",
+      WebkitTapHighlightColor: "transparent",
     };
 
     return (
@@ -271,13 +283,18 @@ export default function FAQ() {
           question.pinned
             ? "border border-[#D7F7E9] bg-[#EBFCF4]"
             : "bg-[#F8F9FA]"
-        } ${isDragging ? "shadow-[0_8px_20px_rgba(0,0,0,0.18)]" : ""}`}
+        } ${isDragging ? "shadow-[0_12px_28px_rgba(0,0,0,0.2)] ring-1 ring-[#D7F7E9]" : ""}`}
       >
         <button
           type="button"
-          className="mr-3 flex cursor-grab flex-col justify-center"
-          style={{ touchAction: "none" }}
+          ref={setActivatorNodeRef}
+          className={`mr-3 flex flex-col justify-center rounded-md p-1 text-[#5F5F5F] ${
+            isDragging ? "cursor-grabbing" : "cursor-grab"
+          }`}
+          style={dragHandleStyle}
           aria-label="Reorder question"
+          onContextMenu={(event) => event.preventDefault()}
+          draggable={false}
           {...attributes}
           {...listeners}
         >
@@ -291,7 +308,14 @@ export default function FAQ() {
           </span>
         </button>
 
-        <div className="flex-1 text-sm font-semibold text-[#1B1B1B]">
+        <div
+          className="flex-1 select-none text-sm font-semibold text-[#1B1B1B]"
+          style={{
+            WebkitUserSelect: "none",
+            userSelect: "none",
+            WebkitTouchCallout: "none",
+          }}
+        >
           {question.title}
         </div>
 

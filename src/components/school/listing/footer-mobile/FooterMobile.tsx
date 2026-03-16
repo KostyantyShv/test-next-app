@@ -7,7 +7,7 @@ const Footer: React.FC<FooterProps> = ({ isFooterVisible, images }) => {
   return (
     <div className="absolute top-0 left-0 right-0 pointer-events-none z-[20]">
       <div
-        className={`fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_8px_rgba(0,0,0,0.1)] p-3 sm:p-2.5 flex justify-between items-center transition-transform duration-300 ease-in-out transform ${
+        className={`listing-mobile-sticky-footer fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_8px_rgba(0,0,0,0.1)] p-3 sm:p-2.5 flex justify-between items-center transition-transform duration-300 ease-in-out transform ${
           isFooterVisible ? "translate-y-[-73px]" : "translate-y-0"
         }`}
       >

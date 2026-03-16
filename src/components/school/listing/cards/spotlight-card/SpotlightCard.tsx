@@ -7,11 +7,14 @@ import SpotlightModal from "./SpotlightModal";
 import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 import { DesktopModal } from "@/components/ui/DesktopModal/DesktopModal";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { Project } from "./project.type";
 
 const SpotlightCard: React.FC<{ id: string }> = ({ id }) => {
-  const [selectedProject, setSelectedProject] = useState(projects[0]);
+  const [selectedProjectId, setSelectedProjectId] = useState(projects[0].id);
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useIsMobile();
+  const selectedProject =
+    projects.find((project) => project.id === selectedProjectId) ?? projects[0];
 
   const handleShowPopup = () => {
     setIsOpen(true);
@@ -21,12 +24,12 @@ const SpotlightCard: React.FC<{ id: string }> = ({ id }) => {
     setIsOpen(false);
   };
 
-  const handleProjectChange = (project: typeof projects[0]) => {
-    setSelectedProject(project);
+  const handleProjectChange = (project: Project) => {
+    setSelectedProjectId(project.id);
   };
 
   useEffect(() => {
-    setSelectedProject(projects[0]);
+    setSelectedProjectId(projects[0].id);
   }, []);
 
   return (
@@ -41,14 +44,16 @@ const SpotlightCard: React.FC<{ id: string }> = ({ id }) => {
             openModal={handleShowPopup}
           />
           <Thumbnails
+            activeProjectId={selectedProject.id}
             projects={projects}
-            onSelectProject={setSelectedProject}
+            onSelectProject={handleProjectChange}
           />
         </div>
       </CardWrapper>
       {isMobile ? (
         <MobileDrawer isOpen={isOpen} onClose={handleHidePopup}>
           <SpotlightModal
+            key={selectedProject.id}
             onClose={handleHidePopup}
             project={selectedProject}
             allProjects={projects}
@@ -58,6 +63,7 @@ const SpotlightCard: React.FC<{ id: string }> = ({ id }) => {
       ) : (
         <DesktopModal isOpen={isOpen} onClose={handleHidePopup}>
           <SpotlightModal
+            key={selectedProject.id}
             onClose={handleHidePopup}
             project={selectedProject}
             allProjects={projects}

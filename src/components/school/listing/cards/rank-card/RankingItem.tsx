@@ -24,7 +24,7 @@ const RankingItem: React.FC<RankingItemProps> = ({
   trend,
 }) => {
   return (
-    <div className="relative flex flex-col items-start gap-4 bg-white border border-[#E5E5E5] rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md group md:bg-gradient-to-b md:from-[rgba(1,104,83,0.03)] md:to-transparent md:border-none">
+    <div className="listing-dark-panel listing-ranking-card relative flex flex-col items-start gap-4 bg-white border border-[#E5E5E5] rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md group md:bg-gradient-to-b md:from-[rgba(1,104,83,0.03)] md:to-transparent md:border-none">
       <div className="flex md:items-center w-full md:flex-col md:gap-2">
         <div className="relative w-[42px] h-[42px] bg-[#EBFCF4] border-2 border-[#0B6333] rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform duration-300 mr-4 md:w-12 md:h-12 md:rounded-full md:border-[#089E68]">
           <span className="text-[#016853] text-lg font-bold z-10 md:text-2xl">

@@ -7,21 +7,12 @@ import K12Filters from "../filter-sidebar/filters/k12-filters";
 import CollegesFilters from "../filter-sidebar/filters/colleges-filters";
 import { ESTABLISHMENT } from "@/store/enum";
 import { Portal } from "@/components/ui/Portal";
-import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 import { useOpenMobileSidebar } from "@/context/OpenMobileSidebarContext";
 import { MobileActionsDrawer } from "./MobileActionsDrawer";
 import { Drawer } from "vaul";
+import { MobileMapModal } from "@/components/school/shared/MobileMapModal";
 import {
   FiltersType,
-  FilterValue,
-  GradeFilter,
-  TypeFilter,
-  ReligionType,
-  SpecialtyType,
-  CollegeTypeFilter,
-  CollegeSubTypeFilter,
-  MajorsType,
-  Program,
   SchoolScoutGrade,
   SchoolScoutGradeEntry,
   EstablishmentType,
@@ -69,8 +60,6 @@ const Header: React.FC<HeaderProps> = ({
   dropdownIcon: _dropdownIcon,
   renderDropdownItems: _renderDropdownItems,
   layoutToggleWidth: _layoutToggleWidth,
-  renderActionsButton: _renderActionsButton,
-  renderItemsCount: _renderItemsCount,
 }) => {
   const {
     setEstablishment,
@@ -79,15 +68,7 @@ const Header: React.FC<HeaderProps> = ({
     filterGraduates,
     filterDistrict,
     establishment,
-    setGrade,
-    setMajors,
-    setReligion,
-    setSpecialty,
-    setType,
-    setCollegeType,
-    setProgram,
     resetFilters,
-    removeFilter,
   } = useSchoolsExplore((state) => state);
   const [isEstablishmentDrawerOpen, setIsEstablishmentDrawerOpen] = useState(false);
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
@@ -197,28 +178,6 @@ const Header: React.FC<HeaderProps> = ({
     setIsFilterDrawerOpen(true);
   };
 
-  const getOnChangeHandler = (filterKey: keyof FiltersType) => {
-    const setters: Record<keyof FiltersType, (value: FilterValue) => void> = {
-      grade: (value) => setGrade(value as GradeFilter),
-      type: (value) => setType(value as TypeFilter),
-      religion: (value) => setReligion(value as ReligionType),
-      specialty: (value) => setSpecialty(value as SpecialtyType),
-      collegeTypeColleges: (value) => {
-        const [type, subType] = (value as string).split(": ");
-        if (subType)
-          setCollegeType(
-            type as CollegeTypeFilter,
-            subType as CollegeSubTypeFilter
-          );
-      },
-      majors: (value) => setMajors(value as MajorsType),
-      program: (value) => setProgram(value as Program),
-    };
-
-    return (e: React.ChangeEvent<HTMLInputElement>) =>
-      setters[filterKey]?.(e.target.dataset.value as FilterValue);
-  };
-
   const isOptionChecked = (
     optionValue: string,
     key: keyof FiltersType
@@ -324,15 +283,15 @@ const Header: React.FC<HeaderProps> = ({
           role="option"
           aria-selected={isSelected}
           onClick={() => handleEstablishmentSelect(type)}
-          className={`flex items-center px-4 py-2.5 cursor-pointer transition-colors hover:bg-[#f5f5f7] ${isSelected ? "bg-[rgba(1,104,83,0.1)] text-[var(--header-green)]" : ""
+          className={`explore-desktop-dropdown-option flex items-center px-4 py-2.5 cursor-pointer transition-colors hover:bg-[#f5f5f7] ${isSelected ? "is-selected bg-[rgba(1,104,83,0.1)] text-[var(--header-green)]" : ""
             }`}
         >
-          <div className="w-6 h-6 flex items-center justify-center mr-3 text-[var(--subtle-text)]">
+          <div className="explore-desktop-dropdown-option-icon w-6 h-6 flex items-center justify-center mr-3 text-[var(--subtle-text)]">
             {getEstablishmentIcon(type)}
           </div>
           <div className="flex-1 flex items-center justify-between">
             <span className="text-sm font-medium">{type}</span>
-            <span className="text-xs text-[var(--subtle-text)]">
+            <span className="explore-desktop-dropdown-option-count text-xs text-[var(--subtle-text)]">
               {type === "K-12" && "2,583 schools"}
               {type === "Colleges" && "1,870 colleges"}
               {type === "Graduates" && "642 programs"}
@@ -443,7 +402,7 @@ const Header: React.FC<HeaderProps> = ({
           </button>
 
           <div
-            className={`explore-desktop-dropdown-menu absolute top-full left-0 mt-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.1)] w-60 z-50 ${isDesktopEstablishmentOpen ? "block" : "hidden"
+            className={`explore-desktop-dropdown-menu explore-desktop-establishment-menu absolute top-full left-0 mt-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.1)] w-60 z-50 ${isDesktopEstablishmentOpen ? "block" : "hidden"
               }`}
           >
             {hasCustomDropdown ? (
@@ -598,7 +557,7 @@ const Header: React.FC<HeaderProps> = ({
               }, 300);
             }}
           >
-            {desktopLayouts.map((item, index) => {
+            {desktopLayouts.map((item) => {
               const isActive = layout === item.type;
               const shouldShowButton = isActive || isLayoutToggleExpanded;
               return (
@@ -665,7 +624,7 @@ const Header: React.FC<HeaderProps> = ({
             </button>
 
             <div
-              className={`absolute right-0 mt-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.1)] min-w-[180px] z-50 ${isSearchTypeOpen ? "block" : "hidden"
+              className={`explore-desktop-searchtype-menu absolute right-0 mt-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.1)] min-w-[180px] z-50 ${isSearchTypeOpen ? "block" : "hidden"
                 }`}
             >
               {[
@@ -683,12 +642,12 @@ const Header: React.FC<HeaderProps> = ({
                       setSearchType(type);
                       setIsSearchTypeOpen(false);
                     }}
-                    className={`flex items-center gap-2 px-3 py-2 text-sm cursor-pointer hover:bg-[#f5f5f7] ${isSelected ? "bg-[rgba(0,147,176,0.1)] text-[var(--primary-blue)]" : ""
+                    className={`explore-desktop-searchtype-option flex items-center gap-2 px-3 py-2 text-sm cursor-pointer hover:bg-[#f5f5f7] ${isSelected ? "is-selected bg-[rgba(0,147,176,0.1)] text-[var(--verification-blue)]" : ""
                       }`}
                   >
                     <span className="flex-1">{type}</span>
                     {isSelected && (
-                      <svg viewBox="0 0 24 24" className="w-4 h-4 text-[var(--primary-blue)]" fill="none">
+                      <svg viewBox="0 0 24 24" className="w-4 h-4 text-[var(--verification-blue)]" fill="none">
                         <path
                           fill="currentColor"
                           d="M9.55 18.4L3.55 12.4C3.16 12.01 3.16 11.39 3.55 11C3.94 10.61 4.56 10.61 4.95 11L10 16.05L19.05 7.00002C19.44 6.61002 20.06 6.61002 20.45 7.00002C20.84 7.39002 20.84 8.01002 20.45 8.40002L10.45 18.4C10.25 18.6 10 18.7 9.75 18.7C9.5 18.7 9.75 18.59 9.55 18.4Z"
@@ -1010,17 +969,15 @@ const Header: React.FC<HeaderProps> = ({
               layouts={layouts}
             />
 
-            {/* Mobile Map Drawer - VAUL for scroll lock + full width */}
-            <MobileDrawer
+            {/* Mobile map modal - full-screen Vaul overlay */}
+            <MobileMapModal
               isOpen={isMapDrawerOpen}
               onClose={() => {
                 setIsMapDrawerOpen(false);
                 setIsMapActive(false);
               }}
-              title="Map"
-              showPullIndicator={true}
             >
-              <div className="flex flex-col flex-1 min-h-0 bg-[var(--surface-secondary)]">
+              <div className="flex min-h-0 flex-1 flex-col bg-[var(--surface-secondary)]">
                 <MapContainer
                   isMapActive={isMapActive}
                   schools={schools}
@@ -1028,7 +985,7 @@ const Header: React.FC<HeaderProps> = ({
                   mode="mobileDrawer"
                 />
               </div>
-            </MobileDrawer>
+            </MobileMapModal>
 
           </div>
         </Portal>

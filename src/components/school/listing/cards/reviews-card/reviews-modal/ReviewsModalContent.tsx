@@ -3,12 +3,19 @@ import Image from "next/image";
 import { REVIEWS } from "../mock";
 import { useState } from "react";
 import { formatVoteLabel, getReviewVoteCounts } from "../vote-utils";
+import { ReviewHelpfulVoteState } from "../types";
 
 interface ReviewsModalContentProps {
+  helpfulVotes: ReviewHelpfulVoteState[];
   onClose: () => void;
+  onHelpfulVote: (reviewIndex: number) => void | Promise<void>;
 }
 
-export function ReviewsModalContent({ onClose }: ReviewsModalContentProps) {
+export function ReviewsModalContent({
+  helpfulVotes,
+  onClose,
+  onHelpfulVote,
+}: ReviewsModalContentProps) {
   const [expandedReplies, setExpandedReplies] = useState<
     Record<number, boolean>
   >({});
@@ -97,6 +104,7 @@ export function ReviewsModalContent({ onClose }: ReviewsModalContentProps) {
         <div className="flex flex-col gap-6">
           {REVIEWS.map((review, index) => {
             const voteCounts = getReviewVoteCounts(review);
+            const helpfulVote = helpfulVotes[index];
             return (
             <div
               key={`${review.author}-${review.date}-${index}`}
@@ -156,7 +164,17 @@ export function ReviewsModalContent({ onClose }: ReviewsModalContentProps) {
                 </div>
               )}
               <div className="flex gap-6 mb-4">
-                <button className="flex items-center gap-2 text-[#5F5F5F] hover:text-[#346DC2] hover:bg-[rgba(52,109,194,0.08)] transition-all cursor-pointer py-1.5 px-2.5 rounded-md -ml-2.5">
+                <button
+                  type="button"
+                  onClick={() => onHelpfulVote(index)}
+                  disabled={helpfulVote?.isSubmitting}
+                  aria-pressed={helpfulVote?.hasVoted ?? false}
+                  className={`flex items-center gap-2 py-1.5 px-2.5 rounded-md -ml-2.5 transition-all ${
+                    helpfulVote?.hasVoted
+                      ? "text-[#016853] hover:text-[#016853] hover:bg-[#F1FBF6]"
+                      : "text-[#5F5F5F] hover:text-[#016853] hover:bg-[#F8F9FA]"
+                  } ${helpfulVote?.isSubmitting ? "opacity-80" : ""}`}
+                >
                   <svg
                     width="16"
                     height="16"
@@ -168,7 +186,10 @@ export function ReviewsModalContent({ onClose }: ReviewsModalContentProps) {
                     <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
                   </svg>
                   <span className="font-medium text-sm">
-                    {formatVoteLabel("Helpful", voteCounts.helpful)}
+                    {formatVoteLabel(
+                      "Helpful",
+                      helpfulVote?.count ?? voteCounts.helpful
+                    )}
                   </span>
                 </button>
                 <button className="flex items-center gap-2 text-[#5F5F5F] hover:text-[#346DC2] hover:bg-[rgba(52,109,194,0.08)] transition-all cursor-pointer py-1.5 px-2.5 rounded-md -ml-2.5">

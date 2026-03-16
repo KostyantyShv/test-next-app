@@ -2,8 +2,17 @@ import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 import { useState } from "react";
 import { ReviewsModalContent } from "./ReviewsModalContent";
 import { DesktopModal } from "@/components/ui/DesktopModal/DesktopModal";
+import { ReviewHelpfulVoteState } from "../types";
 
-export default function ReviewsModal() {
+interface ReviewsModalProps {
+  helpfulVotes: ReviewHelpfulVoteState[];
+  onHelpfulVote: (reviewIndex: number) => void | Promise<void>;
+}
+
+export default function ReviewsModal({
+  helpfulVotes,
+  onHelpfulVote,
+}: ReviewsModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const openReviews = () => {
     setIsOpen(true);
@@ -33,12 +42,20 @@ export default function ReviewsModal() {
       </button>
       <div className="block md:hidden">
         <MobileDrawer isOpen={isOpen} onClose={closeReviews}>
-          <ReviewsModalContent onClose={closeReviews} />
+          <ReviewsModalContent
+            helpfulVotes={helpfulVotes}
+            onClose={closeReviews}
+            onHelpfulVote={onHelpfulVote}
+          />
         </MobileDrawer>
       </div>
       <div className="hidden md:block">
         <DesktopModal isOpen={isOpen} onClose={closeReviews} className="w-[800px]">
-          <ReviewsModalContent onClose={closeReviews} />
+          <ReviewsModalContent
+            helpfulVotes={helpfulVotes}
+            onClose={closeReviews}
+            onHelpfulVote={onHelpfulVote}
+          />
         </DesktopModal>
       </div>
     </>

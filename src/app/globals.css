@@ -3457,63 +3457,688 @@ body[data-mobile-drawer-open="true"] {
 }
 
 /* ===========================
-   Listing Page: Midnight Theme
+   Listing Page: Scoped Theme Tokens
    =========================== */
+.listing-page .listing-theme-content {
+  --listing-card-surface: #ffffff;
+  --listing-card-surface-alt: #f8fcff;
+  --listing-card-surface-muted: #f3f6fb;
+  --listing-card-border: #e1e7ee;
+  --listing-card-border-strong: rgba(17, 24, 39, 0.12);
+  --listing-content-text-strong: #1b1b1b;
+  --listing-content-text-primary: #464646;
+  --listing-content-text-secondary: #5f5f5f;
+  --listing-content-text-muted: #c8d7e9;
+  --listing-content-heading: #016853;
+  --listing-content-link: #346dc2;
+  --listing-content-link-hover: #1d77bd;
+  --listing-content-success: #089e68;
+  --listing-content-success-strong: #00df8b;
+  --listing-content-soft-accent-bg: #ebfcf4;
+  --listing-content-soft-accent-hover: #d7f7e9;
+  --listing-content-neutral-surface: #f3f4f6;
+  --listing-content-neutral-surface-alt: #f8f9fd;
+  --listing-content-panel-surface: #f8fcff;
+  --listing-dark-panel-bg: #1b2740;
+  --listing-dark-panel-border: #31445f;
+  --listing-dark-panel-text: #eef4ff;
+  --listing-dark-panel-muted: #a8b6ca;
+  --listing-dark-panel-link: #4f83d9;
+  --listing-dark-panel-success: #16e09b;
+  --listing-dark-panel-soft-button-bg: #aab6cb;
+  --listing-dark-panel-soft-button-text: #356ecb;
+  --listing-card-shadow: 0 12px 32px rgba(15, 23, 42, 0.1);
+  --card-background-light: var(--listing-card-surface);
+  --surface-color: var(--listing-card-surface);
+  --surface-secondary: var(--listing-card-surface-alt);
+  --surface-tertiary: var(--listing-card-surface-muted);
+  --text-default: var(--listing-content-text-primary);
+  --bold-text: var(--listing-content-text-strong);
+  --subtle-text: var(--listing-content-text-secondary);
+  --dark-text: var(--listing-content-text-strong);
+  --link-text: var(--listing-content-link);
+  --active-green: var(--listing-content-heading);
+  --header-green: var(--listing-content-heading);
+  --success-green: var(--listing-content-success);
+  --grade-badge: var(--listing-content-success-strong);
+  color: var(--listing-content-text-primary);
+}
+
 [data-theme="midnight"] .listing-page {
-  background: #0F172A !important;
+  --listing-page-shell: #06142b;
 }
 
-[data-theme="midnight"] .listing-page .bg-white {
-  background-color: #1E293B !important;
+[data-theme="teal"] .listing-page {
+  --listing-page-shell: #0a212a;
 }
 
-[data-theme="midnight"] .listing-page .border-gray-100,
-[data-theme="midnight"] .listing-page .border-gray-200,
-[data-theme="midnight"] .listing-page .border-[#E0E0E0],
-[data-theme="midnight"] .listing-page .border-[#F0F0F0],
-[data-theme="midnight"] .listing-page .border-[#E1E7EE] {
-  border-color: #334155 !important;
+[data-theme="oceanic"] .listing-page {
+  --listing-page-shell: #04162d;
 }
 
-[data-theme="midnight"] .listing-page .text-[#202124],
-[data-theme="midnight"] .listing-page .text-[#464646] {
-  color: #F1F5F9 !important;
+[data-theme="midnight"] .listing-page .listing-theme-content {
+  --listing-card-surface: #101c34;
+  --listing-card-surface-alt: #162742;
+  --listing-card-surface-muted: #1d3250;
+  --listing-card-border: rgba(152, 176, 212, 0.26);
+  --listing-card-border-strong: rgba(168, 191, 222, 0.34);
+  --listing-content-text-strong: #eef4ff;
+  --listing-content-text-primary: #d8e5f8;
+  --listing-content-text-secondary: #a8b9d5;
+  --listing-content-text-muted: #8198bc;
+  --listing-content-heading: #34d399;
+  --listing-content-link: #4f83d9;
+  --listing-content-link-hover: #7aa9ef;
+  --listing-content-success: #22c55e;
+  --listing-content-success-strong: #00df8b;
+  --listing-content-soft-accent-bg: rgba(52, 211, 153, 0.16);
+  --listing-content-soft-accent-hover: rgba(52, 211, 153, 0.24);
+  --listing-dark-panel-bg: #1b2740;
+  --listing-dark-panel-border: #31445f;
+  --listing-dark-panel-text: #ebf3ff;
+  --listing-dark-panel-muted: #a8b8d4;
+  --listing-dark-panel-link: #4f83d9;
+  --listing-dark-panel-success: #16e09b;
+  --listing-dark-panel-soft-button-bg: #aab6cb;
+  --listing-dark-panel-soft-button-text: #356ecb;
+  --listing-card-shadow: 0 18px 40px rgba(3, 9, 24, 0.45);
 }
 
-[data-theme="midnight"] .listing-page .text-[#5F5F5F],
-[data-theme="midnight"] .listing-page .text-[#4A4A4A] {
-  color: #94A3B8 !important;
+[data-theme="teal"] .listing-page .listing-theme-content {
+  --listing-card-surface: #102a34;
+  --listing-card-surface-alt: #173640;
+  --listing-card-surface-muted: #1e434d;
+  --listing-card-border: rgba(122, 173, 168, 0.3);
+  --listing-card-border-strong: rgba(141, 198, 192, 0.36);
+  --listing-content-text-strong: #e9f9f6;
+  --listing-content-text-primary: #cce7e2;
+  --listing-content-text-secondary: #9fc1bb;
+  --listing-content-text-muted: #7f9f99;
+  --listing-content-heading: #14b8a6;
+  --listing-content-link: #06b6d4;
+  --listing-content-link-hover: #0891b2;
+  --listing-content-success: #14b8a6;
+  --listing-content-success-strong: #2dd4bf;
+  --listing-content-soft-accent-bg: rgba(45, 212, 191, 0.16);
+  --listing-content-soft-accent-hover: rgba(45, 212, 191, 0.24);
+  --listing-dark-panel-bg: #18353f;
+  --listing-dark-panel-border: #28505f;
+  --listing-dark-panel-text: #e6faf6;
+  --listing-dark-panel-muted: #9dc8c2;
+  --listing-dark-panel-link: #5eead4;
+  --listing-dark-panel-success: #2dd4bf;
+  --listing-dark-panel-soft-button-bg: #8dbab2;
+  --listing-dark-panel-soft-button-text: #0c5c57;
+  --listing-card-shadow: 0 18px 40px rgba(3, 18, 19, 0.4);
 }
 
-[data-theme="midnight"] .listing-page .school-info-wrapper {
-  background: #1E293B !important;
-  border: 1px solid #334155 !important;
+[data-theme="oceanic"] .listing-page .listing-theme-content {
+  --listing-card-surface: #112947;
+  --listing-card-surface-alt: #17365a;
+  --listing-card-surface-muted: #1d436f;
+  --listing-card-border: rgba(123, 159, 204, 0.32);
+  --listing-card-border-strong: rgba(146, 184, 231, 0.38);
+  --listing-content-text-strong: #edf4ff;
+  --listing-content-text-primary: #d1e1f7;
+  --listing-content-text-secondary: #a5bedc;
+  --listing-content-text-muted: #84a2c8;
+  --listing-content-heading: #38bdf8;
+  --listing-content-link: #60a5fa;
+  --listing-content-link-hover: #93c5fd;
+  --listing-content-success: #0ea5e9;
+  --listing-content-success-strong: #38bdf8;
+  --listing-content-soft-accent-bg: rgba(56, 189, 248, 0.16);
+  --listing-content-soft-accent-hover: rgba(56, 189, 248, 0.24);
+  --listing-dark-panel-bg: #16304d;
+  --listing-dark-panel-border: #2e5175;
+  --listing-dark-panel-text: #ebf4ff;
+  --listing-dark-panel-muted: #a8bfdd;
+  --listing-dark-panel-link: #93c5fd;
+  --listing-dark-panel-success: #38bdf8;
+  --listing-dark-panel-soft-button-bg: #9cb7d8;
+  --listing-dark-panel-soft-button-text: #2c527f;
+  --listing-card-shadow: 0 18px 40px rgba(2, 13, 32, 0.45);
 }
 
-[data-theme="midnight"] .listing-page .school-info-wrapper .text-[#089E68] {
-  color: #34D399 !important;
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .school-info-wrapper,
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-card-surface {
+  background-color: var(--listing-card-surface) !important;
+  box-shadow: var(--listing-card-shadow) !important;
 }
 
-[data-theme="midnight"] .listing-page .school-info-wrapper .bg-[#00DF8B] {
-  background: #00DF8B !important;
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="bg-white"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="bg-cardBackground"] {
+  background-color: var(--listing-card-surface) !important;
 }
 
-[data-theme="midnight"] .listing-page .school-info-wrapper .bg-[#EBFCF4] {
-  background: #112930 !important;
-  color: #34D399 !important;
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="bg-[#F8FCFF]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="bg-[#F8F9FD]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="bg-[#F7F7F7]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="bg-[#F5F5F7]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="bg-[#F3F4F6]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="bg-[#F0F0F0]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="bg-gray-100"] {
+  background-color: var(--listing-card-surface-alt) !important;
 }
 
-[data-theme="midnight"] .listing-page .school-info-wrapper .bg-[#F3F4F6] {
-  background: #334155 !important;
-  color: #CBD5E1 !important;
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="bg-[#EBFCF4]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="bg-[#D7F7E9]"] {
+  background-color: var(--listing-content-soft-accent-bg) !important;
 }
 
-[data-theme="midnight"] .listing-page .school-info-wrapper .bg-cardBackground {
-  background: #1E293B !important;
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="bg-[#00DF8B]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="bg-[#00e28f]"] {
+  background-color: var(--listing-content-success-strong) !important;
 }
 
-[data-theme="midnight"] .listing-page .school-info-wrapper .border-gray-100 {
-  border-color: #334155 !important;
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="bg-[#016853]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="bg-[#0B6333]"] {
+  background-color: var(--listing-content-heading) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#1B1B1B]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#111]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#202124]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#262B3D]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#333]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#464646]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#4A4A4A]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-gray-800"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[var(--bold-text)]"] {
+  color: var(--listing-content-text-primary) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#4F4F4F]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#565656]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#5F5F5F]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#666]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-gray-400"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-gray-500"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-gray-600"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[var(--subtle-text)]"] {
+  color: var(--listing-content-text-secondary) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#016853]"] {
+  color: var(--listing-content-heading) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#089E68]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#00DF8B]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#00e28f]"] {
+  color: var(--listing-content-success) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#346DC2]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#1D77BD]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="text-[#02C5AF]"] {
+  color: var(--listing-content-link) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="fill-[#1D77BD]"] {
+  fill: var(--listing-content-link) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="border-gray-100"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="border-gray-200"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="border-[#DFDDDB]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="border-[#E0E0E0]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="border-[#E1E7EE]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="border-[#E5E5E5]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="border-black/10"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="border-[rgba(0,0,0,0.06)]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="border-[rgba(0,0,0,0.08)]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  [class*="border-[rgba(0,0,0,0.1)]"] {
+  border-color: var(--listing-card-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel {
+  background-color: var(--listing-dark-panel-bg) !important;
+  border-color: var(--listing-dark-panel-border) !important;
+  box-shadow: none !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-[#1B1B1B]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-[#202124]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-[#262B3D]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-[#333]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-[#464646]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-[#4A4A4A]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-gray-800"] {
+  color: var(--listing-dark-panel-text) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-[#4F4F4F]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-[#5F5F5F]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-gray-400"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-gray-500"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-gray-600"] {
+  color: var(--listing-dark-panel-muted) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-[#346DC2]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-[#1D77BD]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-[#02C5AF]"] {
+  color: var(--listing-dark-panel-link) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-[#089E68]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-[#00DF8B]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="text-[#00e28f]"] {
+  color: var(--listing-dark-panel-success) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="border-gray-200"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="border-[#E0E0E0]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="border-[#E1E7EE]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="border-[#E5E5E5]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="border-black/10"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="border-[rgba(0,0,0,0.06)]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel
+  [class*="border-[rgba(0,0,0,0.08)]"] {
+  border-color: var(--listing-dark-panel-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel-cta {
+  background-color: var(--listing-dark-panel-soft-button-bg) !important;
+  color: var(--listing-dark-panel-soft-button-text) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel-cta:hover {
+  background-color: color-mix(
+    in srgb,
+    var(--listing-dark-panel-soft-button-bg) 82%,
+    white
+  ) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-dark-panel-arrow {
+  background-color: var(--listing-dark-panel-bg) !important;
+  border-color: var(--listing-dark-panel-border) !important;
+  color: var(--listing-dark-panel-text) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-event-action[data-joined="false"] {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-theme-content
+  .listing-event-action[data-joined="false"]
+  svg {
+  color: var(--listing-dark-panel-link) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-sticky-header-shell {
+  background-color: var(--listing-card-surface) !important;
+  border-color: var(--listing-card-border) !important;
+  color: var(--listing-content-text-primary) !important;
+  box-shadow: var(--listing-card-shadow) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-sticky-header-shell
+  [class*="text-[#464646]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-sticky-header-shell
+  [class*="text-[#4A4A4A]"] {
+  color: var(--listing-content-text-primary) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-sticky-header-shell
+  [class*="text-[#5F5F5F]"] {
+  color: var(--listing-content-text-secondary) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-sticky-header-shell
+  [class*="text-[#0B6333]"] {
+  color: var(--listing-content-heading) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-sticky-header-shell
+  [class*="bg-[#0B6333]"] {
+  background-color: var(--listing-content-heading) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-sticky-header-shell
+  [class*="bg-[#00DF8B]"] {
+  background-color: var(--listing-content-success-strong) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-sticky-header-shell
+  [class*="text-[#089E68]"] {
+  color: var(--listing-content-success) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-sticky-header-shell
+  [class*="bg-[#02C5AF]"] {
+  background-color: var(--listing-content-link) !important;
+  color: #ffffff !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-mobile-sticky-footer {
+  background-color: var(--listing-card-surface) !important;
+  border-top: 1px solid var(--listing-card-border) !important;
+  color: var(--listing-content-text-primary) !important;
+  box-shadow: 0 -12px 24px rgba(2, 12, 24, 0.38) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-mobile-sticky-footer
+  [class*="text-[#464646]"],
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-mobile-sticky-footer
+  [class*="text-[#4A4A4A]"] {
+  color: var(--listing-content-text-primary) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-mobile-sticky-footer
+  [class*="text-[#5F5F5F]"] {
+  color: var(--listing-content-text-secondary) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .listing-page
+  .listing-mobile-sticky-footer
+  [class*="bg-black/5"] {
+  background-color: color-mix(
+    in srgb,
+    var(--listing-card-surface-alt) 72%,
+    transparent
+  ) !important;
 }
 
 /* ===========================
@@ -12807,4 +13432,492 @@ input[type="number"] {
 
 :is([data-theme="midnight"], [data-theme="oceanic"]) .collections-page .collections-table-card .border-t-\[\#333\] {
   border-top-color: var(--collections-tooltip) !important;
+}
+
+/* ===========================
+   Explore/Search/Collections: Dark Theme Card Tokens
+   =========================== */
+.school-directory-page {
+  --directory-card-surface: #ffffff;
+  --directory-card-surface-alt: #f8fcff;
+  --directory-card-surface-muted: #f1f6fb;
+  --directory-card-border: #dbe5ef;
+  --directory-card-border-strong: rgba(17, 24, 39, 0.12);
+  --directory-card-text-strong: #1b1b1b;
+  --directory-card-text-primary: #464646;
+  --directory-card-text-secondary: #5f5f5f;
+  --directory-card-text-muted: #94a3b8;
+  --directory-card-heading: #016853;
+  --directory-card-link: #346dc2;
+  --directory-card-link-hover: #1d77bd;
+  --directory-card-success: #089e68;
+  --directory-card-success-strong: #00df8b;
+  --directory-card-soft-accent: #ebfcf4;
+  --directory-card-soft-accent-hover: #d7f7e9;
+  --directory-card-neutral: #f5f7fb;
+  --directory-card-neutral-hover: #ebeff5;
+  --directory-card-shadow: 0 18px 36px rgba(15, 23, 42, 0.14);
+  --directory-card-tooltip: #1b1b1b;
+  --directory-card-tooltip-text: #ffffff;
+}
+
+[data-theme="midnight"] .school-directory-page {
+  --directory-card-surface: var(--surface-color);
+  --directory-card-surface-alt: var(--surface-secondary);
+  --directory-card-surface-muted: var(--hover-bg);
+  --directory-card-border: var(--border-color);
+  --directory-card-border-strong: rgba(159, 176, 198, 0.35);
+  --directory-card-text-strong: var(--bold-text);
+  --directory-card-text-primary: var(--bold-text);
+  --directory-card-text-secondary: var(--subtle-text);
+  --directory-card-text-muted: var(--subtle-text);
+  --directory-card-heading: #34d399;
+  --directory-card-link: var(--link-text);
+  --directory-card-link-hover: var(--verification-blue);
+  --directory-card-success: var(--success-green);
+  --directory-card-success-strong: var(--grade-badge);
+  --directory-card-soft-accent: var(--apply-button-bg);
+  --directory-card-soft-accent-hover: var(--apply-button-hover);
+  --directory-card-neutral: var(--hover-bg);
+  --directory-card-neutral-hover: var(--gray-300);
+  --directory-card-shadow: 0 20px 40px rgba(2, 8, 23, 0.38);
+  --directory-card-tooltip: var(--tooltip-bg);
+  --directory-card-tooltip-text: var(--tooltip-text);
+}
+
+[data-theme="teal"] .school-directory-page {
+  --directory-card-heading: #14b8a6;
+  --directory-card-link: #06b6d4;
+  --directory-card-link-hover: #0891b2;
+  --directory-card-success: #14b8a6;
+  --directory-card-success-strong: #2dd4bf;
+  --directory-card-soft-accent: rgba(45, 212, 191, 0.16);
+  --directory-card-soft-accent-hover: rgba(45, 212, 191, 0.24);
+  --directory-card-neutral: #eefcfb;
+  --directory-card-neutral-hover: #e0f7f4;
+  --directory-card-shadow: 0 20px 40px rgba(8, 47, 73, 0.28);
+}
+
+[data-theme="oceanic"] .school-directory-page {
+  --directory-card-surface: var(--surface-color);
+  --directory-card-surface-alt: var(--surface-secondary);
+  --directory-card-surface-muted: var(--hover-bg);
+  --directory-card-border: var(--border-color);
+  --directory-card-border-strong: rgba(125, 211, 252, 0.35);
+  --directory-card-text-strong: var(--bold-text);
+  --directory-card-text-primary: var(--bold-text);
+  --directory-card-text-secondary: var(--subtle-text);
+  --directory-card-text-muted: var(--subtle-text);
+  --directory-card-heading: var(--header-green);
+  --directory-card-link: var(--link-text);
+  --directory-card-link-hover: var(--verification-blue);
+  --directory-card-success: var(--success-green);
+  --directory-card-success-strong: var(--grade-badge);
+  --directory-card-soft-accent: var(--apply-button-bg);
+  --directory-card-soft-accent-hover: var(--apply-button-hover);
+  --directory-card-neutral: var(--hover-bg);
+  --directory-card-neutral-hover: var(--gray-300);
+  --directory-card-shadow: 0 20px 40px rgba(4, 22, 45, 0.34);
+  --directory-card-tooltip: var(--tooltip-bg);
+  --directory-card-tooltip-text: var(--tooltip-text);
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  :is(
+    .school-card,
+    .collections-list-card > div,
+    .collections-magazine-card > div,
+    .collections-mobile-table-list .table-row,
+    .collections-table-card td,
+    .classic-card
+  ) {
+  background-color: var(--directory-card-surface) !important;
+  border-color: var(--directory-card-border) !important;
+  box-shadow: var(--directory-card-shadow) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  :is(
+    .hover-overlay,
+    .classic-hover-overlay,
+    .school-footer,
+    .school-description,
+    .view-link,
+    .like-button,
+    .options-button,
+    .drawer-more-options,
+    .notes-section,
+    .note,
+    .collections-grid-status-menu,
+    .classic-status-menu,
+    .status-options,
+    .collections-grid-status-portal .collections-grid-status-menu
+  ) {
+  background-color: var(--directory-card-surface-alt) !important;
+  border-color: var(--directory-card-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  :is(
+    .school-card,
+    .collections-list-card > div,
+    .collections-magazine-card > div,
+    .collections-mobile-table-list .table-row,
+    .collections-table-card,
+    .classic-card
+  )
+  :is(
+    [class*="bg-[#F8FCFF]"],
+    [class*="bg-[#F8F9FD]"],
+    [class*="bg-[#F8F9FB]"],
+    [class*="bg-[#F8F9FA]"],
+    [class*="bg-[#F7F9FC]"],
+    [class*="bg-[#F5F5F7]"],
+    [class*="bg-[#F0F1F3]"],
+    [class*="bg-[#F9FAFB]"],
+    [class*="bg-gray-50"],
+    [class*="bg-gray-100"]
+  ) {
+  background-color: var(--directory-card-surface-alt) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  :is(
+    .school-card,
+    .collections-list-card > div,
+    .collections-magazine-card > div,
+    .collections-mobile-table-list .table-row,
+    .collections-table-card,
+    .classic-card
+  )
+  :is(
+    [class*="bg-[#EBFCF4]"],
+    [class*="bg-[#D7F7E9]"],
+    [class*="hover:bg-[#EBFCF4]"],
+    [class*="hover:bg-[#D7F7E9]"]
+  ) {
+  background-color: var(--directory-card-soft-accent) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  :is(
+    .school-type-label,
+    .specialty-badge.no-specialty,
+    .specialty-label:not(.hot):not(.instant-book):not(.sponsored),
+    .status-dropdown:hover,
+    .options-button:hover,
+    .more-options:hover,
+    .drawer-more-options:hover,
+    .collections-grid-status-item:hover,
+    .classic-status-option:hover,
+    .classic-status-trigger:hover,
+    .view-link:hover
+  ) {
+  background-color: var(--directory-card-neutral) !important;
+  border-color: var(--directory-card-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  :is(
+    .hover-stat:hover,
+    .hover-stat-button:hover,
+    .note-action:hover,
+    .create-note:hover
+  ) {
+  background-color: var(--directory-card-neutral-hover) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  :is(
+    .school-name,
+    .hover-school-name,
+    .drawer-school-name,
+    .note-author,
+    .reviewer-type,
+    .text-gray-700,
+    .text-gray-800,
+    [class*="text-[#1B1B1B]"],
+    [class*="text-[#202124]"],
+    [class*="text-[#333]"],
+    [class*="text-[#464646]"],
+    [class*="text-[#4A4A4A]"]
+  ) {
+  color: var(--directory-card-text-primary) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  :is(
+    .stat,
+    .hover-stat,
+    .students-score,
+    .sat-score,
+    .school-description,
+    .school-review,
+    .reviews,
+    .notes-count,
+    .time-display,
+    .note-content,
+    .text-gray-500,
+    .text-gray-600,
+    [class*="text-[#4F4F4F]"],
+    [class*="text-[#565656]"],
+    [class*="text-[#5F5F5F]"],
+    [class*="text-[#6B7280]"],
+    [class*="text-[#9CA3AF]"]
+  ) {
+  color: var(--directory-card-text-secondary) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  :is(
+    .school-type-label,
+    .school-type-label *,
+    .specialty-badge.no-specialty,
+    .specialty-badge.no-specialty *,
+    .options-button,
+    .more-options,
+    .drawer-more-options,
+    .view-link,
+    .view-link *,
+    .stat svg,
+    .stat-icon,
+    .hover-stat svg,
+    .students-score svg,
+    .sat-score svg,
+    .notes-count svg,
+    .time-display svg,
+    .text-gray-500 svg,
+    .text-gray-600 svg,
+    [class*="text-[#565656]"] svg
+  ) {
+  color: var(--directory-card-text-secondary) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  :is(
+    .ranking-text,
+    .text-green-600,
+    [class*="text-[#089E68]"],
+    [class*="text-[#00DF8B]"],
+    [class*="text-[#00e28f]"]
+  ) {
+  color: var(--directory-card-success) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  :is(
+    .review-link,
+    .create-note,
+    .note-action,
+    .text-blue-600,
+    [class*="text-[#346DC2]"],
+    [class*="text-[#1D77BD]"],
+    [class*="text-[#02C5AF]"]
+  ) {
+  color: var(--directory-card-link) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  :is(
+    .review-link:hover,
+    .create-note:hover,
+    .note-action:hover,
+    [class*="hover:text-[#346DC2]"]:hover,
+    [class*="hover:text-[#016853]"]:hover
+  ) {
+  color: var(--directory-card-link-hover) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  :is(
+    .school-card,
+    .collections-list-card > div,
+    .collections-magazine-card > div,
+    .collections-mobile-table-list .table-row,
+    .collections-table-card td,
+    .classic-card,
+    .hover-overlay,
+    .classic-hover-overlay,
+    .school-footer,
+    .school-description,
+    .collections-grid-status-menu,
+    .classic-status-menu,
+    .status-options,
+    .view-link,
+    .like-button,
+    .options-button,
+    .specialty-badge.no-specialty,
+    .specialty-label:not(.hot):not(.instant-book):not(.sponsored),
+    .school-type-label,
+    [class*="border-[#E5E7EB]"],
+    [class*="border-[#EAEDF2]"],
+    [class*="border-[#E5E8ED]"],
+    [class*="border-[#F0F0F0]"],
+    [class*="border-gray-200"],
+    [class*="border-black/10"],
+    [class*="border-[rgba(0,0,0,0.06)]"],
+    [class*="border-[rgba(0,0,0,0.08)]"],
+    [class*="border-[rgba(0,0,0,0.1)]"]
+  ) {
+  border-color: var(--directory-card-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  :is(.school-card, .collections-list-card > div, .collections-magazine-card > div, .classic-card)
+  :is(.specialty-badge.hot, .specialty-badge.instant-book, .specialty-badge.sponsored) {
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  :is(
+    .tooltip,
+    .tooltip:before,
+    .collections-page .bg-\[\#333\]
+  ) {
+  background: var(--directory-card-tooltip) !important;
+  color: var(--directory-card-tooltip-text) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  .school-type-badge {
+  background-color: var(--directory-card-neutral) !important;
+  color: var(--directory-card-text-primary) !important;
+  border-color: var(--directory-card-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  .school-type-badge
+  svg {
+  color: var(--directory-card-text-secondary) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  .explore-mobile-hybrid
+  .mh-btn-like {
+  background-color: var(--directory-card-soft-accent) !important;
+  color: var(--directory-card-heading) !important;
+  border-color: var(--directory-card-soft-accent-hover) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  .explore-mobile-hybrid
+  .mh-btn-like
+  svg {
+  color: currentColor !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  .explore-mobile-hybrid
+  .mh-btn-like.liked {
+  background-color: var(--directory-card-heading) !important;
+  color: #ffffff !important;
+  border-color: var(--directory-card-heading) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  .explore-mobile-hybrid
+  .mh-view-more {
+  background-color: var(--directory-card-surface-alt) !important;
+  color: var(--directory-card-link) !important;
+  border: 1px solid var(--directory-card-border) !important;
+}
+
+/* Explore: dark theme parity fixes (desktop + mobile) */
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page.explore-page
+  :is(.explore-desktop-establishment-menu, .explore-desktop-searchtype-menu) {
+  background-color: var(--directory-card-surface) !important;
+  border-color: var(--directory-card-border) !important;
+  box-shadow: 0 12px 28px rgba(2, 8, 23, 0.45) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page.explore-page
+  :is(.explore-desktop-dropdown-option, .explore-desktop-searchtype-option) {
+  color: var(--directory-card-text-primary) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page.explore-page
+  :is(.explore-desktop-dropdown-option:hover, .explore-desktop-searchtype-option:hover) {
+  background-color: var(--directory-card-surface-alt) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page.explore-page
+  :is(.explore-desktop-dropdown-option.is-selected, .explore-desktop-searchtype-option.is-selected) {
+  background-color: var(--directory-card-soft-accent) !important;
+  color: var(--directory-card-link) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page.explore-page
+  .explore-desktop-dropdown-option
+  .explore-desktop-dropdown-option-icon,
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page.explore-page
+  .explore-desktop-dropdown-option
+  .explore-desktop-dropdown-option-count {
+  color: var(--directory-card-text-secondary) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page.explore-page
+  .explore-desktop-dropdown-option.is-selected
+  :is(.explore-desktop-dropdown-option-icon, .explore-desktop-dropdown-option-count) {
+  color: var(--directory-card-link) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page.explore-page
+  .school-card.mobile-classic-card
+  .stats-section
+  .stat {
+  background-color: var(--directory-card-surface-alt) !important;
+  border: 1px solid var(--directory-card-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page.explore-page
+  .school-card.mobile-classic-card
+  .empty-badge {
+  background-color: var(--directory-card-surface-alt) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page.explore-page
+  .school-card
+  :is(.school-footer, .card-footer, .school-type-footer, .drawer-footer, .drawer-header) {
+  background-color: var(--directory-card-surface-alt) !important;
+  border-color: var(--directory-card-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page.explore-page
+  .school-card
+  :is(.options-button, .info-button, .footer-icon-button, .drawer-more-options) {
+  background-color: var(--directory-card-surface-muted) !important;
+  border-color: var(--directory-card-border) !important;
+  color: var(--directory-card-text-secondary) !important;
 }

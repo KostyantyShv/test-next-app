@@ -14,7 +14,7 @@ export default function ConfirmationModalContent({
   onConfirm,
 }: ConfirmationModalContentProps) {
   return (
-    <div className="bg-white p-5 rounded-lg shadow-lg w-[320px] text-center">
+    <div className="w-full bg-white p-5 text-center md:mx-auto md:w-[320px] md:rounded-lg md:shadow-lg">
       <div className="text-base font-semibold mb-4 text-[#464646]">
         {type === "remove"
           ? "Are you sure you want to remove this addon?"

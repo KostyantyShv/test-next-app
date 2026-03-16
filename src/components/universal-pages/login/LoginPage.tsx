@@ -47,7 +47,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="login-page absolute inset-0 flex z-[100] items-center justify-center bg-[#F2F2F2] font-inter h-screen">
+    <div className="login-page z-[100] min-h-[100dvh] bg-white font-inter md:absolute md:inset-0 md:flex md:h-screen md:items-center md:justify-center md:bg-[#F2F2F2]">
       {/* Desktop close button - hidden on mobile */}
       <AppLink
         href={ROUTES.HOME}
@@ -57,7 +57,7 @@ const LoginPage: React.FC = () => {
       </AppLink>
 
       {/* Main content - desktop layout by default, modified for mobile */}
-      <div className="login-card w-full max-w-[360px] bg-white p-8 rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.1)] max-md:shadow-none max-md:rounded-none max-md:p-0 max-md:max-w-none max-md:flex max-md:flex-col max-md:h-screen">
+      <div className="login-card w-full max-w-[360px] bg-white p-8 rounded-xl shadow-[0_4px_6px_rgba(0,0,0,0.1)] max-md:shadow-none max-md:rounded-none max-md:p-0 max-md:max-w-none">
         {/* Mobile header - only visible on small screens */}
         <div className="login-mobile-header hidden max-md:flex items-center p-5 gap-2 border-b border-gray-100">
           <Logo className="h-10" />
@@ -74,7 +74,7 @@ const LoginPage: React.FC = () => {
           <Logo />
         </div>
 
-        <div className="max-md:flex-1 max-md:px-5 max-md:py-6">
+        <div className="max-md:px-5 max-md:pt-6 max-md:pb-8">
           <h1 className="login-title text-xl font-semibold text-[#333] mb-2">
             Sign in to your account
           </h1>

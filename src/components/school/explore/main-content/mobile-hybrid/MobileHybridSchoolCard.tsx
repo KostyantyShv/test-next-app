@@ -46,9 +46,9 @@ const MobileHybridSchoolCard: React.FC<Props> = ({ school }) => {
   );
 
   return (
-    <div className="mh-school-card" role="article">
+    <div className="mh-school-card school-card" role="article">
       <div className="mh-school-header">
-        <div className="mh-school-type-label">{school.schoolType}</div>
+        <div className="mh-school-type-label school-type-label">{school.schoolType}</div>
 
         <div className={`mh-image-container ${school.specialty ? "mh-has-specialty" : ""}`}>
           <img src={school.image} alt={school.name} className="mh-school-image" />
@@ -61,8 +61,8 @@ const MobileHybridSchoolCard: React.FC<Props> = ({ school }) => {
         </div>
 
         <div className="mh-school-title-container">
-          {school.ranking ? <div className="mh-ranking-text">{school.ranking}</div> : null}
-          <h3 className="mh-school-name">
+          {school.ranking ? <div className="mh-ranking-text ranking-text">{school.ranking}</div> : null}
+          <h3 className="mh-school-name school-name">
             {school.name}
             {school.verified ? (
               <span className="mh-verified-badge-title" aria-label="Verified">
@@ -75,36 +75,36 @@ const MobileHybridSchoolCard: React.FC<Props> = ({ school }) => {
         <div className="mh-more-options" aria-label="More options">
           <SchoolCardContextMenu
             schoolName={school.name}
-            buttonClassName="w-7 h-7 rounded-full flex items-center justify-center cursor-pointer text-[#464646] bg-transparent border-none pointer-events-auto relative z-50"
+            buttonClassName="more-options w-7 h-7 rounded-full flex items-center justify-center cursor-pointer text-[#464646] bg-transparent border-none pointer-events-auto relative z-50"
           />
         </div>
       </div>
 
       <div className="mh-school-stats">
-        <div className="mh-stat" data-tooltip="Location">
+        <div className="mh-stat stat" data-tooltip="Location">
           <SchoolCardIcons.Location />
           <span>{school.location}</span>
         </div>
-        <div className="mh-stat" data-tooltip="Student-Teacher Ratio">
+        <div className="mh-stat stat" data-tooltip="Student-Teacher Ratio">
           <SchoolCardIcons.Ratio />
           <span className="stat-prefix">Ratio: </span>
           <span className="mh-stat-strong">{school.ratio}</span>
         </div>
-        <div className="mh-stat" data-tooltip="Students">
+        <div className="mh-stat stat" data-tooltip="Students">
           <SchoolCardIcons.Students />
           <span className="stat-prefix">Students: </span>
           <span className="mh-stat-strong">{school.students}</span>
         </div>
-        <div className="mh-stat" data-tooltip="Tuition">
+        <div className="mh-stat stat" data-tooltip="Tuition">
           <SchoolCardIcons.Tuition />
           <span>{school.price}</span>
         </div>
       </div>
 
-      <div className="mh-school-description">
+      <div className="mh-school-description school-description">
         <div className={`mh-description-text ${isDescriptionExpanded ? "expanded" : ""}`}>
           <span className="mh-truncated-text">{school.description}</span>{" "}
-          <a href="#" className="mh-review-link" onClick={(e) => e.preventDefault()}>
+          <a href="#" className="mh-review-link review-link" onClick={(e) => e.preventDefault()}>
             Read {school.reviews} reviews
           </a>
         </div>
@@ -117,7 +117,7 @@ const MobileHybridSchoolCard: React.FC<Props> = ({ school }) => {
         </button>
       </div>
 
-      <div className="mh-school-footer">
+      <div className="mh-school-footer school-footer">
         <div className="mh-metrics">
           <div className="mh-grade">
             <div className="mh-grade-circle">{school.grade}</div>
@@ -146,4 +146,3 @@ const MobileHybridSchoolCard: React.FC<Props> = ({ school }) => {
 };
 
 export default MobileHybridSchoolCard;
-

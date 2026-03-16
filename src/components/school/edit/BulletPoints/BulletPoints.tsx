@@ -202,7 +202,7 @@ export default function BulletPoints() {
                     />
                     <button
                       type="button"
-                      className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center justify-center border-none bg-transparent p-1 text-[var(--error-color)] opacity-60 transition-opacity duration-200 hover:opacity-100"
+                      className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center justify-center border-none bg-transparent p-1 text-[#f93a37] opacity-60 transition-opacity duration-200 hover:opacity-100"
                       onClick={() => deleteBullet(bullet.id)}
                       aria-label="Delete bullet"
                     >
@@ -229,13 +229,13 @@ export default function BulletPoints() {
               className="inline-flex w-full items-center justify-center gap-2 rounded-md border-none px-4 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-[#2D2D2D]"
               style={{ backgroundColor: "#1B1B1B" }}
             >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 20 20"
-            fill="none"
-            className="text-[var(--error-color)]"
-          >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 20 20"
+                fill="none"
+                className="text-[#f93a37]"
+              >
                 <path d="M10 4V16M4 10H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               </svg>
               Add more to your response

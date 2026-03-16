@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { Drawer } from "vaul";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 
@@ -11,9 +11,35 @@ interface MobileDrawerProps {
   /** Accessible title for screen readers (required by Radix Dialog). */
   title?: string;
   showPullIndicator?: boolean;
+  variant?: "sheet" | "fullscreen" | "action-sheet";
+  lockTouchMove?: boolean;
 }
 
 const MOBILE_DRAWER_VISIBILITY_EVENT = "mobile-drawer-visibility-change";
+
+const isScrollableElement = (element: HTMLElement) => {
+  const { overflowY } = window.getComputedStyle(element);
+  return (
+    ["auto", "scroll", "overlay"].includes(overflowY) &&
+    element.scrollHeight > element.clientHeight
+  );
+};
+
+const getScrollableAncestor = (
+  target: HTMLElement,
+  boundary: HTMLElement
+): HTMLElement | null => {
+  let current: HTMLElement | null = target;
+
+  while (current && current !== boundary) {
+    if (isScrollableElement(current)) {
+      return current;
+    }
+    current = current.parentElement;
+  }
+
+  return isScrollableElement(boundary) ? boundary : null;
+};
 
 export function MobileDrawer({
   children,
@@ -21,8 +47,12 @@ export function MobileDrawer({
   onClose,
   title = "Dialog",
   showPullIndicator = true,
+  variant = "sheet",
+  lockTouchMove = true,
 }: MobileDrawerProps) {
   const [isDesktopViewport, setIsDesktopViewport] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const touchStartYRef = useRef<number | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
@@ -33,7 +63,7 @@ export function MobileDrawer({
   }, []);
 
   useEffect(() => {
-    if (isDesktopViewport || !isOpen) return;
+    if (isDesktopViewport || !isOpen || !lockTouchMove) return;
 
     const body = document.body;
     const currentCount = Number(body.dataset.mobileDrawerOpenCount || "0");
@@ -90,10 +120,82 @@ export function MobileDrawer({
 
       window.dispatchEvent(new Event(MOBILE_DRAWER_VISIBILITY_EVENT));
     };
+  }, [isDesktopViewport, isOpen, lockTouchMove]);
+
+  useEffect(() => {
+    if (isDesktopViewport || !isOpen) return;
+
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
+
+    const handleTouchStart = (event: TouchEvent) => {
+      touchStartYRef.current = event.touches[0]?.clientY ?? null;
+    };
+
+    const handleTouchEnd = () => {
+      touchStartYRef.current = null;
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (!event.cancelable) return;
+
+      const startY = touchStartYRef.current;
+      const currentY = event.touches[0]?.clientY;
+
+      if (startY == null || currentY == null) return;
+
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) {
+        event.preventDefault();
+        return;
+      }
+
+      if (!scrollContainer.contains(target)) {
+        event.preventDefault();
+        return;
+      }
+
+      const scrollableAncestor = getScrollableAncestor(target, scrollContainer);
+      if (!scrollableAncestor) {
+        event.preventDefault();
+        return;
+      }
+
+      const deltaY = currentY - startY;
+      const isPullingDown = deltaY > 0;
+      const isPushingUp = deltaY < 0;
+      const isAtTop = scrollableAncestor.scrollTop <= 0;
+      const isAtBottom =
+        scrollableAncestor.scrollTop + scrollableAncestor.clientHeight >=
+        scrollableAncestor.scrollHeight - 1;
+
+      if ((isPullingDown && isAtTop) || (isPushingUp && isAtBottom)) {
+        event.preventDefault();
+        return;
+      }
+
+      touchStartYRef.current = currentY;
+    };
+
+    document.addEventListener("touchstart", handleTouchStart, { passive: true });
+    document.addEventListener("touchend", handleTouchEnd, { passive: true });
+    document.addEventListener("touchcancel", handleTouchEnd, { passive: true });
+    document.addEventListener("touchmove", handleTouchMove, { passive: false });
+
+    return () => {
+      document.removeEventListener("touchstart", handleTouchStart);
+      document.removeEventListener("touchend", handleTouchEnd);
+      document.removeEventListener("touchcancel", handleTouchEnd);
+      document.removeEventListener("touchmove", handleTouchMove);
+    };
   }, [isDesktopViewport, isOpen]);
 
   if (!isOpen) return null;
   if (isDesktopViewport) return null;
+
+  const isFullscreen = variant === "fullscreen";
+  const isActionSheet = variant === "action-sheet";
+  const shouldShowPullIndicator = !isFullscreen && !isActionSheet && showPullIndicator;
 
   return (
     <Drawer.Root
@@ -105,9 +207,19 @@ export function MobileDrawer({
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-[rgba(27,27,27,0.4)] backdrop-blur-[4px] z-[2500]" />
         <Drawer.Content
-          className="fixed bottom-0 left-0 right-0 z-[3000] flex max-h-[calc(100dvh-16px)] flex-col rounded-t-[24px] bg-white outline-none"
+          className={
+            isFullscreen
+              ? "fixed inset-0 z-[3000] flex h-[100dvh] w-screen flex-col bg-white outline-none"
+              : isActionSheet
+              ? "fixed inset-x-0 bottom-0 z-[3000] flex flex-col bg-transparent px-2 pb-[calc(env(safe-area-inset-bottom)+8px)] outline-none"
+              : "fixed bottom-0 left-0 right-0 z-[3000] flex max-h-[calc(100dvh-16px)] flex-col rounded-t-[24px] bg-white outline-none"
+          }
           style={{
-            boxShadow: '0 -8px 32px rgba(0, 0, 0, 0.12), 0 -2px 8px rgba(0, 0, 0, 0.04)',
+            boxShadow: isFullscreen
+              ? "0 12px 40px rgba(0, 0, 0, 0.18)"
+              : isActionSheet
+              ? "none"
+              : "0 -8px 32px rgba(0, 0, 0, 0.12), 0 -2px 8px rgba(0, 0, 0, 0.04)",
           }}
           aria-describedby={undefined}
         >
@@ -115,11 +227,18 @@ export function MobileDrawer({
             <Drawer.Title>{title}</Drawer.Title>
           </VisuallyHidden.Root>
           {/* Pull indicator */}
-          {showPullIndicator && (
+          {shouldShowPullIndicator && (
             <div className="mx-auto mt-3 mb-2 w-9 h-1 rounded-full bg-[#DFDDDB] flex-shrink-0" />
           )}
           <div
-            className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain touch-pan-y"
+            ref={scrollContainerRef}
+            className={
+              isFullscreen
+                ? "min-h-0 flex-1 overflow-hidden"
+                : isActionSheet
+                ? "min-h-0 overflow-visible"
+                : "min-h-0 flex-1 overflow-y-auto overscroll-y-contain touch-pan-y"
+            }
             style={{ WebkitOverflowScrolling: "touch" }}
           >
             {children}

@@ -77,7 +77,6 @@ export const AddToCollectionModal: React.FC<AddToCollectionModalProps> = ({ isOp
         <SaveToCollectionDrawer
             isOpen={isOpen}
             onClose={onClose}
-            collections={collections}
             filteredCollections={filteredCollections}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}

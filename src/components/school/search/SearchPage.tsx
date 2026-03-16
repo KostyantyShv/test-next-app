@@ -8,7 +8,7 @@ const SearchPage = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center py-4 md:py-5 px-3 md:px-5"
+      className="search-page school-directory-page min-h-screen flex flex-col items-center py-4 md:py-5 px-3 md:px-5"
       style={{ backgroundColor: "var(--background-color, var(--background))" }}
     >
       <div

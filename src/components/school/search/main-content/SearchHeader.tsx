@@ -6,17 +6,9 @@ import K12Filters from "../../explore/filter-sidebar/filters/k12-filters";
 import CollegesFilters from "../../explore/filter-sidebar/filters/colleges-filters";
 import { ESTABLISHMENT } from "@/store/enum";
 import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
+import { MobileMapModal } from "@/components/school/shared/MobileMapModal";
 import {
   FiltersType,
-  FilterValue,
-  GradeFilter,
-  TypeFilter,
-  ReligionType,
-  SpecialtyType,
-  CollegeTypeFilter,
-  CollegeSubTypeFilter,
-  MajorsType,
-  Program,
   SchoolScoutGrade,
   SchoolScoutGradeEntry,
   EstablishmentType,
@@ -42,7 +34,6 @@ interface SearchHeaderProps {
 const SearchHeader: React.FC<SearchHeaderProps> = ({
   dropdownValue,
   layouts,
-  renderDropdownItems,
   isSearchActive,
   setIsSearchActive,
   isMapActive,
@@ -60,15 +51,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
     filterGraduates,
     filterDistrict,
     establishment,
-    setGrade,
-    setMajors,
-    setReligion,
-    setSpecialty,
-    setType,
-    setCollegeType,
-    setProgram,
     resetFilters,
-    removeFilter,
   } = useSchoolsExplore((state) => state);
   const [isEstablishmentDrawerOpen, setIsEstablishmentDrawerOpen] = useState(false);
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
@@ -155,28 +138,6 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
     setIsOptionsDrawerOpen(false);
     setIsMapDrawerOpen(false);
     setIsMapActive(false);
-  };
-
-  const getOnChangeHandler = (filterKey: keyof FiltersType) => {
-    const setters: Record<keyof FiltersType, (value: FilterValue) => void> = {
-      grade: (value) => setGrade(value as GradeFilter),
-      type: (value) => setType(value as TypeFilter),
-      religion: (value) => setReligion(value as ReligionType),
-      specialty: (value) => setSpecialty(value as SpecialtyType),
-      collegeTypeColleges: (value) => {
-        const [type, subType] = (value as string).split(": ");
-        if (subType)
-          setCollegeType(
-            type as CollegeTypeFilter,
-            subType as CollegeSubTypeFilter
-          );
-      },
-      majors: (value) => setMajors(value as MajorsType),
-      program: (value) => setProgram(value as Program),
-    };
-
-    return (e: React.ChangeEvent<HTMLInputElement>) =>
-      setters[filterKey]?.(e.target.dataset.value as FilterValue);
   };
 
   const isOptionChecked = (
@@ -546,7 +507,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
               }, 300);
             }}
           >
-            {desktopLayouts.map((layoutOption, index) => {
+	            {desktopLayouts.map((layoutOption) => {
               const isActive = layout === layoutOption.type;
               const shouldShowButton = isActive || isLayoutToggleExpanded;
               return (
@@ -598,7 +559,8 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
           {/* Results Count */}
           <div className="flex items-center text-sm text-[#4A4A4A] px-2">
             <span>
-              <strong className="font-semibold text-[#464646]">575</strong> results for "<strong className="font-semibold text-[#464646]">AI</strong>"
+              <strong className="font-semibold text-[#464646]">575</strong> results for{' '}
+              <strong className="font-semibold text-[#464646]">AI</strong>
             </span>
           </div>
         </div>
@@ -941,17 +903,15 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
           </div>
         )}
 
-        {/* Mobile Map Drawer - VAUL for scroll lock + full width */}
-        <MobileDrawer
+        {/* Mobile map modal - full-screen Vaul overlay */}
+        <MobileMapModal
           isOpen={isMapDrawerOpen}
           onClose={() => {
             setIsMapDrawerOpen(false);
             setIsMapActive(false);
           }}
-          title="Map"
-          showPullIndicator={true}
         >
-          <div className="flex-1 min-h-0 relative bg-[#f5f5f7]">
+          <div className="relative min-h-0 flex-1 bg-[#f5f5f7]">
             <div
               id="map"
               className="w-full h-full"
@@ -990,7 +950,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
               </button>
             </div>
           </div>
-        </MobileDrawer>
+        </MobileMapModal>
       </div>
     </>
   );

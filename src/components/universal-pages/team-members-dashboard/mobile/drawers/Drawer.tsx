@@ -1,3 +1,5 @@
+import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
+
 interface DrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -14,18 +16,13 @@ export const Drawer: React.FC<DrawerProps> = ({
   footer,
 }) => {
   return (
-    <>
-      <div
-        className={`fixed inset-0 bg-black/50 z-[2500] transition-all duration-300 ${
-          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
-        onClick={onClose}
-      />
-      <div
-        className={`fixed bottom-0 left-0 w-full max-h-[90%] bg-white rounded-t-[20px] shadow-[0_-2px_10px_rgba(0,0,0,0.15)] z-[3000] transition-all duration-300 overflow-hidden flex flex-col ${
-          isOpen ? "bottom-0 visible" : "bottom-[-100%] invisible"
-        }`}
-      >
+    <MobileDrawer
+      isOpen={isOpen}
+      onClose={onClose}
+      title={title || "Dialog"}
+      showPullIndicator={Boolean(title)}
+    >
+      <div className="flex min-h-0 flex-col">
         {title && (
           <div className="sticky top-0 bg-white px-5 py-4 border-b border-gray-200 flex justify-between items-center z-10 flex-shrink-0">
             <h2 
@@ -48,11 +45,11 @@ export const Drawer: React.FC<DrawerProps> = ({
               }}
             >
               ×
-          </button>
-        </div>
+            </button>
+          </div>
         )}
-        <div 
-          className="overflow-y-auto flex-grow"
+        <div
+          className="flex-grow"
           style={{
             padding: title === '' ? '8px 0' : '16px 20px',
           }}
@@ -73,7 +70,6 @@ export const Drawer: React.FC<DrawerProps> = ({
           </div>
         )}
       </div>
-    </>
+    </MobileDrawer>
   );
 };
-

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useMemo, useState, useLayoutEffect, useRef } from 'react';
 import { MobileDrawerIcons } from './MobileDrawerIcons';
 import { Portal } from '@/components/ui/Portal';
 import { SaveToCollectionDrawer } from './SaveToCollectionDrawer';
@@ -213,7 +213,7 @@ export const MobileOptionsDrawer: React.FC<MobileOptionsDrawerProps> = ({ isOpen
         );
     };
 
-    const handleAction = (action: string) => {
+    const handleAction = () => {
         closeAll();
     };
 
@@ -328,7 +328,6 @@ export const MobileOptionsDrawer: React.FC<MobileOptionsDrawerProps> = ({ isOpen
                         isOpen={isOpen}
                         onClose={closeAll}
                         schoolName={schoolName}
-                        collections={collections}
                         filteredCollections={filteredCollections}
                         searchQuery={collectionSearchQuery}
                         onSearchChange={setCollectionSearchQuery}

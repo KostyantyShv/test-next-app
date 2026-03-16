@@ -1,6 +1,9 @@
 "use client";
 
-import React, { RefObject, useEffect } from "react";
+import React, { RefObject, useEffect, useState } from "react";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
+import { DesktopModal } from "@/components/ui/DesktopModal/DesktopModal";
 import ConfirmationPopupContent from "./ConfirmationPopupContent";
 
 interface ConfirmationPopupProps {
@@ -18,6 +21,13 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
   popupRef,
   onConfirm,
 }) => {
+  const isMobile = useIsMobile();
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
@@ -32,29 +42,37 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
     ? provider.charAt(0).toUpperCase() + provider.slice(1)
     : "";
 
-  return (
-    <div
-      ref={popupRef}
-      className={`popup-overlay fixed inset-0 bg-[rgba(0,0,0,0.6)] flex items-center justify-center z-[1000] transition-opacity duration-300 ${
-        isOpen ? "active opacity-100 visible" : "opacity-0 invisible"
-      }`}
-      onClick={(e) => {
-        if (e.target === popupRef.current) onClose();
-      }}
-    >
-      <div
-        className={`popup bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.15)] w-full max-w-[480px] p-6 relative transform transition-transform duration-300 ${
-          isOpen ? "scale-100" : "scale-95"
-        }`}
-        onClick={(e) => e.stopPropagation()}
+  if (!hasMounted) {
+    return null;
+  }
+
+  if (isMobile) {
+    return (
+      <MobileDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        title={`Disconnect ${providerName || "Account"}?`}
+        showPullIndicator={false}
+        variant="action-sheet"
       >
-        <ConfirmationPopupContent
-          onClose={onClose}
-          providerName={providerName}
-          onConfirm={onConfirm}
-        />
+        <div ref={popupRef}>
+          <ConfirmationPopupContent
+            onClose={onClose}
+            providerName={providerName}
+            onConfirm={onConfirm}
+            variant="action-sheet"
+          />
+        </div>
+      </MobileDrawer>
+    );
+  }
+
+  return (
+    <DesktopModal isOpen={isOpen} onClose={onClose} className="w-full max-w-[480px] p-6">
+      <div ref={popupRef}>
+        <ConfirmationPopupContent onClose={onClose} providerName={providerName} onConfirm={onConfirm} />
       </div>
-    </div>
+    </DesktopModal>
   );
 };
 

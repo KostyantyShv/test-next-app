@@ -38,7 +38,7 @@ const ReviewHighlightsCard: React.FC<ReviewCardProps> = ({
 
       {/* Review Card */}
       <div className="relative flex items-center">
-        <div className="w-full rounded-xl md:border md:border-gray-200 bg-white transition-all duration-300 md:rounded-2xl md:p-8">
+        <div className="listing-dark-panel listing-review-highlights-panel w-full rounded-xl md:border md:border-gray-200 bg-white transition-all duration-300 md:rounded-2xl md:p-8">
           {/* Header */}
           <div className="mb-4 flex items-center gap-3 md:mb-6 md:gap-4">
             <Image
@@ -105,7 +105,7 @@ const ReviewHighlightsCard: React.FC<ReviewCardProps> = ({
           <div className="mt-5 text-center md:hidden">
             <button
               onClick={handleOpenDrawer}
-              className="inline-flex items-center gap-1.5 rounded-full border-none bg-transparent px-4 py-2 text-sm font-semibold text-[#346DC2] transition-colors duration-200 hover:bg-blue-100/50"
+              className="listing-dark-panel-cta inline-flex items-center gap-1.5 rounded-full border-none bg-transparent px-4 py-2 text-sm font-semibold text-[#346DC2] transition-colors duration-200 hover:bg-blue-100/50"
             >
               <span>VIEW ALL HIGHLIGHTS</span>
               <svg
@@ -123,7 +123,7 @@ const ReviewHighlightsCard: React.FC<ReviewCardProps> = ({
         </div>
 
         {/* Navigation Arrow (Desktop Only) */}
-        <div className="absolute -right-4 hidden h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all duration-200 hover:translate-x-0.5 hover:shadow-lg md:flex">
+        <div className="listing-dark-panel-arrow absolute -right-4 hidden h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-all duration-200 hover:translate-x-0.5 hover:shadow-lg md:flex">
           <svg
             width="18"
             height="18"

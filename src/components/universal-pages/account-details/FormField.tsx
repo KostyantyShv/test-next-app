@@ -101,7 +101,7 @@ const FormField = forwardRef<
             >
               {options?.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {option.label.trim() || "None"}
                 </option>
               ))}
             </select>

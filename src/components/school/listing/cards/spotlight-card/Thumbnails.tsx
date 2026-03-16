@@ -1,19 +1,25 @@
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Project } from "./project.type";
 
 interface ThumbnailsProps {
+  activeProjectId: number;
   projects: Project[];
   onSelectProject: (project: Project) => void;
 }
 
 export default function Thumbnails({
+  activeProjectId,
   projects,
   onSelectProject,
 }: ThumbnailsProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [showRightButton, setShowRightButton] = useState(true);
+  const activeIndex = Math.max(
+    0,
+    projects.findIndex((project) => project.id === activeProjectId)
+  );
 
   const handleScrollLeft = () => {
     if (wrapperRef.current) {
@@ -73,14 +79,15 @@ export default function Thumbnails({
               index === activeIndex ? "border-2 border-[#0B6333]" : ""
             }`}
             onClick={() => {
-              setActiveIndex(index);
               onSelectProject(project);
             }}
           >
-            <img
-              className="w-full h-full object-cover"
+            <Image
+              className="h-full w-full object-cover"
               src={project.coverImage}
               alt={project.title}
+              fill
+              sizes="(max-width: 768px) 40px, 155px"
             />
           </div>
         ))}

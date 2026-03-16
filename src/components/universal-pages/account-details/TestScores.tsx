@@ -17,18 +17,18 @@ const TestScores: React.FC<TestScoresProps> = ({
     <div className="mt-9 pt-6 border-t border-[#e9ecef]">
       <h3 className="text-lg font-semibold text-[#464646] mb-6">Test Scores</h3>
       <div className="mb-5">
-        <div className="flex items-center">
+        <div className="flex items-start md:items-center">
           <input
             type="checkbox"
             id="no-tests"
             name="noTests"
             checked={formData.noTests}
             onChange={handleCheckboxChange}
-            className="w-4 h-4 text-primary border-border-color !bg-white focus:ring-0 cursor-pointer"
+            className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer border-border-color !bg-white text-primary focus:ring-0 md:mt-0"
           />
           <label
             htmlFor="no-tests"
-            className="ml-2.5 text-sm text-text-color cursor-pointer"
+            className="ml-2.5 cursor-pointer text-sm leading-[1.45] text-text-color"
           >
             I do not plan on taking the SAT or ACT tests.
           </label>

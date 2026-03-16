@@ -1,9 +1,8 @@
-// components/ProjectPopup.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Project } from "./project.type";
+import { Project, ProjectSocialPlatform } from "./project.type";
 
 interface SpotlightModalProps {
   onClose: () => void;
@@ -12,34 +11,51 @@ interface SpotlightModalProps {
   onProjectChange?: (project: Project) => void;
 }
 
-const SpotlightModal: React.FC<SpotlightModalProps> = ({ 
-  onClose, 
+const SOCIAL_ICONS: Record<
+  ProjectSocialPlatform,
+  { viewBox: string; path: string }
+> = {
+  twitter: {
+    viewBox: "0 0 24 24",
+    path: "M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z",
+  },
+  facebook: {
+    viewBox: "0 0 24 24",
+    path: "M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z",
+  },
+  linkedin: {
+    viewBox: "0 0 24 24",
+    path: "M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z",
+  },
+};
+
+const SpotlightModal: React.FC<SpotlightModalProps> = ({
+  onClose,
   project,
   allProjects,
-  onProjectChange
+  onProjectChange,
 }) => {
-  const currentProjectIndex = allProjects.findIndex(p => p.id === project.id) + 1;
+  const currentProjectIndex =
+    allProjects.findIndex((item) => item.id === project.id) + 1;
   const totalProjects = allProjects.length;
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [imageLoadErrors, setImageLoadErrors] = useState<Record<string, boolean>>(
     {}
   );
 
-  // Reset active image index when project changes
   useEffect(() => {
     setActiveImageIndex(0);
+    setImageLoadErrors({});
   }, [project.id]);
 
-  // Generate project images array from project data and known fallbacks
   const projectImages = Array.from(
     new Set(
-      [
-    project.coverImage,
-    "https://i.ibb.co/LJwrLdW/coaching-image.webp",
-    "https://i.ibb.co/fVRCnNZY/school2.webp",
-      ].filter((src): src is string => typeof src === "string" && src.trim().length > 0)
+      (project.galleryImages.length > 0
+        ? project.galleryImages
+        : [project.coverImage]
+      ).filter((src): src is string => src.trim().length > 0)
     )
-  ).slice(0, Math.max(1, project.imageCount || 3));
+  );
 
   useEffect(() => {
     if (activeImageIndex >= projectImages.length) {
@@ -48,7 +64,9 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({
   }, [activeImageIndex, projectImages.length]);
 
   const activeImageSrc = projectImages[activeImageIndex];
-  const isActiveImageBroken = Boolean(activeImageSrc && imageLoadErrors[activeImageSrc]);
+  const isActiveImageBroken = Boolean(
+    activeImageSrc && imageLoadErrors[activeImageSrc]
+  );
 
   const handleImageError = (src: string) => {
     setImageLoadErrors((prev) => ({
@@ -58,59 +76,53 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({
   };
 
   const handlePrev = () => {
-    const currentIndex = allProjects.findIndex(p => p.id === project.id);
+    const currentIndex = allProjects.findIndex((item) => item.id === project.id);
     if (currentIndex > 0 && onProjectChange) {
-      const prevProject = allProjects[currentIndex - 1];
-      onProjectChange(prevProject);
+      onProjectChange(allProjects[currentIndex - 1]);
     }
   };
 
   const handleNext = () => {
-    const currentIndex = allProjects.findIndex(p => p.id === project.id);
+    const currentIndex = allProjects.findIndex((item) => item.id === project.id);
     if (currentIndex < allProjects.length - 1 && onProjectChange) {
-      const nextProject = allProjects[currentIndex + 1];
-      onProjectChange(nextProject);
+      onProjectChange(allProjects[currentIndex + 1]);
     }
   };
 
-  const handleSetActiveImage = (index: number) => {
-    setActiveImageIndex(index);
-  };
-
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
     };
+
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, [onClose]);
 
   return (
     <>
-      {/* Header */}
-      <div className="p-4 md:p-6 border-b border-[#E0E0E0] flex items-center justify-between sticky top-0 bg-white z-50">
+      <div className="sticky top-0 z-50 flex items-center justify-between border-b border-[#E0E0E0] bg-white p-4 md:p-6">
         <div className="author-info flex items-center gap-3">
           <Image
             src={project.authorAvatar}
             alt={project.authorName}
             width={36}
             height={36}
-            className="rounded-full object-cover w-9 h-9 md:w-10 md:h-10"
+            className="h-9 w-9 rounded-full object-cover md:h-10 md:w-10"
           />
-          <span className="text-sm md:text-base font-semibold text-[#464646] md:text-[#262B3D]">
+          <span className="text-sm font-semibold text-[#464646] md:text-base md:text-[#262B3D]">
             {project.authorName}
           </span>
         </div>
         <div className="flex items-center gap-4">
           <div className="navigation flex items-center gap-2">
             <button
-              className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center hover:bg-[#f5f5f5] transition-all duration-200 disabled:opacity-50"
+              className="flex h-7 w-7 items-center justify-center rounded-full border border-[#E0E0E0] bg-white transition-all duration-200 hover:bg-[#f5f5f5] disabled:opacity-50 md:h-8 md:w-8"
               onClick={handlePrev}
               disabled={currentProjectIndex === 1}
             >
               <svg
                 viewBox="0 0 24 24"
-                className="w-5 h-5 md:w-6 md:h-6 fill-[#1B1B1B]"
+                className="h-5 w-5 fill-[#1B1B1B] md:h-6 md:w-6"
               >
                 <path
                   d="M4 12l8 8 1.5-1.5L8 13h12v-2H8l5.5-5.5L12 4z"
@@ -119,17 +131,17 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({
                 />
               </svg>
             </button>
-            <span className="text-xs md:text-sm text-[#5F5F5F] md:text-[#4A4A4A] mx-1 md:mx-2">
+            <span className="mx-1 text-xs text-[#5F5F5F] md:mx-2 md:text-sm md:text-[#4A4A4A]">
               {currentProjectIndex} of {totalProjects}
             </span>
             <button
-              className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center hover:bg-[#f5f5f5] transition-all duration-200 disabled:opacity-50"
+              className="flex h-7 w-7 items-center justify-center rounded-full border border-[#E0E0E0] bg-white transition-all duration-200 hover:bg-[#f5f5f5] disabled:opacity-50 md:h-8 md:w-8"
               onClick={handleNext}
               disabled={currentProjectIndex === totalProjects}
             >
               <svg
                 viewBox="0 0 24 24"
-                className="w-5 h-5 md:w-6 md:h-6 fill-[#1B1B1B]"
+                className="h-5 w-5 fill-[#1B1B1B] md:h-6 md:w-6"
               >
                 <path
                   d="M10.5 5.5L16 11H4v2h12l-5.5 5.5L12 20l8-8-8-8z"
@@ -140,14 +152,13 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({
             </button>
           </div>
           <button
-            className="w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center hover:bg-[#f5f5f5] transition-all duration-200 border-none bg-transparent"
+            className="flex h-7 w-7 items-center justify-center rounded-full border-none bg-transparent transition-all duration-200 hover:bg-[#f5f5f5] md:h-8 md:w-8"
             onClick={onClose}
           >
             <svg
-              xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              className="w-4 h-4 md:w-5 md:h-5 text-[#5F5F5F] md:text-[#4A4A4A]"
+              className="h-4 w-4 text-[#5F5F5F] md:h-5 md:w-5 md:text-[#4A4A4A]"
             >
               <path
                 fill="currentColor"
@@ -160,33 +171,28 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({
         </div>
       </div>
 
-      {/* Content */}
       <div className="flex-1 overflow-y-auto md:flex md:gap-6">
-        <div className="p-4 md:p-6 md:flex-1 md:min-w-0">
-          <div className="text-xs md:text-sm text-[#5F5F5F] mb-2 md:mb-3">
+        <div className="p-4 md:min-w-0 md:flex-1 md:p-6">
+          <div className="mb-2 text-xs text-[#5F5F5F] md:mb-3 md:text-sm">
             {project.date}
           </div>
-          <h1 className="text-xl md:text-2xl font-semibold text-[#464646] md:text-[#262B3D] mb-3 md:mb-4">
+          <h1 className="mb-3 text-xl font-semibold text-[#464646] md:mb-4 md:text-2xl md:text-[#262B3D]">
             {project.title}
           </h1>
-          <div className="text-sm md:text-[15px] leading-relaxed text-[#4A4A4A] mb-5 md:mb-6">
+          <div className="mb-5 text-sm leading-relaxed text-[#4A4A4A] md:mb-6 md:text-[15px]">
             <p>{project.description}</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mb-6 md:mb-8">
-            {[
-              { label: "Active Users", value: "25,000+" },
-              { label: "Course Completion Rate", value: "94.2%" },
-              { label: "Student Satisfaction", value: "4.8/5.0" },
-            ].map((stat, index) => (
+          <div className="mb-6 grid grid-cols-1 gap-3 md:mb-8 md:grid-cols-3 md:gap-6">
+            {project.stats.map((stat) => (
               <div
-                key={index}
-                className="p-3 md:p-4 border border-[#E0E0E0] rounded-lg flex md:block justify-between"
+                key={`${project.id}-${stat.label}`}
+                className="flex justify-between rounded-lg border border-[#E0E0E0] p-3 md:block md:p-4"
               >
-                <div className="text-xs md:text-sm text-[#5F5F5F] mb-0 md:mb-2">
+                <div className="mb-0 text-xs text-[#5F5F5F] md:mb-2 md:text-sm">
                   {stat.label}
                 </div>
-                <div className="text-base md:text-lg font-semibold text-[#262B3D]">
+                <div className="text-base font-semibold text-[#262B3D] md:text-lg">
                   {stat.value}
                 </div>
               </div>
@@ -194,14 +200,15 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({
           </div>
 
           <div className="mb-6 md:mb-8 md:flex md:flex-col-reverse">
-            <div className="w-full h-[200px] md:h-[400px] rounded-lg overflow-hidden mb-3 md:mb-4">
+            <div className="mb-3 h-[200px] w-full overflow-hidden rounded-lg md:mb-4 md:h-[400px]">
               {activeImageSrc && !isActiveImageBroken ? (
                 <Image
+                  key={activeImageSrc}
                   src={activeImageSrc}
-                  alt="Active Project Preview"
+                  alt={`${project.title} preview ${activeImageIndex + 1}`}
                   width={800}
                   height={400}
-                  className="w-full h-full object-cover rounded-lg transition-all duration-300"
+                  className="h-full w-full rounded-lg object-cover transition-all duration-300"
                   onError={() => handleImageError(activeImageSrc)}
                 />
               ) : (
@@ -221,179 +228,175 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({
                 </div>
               )}
             </div>
-            <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2 md:grid md:grid-cols-3">
-              {projectImages.map((src, index) => (
+            <div className="flex gap-2 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:gap-3">
+              {projectImages.map((src, index) =>
                 imageLoadErrors[src] ? (
                   <button
-                    key={index}
+                    key={src}
                     type="button"
-                    className={`w-10 h-10 md:w-full md:h-[120px] rounded-full md:rounded-lg cursor-pointer border-2 flex-shrink-0 bg-[#F8F9FD] border-[#E0E0E0] flex items-center justify-center text-[#9CA3AF] ${
+                    className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-[#E0E0E0] bg-[#F8F9FD] text-[#9CA3AF] md:h-[120px] md:w-full md:rounded-lg ${
                       activeImageIndex === index ? "border-[#0B6333]" : ""
                     }`}
-                    onClick={() => handleSetActiveImage(index)}
-                    aria-label={`Project Preview ${index + 1} unavailable`}
+                    onClick={() => setActiveImageIndex(index)}
+                    aria-label={`${project.title} preview ${index + 1} unavailable`}
                   >
-                    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
+                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
                       <path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14l-4-4-3 3-4-4-5 5V5z" />
                     </svg>
                   </button>
                 ) : (
                   <Image
-                    key={index}
+                    key={src}
                     src={src}
-                    alt={`Project Preview ${index + 1}`}
+                    alt={`${project.title} thumbnail ${index + 1}`}
                     width={100}
                     height={100}
-                    className={`w-10 h-10 md:w-full md:h-[120px] rounded-full md:rounded-lg object-cover cursor-pointer border-2 ${
+                    className={`h-10 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 object-cover transition-all duration-300 hover:opacity-90 md:h-[120px] md:w-full md:rounded-lg ${
                       activeImageIndex === index
                         ? "border-[#0B6333]"
                         : "border-transparent"
-                    } hover:opacity-90 transition-all duration-300 flex-shrink-0`}
-                    onClick={() => handleSetActiveImage(index)}
+                    }`}
+                    onClick={() => setActiveImageIndex(index)}
                     onError={() => handleImageError(src)}
                   />
                 )
-              ))}
+              )}
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 md:gap-4 mb-6 md:mb-8 ">
-            {[
-              "Schedule a Demo Session",
-              "Download Technical Documentation",
-              "View Implementation Guide",
-            ].map((text, index) => (
+          <div className="mb-6 flex flex-col gap-3 md:mb-8 md:gap-4">
+            {project.actionItems.map((item) => (
               <div
-                key={index}
-                className="flex items-center justify-between p-3 md:p-4 border border-[#E0E0E0] rounded-lg"
+                key={`${project.id}-${item.title}`}
+                className="flex items-center justify-between rounded-lg border border-[#E0E0E0] p-3 md:p-4"
               >
-                <div className="text-sm md:text-[15px] font-semibold text-[#464646] md:text-[#262B3D]">
-                  {text}
+                <div className="text-sm font-semibold text-[#464646] md:text-[15px] md:text-[#262B3D]">
+                  {item.title}
                 </div>
-                <button className="px-3 py-1 md:px-4 md:py-2 rounded-md bg-[#EBFCF4] text-[#016853] md:bg-[#02C5AF] md:text-white border-none font-semibold cursor-pointer hover:bg-[#D7F7E9] md:hover:bg-[#00b19d] transition-all duration-200 text-xs md:text-base">
-                  {text.includes("Schedule")
-                    ? "Book Now"
-                    : text.includes("Download")
-                    ? "Download"
-                    : "View Guide"}
-                </button>
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-md border-none bg-[#EBFCF4] px-3 py-1 text-xs font-semibold text-[#016853] transition-all duration-200 hover:bg-[#D7F7E9] md:bg-[#02C5AF] md:px-4 md:py-2 md:text-base md:text-white md:hover:bg-[#00b19d]"
+                >
+                  {item.buttonLabel}
+                </a>
               </div>
             ))}
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-6 md:mb-8 font-semibold">
-            {project.tags.map((tag, index) => (
+          <div className="mb-6 flex flex-wrap gap-2 font-semibold md:mb-8">
+            {project.tags.map((tag) => (
               <span
-                key={index}
-                className="px-3 py-1.5 bg-[#EBFCF4] text-[#016853] rounded-full text-xs md:text-sm"
+                key={`${project.id}-${tag}`}
+                className="rounded-full bg-[#EBFCF4] px-3 py-1.5 text-xs text-[#016853] md:text-sm"
               >
                 {tag}
               </span>
             ))}
-            {project.tagCount > 0 && (
-              <span className="px-3 py-1.5 bg-[#EBFCF4] text-[#016853] rounded-full text-xs md:text-sm font-semibold">
+            {project.tagCount > 0 ? (
+              <span className="rounded-full bg-[#EBFCF4] px-3 py-1.5 text-xs font-semibold text-[#016853] md:text-sm">
                 +{project.tagCount}
               </span>
-            )}
+            ) : null}
           </div>
 
-          <div className="bg-[#F8F9FD] rounded-lg p-4 md:p-6 flex items-center gap-3 md:gap-4 mb-6 md:mb-0">
+          <div className="mb-6 flex items-center gap-3 rounded-lg bg-[#F8F9FD] p-4 md:mb-0 md:gap-4 md:p-6">
             <Image
-              src="https://i.ibb.co/Z1RrcHzB/dribble.png"
-              alt="Vendor Logo"
+              src={project.contactCard.logoImage}
+              alt={project.contactCard.title}
               width={40}
               height={40}
-              className="w-10 h-10 md:w-12 md:h-12 rounded-lg object-cover"
+              className="h-10 w-10 rounded-lg object-cover md:h-12 md:w-12"
             />
             <div className="flex-1">
-              <div className="text-sm md:text-base font-semibold text-[#464646] md:text-[#262B3D] mb-1">
-                Contact EduTech Solutions
+              <div className="mb-1 text-sm font-semibold text-[#464646] md:text-base md:text-[#262B3D]">
+                {project.contactCard.title}
               </div>
-              <div className="text-xs md:text-sm text-[#5F5F5F]">
-                Ready to transform your educational institution?
+              <div className="text-xs text-[#5F5F5F] md:text-sm">
+                {project.contactCard.description}
               </div>
             </div>
-            <button className="px-3 py-1 md:px-4 md:py-2 rounded-md bg-[#EBFCF4] text-[#016853] md:bg-[#02C5AF] md:text-white border-none font-semibold cursor-pointer hover:bg-[#D7F7E9] md:hover:bg-[#00b19d] transition-all duration-200 text-xs md:text-base whitespace-nowrap">
-              Send Message
-            </button>
+            <a
+              href={project.contactCard.buttonHref}
+              target="_blank"
+              rel="noreferrer"
+              className="whitespace-nowrap rounded-md border-none bg-[#EBFCF4] px-3 py-1 text-xs font-semibold text-[#016853] transition-all duration-200 hover:bg-[#D7F7E9] md:bg-[#02C5AF] md:px-4 md:py-2 md:text-base md:text-white md:hover:bg-[#00b19d]"
+            >
+              {project.contactCard.buttonLabel}
+            </a>
           </div>
         </div>
 
-        {/* Sidebar - Becomes bottom content on mobile */}
-        <div className="p-4 md:p-6 md:w-[300px] md:border-l md:border-[#E0E0E0] md:sticky md:top-[73px] md:h-[calc(90vh-73px)] md:overflow-y-auto border-t md:border-t-0 border-[#E0E0E0]">
+        <div className="border-t border-[#E0E0E0] p-4 md:sticky md:top-[73px] md:h-[calc(90vh-73px)] md:w-[300px] md:overflow-y-auto md:border-l md:border-t-0 md:p-6">
           <Image
-            src="https://i.ibb.co/jJ4GHXP/img1.jpg"
-            alt="School Banner"
+            src={project.sidebar.bannerImage}
+            alt={`${project.sidebar.title} banner`}
             width={252}
             height={140}
-            className="w-full h-[140px] md:h-[160px] object-cover rounded-lg mb-4"
+            className="mb-4 h-[140px] w-full rounded-lg object-cover md:h-[160px]"
           />
-          <h2 className="text-base md:text-lg font-semibold text-[#464646] md:text-[#262B3D] mb-2 md:mb-3">
-            EduTech Solutions
+          <h2 className="mb-2 text-base font-semibold text-[#464646] md:mb-3 md:text-lg md:text-[#262B3D]">
+            {project.sidebar.title}
           </h2>
-          <p className="text-xs md:text-sm text-[#5F5F5F] leading-relaxed mb-5 md:mb-6">
-            Leading provider of innovative educational technology solutions,
-            specializing in learning management systems and digital learning
-            environments for higher education.
+          <p className="mb-5 text-xs leading-relaxed text-[#5F5F5F] md:mb-6 md:text-sm">
+            {project.sidebar.description}
           </p>
 
-          <div className="flex flex-col gap-3 mb-6 md:mb-8">
-            {[
-              { text: "📚 View Course Catalog", href: "#" },
-              { text: "🎓 Student Success Stories", href: "#" },
-              { text: "📊 Analytics Dashboard", href: "#" },
-            ].map((link, index) => (
+          <div className="mb-6 flex flex-col gap-3 md:mb-8">
+            {project.sidebar.resourceLinks.map((link) => (
               <a
-                key={index}
+                key={`${project.id}-${link.label}`}
                 href={link.href}
-                className="flex items-center gap-2 text-[#142E53] text-sm font-semibold hover:text-[#02C5AF] transition-all duration-200 py-2 md:py-0"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 py-2 text-sm font-semibold text-[#142E53] transition-all duration-200 hover:text-[#02C5AF] md:py-0"
               >
-                <svg viewBox="0 0 20 20" className="w-4 h-4">
+                <svg viewBox="0 0 20 20" className="h-4 w-4">
                   <path d="M9.73423 5.4902L10.1013 5.06529C10.7403 4.43601 11.6014 4.08294 12.499 4.08301C13.4052 4.08307 14.2743 4.44313 14.915 5.08397C15.5558 5.72481 15.9157 6.59395 15.9157 7.50017C15.9156 8.39808 15.5621 9.25952 14.9323 9.89853L14.5081 10.2671C14.1954 10.5388 14.1622 11.0125 14.4339 11.3252C14.7055 11.6379 15.1792 11.6711 15.4919 11.3994L15.9369 11.0127C15.9501 11.0013 15.9629 10.9893 15.9753 10.977C16.8975 10.0549 17.4156 8.80433 17.4157 7.50028C17.4158 6.19623 16.8978 4.94555 15.9758 4.02339C15.0537 3.10122 13.8031 2.5831 12.4991 2.58301C11.195 2.58292 9.94437 3.10086 9.0222 4.0229C9.00929 4.0358 8.99686 4.04918 8.98492 4.06299L8.59909 4.50966C8.32832 4.82312 8.36293 5.29673 8.67639 5.5675C8.98985 5.83827 9.46346 5.80366 9.73423 5.4902Z" />
                   <path d="M13.0303 8.03031C13.3232 7.73742 13.3232 7.26254 13.0303 6.96965C12.7374 6.67676 12.2626 6.67676 11.9697 6.96965L6.96966 11.9697C6.67677 12.2625 6.67677 12.7374 6.96966 13.0303C7.26256 13.3232 7.73743 13.3232 8.03032 13.0303L13.0303 8.03031Z" />
                   <path d="M9.68144 15.0931L9.3144 15.518C8.67538 16.1472 7.81422 16.5003 6.91668 16.5002C6.01046 16.5002 5.14137 16.1401 4.50062 15.4993C3.85987 14.8584 3.49994 13.9893 3.5 13.0831C3.50006 12.1852 3.85354 11.3237 4.48339 10.6847L4.9076 10.3161C5.22026 10.0444 5.25349 9.57073 4.98181 9.25806C4.71013 8.9454 4.23642 8.91217 3.92375 9.18385L3.47875 9.57052C3.46554 9.58199 3.45275 9.59392 3.44038 9.60629C2.51821 10.5283 2.00009 11.7789 2 13.083C1.99991 14.387 2.51785 15.6377 3.43989 16.5599C4.36192 17.482 5.61252 18.0002 6.91657 18.0002C8.22062 18.0003 9.4713 17.4824 10.3935 16.5604C10.4064 16.5474 10.4188 16.5341 10.4307 16.5203L10.8166 16.0736C11.0873 15.7601 11.0527 15.2865 10.7393 15.0158C10.4258 14.745 9.9522 14.7796 9.68144 15.0931Z" />
                 </svg>
-                {link.text}
+                {link.label}
               </a>
             ))}
           </div>
 
-          <div className="flex gap-3 mb-6">
-            {[
-              {
-                viewBox: "0 0 24 24",
-                path: "M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z",
-              },
-              {
-                viewBox: "0 0 24 24",
-                path: "M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z",
-              },
-              {
-                viewBox: "0 0 24 24",
-                path: "M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z",
-              },
-            ].map((social, index) => (
-              <button
-                key={index}
-                className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-[#F8F9FD] flex items-center justify-center hover:bg-[#E0E0E0] transition-all duration-200 border-none"
-              >
-                <svg
-                  viewBox={social.viewBox}
-                  className="w-4 h-4 md:w-5 md:h-5 text-[#464646] md:text-[#262B3D]"
+          <div className="mb-6 flex gap-3">
+            {project.sidebar.socialLinks.map((socialLink) => {
+              const icon = SOCIAL_ICONS[socialLink.platform];
+
+              return (
+                <a
+                  key={`${project.id}-${socialLink.platform}`}
+                  href={socialLink.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={socialLink.label}
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F8F9FD] transition-all duration-200 hover:bg-[#E0E0E0] md:h-10 md:w-10"
                 >
-                  <path fill="currentColor" d={social.path} />
-                </svg>
-              </button>
-            ))}
+                  <svg
+                    viewBox={icon.viewBox}
+                    className="h-4 w-4 text-[#464646] md:h-5 md:w-5 md:text-[#262B3D]"
+                  >
+                    <path fill="currentColor" d={icon.path} />
+                  </svg>
+                </a>
+              );
+            })}
           </div>
 
-          <button className="w-full py-3 bg-[#EBFCF4] md:bg-[#02C5AF] text-[#016853] md:text-white border-none rounded-md font-semibold flex items-center justify-center gap-2 hover:bg-[#D7F7E9] md:hover:bg-[#00b19d] transition-all duration-200 text-sm md:text-base">
-            Contact Us
+          <a
+            href={project.sidebar.primaryActionHref}
+            target="_blank"
+            rel="noreferrer"
+            className="flex w-full items-center justify-center gap-2 rounded-md border-none bg-[#EBFCF4] py-3 text-sm font-semibold text-[#016853] transition-all duration-200 hover:bg-[#D7F7E9] md:bg-[#02C5AF] md:text-base md:text-white md:hover:bg-[#00b19d]"
+          >
+            {project.sidebar.primaryActionLabel}
             <svg
-              xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              className="w-4 h-4 md:w-5 md:h-5"
+              className="h-4 w-4 md:h-5 md:w-5"
             >
               <path
                 fill="currentColor"
@@ -402,7 +405,7 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({
                 fillRule="evenodd"
               />
             </svg>
-          </button>
+          </a>
         </div>
       </div>
     </>

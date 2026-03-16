@@ -119,7 +119,7 @@ export const CardGridMobile: React.FC<CardGridMobileProps> = ({
   return (
     <>
       <article
-        className="relative flex flex-col overflow-hidden rounded-[12px] border border-[#E5E7EB] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+        className="school-card collections-grid-mobile-card relative flex flex-col overflow-hidden rounded-[12px] border border-[#E5E7EB] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
         onClick={() => setIsDrawerOpen(true)}
       >
         <div className="relative h-[140px] w-full overflow-hidden">

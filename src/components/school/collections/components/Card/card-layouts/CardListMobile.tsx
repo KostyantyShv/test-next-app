@@ -169,7 +169,7 @@ export const CardListMobile: React.FC<CardListMobileProps> = ({
 
   return (
     <>
-      <article className="rounded-[12px] border border-[#E5E7EB] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+      <article className="school-card collections-list-mobile-card rounded-[12px] border border-[#E5E7EB] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
         <div className="relative flex">
           <div className="relative h-[120px] w-[120px] shrink-0">
             <CollectionImage

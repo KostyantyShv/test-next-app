@@ -20,17 +20,17 @@ export const NotificationPreferences: FC<NotificationPreferencesProps> = ({
   isSaving,
 }) => {
   return (
-    <div className="flex flex-col md:flex-row gap-5 md:gap-6 items-start mb-0">
-      <div className="flex-[0_0_100%] md:flex-[0_0_30%]">
+    <div className="flex flex-col md:flex-row gap-5 md:gap-6 items-stretch md:items-start mb-0">
+      <div className="w-full flex-[0_0_100%] md:flex-[0_0_30%]">
         <h2 className="text-[18px] md:text-xl font-semibold text-[#464646] mb-2 md:mb-3">Notification Preferences</h2>
         <p className="text-[14px] text-[#5F5F5F] leading-[1.5] mb-5 md:mb-0">
           This section controls the alerts you receive on the platform. Toggle on to receive these notifications via email or view them on the site.
         </p>
       </div>
 
-      <div className="flex-[0_0_100%] md:flex-[0_0_70%]">
+      <div className="w-full flex-[0_0_100%] md:flex-[0_0_70%]">
         {/* Student Notifications */}
-        <div className="bg-white rounded-xl md:rounded-lg p-5 md:p-6 shadow-[0_2px_8px_rgba(0,0,0,0.1)] md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] mb-[15px] md:mb-8">
+        <div className="w-full bg-white rounded-xl md:rounded-lg p-5 md:p-6 shadow-[0_2px_8px_rgba(0,0,0,0.1)] md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] mb-[15px] md:mb-8">
           <h3 className="text-base font-semibold text-[#464646] mb-4 md:mb-5">Student Notifications</h3>
           
           <div className="hidden md:grid grid-cols-[2fr_1fr_1fr] px-4 pb-3 border-b border-[#DFDDDB] mb-4">
@@ -64,7 +64,7 @@ export const NotificationPreferences: FC<NotificationPreferencesProps> = ({
         </div>
 
         {/* Vendor Notifications */}
-        <div className={`bg-white rounded-xl md:rounded-lg p-5 md:p-6 shadow-[0_2px_8px_rgba(0,0,0,0.1)] md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] mb-4 md:mb-8 transition-opacity ${userRole === 'admin' ? 'opacity-100' : 'opacity-60 pointer-events-none'}`}>
+        <div className={`w-full bg-white rounded-xl md:rounded-lg p-5 md:p-6 shadow-[0_2px_8px_rgba(0,0,0,0.1)] md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] mb-4 md:mb-8 transition-opacity ${userRole === 'admin' ? 'opacity-100' : 'opacity-60 pointer-events-none'}`}>
           <h3 className="text-base font-semibold text-[#464646] mb-4 md:mb-5 flex items-center gap-2">
             Vendor Notifications
             <span className="inline-block bg-[#00DF8B] text-[#1B1B1B] text-[10px] md:text-[11px] font-semibold px-1.5 md:px-2 py-0.5 rounded-lg md:rounded-xl">ADMIN</span>
@@ -103,7 +103,7 @@ export const NotificationPreferences: FC<NotificationPreferencesProps> = ({
         </div>
 
         {/* System Notifications */}
-        <div className="bg-white rounded-xl md:rounded-lg p-5 md:p-6 shadow-[0_2px_8px_rgba(0,0,0,0.1)] md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] mb-4 md:mb-8">
+        <div className="w-full bg-white rounded-xl md:rounded-lg p-5 md:p-6 shadow-[0_2px_8px_rgba(0,0,0,0.1)] md:shadow-[0_1px_3px_rgba(0,0,0,0.1)] mb-4 md:mb-8">
           <h3 className="text-base font-semibold text-[#464646] mb-4 md:mb-5">System Notifications</h3>
           
           <div className="hidden md:grid grid-cols-[2fr_1fr_1fr] px-4 pb-3 border-b border-[#DFDDDB] mb-4">
