@@ -213,7 +213,9 @@ export const MobileOptionsDrawer: React.FC<MobileOptionsDrawerProps> = ({ isOpen
         );
     };
 
-    const handleAction = () => {
+    const handleAction = (_action?: string) => {
+        // Currently the mobile drawer only closes after an action.
+        // We accept an optional argument to match the DrawerItem callbacks.
         closeAll();
     };
 

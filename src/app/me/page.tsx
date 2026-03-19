@@ -18,6 +18,10 @@ interface User {
 export default function MePage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth < 768;
+  });
   const [isRequestContentOpen, setIsRequestContentOpen] = useState(false);
   const [isSupportOpen, setIsSupportOpen] = useState(false);
   const router = useRouter();
@@ -81,6 +85,15 @@ export default function MePage() {
     };
   }, [router, supabase]);
 
+  useEffect(() => {
+    const update = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push('/login');
@@ -91,13 +104,7 @@ export default function MePage() {
     router.push('/account-details');
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#E1E7EE] flex items-center justify-center">
-        <div className="text-[#464646]">Loading...</div>
-      </div>
-    );
-  }
+  const showSkeleton = loading && isMobile;
 
   const avatarSrc = user?.avatar;
   const displayName = user?.name || 'User Name';
@@ -126,7 +133,7 @@ export default function MePage() {
           {/* Header */}
           <div className="p-8 pt-8 pb-6 text-center bg-white border-b border-[#D7F7E9]">
             <div className="w-20 h-20 rounded-full mx-auto mb-4 border-[3px] border-[#D7F7E9] bg-gradient-to-br from-[#016853] to-[#0B6333] flex items-center justify-center text-white text-[28px] font-semibold overflow-hidden">
-              {avatarSrc && avatarSrc.trim() !== '' ? (
+              {!showSkeleton && avatarSrc && avatarSrc.trim() !== '' ? (
                 <Image
                   src={avatarSrc}
                   alt={displayName}
@@ -136,15 +143,33 @@ export default function MePage() {
                   unoptimized={avatarSrc.includes('supabase.co')}
                 />
               ) : (
-                initials
+                <div className="w-full h-full flex items-center justify-center">
+                  {showSkeleton ? (
+                    <div className="w-14 h-14 rounded-full bg-white/20 animate-pulse" />
+                  ) : (
+                    initials
+                  )}
+                </div>
               )}
             </div>
-            <h1 className="text-[20px] font-semibold text-[#464646] mb-1.5">{displayName}</h1>
-            <p className="text-[14px] text-[#5F5F5F] mb-4">{displayEmail}</p>
+            <h1 className="text-[20px] font-semibold text-[#464646] mb-1.5">
+              {showSkeleton ? (
+                <div className="h-5 w-[60%] mx-auto bg-[#DFDDDB] rounded animate-pulse" />
+              ) : (
+                displayName
+              )}
+            </h1>
+            <p className="text-[14px] text-[#5F5F5F] mb-4">
+              {showSkeleton ? (
+                <div className="h-4 w-[45%] mx-auto bg-[#DFDDDB] rounded animate-pulse" />
+              ) : (
+                displayEmail
+              )}
+            </p>
             
             <div className='flex flex-col justify-center items-center'>
             
-            {user?.plan && (
+            {user?.plan && !showSkeleton && (
               <div className="inline-block px-4 py-2 bg-[#EBFCF4] rounded-xl text-[13px] text-[#016853] font-semibold max-w-[244px] mb-4">
                 {user.plan}
               </div>

@@ -52,13 +52,17 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
   const [showScrollRight, setShowScrollRight] = useState(true);
   const [showListScrollLeft, setShowListScrollLeft] = useState(false);
   const [showListScrollRight, setShowListScrollRight] = useState(true);
+  // Mobile: "?" tooltips need click/tap toggling (hover doesn't fire reliably).
+  const [activeHelpTooltipKey, setActiveHelpTooltipKey] = useState<string | null>(null);
+  const [isDesktopViewport, setIsDesktopViewport] = useState(false);
 
   const schoolsHeaderScrollRef = useRef<HTMLDivElement>(null);
   const comparisonBodyScrollRef = useRef<HTMLDivElement>(null);
   const footerScrollRef = useRef<HTMLDivElement>(null);
   const listTableScrollRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
-  const schools: School[] = [
+  const [schools, setSchools] = useState<School[]>([
     {
       id: '1',
       name: 'Harvard University',
@@ -109,7 +113,7 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
       moreTags: 1,
       description: 'Princeton University is a private Ivy League research university in Princeton, New Jersey. Founded in 1746, Princeton is the fourth-oldest college in the United States.'
     }
-  ];
+  ]);
 
   const features: Feature[] = [
     { key: 'overallRank', label: 'Overall Rank', icon: 'rank', tooltip: 'Overall school ranking based on multiple factors', values: ['A+', 'A', 'A-', 'A+', 'A'] },
@@ -132,15 +136,113 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
   const featureSpacerWidth = 120;
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+    const mq = window.matchMedia('(min-width: 768px)');
+    const update = () => setIsDesktopViewport(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  const MOBILE_DRAWER_VISIBILITY_EVENT = 'mobile-drawer-visibility-change';
+  useEffect(() => {
+    // Always close tooltips when overlay closes.
+    if (!isOpen) {
+      setActiveHelpTooltipKey(null);
+      return;
     }
-    return () => {
-      document.body.style.overflow = '';
+
+    if (isDesktopViewport) return;
+
+    const body = document.body;
+    const root = document.documentElement;
+
+    const currentCount = Number(body.dataset.mobileDrawerOpenCount || '0');
+    const nextCount = currentCount + 1;
+    body.dataset.mobileDrawerOpenCount = String(nextCount);
+    body.dataset.mobileDrawerOpen = 'true';
+    window.dispatchEvent(new Event(MOBILE_DRAWER_VISIBILITY_EVENT));
+
+    if (currentCount === 0) {
+      const scrollY = window.scrollY ?? window.pageYOffset ?? 0;
+      body.style.position = 'fixed';
+      body.style.top = `-${scrollY}px`;
+      body.style.left = '0';
+      body.style.right = '0';
+      body.style.width = '100%';
+      body.style.overflow = 'hidden';
+      body.dataset.mobileDrawerScrollY = String(scrollY);
+    }
+
+    const handleTouchMove = (event: TouchEvent) => {
+      const container = overlayRef.current;
+      if (!container) return;
+      const target = event.target as Node | null;
+      if (target && !container.contains(target)) {
+        event.preventDefault();
+      }
     };
-  }, [isOpen]);
+
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+    return () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+
+      setActiveHelpTooltipKey(null);
+
+      const latestCount = Number(body.dataset.mobileDrawerOpenCount || '1');
+      const decremented = Math.max(0, latestCount - 1);
+
+      if (decremented === 0) {
+        delete body.dataset.mobileDrawerOpenCount;
+        delete body.dataset.mobileDrawerOpen;
+
+        const savedScrollY = body.dataset.mobileDrawerScrollY;
+        body.style.removeProperty('position');
+        body.style.removeProperty('top');
+        body.style.removeProperty('left');
+        body.style.removeProperty('right');
+        body.style.removeProperty('width');
+        body.style.removeProperty('overflow');
+
+        if (savedScrollY !== undefined) {
+          delete body.dataset.mobileDrawerScrollY;
+          const previousScrollBehavior = root.style.scrollBehavior;
+          root.style.scrollBehavior = 'auto';
+          window.scrollTo(0, Number(savedScrollY));
+          requestAnimationFrame(() => {
+            if (previousScrollBehavior) root.style.scrollBehavior = previousScrollBehavior;
+            else root.style.removeProperty('scroll-behavior');
+          });
+        }
+      } else {
+        body.dataset.mobileDrawerOpenCount = String(decremented);
+      }
+
+      window.dispatchEvent(new Event(MOBILE_DRAWER_VISIBILITY_EVENT));
+    };
+  }, [isDesktopViewport, isOpen]);
+
+  useEffect(() => {
+    if (!activeHelpTooltipKey) return;
+
+    const onPointerDown = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target) return;
+
+      // Keep tooltip open when interacting with trigger/content.
+      if (target.closest('[data-compare-help-tooltip-trigger]')) return;
+      if (target.closest('[data-compare-help-tooltip-content]')) return;
+
+      setActiveHelpTooltipKey(null);
+    };
+
+    document.addEventListener('mousedown', onPointerDown);
+    document.addEventListener('touchstart', onPointerDown, { passive: true });
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown);
+      document.removeEventListener('touchstart', onPointerDown);
+    };
+  }, [activeHelpTooltipKey]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -207,9 +309,27 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
   };
 
   const removeSchool = (index: number) => {
-    // This would remove the school from the list
-    // For now, just update the state
-    console.log('Remove school', index);
+    if (index < 0 || index >= schools.length) return;
+
+    const nextLen = schools.length - 1;
+    const nextCurrentIndex = nextLen <= 0
+      ? 0
+      : Math.min(
+          // If we removed something before the current focus, shift the focus left.
+          currentSchoolIndex > index ? currentSchoolIndex - 1 : currentSchoolIndex,
+          nextLen - 1
+        );
+
+    setSchools((prevSchools) => prevSchools.filter((_, i) => i !== index));
+    setCurrentSchoolIndex(nextCurrentIndex);
+
+    // After the DOM re-renders, keep the focused "window" aligned to the same column.
+    requestAnimationFrame(() => {
+      const scrollLeft = nextCurrentIndex * schoolCardWidth;
+      schoolsHeaderScrollRef.current?.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+      comparisonBodyScrollRef.current?.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+      footerScrollRef.current?.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+    });
   };
 
   const updateScrollIndicators = () => {
@@ -225,7 +345,7 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
 
   useEffect(() => {
     updateScrollIndicators();
-  }, [currentSchoolIndex]);
+  }, [currentSchoolIndex, totalSchools]);
 
   useEffect(() => {
     updateListScrollIndicators();
@@ -233,7 +353,7 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
 
   const visibleColumns = features.slice(currentColumnStart, currentColumnStart + columnsPerView);
   const currentEnd = Math.min(currentColumnStart + columnsPerView, totalColumns);
-  const gridProgress = ((currentSchoolIndex + 1) / totalSchools) * 100;
+  const gridProgress = totalSchools > 0 ? ((currentSchoolIndex + 1) / totalSchools) * 100 : 0;
   const listProgress = ((currentColumnStart + columnsPerView) / totalColumns) * 100;
 
   if (!isOpen) return null;
@@ -243,7 +363,10 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
       <div className={cn(
         "fixed inset-0 bg-white z-[9999] overflow-hidden flex flex-col md:hidden",
         isOpen ? "flex" : "hidden"
-      )}>
+      )}
+        ref={overlayRef}
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Overlay Header Space */}
         <div className="absolute top-0 left-0 right-0 h-[25px] bg-[rgba(38,43,61,0.05)] z-[10002]" />
         
@@ -318,10 +441,10 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
                       Schools
           </div>
                     {schools.map((school, index) => (
-                      <div key={school.id} className="flex-[0_0_180px] min-w-[180px] p-4 border-r border-[#eaeaea] bg-[rgba(255,255,255,0.95)] backdrop-blur-sm relative">
+                      <div key={school.id} className="flex-[0_0_180px] min-w-[180px] p-4 border-r border-[var(--border-color)] bg-[rgba(255,255,255,0.95)] backdrop-blur-sm relative">
                         <button
                           onClick={() => removeSchool(index)}
-                          className="absolute top-2 right-2 w-5 h-5 rounded-full bg-[rgba(0,0,0,0.05)] border-none flex items-center justify-center cursor-pointer transition-all duration-200 hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444]"
+                          className="absolute top-2 right-2 w-5 h-5 rounded-full bg-[rgba(0,0,0,0.05)] border-none flex items-center justify-center cursor-pointer transition-all duration-200 hover:bg-[rgba(239,68,68,0.1)] hover:text-[#ef4444] z-[20]"
                         >
                           <svg viewBox="0 0 24 24" fill="none" className="w-3 h-3">
                             <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -387,27 +510,46 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
                     style={{ WebkitOverflowScrolling: 'touch' }}
                   >
                     {/* Feature Labels Column */}
-                    <div className="flex-[0_0_120px] min-w-[120px] bg-white sticky left-0 z-[4] shadow-[2px_0_8px_rgba(0,0,0,0.05)] flex flex-col">
+                    <div className="flex-[0_0_120px] min-w-[120px] bg-white sticky left-0 z-[4] shadow-[2px_0_8px_rgba(0,0,0,0.05)] border-r border-[var(--border-color)] flex flex-col h-full">
                       {features.map((feature) => (
-                        <div key={feature.key} className="px-2 py-2.5 border-b border-[#F3F4F6] border-r border-[#eaeaea] flex items-center h-11 min-h-[44px] max-h-[44px] bg-white flex-shrink-0">
+                        <div key={feature.key} className="px-2 py-2.5 border-b border-[#F3F4F6] border-r border-[var(--border-color)] flex items-center h-11 min-h-[44px] max-h-[44px] bg-white flex-shrink-0">
                           <div className="flex items-center gap-1.5 text-[#464646] text-[11px] font-semibold leading-tight">
                             <svg className="w-3.5 h-3.5 text-[#089E68] flex-shrink-0" viewBox="0 0 32 32" dangerouslySetInnerHTML={{ __html: ICONS[feature.icon as keyof typeof ICONS] }} />
                             {feature.label}
-                            <div className="relative inline-flex items-center group">
-                              <svg className="w-3 h-3 text-[#5F5F5F] cursor-help ml-1 flex-shrink-0" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: ICONS.help }} />
-                              <span className="invisible absolute bottom-[125%] left-1/2 transform -translate-x-1/2 bg-[#333] text-white text-center py-1 px-2 rounded w-[120px] text-[9px] font-normal opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 z-[100]">
+                            <div className="relative inline-flex items-center">
+                              <button
+                                type="button"
+                                data-compare-help-tooltip-trigger
+                                aria-expanded={activeHelpTooltipKey === feature.key}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setActiveHelpTooltipKey((prev) => (prev === feature.key ? null : feature.key));
+                                }}
+                                className="ml-1 flex-shrink-0"
+                              >
+                                <svg className="w-3 h-3 text-[#5F5F5F] cursor-help flex-shrink-0" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: ICONS.help }} />
+                              </button>
+
+                              <span
+                                data-compare-help-tooltip-content
+                                className={cn(
+                                  "absolute bottom-[125%] left-1/2 transform -translate-x-1/2 bg-[#333] text-white text-center py-1 px-2 rounded w-[120px] text-[9px] font-normal z-[1000] transition-all duration-200",
+                                  activeHelpTooltipKey === feature.key ? "opacity-100 visible" : "opacity-0 invisible"
+                                )}
+                              >
                                 {feature.tooltip}
-                  </span>
-                </div>
+                              </span>
+                            </div>
               </div>
             </div>
                       ))}
                     </div>
 
                     {/* Feature Values Columns */}
-                    <div className="flex">
+                    <div className="flex h-full">
                       {schools.map((school, schoolIndex) => (
-                        <div key={school.id} className="flex-[0_0_180px] min-w-[180px] border-r border-[#eaeaea] bg-white flex flex-col">
+                        <div key={school.id} className="flex-[0_0_180px] min-w-[180px] border-r border-[var(--border-color)] bg-white flex flex-col h-full">
                           {features.map((feature) => (
                             <div key={feature.key} className="px-2 py-2.5 border-b border-[#F3F4F6] flex items-center justify-center text-center font-medium text-[#464646] text-[11px] leading-tight h-11 min-h-[44px] max-h-[44px] bg-white flex-shrink-0">
                     {feature.key.includes('Rank') ? (
@@ -524,9 +666,28 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
                           <div className="flex items-center gap-1 text-[#016853] text-[9px] font-semibold text-center leading-tight max-w-[90px] overflow-hidden text-ellipsis whitespace-nowrap">
                             <svg className="w-3 h-3 text-[#089E68] flex-shrink-0" viewBox="0 0 32 32" dangerouslySetInnerHTML={{ __html: ICONS[col.icon as keyof typeof ICONS] }} />
                             {col.label}
-                            <div className="relative inline-flex items-center group">
-                              <svg className="w-2 h-2 text-[#5F5F5F] cursor-help ml-0.5 flex-shrink-0" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: ICONS.help }} />
-                              <span className="invisible absolute top-[calc(100%+8px)] left-1/2 transform -translate-x-1/2 bg-[#333] text-white text-left py-1.5 px-2 rounded w-[140px] text-[9px] font-normal leading-snug opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 z-[1000] whitespace-normal shadow-[0_4px_12px_rgba(0,0,0,0.15)] pointer-events-none">
+                            <div className="relative inline-flex items-center">
+                              <button
+                                type="button"
+                                data-compare-help-tooltip-trigger
+                                aria-expanded={activeHelpTooltipKey === col.key}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setActiveHelpTooltipKey((prev) => (prev === col.key ? null : col.key));
+                                }}
+                                className="ml-0.5 flex-shrink-0"
+                              >
+                                <svg className="w-2 h-2 text-[#5F5F5F] cursor-help flex-shrink-0" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: ICONS.help }} />
+                              </button>
+
+                              <span
+                                data-compare-help-tooltip-content
+                                className={cn(
+                                  "absolute top-[calc(100%+8px)] left-1/2 transform -translate-x-1/2 bg-[#333] text-white text-left py-1.5 px-2 rounded w-[140px] text-[9px] font-normal leading-snug z-[1000] whitespace-normal shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-all duration-200",
+                                  activeHelpTooltipKey === col.key ? "opacity-100 visible" : "opacity-0 invisible"
+                                )}
+                              >
                                 {col.tooltip}
                                 <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-5 border-transparent border-b-[#333]" />
                               </span>
@@ -546,7 +707,7 @@ const CompareItemsMobile: React.FC<CompareItemsMobileProps> = ({ isOpen, onClose
                           <div className="flex items-start gap-2 relative w-full">
                             <button
                               onClick={() => removeSchool(schoolIndex)}
-                              className="absolute -top-1 -right-1 w-[18px] h-[18px] rounded-full bg-[rgba(0,0,0,0.05)] border-none flex items-center justify-center cursor-pointer transition-all duration-200 z-[5] hover:bg-[rgba(239,68,68,0.1)]"
+                              className="absolute top-2 right-2 w-[18px] h-[18px] rounded-full bg-[rgba(0,0,0,0.05)] border-none flex items-center justify-center cursor-pointer transition-all duration-200 z-[20] hover:bg-[rgba(239,68,68,0.1)]"
                             >
                               <svg viewBox="0 0 24 24" fill="none" className="w-2 h-2 text-[#5F5F5F]">
                                 <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

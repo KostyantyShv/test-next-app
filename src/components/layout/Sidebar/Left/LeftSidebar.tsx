@@ -275,8 +275,8 @@ export const LeftSidebar: FC = () => {
     <aside
       data-collapsed={isCollapsed ? "true" : "false"}
       className={cn(
-        "left-sidebar sticky top-0 left-0 z-20 h-screen w-64 shrink-0 bg-white border-r border-gray-200 transition-all duration-300 ease-in-out",
-        isCollapsed ? "w-20" : "w-64"
+        "left-sidebar sticky top-0 left-0 z-20 h-screen w-[250px] shrink-0 bg-white border-r border-gray-200 transition-all duration-300 ease-in-out",
+        isCollapsed ? "w-20" : "w-[250px]"
       )}
     >
       <div className="flex h-full flex-col">
@@ -661,7 +661,7 @@ export const LeftSidebar: FC = () => {
               <UserProfileName />
             )}
             {isCollapsed && (
-              <UserProfileTooltip />
+              !isAvatarDropdownOpen && <UserProfileTooltip />
             )}
           </div>
         </div>

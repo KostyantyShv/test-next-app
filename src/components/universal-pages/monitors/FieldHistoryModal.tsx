@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { MobileDrawer } from '@/components/ui/MobileDrawer/MobileDrawer';
+import useWindowWidth from '@/hooks/useWindowWidth';
 
 interface FieldHistoryChange {
   id: string;
@@ -42,6 +44,7 @@ export default function FieldHistoryModal({
   historyData,
   onViewMonitorHistory
 }: FieldHistoryModalProps) {
+  const isMobile = useWindowWidth();
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
   const [alertsOnly, setAlertsOnly] = useState(false);
@@ -135,6 +138,338 @@ export default function FieldHistoryModal({
   };
 
   if (!isOpen || typeof window === 'undefined') return null;
+
+  if (isMobile) {
+    return (
+      <>
+        <MobileDrawer
+          isOpen={isOpen}
+          onClose={onClose}
+          title={`History for ${fieldName.toLowerCase()}`}
+          showPullIndicator
+        >
+          <div className="flex min-h-0 flex-col bg-white">
+            <div
+              className="sticky top-0 z-10 border-b bg-white px-4 pb-4 pt-2"
+              style={{ borderBottomColor: 'var(--border-color)' }}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h2 className="text-[28px] leading-[1.15] font-semibold" style={{ color: 'var(--header-green)' }}>
+                    History for
+                  </h2>
+                  <span
+                    className="mt-2 inline-flex max-w-full truncate rounded-xl px-3 py-1.5 text-base font-semibold"
+                    style={{ backgroundColor: 'var(--apply-button-bg)', color: 'var(--header-green)' }}
+                  >
+                    {fieldName.toLowerCase()}
+                  </span>
+                </div>
+                <button
+                  className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full transition-colors"
+                  style={{ color: 'var(--subtle-text)' }}
+                  onClick={onClose}
+                >
+                  <svg fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" className="h-5 w-5">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+              {onViewMonitorHistory && (
+                <button
+                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors"
+                  style={{
+                    borderColor: 'var(--border-color)',
+                    backgroundColor: 'var(--surface-color)',
+                    color: 'var(--text-default)'
+                  }}
+                  onClick={onViewMonitorHistory}
+                >
+                  <svg fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" className="h-4 w-4" style={{ color: 'var(--subtle-text)' }}>
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                  View History
+                </button>
+              )}
+            </div>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+              <div className="mb-4 grid grid-cols-2 gap-3">
+                <div className="rounded-xl border p-3" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--surface-color)' }}>
+                  <p className="text-xs font-medium" style={{ color: 'var(--subtle-text)' }}>Total Changes</p>
+                  <p className="mt-1 text-xl font-semibold" style={{ color: 'var(--bold-text)' }}>{formatNumber(data.stats.totalChanges)}</p>
+                </div>
+                <div className="rounded-xl border p-3" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--surface-color)' }}>
+                  <p className="text-xs font-medium" style={{ color: 'var(--subtle-text)' }}>Net Change</p>
+                  <p
+                    className="mt-1 text-xl font-semibold"
+                    style={{
+                      color: data.stats.netChange.trim().startsWith('-')
+                        ? '#D92D20'
+                        : data.stats.netChange.trim().startsWith('+')
+                        ? 'var(--success-green)'
+                        : 'var(--bold-text)'
+                    }}
+                  >
+                    {data.stats.netChange}
+                  </p>
+                </div>
+                <div className="rounded-xl border p-3" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--surface-color)' }}>
+                  <p className="text-xs font-medium" style={{ color: 'var(--subtle-text)' }}>Alerts Triggered</p>
+                  <p className="mt-1 text-xl font-semibold" style={{ color: 'var(--bold-text)' }}>{formatNumber(data.stats.alertsTriggered)}</p>
+                </div>
+                <div className="rounded-xl border p-3" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--surface-color)' }}>
+                  <p className="text-xs font-medium" style={{ color: 'var(--subtle-text)' }}>Last Alert</p>
+                  <p className="mt-1 text-xl font-semibold" style={{ color: 'var(--bold-text)' }}>{data.stats.lastAlert}</p>
+                </div>
+              </div>
+
+              <div className="rounded-xl border p-3" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--surface-color)' }}>
+                <div className="relative">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" style={{ color: 'var(--subtle-text)' }}>
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  <input
+                    type="text"
+                    placeholder="Search values, change IDs..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full rounded-xl border py-2.5 pl-10 pr-4 text-sm focus:outline-none"
+                    style={{
+                      borderColor: 'var(--border-color)',
+                      color: 'var(--text-default)',
+                      backgroundColor: 'var(--surface-color)'
+                    }}
+                  />
+                </div>
+
+                <div className="mt-3 grid grid-cols-2 gap-2.5">
+                  <div className="relative" ref={dateDropdownRef}>
+                    <button
+                      onClick={() => setShowDateDropdown(!showDateDropdown)}
+                      className="flex w-full items-center justify-between rounded-xl border px-3 py-2 text-sm font-medium"
+                      style={{
+                        borderColor: 'var(--border-color)',
+                        backgroundColor: 'var(--surface-color)',
+                        color: 'var(--text-default)'
+                      }}
+                    >
+                      <span className="truncate">{dateFilter}</span>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3.5 w-3.5 flex-shrink-0">
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
+                    {showDateDropdown && (
+                      <div
+                        className="absolute left-0 top-full z-20 mt-2 w-full rounded-xl border bg-white p-1.5 shadow-lg"
+                        style={{ borderColor: 'var(--border-color)' }}
+                      >
+                        {['Last 24 Hours', 'Last 7 Days', 'Last 30 Days', 'All Time'].map((option) => (
+                          <button
+                            key={option}
+                            className="w-full rounded-lg px-3 py-2 text-left text-sm"
+                            style={{ color: 'var(--text-default)' }}
+                            onClick={() => {
+                              setDateFilter(option);
+                              setShowDateDropdown(false);
+                            }}
+                          >
+                            {option}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <button
+                    className="flex items-center justify-between rounded-xl border px-3 py-2 text-sm"
+                    style={{
+                      borderColor: 'var(--border-color)',
+                      backgroundColor: 'var(--surface-color)',
+                      color: 'var(--text-default)'
+                    }}
+                    onClick={() => setAlertsOnly(!alertsOnly)}
+                  >
+                    <span>Alerts Only</span>
+                    <div
+                      className="relative h-5 w-9 rounded-full transition-colors"
+                      style={{ backgroundColor: alertsOnly ? 'var(--success-green)' : 'var(--gray-300)' }}
+                    >
+                      <div
+                        className="absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform"
+                        style={{
+                          transform: alertsOnly ? 'translateX(16px)' : 'translateX(2px)',
+                          boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)'
+                        }}
+                      />
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <div className="mb-3 mt-4 flex items-center justify-between">
+                <button
+                  className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.4px]"
+                  style={{ color: 'var(--subtle-text)' }}
+                  onClick={toggleSelectAll}
+                >
+                  <span
+                    className="relative h-[18px] w-[18px] rounded border-2"
+                    style={{
+                      backgroundColor: selectedRows.size === filteredChanges.length && filteredChanges.length > 0 ? 'var(--active-green)' : 'white',
+                      borderColor: selectedRows.size === filteredChanges.length && filteredChanges.length > 0 ? 'var(--active-green)' : 'var(--border-color)'
+                    }}
+                  >
+                    {selectedRows.size === filteredChanges.length && filteredChanges.length > 0 && (
+                      <span className="absolute left-[4px] top-[1px] h-[10px] w-[5px] rotate-45 border-b-2 border-r-2 border-white" />
+                    )}
+                  </span>
+                  Select All
+                </button>
+                <span className="text-xs" style={{ color: 'var(--subtle-text)' }}>
+                  {filteredChanges.length} changes
+                </span>
+              </div>
+
+              <div className="space-y-2.5 pb-2">
+                {filteredChanges.length === 0 ? (
+                  <div className="rounded-xl border px-4 py-8 text-center text-sm italic" style={{ borderColor: 'var(--border-color)', color: 'var(--subtle-text)' }}>
+                    No changes found matching your criteria.
+                  </div>
+                ) : (
+                  filteredChanges.map((change) => {
+                    const magClass = change.mag.startsWith('+') ? 'increase' : change.mag.startsWith('-') ? 'decrease' : 'neutral';
+                    return (
+                      <div
+                        key={change.id}
+                        className="rounded-xl border p-3"
+                        style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--surface-color)' }}
+                      >
+                        <div className="mb-2 flex items-start justify-between gap-2">
+                          <div className="min-w-0">
+                            <p className="text-[11px] uppercase tracking-wide" style={{ color: 'var(--subtle-text)' }}>Change ID</p>
+                            <button
+                              className="truncate text-left text-xs font-medium"
+                              style={{ color: 'var(--text-default)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif" }}
+                              onClick={() => copyToClipboard(change.id)}
+                            >
+                              {change.id}
+                            </button>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {change.alert && (
+                              <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4" style={{ color: 'var(--success-green)' }}>
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                              </svg>
+                            )}
+                            <button
+                              className="relative h-[18px] w-[18px] rounded border-2"
+                              style={{
+                                backgroundColor: selectedRows.has(change.id) ? 'var(--active-green)' : 'white',
+                                borderColor: selectedRows.has(change.id) ? 'var(--active-green)' : 'var(--border-color)'
+                              }}
+                              onClick={() => toggleSelectRow(change.id)}
+                            >
+                              {selectedRows.has(change.id) && (
+                                <span className="absolute left-[4px] top-[1px] h-[10px] w-[5px] rotate-45 border-b-2 border-r-2 border-white" />
+                              )}
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-[66px_minmax(0,1fr)] gap-x-3 gap-y-1 text-xs">
+                          <span style={{ color: 'var(--subtle-text)' }}>Previous</span>
+                          <button className="truncate text-left" style={{ color: 'var(--text-default)' }} onClick={() => copyToClipboard(change.prev)}>
+                            {change.prev}
+                          </button>
+                          <span style={{ color: 'var(--subtle-text)' }}>New</span>
+                          <button className="truncate text-left" style={{ color: 'var(--text-default)' }} onClick={() => copyToClipboard(change.new)}>
+                            {change.new}
+                          </button>
+                        </div>
+
+                        <div className="mt-3 flex items-center justify-between gap-2">
+                          <button
+                            className="truncate text-xs"
+                            style={{ color: 'var(--subtle-text)' }}
+                            onClick={() => change.fullDate && copyToClipboard(change.fullDate)}
+                          >
+                            {change.date}
+                          </button>
+                          <span
+                            className="rounded-md px-2.5 py-1 text-xs font-semibold"
+                            style={{
+                              color: magClass === 'increase' ? 'var(--success-green)' : magClass === 'decrease' ? '#D92D20' : 'var(--subtle-text)',
+                              backgroundColor: magClass === 'increase' ? 'var(--apply-button-bg)' : magClass === 'decrease' ? '#fef2f2' : 'var(--gray-100)'
+                            }}
+                          >
+                            {change.mag}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
+            <div
+              className="border-t bg-white px-4 pt-3"
+              style={{
+                borderTopColor: 'var(--border-color)',
+                paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)'
+              }}
+            >
+              <div className="flex gap-2.5">
+                <button
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium"
+                  style={{
+                    borderColor: 'var(--border-color)',
+                    backgroundColor: 'white',
+                    color: 'var(--text-default)'
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Export Selected
+                </button>
+                <button
+                  className="min-w-[112px] rounded-xl px-4 py-3 text-sm font-medium text-white"
+                  style={{ backgroundColor: 'var(--header-green)' }}
+                  onClick={onClose}
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>
+        </MobileDrawer>
+
+        {showCopyToast && (
+          <div
+            className="fixed left-1/2 z-[3100] flex -translate-x-1/2 items-center gap-2.5 rounded-lg px-5 py-3 text-sm font-medium text-white shadow-lg transition-all"
+            style={{
+              backgroundColor: 'var(--success-green)',
+              opacity: showCopyToast ? 1 : 0,
+              transform: showCopyToast ? 'translateX(-50%) translateY(0)' : 'translateX(-50%) translateY(20px)',
+              bottom: 'calc(env(safe-area-inset-bottom) + 88px)'
+            }}
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+            </svg>
+            {copyToastMessage}
+          </div>
+        )}
+      </>
+    );
+  }
 
   return createPortal(
     <>

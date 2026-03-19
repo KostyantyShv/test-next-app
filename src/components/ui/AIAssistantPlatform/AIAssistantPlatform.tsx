@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { Portal } from '@/components/ui/Portal/Portal';
 
@@ -202,7 +202,7 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
   const [showCollectionsModal, setShowCollectionsModal] = useState(false);
   const [contextTab, setContextTab] = useState<'tabs' | 'collections'>('tabs');
   const [selectedContexts, setSelectedContexts] = useState<string[]>([]);
-  const [draggedPrompt, setDraggedPrompt] = useState<number | null>(null);
+  const [draggedPromptId, setDraggedPromptId] = useState<string | null>(null);
   const [collectionsItemsView, setCollectionsItemsView] = useState<string | null>(null);
   const [selectedCollectionItems, setSelectedCollectionItems] = useState<string[]>([]);
   const [showCreatePromptModal, setShowCreatePromptModal] = useState(false);
@@ -344,6 +344,28 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
     { id: 'summarize', title: 'Summarize', desc: 'Create concise summaries', icon: 'summarize' },
     { id: 'analyze', title: 'Analyze', desc: 'Analyze data and content', icon: 'analyze' }
   ]);
+
+  const bottomPillsOrdered = useMemo(() => {
+    const idIndexMap = new Map<string, number>();
+    allPromptsData.forEach((p, index) => idIndexMap.set(p.id, index));
+
+    const writePill = basePromptPills.find((p) => p.id === 'write');
+    const translatePill = basePromptPills.find((p) => p.id === 'translate');
+    const calendarPill = basePromptPills.find((p) => p.id === 'calendar');
+    const allPill = basePromptPills.find((p) => p.id === 'all');
+
+    const fallbackIndex = Number.MAX_SAFE_INTEGER;
+    const writeTranslate = [writePill, translatePill]
+      .filter(Boolean)
+      .sort((a, b) => {
+        const ai = idIndexMap.has(a!.id) ? idIndexMap.get(a!.id)! : fallbackIndex;
+        const bi = idIndexMap.has(b!.id) ? idIndexMap.get(b!.id)! : fallbackIndex;
+        return ai - bi;
+      }) as PromptPill[];
+
+    // "All" must always be last on the right.
+    return [...writeTranslate, calendarPill, allPill].filter(Boolean) as PromptPill[];
+  }, [allPromptsData]);
 
   const collectionsData = {
     research: { 
@@ -640,24 +662,7 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
             {/* Prompt Pills */}
             <div className={tw("prompt-pills")}>
               <div className={tw("pills-container")}>
-                {(() => {
-                  // Order primary pills (write / translate / calendar) based on
-                  // current `allPromptsData` order; keep "All" pill always last.
-                  const idIndexMap = new Map<string, number>();
-                  allPromptsData.forEach((p, index) => idIndexMap.set(p.id, index));
-
-                  const primaryPills = basePromptPills.filter((p) => p.id !== 'all');
-                  primaryPills.sort((a, b) => {
-                    const ai = idIndexMap.has(a.id) ? (idIndexMap.get(a.id) as number) : Number.MAX_SAFE_INTEGER;
-                    const bi = idIndexMap.has(b.id) ? (idIndexMap.get(b.id) as number) : Number.MAX_SAFE_INTEGER;
-                    return ai - bi;
-                  });
-
-                  const allPill = basePromptPills.find((p) => p.id === 'all')!;
-                  const orderedPills = [...primaryPills, allPill];
-
-                  return orderedPills;
-                })().map((pill) => (
+                {bottomPillsOrdered.map((pill) => (
                   <button type="button"
                     key={pill.id}
                     onClick={() => handlePromptPillClick(pill.id)}
@@ -684,25 +689,37 @@ export const AIAssistantPlatform: React.FC<AIAssistantPlatformProps> = ({
                       key={prompt.id}
                       draggable
                       onDragStart={(e) => {
-                        setDraggedPrompt(index);
+                        setDraggedPromptId(prompt.id);
                         e.dataTransfer.effectAllowed = 'move';
                       }}
-                      onDragEnd={() => setDraggedPrompt(null)}
+                      onDragEnd={() => setDraggedPromptId(null)}
                       onDragOver={(e) => {
                         e.preventDefault();
                         e.dataTransfer.dropEffect = 'move';
                       }}
                       onDrop={(e) => {
                         e.preventDefault();
-                        if (draggedPrompt !== null && draggedPrompt !== index) {
-                          const newPrompts = [...allPromptsData];
-                          const [removed] = newPrompts.splice(draggedPrompt, 1);
-                          newPrompts.splice(index, 0, removed);
-                          setAllPromptsData(newPrompts);
-                          setDraggedPrompt(null);
+                        if (!draggedPromptId || draggedPromptId === prompt.id) return;
+
+                        const targetIndex = index;
+                        const sourceIndexInAllPrompts = allPromptsData.findIndex((p) => p.id === draggedPromptId);
+                        if (sourceIndexInAllPrompts === -1 || sourceIndexInAllPrompts === targetIndex) {
+                          setDraggedPromptId(null);
+                          return;
                         }
+
+                        setAllPromptsData((prev) => {
+                          const sourceIndex = prev.findIndex((p) => p.id === draggedPromptId);
+                          if (sourceIndex === -1 || sourceIndex === targetIndex) return prev;
+                          const next = [...prev];
+                          const [removed] = next.splice(sourceIndex, 1);
+                          next.splice(targetIndex, 0, removed);
+                          return next;
+                        });
+
+                        setDraggedPromptId(null);
                       }}
-                      className={tw(cn("prompt-row", draggedPrompt === index && "opacity-50 cursor-grabbing"))}
+                      className={tw(cn("prompt-row", draggedPromptId === prompt.id && "opacity-50 cursor-grabbing"))}
                     >
                       <div className={tw("drag-handle")}>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

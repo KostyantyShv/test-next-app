@@ -40,7 +40,7 @@ export const Header: FC<HeaderProps> = ({ className, onOpenSidebar, showScrollPr
       >
         {/* Desktop Header */}
         <div className="hidden md:block">
-          <div className="app-header-bar h-[64px] w-full px-0 pr-6 flex items-center gap-6">
+          <div className="app-header-bar h-[64px] w-full px-6 flex items-center gap-3">
             <div className="flex items-center gap-6 w-full">
               {/* Search Container */}
               <div className="header-search-container flex-1 max-w-[800px] min-w-0 overflow-visible relative">

@@ -180,7 +180,7 @@ export const RootLayoutClient = ({
           <div
             className={cn(
               "hidden md:block shrink-0",
-              (hasMounted ? isLeftSidebarCollapsed : false) ? "w-20" : "w-64"
+              (hasMounted ? isLeftSidebarCollapsed : false) ? "w-20" : "w-[250px]"
             )}
             aria-hidden="true"
           />

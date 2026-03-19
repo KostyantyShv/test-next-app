@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase_utils/client';
@@ -58,6 +58,8 @@ export const Avatar: React.FC<AvatarProps> = ({
   const [loading, setLoading] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const avatarButtonRef = useRef<HTMLDivElement>(null);
+  const dropdownMenuRef = useRef<HTMLDivElement>(null);
+  const leftArrowRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
   const router = useRouter();
 
@@ -221,6 +223,42 @@ export const Avatar: React.FC<AvatarProps> = ({
     return () => window.removeEventListener('resize', updateArrowOffset);
   }, [dropdownPosition, isDropdownOpen, size]);
 
+  // Align dropdown + arrow precisely when rendering to the left (collapsed sidebar).
+  useLayoutEffect(() => {
+    if (!isDropdownOpen) return;
+    if (dropdownPosition !== 'left') return;
+
+    const button = avatarButtonRef.current;
+    const menu = dropdownMenuRef.current;
+    const arrow = leftArrowRef.current;
+
+    if (!button || !menu || !arrow) return;
+
+    const buttonRect = button.getBoundingClientRect();
+    const buttonCenterY = buttonRect.top + buttonRect.height / 2;
+
+    const menuHeight = menu.offsetHeight || 1;
+    const menuWidth = menu.offsetWidth || 280;
+
+    // Vertically center menu relative to avatar button; clamp to viewport.
+    const rawTop = buttonCenterY - menuHeight / 2;
+    const top = Math.max(8, Math.min(window.innerHeight - menuHeight - 8, rawTop));
+
+    // Menu should appear to the right of the collapsed sidebar icon.
+    const rawLeft = buttonRect.right + 8;
+    const left = Math.max(8, Math.min(window.innerWidth - menuWidth - 8, rawLeft));
+
+    menu.style.top = `${top}px`;
+    menu.style.left = `${left}px`;
+
+    // Align arrow so its center matches the avatar button center.
+    const arrowSize = arrow.offsetHeight || 12;
+    const menuRect = menu.getBoundingClientRect();
+    const rawArrowTop = buttonCenterY - menuRect.top - arrowSize / 2;
+    const arrowTop = Math.max(8, Math.min(menuRect.height - arrowSize - 8, rawArrowTop));
+    arrow.style.top = `${arrowTop}px`;
+  }, [dropdownPosition, isDropdownOpen, size, sidebarCollapsed]);
+
   if (loading) {
     return (
       <div className={`relative rounded-full overflow-hidden ${sizeClasses[size]} ${className} bg-gray-200 animate-pulse`} />
@@ -261,7 +299,7 @@ export const Avatar: React.FC<AvatarProps> = ({
           className={cn(
             "avatar-dropdown hidden md:block w-70 bg-white rounded-xl shadow-lg border border-gray-100 z-[10001] transition-all duration-300",
             dropdownPosition === 'left' 
-              ? (sidebarCollapsed ? 'fixed left-[100px] bottom-[17px] opacity-100 translate-x-0' : 'fixed left-[272px] bottom-[17px] opacity-100 translate-x-0')
+              ? 'fixed opacity-100 translate-x-0'
               : 'absolute top-12 right-0 animate-in fade-in-0 zoom-in-95 duration-200'
           )}
           style={{ 
@@ -270,10 +308,14 @@ export const Avatar: React.FC<AvatarProps> = ({
             boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
           }}
           onClick={(e) => e.stopPropagation()}
+          ref={dropdownMenuRef}
         >
           {/* Arrow */}
           {dropdownPosition === 'left' ? (
-            <div className="avatar-dropdown-arrow absolute -left-2 bottom-[27px] w-3 h-3 bg-[#E1E7EE] transform rotate-45 shadow-[-2px_2px_5px_rgba(0,0,0,0.12)]"></div>
+            <div
+              ref={leftArrowRef}
+              className="avatar-dropdown-arrow absolute -left-2 top-0 w-3 h-3 bg-[#E1E7EE] transform rotate-45 shadow-[-2px_2px_5px_rgba(0,0,0,0.12)]"
+            ></div>
           ) : (
             <div
               className="avatar-dropdown-arrow absolute -top-2 w-4 h-4 bg-white border-l border-t border-gray-100 transform rotate-45"

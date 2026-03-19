@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Portal } from '@/components/ui/Portal';
+import { MobileDrawer } from '@/components/ui/MobileDrawer/MobileDrawer';
 
 interface ContentType {
   id: string;
@@ -218,17 +219,15 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
     onClose();
   }, [onClose]);
 
-  // Handle body overflow when modal opens/closes
+  // Lock body scroll on desktop modals (mobile drawers are handled by Vaul).
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    if (!isOpen || isMobile) return;
+
+    document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isOpen]);
+  }, [isOpen, isMobile]);
 
   // Handle mobile detection
   useEffect(() => {
@@ -486,23 +485,20 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
   if (isMobile) {
     if (!isOpen) return null;
     return (
-      <Portal containerId="request-content-mobile-portal">
-        {isOpen && (
-          <>
-            {/* Mobile overlay */}
-            <div
-              className="fixed inset-0 bg-black/50 z-[2500] transition-all duration-300"
-              onClick={toggleModal}
-            />
-            
-            {/* Mobile drawer */}
-            <div
-              className="fixed bottom-0 left-0 w-full max-h-[90%] bg-[var(--surface-color)] rounded-t-[20px] shadow-[0_-2px_10px_rgba(0,0,0,0.15)] z-[3000] transition-all duration-300 overflow-hidden flex flex-col"
-              ref={modalRef}
-              role="dialog"
-              aria-labelledby="modal-title"
-              aria-modal="true"
-            >
+      <MobileDrawer
+        isOpen={isOpen}
+        onClose={toggleModal}
+        title="Request New Content"
+        variant="sheet"
+        showPullIndicator
+      >
+        <div
+          ref={modalRef}
+          role="dialog"
+          aria-labelledby="modal-title"
+          aria-modal="true"
+          className="flex flex-col"
+        >
           {/* Mobile header */}
           <div className="sticky top-0 bg-[var(--surface-color)] p-4 border-b border-[var(--border-color)] flex justify-between items-center z-10 flex-shrink-0">
             <h2 id="modal-title" className="text-lg font-semibold text-[var(--dark-text)] font-inter">Request New Content</h2>
@@ -520,7 +516,7 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
           </div>
 
           {/* Mobile body */}
-          <div className="flex-1 overflow-y-auto p-5 bg-[var(--surface-secondary)]">
+          <div className="p-5 bg-[var(--surface-secondary)]">
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Content Type Dropdown */}
               <div>
@@ -746,9 +742,7 @@ export default function RequestContent({ isOpen, onClose }: RequestContentProps)
             </form>
           </div>
         </div>
-        </>
-      )}
-      </Portal>
+      </MobileDrawer>
     );
   }
 

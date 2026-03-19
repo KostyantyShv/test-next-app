@@ -54,7 +54,7 @@ export const Actions: FC = () => {
   }
 
   return (
-    <div className="header-actions flex items-center gap-4">
+    <div className="header-actions flex items-center gap-3">
       {/* Filter Icon */}
       <button type="button" 
         className="header-action-btn relative w-11 h-11 border border-[var(--border-color)] bg-[var(--surface-color)] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 text-[var(--text-default)] hover:bg-[var(--apply-button-bg)] hover:border-[var(--active-green)] hover:opacity-90"

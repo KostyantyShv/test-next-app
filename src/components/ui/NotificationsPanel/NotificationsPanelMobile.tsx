@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { Portal } from '@/components/ui/Portal';
+import { MobileDrawer } from '@/components/ui/MobileDrawer/MobileDrawer';
 
 interface Notification {
   id: string;
@@ -371,50 +371,30 @@ export const NotificationsPanelMobile: React.FC<NotificationsPanelMobileProps> =
   if (!isOpen) return null;
 
   return (
-    <Portal containerId="notifications-panel-portal">
-      <>
-        {/* Backdrop */}
-        <div 
-          className="fixed inset-0 z-[1001] md:hidden bg-black/40 backdrop-blur-[4px] transition-opacity duration-300" 
-          onClick={onClose}
-          data-backdrop="notifications-mobile"
-        />
-        
-        {/* Mobile Panel - Bottom Drawer */}
-        <div 
-          ref={panelRef}
-          className={cn(
-            "fixed bottom-0 left-0 right-0 bg-white flex flex-col md:hidden",
-            "transition-transform duration-300 ease-in-out",
-            "z-[1002]"
-          )}
-          style={{
-            maxHeight: '85%',
-            transform: isOpen ? 'translateY(0)' : 'translateY(100%)',
-            borderTopLeftRadius: 24,
-            borderTopRightRadius: 24,
-            boxShadow: '0 -8px 32px rgba(0, 0, 0, 0.12), 0 -2px 8px rgba(0, 0, 0, 0.04)',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-          }}
+    <MobileDrawer
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Notifications"
+      variant="sheet"
+      showPullIndicator={false}
+    >
+      <div
+        ref={panelRef}
+        className={cn("flex flex-col bg-white md:hidden", className)}
+        style={{
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        }}
+      >
+        {/* Pull Indicator */}
+        <div className="w-9 h-1 bg-[#DFDDDB] rounded-full mx-auto mt-3 mb-2 flex-shrink-0" />
+        {/* Header */}
+        <div
+          className="px-5 pt-2 pb-4 border-b border-[var(--gray-300)]"
           onClick={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
-          onTouchStart={(e) => e.stopPropagation()}
         >
-          {/* Pull Indicator */}
-          <div className="w-9 h-1 bg-[#DFDDDB] rounded-full mx-auto mt-3 mb-2 flex-shrink-0" />
-          {/* Header */}
-          <div 
-            className="px-5 pt-2 pb-4 border-b border-[var(--gray-300)]"
-            onClick={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
-          >
             <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 flex items-center justify-center text-[#016853]">
-                  <svg viewBox="0 0 24 24" className="w-[22px] h-[22px]" fill="currentColor">
-                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
-                  </svg>
-                </div>
+              <div className="flex items-center">
                 <h1 className="text-[var(--bold-text)]" style={{ fontSize: '1.125rem', fontWeight: 700, fontFamily: '-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif' }}>
                   Notifications
                 </h1>
@@ -641,8 +621,7 @@ export const NotificationsPanelMobile: React.FC<NotificationsPanelMobileProps> =
               </div>
             ))}
           </div>
-        </div>
-      </>
-    </Portal>
+      </div>
+    </MobileDrawer>
   );
 };

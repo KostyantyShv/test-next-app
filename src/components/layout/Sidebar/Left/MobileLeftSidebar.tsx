@@ -8,11 +8,12 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase_utils/client';
 import { useAudioPlayer } from '@/store/use-audio-player';
-import { Portal } from '@/components/ui/Portal';
 import { useTheme } from 'next-themes';
 import { NotificationsPanel } from '@/components/ui/NotificationsPanel';
 import { Cart } from '@/components/ui/Cart';
 import { default as CompareItems } from '@/components/ui/CompareItems';
+import * as Dialog from '@radix-ui/react-dialog';
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 
 interface MobileLeftSidebarProps {
   isOpen: boolean;
@@ -67,7 +68,7 @@ const UserProfileName: FC = () => {
 
   return (
     <div className="flex-1">
-      <div className="font-inter text-sm font-semibold text-gray-700">{userName}</div>
+      <div className="font-inter text-sm font-semibold text-[var(--text-default)]">{userName}</div>
     </div>
   );
 };
@@ -86,6 +87,64 @@ export const MobileLeftSidebar: FC<MobileLeftSidebarProps> = ({ isOpen, onClose 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Lock background scrolling while the mobile sidebar is open.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const body = document.body;
+    const root = document.documentElement;
+
+    const currentCount = Number(body.dataset.mobileDrawerOpenCount || "0");
+    const nextCount = currentCount + 1;
+    body.dataset.mobileDrawerOpenCount = String(nextCount);
+    body.dataset.mobileDrawerOpen = "true";
+
+    let scrollY = 0;
+    if (currentCount === 0) {
+      scrollY = window.scrollY ?? window.pageYOffset ?? 0;
+      body.style.setProperty("position", "fixed");
+      body.style.setProperty("top", `-${scrollY}px`);
+      body.style.setProperty("left", "0");
+      body.style.setProperty("right", "0");
+      body.style.setProperty("width", "100%");
+      body.dataset.mobileDrawerScrollY = String(scrollY);
+    }
+
+    return () => {
+      const latestCount = Number(body.dataset.mobileDrawerOpenCount || "1");
+      const decremented = Math.max(0, latestCount - 1);
+
+      if (decremented === 0) {
+        delete body.dataset.mobileDrawerOpenCount;
+        delete body.dataset.mobileDrawerOpen;
+
+        const savedScrollY = body.dataset.mobileDrawerScrollY;
+        delete body.dataset.mobileDrawerScrollY;
+
+        body.style.removeProperty("position");
+        body.style.removeProperty("top");
+        body.style.removeProperty("left");
+        body.style.removeProperty("right");
+        body.style.removeProperty("width");
+
+        if (savedScrollY !== undefined) {
+          const previousScrollBehavior = root.style.scrollBehavior;
+          root.style.scrollBehavior = "auto";
+          window.scrollTo(0, Number(savedScrollY));
+          requestAnimationFrame(() => {
+            if (previousScrollBehavior) {
+              root.style.scrollBehavior = previousScrollBehavior;
+            } else {
+              root.style.removeProperty("scroll-behavior");
+            }
+          });
+        }
+      } else {
+        body.dataset.mobileDrawerOpenCount = String(decremented);
+      }
+    };
+  }, [isOpen]);
 
   const toggleSubmenu = (menuId: string) => {
     const newOpenSubmenus = new Set(openSubmenus);
@@ -291,265 +350,348 @@ export const MobileLeftSidebar: FC<MobileLeftSidebarProps> = ({ isOpen, onClose 
   ];
 
   return (
-    <Portal containerId="mobile-sidebar-root">
-      <>
-        {/* Overlay (keep below header) */}
-        {isOpen && (
-          <div
-            className="fixed inset-0 bg-black/50 z-[4200] md:hidden transition-opacity duration-300"
-            onClick={onClose}
+    <>
+      <Dialog.Root
+        open={isOpen}
+        onOpenChange={(open) => {
+          if (!open) onClose();
+        }}
+      >
+        <Dialog.Portal>
+          <Dialog.Overlay
+            className="fixed inset-0 z-[4200] md:hidden"
+            style={{ backgroundColor: "var(--mobile-sidebar-overlay-bg)" }}
           />
-        )}
 
-        {/* Sidebar (keep below header) */}
-        <div
-          className={cn(
-            "fixed top-0 left-0 z-[4500] w-[280px] h-full bg-white shadow-[2px_0_10px_rgba(0,0,0,0.1)] transform transition-transform duration-300 ease-in-out md:hidden",
-            "flex flex-col overflow-hidden",
-            isOpen ? "translate-x-0" : "-translate-x-full"
-          )}
-        >
-          {/* Header */}
-          <div className="px-5 py-4 flex items-center border-b border-gray-200 h-[65px] flex-shrink-0 sticky top-0 bg-white z-10">
-            <Logo />
-            <button
-              onClick={onClose}
-              className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-opacity duration-200 opacity-70 hover:opacity-100"
-              aria-label="Close sidebar"
-              type="button"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Scrollable Content */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <Dialog.Content
+            className={cn(
+              "fixed top-0 left-0 z-[4500] w-[280px] h-full md:hidden",
+              "flex flex-col overflow-hidden shadow-[2px_0_10px_rgba(0,0,0,0.1)] outline-none"
+            )}
+            style={{
+              backgroundColor: "var(--surface-color)",
+              animation: "mobileSidebarIn 200ms ease-out forwards",
+            }}
+          >
             <style jsx>{`
-              .sidebar-scroll::-webkit-scrollbar {
-                width: 4px;
-              }
-              .sidebar-scroll::-webkit-scrollbar-thumb {
-                background-color: rgba(0, 0, 0, 0.2);
-                border-radius: 4px;
+              @keyframes mobileSidebarIn {
+                from {
+                  transform: translateX(-100%);
+                }
+                to {
+                  transform: translateX(0);
+                }
               }
             `}</style>
 
-            <nav className="sidebar-scroll py-2.5">
-              {/* Explore Section */}
-              <div className="py-4">
-                <div className="px-5 py-2.5 text-[11px] font-semibold text-gray-600 uppercase tracking-[0.07em]">
-                  EXPLORE
+            {/* Accessible title (focus management) */}
+            <VisuallyHidden.Root asChild>
+              <Dialog.Title>Mobile navigation</Dialog.Title>
+            </VisuallyHidden.Root>
+
+            {/* Header */}
+            <div
+              className="px-5 py-4 flex items-center border-b h-[65px] flex-shrink-0 sticky top-0 z-10"
+              style={{
+                borderColor: "var(--border-color)",
+                backgroundColor: "var(--surface-color)",
+              }}
+            >
+              <Logo />
+              <button
+                onClick={onClose}
+                className="absolute right-5 top-1/2 -translate-y-1/2 text-[var(--subtle-text)] hover:text-[var(--bold-text)] transition-opacity duration-200 opacity-80 hover:opacity-100"
+                aria-label="Close sidebar"
+                type="button"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto min-h-0">
+              <nav className="sidebar-scroll py-2.5">
+                {/* Explore Section */}
+                <div className="py-4">
+                  <div className="px-5 py-2.5 text-[11px] font-semibold text-[var(--subtle-text)] uppercase tracking-[0.07em]">
+                    EXPLORE
+                  </div>
+                  <div className="px-2">
+                    {exploreItems.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={onClose}
+                        className={cn(
+                          "flex items-center gap-3 px-5 py-3 text-[var(--text-default)] rounded-3xl transition-all duration-200 cursor-pointer",
+                          "text-sm font-medium border border-transparent mx-2 my-0.5",
+                          "hover:bg-[var(--hover-bg)] hover:border-[var(--border-color)] hover:text-[var(--bold-text)]",
+                          pathname === item.href &&
+                            "bg-[var(--apply-button-bg)] border-[var(--border-color)] text-[var(--dark-text)] font-semibold"
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            "shrink-0",
+                            pathname === item.href && "text-[var(--dark-text)]"
+                          )}
+                        >
+                          {item.icon}
+                        </span>
+                        <span>{item.label}</span>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-                <div className="px-2">
-                  {exploreItems.map((item) => (
+
+                {/* Library Section */}
+                <div className="py-4">
+                  <div className="px-5 py-2.5 text-[11px] font-semibold text-[var(--subtle-text)] uppercase tracking-[0.07em]">
+                    LIBRARY
+                  </div>
+                  <div className="px-2">
+                    {libraryItems.map((item) => {
+                      const submenuId = `submenu-${item.label.toLowerCase()}`;
+                      const isSubmenuOpen = openSubmenus.has(submenuId);
+                      const isActive = pathname === item.href;
+
+                      return (
+                        <div key={item.href}>
+                          <div
+                            className={cn(
+                              "relative flex items-center gap-3 px-5 py-2 text-[var(--text-default)] rounded-3xl transition-all duration-200 cursor-pointer",
+                              "text-sm font-medium border border-transparent mx-2 my-0.5",
+                              "hover:bg-[var(--hover-bg)] hover:border-[var(--border-color)] hover:text-[var(--bold-text)]",
+                              isActive &&
+                                "bg-[var(--apply-button-bg)] border-[var(--border-color)] text-[var(--dark-text)] font-semibold"
+                            )}
+                            onClick={(e) => {
+                              if (item.hasSubmenu) {
+                                e.preventDefault();
+                                if (
+                                  item.href === "/analytics" ||
+                                  item.href === "/collections" ||
+                                  item.href === "/monitors"
+                                ) {
+                                  navigate(item.href);
+                                  return;
+                                }
+                                toggleSubmenu(submenuId);
+                              } else {
+                                navigate(item.href);
+                              }
+                            }}
+                          >
+                            <span
+                              className={cn(
+                                "shrink-0",
+                                isActive && "text-[var(--dark-text)]"
+                              )}
+                            >
+                              {item.icon}
+                            </span>
+                            <span className="flex-1">{item.label}</span>
+                            {item.hasSubmenu && (
+                              <div className="flex items-center gap-1 opacity-0 hover:opacity-100 transition-opacity duration-200">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                  }}
+                                  className="w-6 h-6 bg-[var(--gray-100)] rounded-full flex items-center justify-center hover:bg-[var(--gray-200)] transition-colors"
+                                  type="button"
+                                >
+                                  <svg
+                                    viewBox="0 0 22 22"
+                                    fill="currentColor"
+                                    className="w-4 h-4"
+                                  >
+                                    <path d="M22 11C22 17.0751 17.0751 22 11 22C4.92487 22 0 17.0751 0 11C0 4.92487 4.92487 0 11 0C17.0751 0 22 4.92487 22 11Z" fill="currentColor" />
+                                    <path d="M11 16C10.5314 16 10.1515 15.6201 10.1515 15.1515V6.84848C10.1515 6.37988 10.5314 6 11 6C11.4686 6 11.8485 6.37988 11.8485 6.84848V15.1515C11.8485 15.6201 11.4686 16 11 16ZM6.84849 11.8485C6.37988 11.8485 6 11.4686 6 11C6 10.5314 6.37988 10.1515 6.84848 10.1515H15.1515C15.6201 10.1515 16 10.5314 16 11C16 11.4686 15.6201 11.8485 15.1515 11.8485H6.84849Z" fill="currentColor" />
+                                  </svg>
+                                </button>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleSubmenu(submenuId);
+                                  }}
+                                  className="w-6 h-6 bg-[var(--gray-100)] rounded-full flex items-center justify-center hover:bg-[var(--gray-200)] transition-colors"
+                                  type="button"
+                                >
+                                  <svg
+                                    className={cn(
+                                      "w-4 h-4 transition-transform duration-200",
+                                      isSubmenuOpen && "rotate-180"
+                                    )}
+                                    height="16"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                  >
+                                    <path
+                                      d="M19 9l-7 7-7-7"
+                                      strokeLinejoin="round"
+                                      strokeLinecap="round"
+                                    />
+                                  </svg>
+                                </button>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Submenu */}
+                          {item.hasSubmenu && item.submenuItems && (
+                            <div
+                              className={cn(
+                                "mt-0 relative py-1",
+                                isSubmenuOpen ? "block" : "hidden"
+                              )}
+                              style={{ backgroundColor: "var(--surface-color)" }}
+                            >
+                              <div
+                                className="absolute left-7 top-0 bottom-0 w-0.5"
+                                style={{ backgroundColor: "var(--border-color)" }}
+                              />
+                              {item.submenuItems.map((subItem) => (
+                                <Link
+                                  key={subItem.href}
+                                  href={subItem.href}
+                                  onClick={onClose}
+                                  className={cn(
+                                    "flex items-center px-5 py-2 pl-[52px] text-[var(--text-default)] text-sm font-medium transition-colors duration-200",
+                                    "hover:text-[var(--bold-text)] relative",
+                                    pathname === subItem.href &&
+                                      "text-[var(--active-green)]"
+                                  )}
+                                >
+                                  <span className="mr-2 text-base">
+                                    {subItem.emoji}
+                                  </span>
+                                  <span>{subItem.label}</span>
+                                  {pathname === subItem.href && (
+                                    <div
+                                      className="absolute left-7 top-0 bottom-0 w-0.5"
+                                      style={{ backgroundColor: "var(--active-green)" }}
+                                    />
+                                  )}
+                                </Link>
+                              ))}
+                              <div
+                                className="px-5 py-1.5 pl-[52px] text-xs font-medium opacity-80 hover:opacity-100 cursor-pointer"
+                                style={{ color: "var(--subtle-text)" }}
+                              >
+                                3 more items
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </nav>
+            </div>
+
+            {/* Footer */}
+            <div
+              className="px-2 py-2 border-t flex-shrink-0 max-h-[250px] overflow-y-auto min-h-0"
+              style={{
+                borderColor: "var(--border-color)",
+                backgroundColor: "var(--surface-color)",
+              }}
+            >
+              <div className="sidebar-footer space-y-1">
+                {bottomItems.map((item) =>
+                  item.href === "#" ? (
+                    <div
+                      key={item.href}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        useAudioPlayer.getState().setPlaylistVisible(true);
+                        onClose();
+                      }}
+                      className={cn(
+                        "flex items-center gap-3 px-5 py-2 text-[var(--text-default)] rounded-3xl transition-all duration-200 cursor-pointer",
+                        "text-sm font-medium border border-transparent mx-2 my-0.5",
+                        "hover:bg-[var(--hover-bg)] hover:border-[var(--border-color)] hover:text-[var(--bold-text)]",
+                        pathname === item.href &&
+                          "bg-[var(--apply-button-bg)] border-[var(--border-color)] text-[var(--dark-text)] font-semibold"
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          "shrink-0",
+                          pathname === item.href && "text-[var(--dark-text)]"
+                        )}
+                      >
+                        {item.icon}
+                      </span>
+                      <span>{item.label}</span>
+                    </div>
+                  ) : (
                     <Link
                       key={item.href}
                       href={item.href}
                       onClick={onClose}
                       className={cn(
-                        "flex items-center gap-3 px-5 py-3 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
+                        "flex items-center gap-3 px-5 py-2 text-[var(--text-default)] rounded-3xl transition-all duration-200 cursor-pointer",
                         "text-sm font-medium border border-transparent mx-2 my-0.5",
-                        "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800",
-                        pathname === item.href && "bg-gradient-to-r from-[#EBFCF4] to-[#D7F7E9] border-[#D7F7E9] text-[#0B6333] font-semibold"
+                        "hover:bg-[var(--hover-bg)] hover:border-[var(--border-color)] hover:text-[var(--bold-text)]",
+                        pathname === item.href &&
+                          "bg-[var(--apply-button-bg)] border-[var(--border-color)] text-[var(--dark-text)] font-semibold"
                       )}
                     >
-                      <span className={cn("shrink-0", pathname === item.href && "text-[#0B6333]")}>{item.icon}</span>
+                      <span
+                        className={cn(
+                          "shrink-0",
+                          pathname === item.href && "text-[var(--dark-text)]"
+                        )}
+                      >
+                        {item.icon}
+                      </span>
                       <span>{item.label}</span>
                     </Link>
-                  ))}
-                </div>
+                  )
+                )}
+
+                {/* User Profile */}
+                <Link
+                  href="/me"
+                  onClick={onClose}
+                  className="relative flex items-center px-5 py-2 gap-3 mx-2 my-2 rounded-3xl transition-all duration-200 cursor-pointer hover:bg-[var(--hover-bg)]"
+                >
+                  <Avatar size="sm" className="shrink-0" />
+                  <UserProfileName />
+                </Link>
               </div>
-
-              {/* Library Section */}
-              <div className="py-4">
-                <div className="px-5 py-2.5 text-[11px] font-semibold text-gray-600 uppercase tracking-[0.07em]">
-                  LIBRARY
-                </div>
-                <div className="px-2">
-                  {libraryItems.map((item) => {
-                    const submenuId = `submenu-${item.label.toLowerCase()}`;
-                    const isSubmenuOpen = openSubmenus.has(submenuId);
-                    const isActive = pathname === item.href;
-
-                    return (
-                      <div key={item.href}>
-                        <div
-                          className={cn(
-                            "relative flex items-center gap-3 px-5 py-2 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
-                            "text-sm font-medium border border-transparent mx-2 my-0.5",
-                            "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800",
-                            isActive && "bg-gradient-to-r from-[#EBFCF4] to-[#D7F7E9] border-[#D7F7E9] text-[#0B6333] font-semibold"
-                          )}
-                          onClick={(e) => {
-                            if (item.hasSubmenu) {
-                              e.preventDefault();
-                              // For Analytics / Collections / Monitors: go to the page and close sidebar
-                              if (item.href === "/analytics" || item.href === "/collections" || item.href === "/monitors") {
-                                navigate(item.href);
-                                return;
-                              }
-
-                              // For other submenu items, just toggle submenu
-                              toggleSubmenu(submenuId);
-                            } else {
-                              navigate(item.href);
-                            }
-                          }}
-                        >
-                          <span className={cn("shrink-0", isActive && "text-[#0B6333]")}>{item.icon}</span>
-                          <span className="flex-1">{item.label}</span>
-                          {item.hasSubmenu && (
-                            <div className="flex items-center gap-1 opacity-0 hover:opacity-100 transition-opacity duration-200">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  // Create collection logic here
-                                }}
-                                className="w-6 h-6 bg-[#DFDDDB] rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors"
-                                type="button"
-                              >
-                                <svg viewBox="0 0 22 22" fill="currentColor" className="w-4 h-4">
-                                  <path d="M22 11C22 17.0751 17.0751 22 11 22C4.92487 22 0 17.0751 0 11C0 4.92487 4.92487 0 11 0C17.0751 0 22 4.92487 22 11Z" fill="#E8E9ED" />
-                                  <path d="M11 16C10.5314 16 10.1515 15.6201 10.1515 15.1515V6.84848C10.1515 6.37988 10.5314 6 11 6C11.4686 6 11.8485 6.37988 11.8485 6.84848V15.1515C11.8485 15.6201 11.4686 16 11 16ZM6.84849 11.8485C6.37988 11.8485 6 11.4686 6 11C6 10.5314 6.37988 10.1515 6.84848 10.1515H15.1515C15.6201 10.1515 16 10.5314 16 11C16 11.4686 15.6201 11.8485 15.1515 11.8485H6.84849Z" fill="currentColor" />
-                                </svg>
-                              </button>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  toggleSubmenu(submenuId);
-                                }}
-                                className="w-6 h-6 bg-[#DFDDDB] rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors"
-                                type="button"
-                              >
-                                <svg
-                                  className={cn("w-4 h-4 transition-transform duration-200", isSubmenuOpen && "rotate-180")}
-                                  height="16"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                >
-                                  <path d="M19 9l-7 7-7-7" strokeLinejoin="round" strokeLinecap="round" />
-                                </svg>
-                              </button>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Submenu */}
-                        {item.hasSubmenu && item.submenuItems && (
-                          <div
-                            className={cn(
-                              "mt-0 relative bg-white py-1",
-                              isSubmenuOpen ? "block" : "hidden"
-                            )}
-                          >
-                            <div className="absolute left-7 top-0 bottom-0 w-0.5 bg-[#D7F7E9]" />
-                            {item.submenuItems.map((subItem) => (
-                              <Link
-                                key={subItem.href}
-                                href={subItem.href}
-                                onClick={onClose}
-                                className={cn(
-                                  "flex items-center px-5 py-2 pl-[52px] text-gray-700 text-sm font-medium transition-colors duration-200",
-                                  "hover:text-gray-800 relative",
-                                  pathname === subItem.href && "text-[#0B6333]"
-                                )}
-                              >
-                                <span className="mr-2 text-base">{subItem.emoji}</span>
-                                <span>{subItem.label}</span>
-                                {pathname === subItem.href && (
-                                  <div className="absolute left-7 top-0 bottom-0 w-0.5 bg-[#0B6333]" />
-                                )}
-                              </Link>
-                            ))}
-                            <div className="px-5 py-1.5 pl-[52px] text-gray-500 text-xs font-medium opacity-80 hover:opacity-100 cursor-pointer">
-                              3 more items
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </nav>
-          </div>
-
-          {/* Footer */}
-          <div className="px-2 py-2 border-t border-gray-200 bg-white flex-shrink-0 max-h-[250px] overflow-y-auto min-h-0">
-            <style jsx>{`
-              .sidebar-footer::-webkit-scrollbar {
-                width: 4px;
-              }
-              .sidebar-footer::-webkit-scrollbar-thumb {
-                background-color: rgba(0, 0, 0, 0.2);
-                border-radius: 4px;
-              }
-            `}</style>
-
-            <div className="sidebar-footer space-y-1">
-              {bottomItems.map((item) => (
-                item.href === '#' ? (
-                  <div
-                    key={item.href}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      useAudioPlayer.getState().setPlaylistVisible(true);
-                      onClose();
-                    }}
-                    className={cn(
-                      "flex items-center gap-3 px-5 py-2 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
-                      "text-sm font-medium border border-transparent mx-2 my-0.5",
-                      "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800",
-                      pathname === item.href && "bg-gradient-to-r from-[#EBFCF4] to-[#D7F7E9] border-[#D7F7E9] text-[#0B6333] font-semibold"
-                    )}
-                  >
-                    <span className={cn("shrink-0", pathname === item.href && "text-[#0B6333]")}>{item.icon}</span>
-                    <span>{item.label}</span>
-                  </div>
-                ) : (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={onClose}
-                    className={cn(
-                      "flex items-center gap-3 px-5 py-2 text-gray-700 rounded-3xl transition-all duration-200 cursor-pointer",
-                      "text-sm font-medium border border-transparent mx-2 my-0.5",
-                      "hover:bg-[#EBFCF4] hover:border-[#D7F7E9] hover:text-gray-800",
-                      pathname === item.href && "bg-gradient-to-r from-[#EBFCF4] to-[#D7F7E9] border-[#D7F7E9] text-[#0B6333] font-semibold"
-                    )}
-                  >
-                    <span className={cn("shrink-0", pathname === item.href && "text-[#0B6333]")}>{item.icon}</span>
-                    <span>{item.label}</span>
-                  </Link>
-                )
-              ))}
-
-              {/* User Profile */}
-              <Link
-                href="/me"
-                onClick={onClose}
-                className="relative flex items-center px-5 py-2 gap-3 mx-2 my-2 rounded-3xl transition-all duration-200 cursor-pointer hover:bg-[#EBFCF4]"
-              >
-                <Avatar
-                  size="sm"
-                  className="shrink-0"
-                />
-                <UserProfileName />
-              </Link>
             </div>
-          </div>
-        </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
 
-        {/* Panels triggered from sidebar (mirror header buttons) */}
-        <NotificationsPanel isOpen={isNotificationsOpen} onClose={() => setIsNotificationsOpen(false)} />
-        <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-        <CompareItems isOpen={isCompareOpen} onClose={() => setIsCompareOpen(false)} />
-      </>
-    </Portal>
+      {/* Panels triggered from sidebar (mirror header buttons) */}
+      <NotificationsPanel
+        isOpen={isNotificationsOpen}
+        onClose={() => setIsNotificationsOpen(false)}
+      />
+      <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <CompareItems
+        isOpen={isCompareOpen}
+        onClose={() => setIsCompareOpen(false)}
+      />
+    </>
   );
 }; 

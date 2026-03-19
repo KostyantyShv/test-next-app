@@ -567,29 +567,29 @@ const CompareItems: React.FC<CompareItemsProps> = ({ isOpen, onClose }) => {
                   <table className="w-full border-collapse table-fixed">
                     <thead>
                       <tr>
-                        <th className="align-top text-left bg-[#f8f9fa] px-3 py-4 border-b border-r border-[rgba(0,0,0,0.08)] w-[280px] min-w-[280px] sticky left-0 z-10">
-                          <span className="text-[14px] font-semibold text-[#016853] font-inter">School</span>
+                        <th className="align-top text-left bg-[var(--surface-secondary)] px-3 py-4 border-b border-r border-[var(--border-color)] w-[280px] min-w-[280px] sticky left-0 z-10">
+                          <span className="text-[14px] font-semibold text-[var(--header-green)] font-inter">School</span>
                         </th>
                         {features
                           .slice(listColumnStart, listColumnStart + columnsPerViewList)
                           .map((feature) => (
                             <th
                               key={feature.key}
-                              className="align-top bg-[#f8f9fa] px-3 py-4 border-b border-l border-[rgba(0,0,0,0.08)] min-w-[140px] text-center"
+                              className="align-top bg-[var(--surface-secondary)] px-3 py-4 border-b border-l border-[var(--border-color)] min-w-[140px] text-center"
                             >
                               <div className="flex flex-col items-center gap-1.5">
-                                <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#016853] font-inter">
+                                <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[var(--header-green)] font-inter">
                                   <div
-                                    className="w-[14px] h-[14px] text-[#089E68] flex-shrink-0"
+                                    className="w-[14px] h-[14px] text-[var(--header-green)] flex-shrink-0"
                                     dangerouslySetInnerHTML={{ __html: icons[feature.icon as keyof typeof icons] }}
                                   />
                                   <span>{feature.label}</span>
                                   <div className="relative inline-flex items-center group">
                                     <div
-                                      className="w-3 h-3 text-[#5F5F5F] cursor-help flex-shrink-0 mt-0.5"
+                                      className="w-3 h-3 text-[var(--subtle-text)] cursor-help flex-shrink-0 mt-0.5"
                                       dangerouslySetInnerHTML={{ __html: icons.help }}
                                     />
-                                    <span className="invisible absolute z-10 bottom-[125%] left-1/2 transform -translate-x-1/2 w-[200px] bg-[#333] text-white text-center py-2 px-3 rounded-md text-[12px] opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100 font-inter">
+                                    <span className="invisible absolute z-10 bottom-[125%] left-1/2 transform -translate-x-1/2 w-[200px] bg-[var(--tooltip-bg)] text-[var(--tooltip-text)] text-center py-2 px-3 rounded-md text-[12px] opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100 font-inter">
                                       {feature.tooltip}
                                     </span>
                                   </div>

@@ -424,17 +424,39 @@ const Support: React.FC<SupportProps> = ({ isOpen, onClose }) => {
     onClose();
   };
 
-  // Handle body overflow when modal opens/closes
+  // Lock background scroll when modal/drawer is open (robust for iOS Safari)
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+    if (!isOpen) return;
+
+    const scrollY = window.scrollY;
+    const body = document.body;
+    const html = document.documentElement;
+
+    body.style.overflow = 'hidden';
+    html.style.overflow = 'hidden';
+
+    if (isMobile) {
+      body.style.position = 'fixed';
+      body.style.top = `-${scrollY}px`;
+      body.style.left = '0';
+      body.style.right = '0';
+      body.style.width = '100%';
     }
+
     return () => {
-      document.body.style.overflow = '';
+      body.style.overflow = '';
+      html.style.overflow = '';
+
+      if (isMobile) {
+        body.style.position = '';
+        body.style.top = '';
+        body.style.left = '';
+        body.style.right = '';
+        body.style.width = '';
+        window.scrollTo(0, scrollY);
+      }
     };
-  }, [isOpen]);
+  }, [isOpen, isMobile]);
 
   // Handle ESC key
   useEffect(() => {
@@ -832,31 +854,35 @@ const Support: React.FC<SupportProps> = ({ isOpen, onClose }) => {
       {/* Mobile Drawer */}
       {isMobile && (
         <Portal containerId="support-mobile-portal">
-              <div className="fixed inset-0 z-[1001] md:hidden">
-                {/* Overlay */}
+              <div className="fixed inset-0 z-[9999] md:hidden" style={{ touchAction: 'none' }}>
+                {/* Overlay — blocks all background interaction */}
                 <div 
                   className={cn(
                     "absolute inset-0 transition-opacity duration-300",
                     isOpen ? "opacity-100 visible bg-black/50" : "opacity-0 invisible"
                   )}
                   onClick={toggleModal}
+                  onTouchMove={(e) => e.preventDefault()}
                   data-backdrop="support-mobile"
                 />
                 
                 {/* Drawer */}
                 <div 
-                  className={cn(
-                    "fixed left-0 right-0 w-full bg-white overflow-hidden flex flex-col transition-transform duration-300",
-                    isOpen ? "bottom-0" : "-bottom-full"
-                  )}
+                  className="fixed left-0 right-0 bottom-0 w-full bg-white overflow-hidden flex flex-col transition-transform duration-300 ease-out"
                   style={{ 
-                    maxHeight: '90%',
+                    maxHeight: '92dvh',
                     borderRadius: '20px 20px 0 0',
-                    boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.15)'
+                    boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.2)',
+                    transform: isOpen ? 'translateY(0)' : 'translateY(100%)',
                   }}
                 >
+                  {/* Drag handle */}
+                  <div className="flex justify-center pt-3 pb-1 flex-shrink-0 bg-white">
+                    <div className="w-10 h-1 rounded-full bg-gray-300" />
+                  </div>
+
                   {/* Drawer Header */}
-                  <div className="px-6 py-5 flex justify-between items-center border-b-2 bg-white sticky top-0 z-10 flex-shrink-0" style={{ borderColor: 'var(--border-color)' }}>
+                  <div className="px-6 pb-5 pt-2 flex justify-between items-center border-b-2 bg-white sticky top-0 z-10 flex-shrink-0" style={{ borderColor: 'var(--border-color)' }}>
                     <h2 className="text-xl font-bold" style={{ color: 'var(--dark-text)' }}>Contact us</h2>
                     <button 
                       onClick={toggleModal}
@@ -880,7 +906,7 @@ const Support: React.FC<SupportProps> = ({ isOpen, onClose }) => {
                   {/* Drawer Body */}
                   <div 
                     className="flex-1 overflow-y-auto overflow-x-hidden"
-                    style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(0, 0, 0, 0.2) transparent' }}
+                    style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(0, 0, 0, 0.2) transparent', overscrollBehavior: 'contain', WebkitOverflowScrolling: 'touch' }}
                   >
                     <style jsx>{`
                       div::-webkit-scrollbar {
@@ -1160,7 +1186,7 @@ const Support: React.FC<SupportProps> = ({ isOpen, onClose }) => {
                   </div>
 
                   {/* Drawer Footer */}
-                  <div className="px-6 py-5 border-t-2 flex justify-between items-center gap-4 flex-shrink-0 sticky bottom-0" style={{ backgroundColor: '#F8FAFC', borderColor: 'var(--border-color)' }}>
+                  <div className="px-6 py-4 border-t-2 flex justify-between items-center gap-4 flex-shrink-0" style={{ backgroundColor: '#F8FAFC', borderColor: 'var(--border-color)', paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}>
                     <a href="#" className="text-sm font-medium transition-colors duration-300 no-underline" style={{ color: 'var(--link-text)' }} onMouseEnter={(e) => {
                       e.currentTarget.style.color = 'var(--active-green)';
                       e.currentTarget.style.textDecoration = 'underline';

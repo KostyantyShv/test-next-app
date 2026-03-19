@@ -27,9 +27,9 @@ export const Cart: React.FC<CartProps> = ({
   buttonRef,
 }) => {
   const router = useRouter();
-  const [panelRight, setPanelRight] = useState<number>(24); // default right position
-  const [panelTop, setPanelTop] = useState<number>(72); // default top position
-  const [arrowRight, setArrowRight] = useState<number>(24); // dynamic arrow alignment
+  const [panelRight, setPanelRight] = useState<number>(24);
+  const [panelTop, setPanelTop] = useState<number>(72);
+  const arrowRef = useRef<HTMLDivElement>(null);
   const [cartItems, setCartItems] = useState<CartItem[]>([
     { id: 1, image: 'https://i.ibb.co/8DRBhzTm/product5.jpg', title: 'Master Microservices with Spring Boot and Spring Cloud', price: 149.99 },
     { id: 2, image: 'https://i.ibb.co/23PtGQWJ/product55.jpg', title: 'Java Tutorial for Complete Beginners', price: 19.99 },
@@ -50,47 +50,56 @@ export const Cart: React.FC<CartProps> = ({
     }
   }, [onClose]);
 
-  // Calculate arrow position and panel position based on button position
+  // Position the panel so the button center is ~24px from the panel's right edge
   useLayoutEffect(() => {
     if (isOpen && buttonRef?.current) {
-      const updateArrowPosition = () => {
+      const updatePanelPosition = () => {
         const button = buttonRef.current;
-        if (button) {
-          const buttonRect = button.getBoundingClientRect();
-          const buttonCenterX = buttonRect.left + buttonRect.width / 2;
-          const windowWidth = window.innerWidth;
-          const panelWidth = modalRef.current?.getBoundingClientRect().width ?? 380; // w-[380px]
+        if (!button) return;
+        const buttonRect = button.getBoundingClientRect();
+        const buttonCenterX = buttonRect.left + buttonRect.width / 2;
+        const windowWidth = window.innerWidth;
+        const panelWidth = modalRef.current?.offsetWidth ?? 380;
 
-          // Calculate panel position: align arrow (at arrowPosition from right) with button center
-          const targetArrowPosition = 24; // Default arrow position from right
-          const calculatedRight = windowWidth - buttonCenterX - targetArrowPosition;
-
-          // Ensure panel doesn't go off screen (min 24px from right, max to keep panel on screen)
-          const minRight = 24;
-          const maxRight = windowWidth - panelWidth - 24;
-          const finalRight = Math.max(minRight, Math.min(maxRight, calculatedRight));
-          setPanelRight(finalRight);
-
-          // Set top position based on button position
-          const calculatedTop = buttonRect.bottom + 16;
-          setPanelTop(calculatedTop);
-
-          // Keep arrow tip aligned with trigger button center after modal clamping
-          const rawArrowRight = windowWidth - finalRight - buttonCenterX - 8; // 8 = half of 16px arrow
-          const clampedArrowRight = Math.max(8, Math.min(panelWidth - 24, rawArrowRight));
-          setArrowRight(clampedArrowRight);
-
-        }
+        const calculatedRight = windowWidth - buttonCenterX - 24;
+        const minRight = 16;
+        const maxRight = windowWidth - panelWidth - 16;
+        setPanelRight(Math.max(minRight, Math.min(maxRight, calculatedRight)));
+        setPanelTop(buttonRect.bottom + 16);
       };
-      updateArrowPosition();
-      window.addEventListener('resize', updateArrowPosition);
-      window.addEventListener('scroll', updateArrowPosition, true);
+      updatePanelPosition();
+      window.addEventListener('resize', updatePanelPosition);
+      window.addEventListener('scroll', updatePanelPosition, true);
       return () => {
-        window.removeEventListener('resize', updateArrowPosition);
-        window.removeEventListener('scroll', updateArrowPosition, true);
+        window.removeEventListener('resize', updatePanelPosition);
+        window.removeEventListener('scroll', updatePanelPosition, true);
       };
     }
   }, [isOpen, buttonRef]);
+
+  // Position the arrow tip exactly at the button center using actual DOM rects
+  useLayoutEffect(() => {
+    if (isOpen && buttonRef?.current && modalRef.current && arrowRef.current) {
+      const positionArrow = () => {
+        const button = buttonRef.current;
+        const modal = modalRef.current;
+        const arrow = arrowRef.current;
+        if (!button || !modal || !arrow) return;
+        const buttonCenterX = button.getBoundingClientRect().left + button.getBoundingClientRect().width / 2;
+        const modalRect = modal.getBoundingClientRect();
+        const arrowWidth = arrow.offsetWidth;
+        const raw = buttonCenterX - modalRect.left - arrowWidth / 2;
+        arrow.style.left = `${Math.max(12, Math.min(modalRect.width - arrowWidth - 12, raw))}px`;
+      };
+      positionArrow();
+      window.addEventListener('resize', positionArrow);
+      window.addEventListener('scroll', positionArrow, true);
+      return () => {
+        window.removeEventListener('resize', positionArrow);
+        window.removeEventListener('scroll', positionArrow, true);
+      };
+    }
+  }, [isOpen, buttonRef, panelRight]);
 
   useEffect(() => {
     if (isOpen) {
@@ -148,7 +157,7 @@ export const Cart: React.FC<CartProps> = ({
         <div
           ref={modalRef}
           className={cn(
-            "cart-modal absolute right-0 w-[380px] bg-[var(--surface-color)] rounded-[12px] shadow-[0_12px_32px_rgba(0,0,0,0.15)] border border-[var(--border-color)] pointer-events-auto overflow-visible before:content-[''] before:absolute before:-top-2 before:[right:var(--cart-arrow-right)] before:w-4 before:h-4 before:bg-[var(--surface-color)] before:border before:border-[var(--border-color)] before:border-b-0 before:border-r-0 before:rotate-45 before:pointer-events-none",
+            "cart-modal absolute right-0 w-[380px] bg-[var(--surface-color)] rounded-[12px] shadow-[0_12px_32px_rgba(0,0,0,0.15)] border border-[var(--border-color)] pointer-events-auto overflow-visible",
             className
           )}
           style={{
@@ -156,9 +165,14 @@ export const Cart: React.FC<CartProps> = ({
             position: 'fixed',
             top: `${panelTop}px`,
             right: `${panelRight}px`,
-            ['--cart-arrow-right' as string]: `${arrowRight}px`,
           }}
         >
+          {/* Arrow pointer */}
+          <div
+            ref={arrowRef}
+            className="cart-modal-arrow absolute -top-2 w-4 h-4 bg-[var(--surface-color)] border border-[var(--border-color)] border-b-0 border-r-0 transform rotate-45 pointer-events-none"
+          />
+
           {/* Modal Header */}
           <div className="modal-header p-5 pb-4 border-b border-[var(--border-color)]">
             <div className="modal-title flex items-center gap-2 text-base font-semibold text-[var(--header-green)] font-inter">

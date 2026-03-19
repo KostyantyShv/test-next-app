@@ -27,9 +27,8 @@ export const Monitor: React.FC<MonitorProps> = ({
   className,
   buttonRef,
 }) => {
-  const [arrowPosition, setArrowPosition] = useState<number>(24); // kept for backward compatibility
-  const [arrowLeft, setArrowLeft] = useState<number>(24);
-  const [panelRight, setPanelRight] = useState<number>(88); // default right position
+  const [panelRight, setPanelRight] = useState<number>(88);
+  const arrowRef = useRef<HTMLDivElement>(null);
   const [changesData, setChangesData] = useState<ChangeItem[]>([
     {
       id: 1,
@@ -97,53 +96,55 @@ export const Monitor: React.FC<MonitorProps> = ({
     }
   }, [onClose]);
 
-  // Calculate arrow position and panel position based on button position
+  // Position the panel so the button center is ~24px from the panel's right edge
   useLayoutEffect(() => {
     if (isOpen && buttonRef?.current) {
-      const updateArrowPosition = () => {
+      const updatePanelPosition = () => {
         const button = buttonRef.current;
-        if (button) {
-          const buttonRect = button.getBoundingClientRect();
-          const buttonCenterX = buttonRect.left + buttonRect.width / 2;
-          const windowWidth = window.innerWidth;
-          const panelWidth = 440; // w-[440px]
-          
-          // Calculate panel position: align arrow (at arrowPosition from right) with button center
-          // We want: windowWidth - panelRight - arrowPosition = buttonCenterX
-          // So: panelRight = windowWidth - buttonCenterX - arrowPosition
-          // But we need to determine arrowPosition first
-          // Let's use a target arrow position (e.g., 24px from right) and calculate panel position
-          const targetArrowPosition = 24; // Default arrow position from right
-          const calculatedRight = windowWidth - buttonCenterX - targetArrowPosition;
-          
-          // Ensure panel doesn't go off screen (min 24px from right, max to keep panel on screen)
-          const minRight = 24;
-          const maxRight = windowWidth - panelWidth - 24;
-          const finalRight = Math.max(minRight, Math.min(maxRight, calculatedRight));
-          setPanelRight(finalRight);
-          
-          // Calculate arrow position based on final panel position
-          // Panel right edge is at: windowWidth - finalRight
-          // Arrow is at: windowWidth - finalRight - arrowPosition
-          // We want arrow center to align with button center: windowWidth - finalRight - arrowPosition = buttonCenterX
-          // So: arrowPosition = windowWidth - finalRight - buttonCenterX
-          const modalLeft = windowWidth - finalRight - panelWidth;
-          const arrowSize = 16;
-          const rawArrowLeft = buttonCenterX - modalLeft - arrowSize / 2;
-          const clampedArrowLeft = Math.max(8, Math.min(panelWidth - arrowSize - 8, rawArrowLeft));
-          setArrowLeft(clampedArrowLeft);
-          setArrowPosition(windowWidth - finalRight - buttonCenterX - 8);
-        }
+        if (!button) return;
+        const buttonRect = button.getBoundingClientRect();
+        const buttonCenterX = buttonRect.left + buttonRect.width / 2;
+        const windowWidth = window.innerWidth;
+        const panelWidth = modalRef.current?.offsetWidth ?? 440;
+
+        const calculatedRight = windowWidth - buttonCenterX - 24;
+        const minRight = 16;
+        const maxRight = windowWidth - panelWidth - 16;
+        setPanelRight(Math.max(minRight, Math.min(maxRight, calculatedRight)));
       };
-      updateArrowPosition();
-      window.addEventListener('resize', updateArrowPosition);
-      window.addEventListener('scroll', updateArrowPosition, true);
+      updatePanelPosition();
+      window.addEventListener('resize', updatePanelPosition);
+      window.addEventListener('scroll', updatePanelPosition, true);
       return () => {
-        window.removeEventListener('resize', updateArrowPosition);
-        window.removeEventListener('scroll', updateArrowPosition, true);
+        window.removeEventListener('resize', updatePanelPosition);
+        window.removeEventListener('scroll', updatePanelPosition, true);
       };
     }
   }, [isOpen, buttonRef]);
+
+  // Position the arrow tip exactly at the button center using actual DOM rects
+  useLayoutEffect(() => {
+    if (isOpen && buttonRef?.current && modalRef.current && arrowRef.current) {
+      const positionArrow = () => {
+        const button = buttonRef.current;
+        const modal = modalRef.current;
+        const arrow = arrowRef.current;
+        if (!button || !modal || !arrow) return;
+        const buttonCenterX = button.getBoundingClientRect().left + button.getBoundingClientRect().width / 2;
+        const modalRect = modal.getBoundingClientRect();
+        const arrowWidth = arrow.offsetWidth;
+        const raw = buttonCenterX - modalRect.left - arrowWidth / 2;
+        arrow.style.left = `${Math.max(12, Math.min(modalRect.width - arrowWidth - 12, raw))}px`;
+      };
+      positionArrow();
+      window.addEventListener('resize', positionArrow);
+      window.addEventListener('scroll', positionArrow, true);
+      return () => {
+        window.removeEventListener('resize', positionArrow);
+        window.removeEventListener('scroll', positionArrow, true);
+      };
+    }
+  }, [isOpen, buttonRef, panelRight]);
 
   useEffect(() => {
     if (isOpen) {
@@ -220,8 +221,8 @@ export const Monitor: React.FC<MonitorProps> = ({
       >
         {/* Arrow pointer */}
         <div 
+          ref={arrowRef}
           className="absolute -top-2 w-4 h-4 bg-[var(--surface-color)] border border-[var(--border-color)] border-b-0 border-r-0 transform rotate-45" 
-          style={{ left: `${arrowLeft}px` }}
         />
         
         {/* Modal Header */}
