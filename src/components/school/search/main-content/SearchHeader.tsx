@@ -129,7 +129,6 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   const isOverlayVisible =
     isEstablishmentDrawerOpen ||
     isFilterDrawerOpen ||
-    isOptionsDrawerOpen ||
     isMapDrawerOpen;
 
   const closeAllMobileLayers = () => {
@@ -818,8 +817,13 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
         )}
 
         {/* Mobile Options Drawer */}
-        {isOptionsDrawerOpen && (
-          <div className="fixed inset-x-0 bottom-0 h-[80vh] max-w-[420px] mx-auto bg-white rounded-t-[20px] z-[1001] shadow-[0_-8px_18px_rgba(0,0,0,0.12)] overflow-hidden flex flex-col">
+        <MobileDrawer
+          isOpen={isOptionsDrawerOpen}
+          onClose={() => setIsOptionsDrawerOpen(false)}
+          title="Options"
+          showPullIndicator={false}
+        >
+          <div className="h-[80vh] max-w-[420px] mx-auto bg-white rounded-t-[20px] overflow-hidden flex flex-col">
             <div className="p-4 border-b border-[rgba(0,0,0,0.08)] flex justify-between items-center">
               <h2 className="text-lg font-semibold text-[#1B1B1B]">Options</h2>
               <button
@@ -901,7 +905,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
               </div>
             </div>
           </div>
-        )}
+        </MobileDrawer>
 
         {/* Mobile map modal - full-screen Vaul overlay */}
         <MobileMapModal

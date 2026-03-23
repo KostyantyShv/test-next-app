@@ -112,7 +112,7 @@ function SaveToCollectionSearch({
         placeholder="Filter collections"
         value={searchQuery}
         onChange={(e) => onSearchChange(e.target.value)}
-        className="w-full rounded-lg border border-[#D1D5DB] bg-white px-4 py-3 text-[15px] text-[#4A4A4A] outline-none transition-all placeholder:text-[#5F5F5F] focus:border-[#1D77BD] focus:ring-4 focus:ring-[#1D77BD]/10"
+        className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--surface-color)] px-4 py-3 text-[15px] text-[var(--text-default)] outline-none transition-all placeholder:text-[var(--subtle-text)] focus:border-[var(--verification-blue)] focus:ring-4 focus:ring-[var(--verification-blue)]/10"
       />
     </div>
   );
@@ -279,6 +279,7 @@ export function SaveToCollectionDrawer({
         isOpen={isOpen}
         onClose={onClose}
         title="Save to Collection"
+        showPullIndicator={false}
       >
         {mobileContent}
       </MobileDrawer>

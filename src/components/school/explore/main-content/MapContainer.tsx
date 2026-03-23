@@ -10,6 +10,10 @@ interface MapContainerProps {
   layout?: string;
   onExpandedChange?: (isExpanded: boolean) => void;
   mode?: "desktopPanel" | "mobileDrawer";
+  mapType?: "roadmap" | "satellite";
+  setMapType?: React.Dispatch<React.SetStateAction<"roadmap" | "satellite">>;
+  showLabels?: boolean;
+  setShowLabels?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface MapContainerRef {
@@ -65,15 +69,30 @@ const getMarkerColor = (grade: string): string => {
 };
 
 const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
-  ({ isMapActive, schools, layout, onExpandedChange, mode = "desktopPanel" }, ref) => {
+  ({
+    isMapActive,
+    schools,
+    layout,
+    onExpandedChange,
+    mode = "desktopPanel",
+    mapType: controlledMapType,
+    setMapType: controlledSetMapType,
+    showLabels: controlledShowLabels,
+    setShowLabels: controlledSetShowLabels,
+  }, ref) => {
     // Desktop panel heights (px). Keep explicit height to avoid blank Google Map
     // during width/height transitions and when using `h-full` on the map node.
     const DESKTOP_COLLAPSED_HEIGHT = 720;
     const DESKTOP_EXPANDED_HEIGHT = 840;
 
-    const [mapType, setMapType] = useState<"roadmap" | "satellite">("roadmap");
+    const [mapTypeState, setMapTypeState] = useState<"roadmap" | "satellite">("roadmap");
     const [showTerrain, setShowTerrain] = useState(false);
-    const [showLabels, setShowLabels] = useState(true);
+    const [showLabelsState, setShowLabelsState] = useState(true);
+    const mapType = controlledMapType ?? mapTypeState;
+    const setMapType = controlledSetMapType ?? setMapTypeState;
+    const showLabels = controlledShowLabels ?? showLabelsState;
+    const setShowLabels = controlledSetShowLabels ?? setShowLabelsState;
+
     const [isExpanded, setIsExpanded] = useState(false);
     const mapRef = useRef<HTMLDivElement>(null);
     const mapInstanceRef = useRef<google.maps.Map | null>(null);
@@ -369,6 +388,8 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
                     onExpandedChange?.(false);
                   }}
                   mapInstanceRef={mapInstanceRef}
+                  hidePrimaryControls={mode === "mobileDrawer"}
+                  hideExpandControl={mode === "mobileDrawer"}
                 />
                 <div ref={mapRef} id="exploreMap" className="w-full h-full" />
               </div>

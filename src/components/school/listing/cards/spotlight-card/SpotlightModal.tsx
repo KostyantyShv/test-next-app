@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import { Project, ProjectSocialPlatform } from "./project.type";
 
@@ -43,6 +43,18 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({
     {}
   );
 
+  // Thumbnail carousel refs and state
+  const thumbCarouselRef = useRef<HTMLDivElement>(null);
+  const [showThumbLeft, setShowThumbLeft] = useState(false);
+  const [showThumbRight, setShowThumbRight] = useState(false);
+
+  const updateThumbArrows = useCallback(() => {
+    const el = thumbCarouselRef.current;
+    if (!el) return;
+    setShowThumbLeft(el.scrollLeft > 0);
+    setShowThumbRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 1);
+  }, []);
+
   useEffect(() => {
     setActiveImageIndex(0);
     setImageLoadErrors({});
@@ -62,6 +74,23 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({
       setActiveImageIndex(0);
     }
   }, [activeImageIndex, projectImages.length]);
+
+  // Update thumbnail arrow visibility on mount and when images change
+  useEffect(() => {
+    const el = thumbCarouselRef.current;
+    if (!el) return;
+    updateThumbArrows();
+    el.addEventListener("scroll", updateThumbArrows);
+    return () => el.removeEventListener("scroll", updateThumbArrows);
+  }, [projectImages.length, updateThumbArrows]);
+
+  const scrollThumbLeft = () => {
+    thumbCarouselRef.current?.scrollBy({ left: -200, behavior: "smooth" });
+  };
+
+  const scrollThumbRight = () => {
+    thumbCarouselRef.current?.scrollBy({ left: 200, behavior: "smooth" });
+  };
 
   const activeImageSrc = projectImages[activeImageIndex];
   const isActiveImageBroken = Boolean(
@@ -228,38 +257,66 @@ const SpotlightModal: React.FC<SpotlightModalProps> = ({
                 </div>
               )}
             </div>
-            <div className="flex gap-2 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:gap-3">
-              {projectImages.map((src, index) =>
-                imageLoadErrors[src] ? (
-                  <button
-                    key={src}
-                    type="button"
-                    className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-[#E0E0E0] bg-[#F8F9FD] text-[#9CA3AF] md:h-[120px] md:w-full md:rounded-lg ${
-                      activeImageIndex === index ? "border-[#0B6333]" : ""
-                    }`}
-                    onClick={() => setActiveImageIndex(index)}
-                    aria-label={`${project.title} preview ${index + 1} unavailable`}
-                  >
-                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-                      <path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14l-4-4-3 3-4-4-5 5V5z" />
-                    </svg>
-                  </button>
-                ) : (
-                  <Image
-                    key={src}
-                    src={src}
-                    alt={`${project.title} thumbnail ${index + 1}`}
-                    width={100}
-                    height={100}
-                    className={`h-10 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 object-cover transition-all duration-300 hover:opacity-90 md:h-[120px] md:w-full md:rounded-lg ${
-                      activeImageIndex === index
-                        ? "border-[#0B6333]"
-                        : "border-transparent"
-                    }`}
-                    onClick={() => setActiveImageIndex(index)}
-                    onError={() => handleImageError(src)}
-                  />
-                )
+            <div className="relative">
+              <div
+                ref={thumbCarouselRef}
+                className="flex gap-2 overflow-x-auto pb-2 md:gap-3 md:overflow-x-hidden scrollbar-hide"
+                style={{ scrollBehavior: "smooth" }}
+              >
+                {projectImages.map((src, index) =>
+                  imageLoadErrors[src] ? (
+                    <button
+                      key={src}
+                      type="button"
+                      className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-[#E0E0E0] bg-[#F8F9FD] text-[#9CA3AF] md:h-[120px] md:w-[180px] md:rounded-lg ${
+                        activeImageIndex === index ? "border-[#0B6333]" : ""
+                      }`}
+                      onClick={() => setActiveImageIndex(index)}
+                      aria-label={`${project.title} preview ${index + 1} unavailable`}
+                    >
+                      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                        <path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14l-4-4-3 3-4-4-5 5V5z" />
+                      </svg>
+                    </button>
+                  ) : (
+                    <Image
+                      key={src}
+                      src={src}
+                      alt={`${project.title} thumbnail ${index + 1}`}
+                      width={180}
+                      height={120}
+                      className={`h-10 w-10 flex-shrink-0 cursor-pointer rounded-full border-2 object-cover transition-all duration-300 hover:opacity-90 md:h-[120px] md:w-[180px] md:rounded-lg ${
+                        activeImageIndex === index
+                          ? "border-[#0B6333]"
+                          : "border-transparent"
+                      }`}
+                      onClick={() => setActiveImageIndex(index)}
+                      onError={() => handleImageError(src)}
+                    />
+                  )
+                )}
+              </div>
+              {showThumbLeft && (
+                <button
+                  className="absolute left-0 top-1/2 z-10 hidden -translate-y-1/2 items-center justify-center rounded-full border border-[#E0E0E0] bg-white shadow-md transition-all hover:bg-[#f5f5f5] md:flex md:h-9 md:w-9"
+                  onClick={scrollThumbLeft}
+                  aria-label="Scroll thumbnails left"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              )}
+              {showThumbRight && (
+                <button
+                  className="absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 items-center justify-center rounded-full border border-[#E0E0E0] bg-white shadow-md transition-all hover:bg-[#f5f5f5] md:flex md:h-9 md:w-9"
+                  onClick={scrollThumbRight}
+                  aria-label="Scroll thumbnails right"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+                    <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
               )}
             </div>
           </div>

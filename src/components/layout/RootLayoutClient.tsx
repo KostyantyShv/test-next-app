@@ -29,7 +29,6 @@ const EXPLORE_COLLECTIONS_ROUTES = [
 
 // Edit listing page uses its own minimal header on mobile (no main app header)
 const EDIT_LISTING_ROUTES = ["/schools/edit"];
-const MOBILE_DRAWER_VISIBILITY_EVENT = "mobile-drawer-visibility-change";
 
 export const RootLayoutClient = ({
   children,
@@ -37,8 +36,6 @@ export const RootLayoutClient = ({
   children: React.ReactNode;
 }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [isListingMobileOverlayOpen, setIsListingMobileOverlayOpen] =
-    useState(false);
   const [hasMounted, setHasMounted] = useState(false);
   const { isPlayerVisible, isPlaylistVisible } = useAudioPlayer();
   const isLeftSidebarCollapsed = useLeftSidebar((s) => s.isCollapsed);
@@ -94,69 +91,7 @@ export const RootLayoutClient = ({
       : 256
     : 256;
 
-  useEffect(() => {
-    if (!isMobile) {
-      setIsListingMobileOverlayOpen(false);
-      return;
-    }
 
-    const detectOpenOverlay = () => {
-      const hasListingMounted = Boolean(document.querySelector(".listing-page"));
-      if (!hasListingMounted) {
-        setIsListingMobileOverlayOpen(false);
-        return;
-      }
-
-      const hasOpenMobileDrawer =
-        document.body.dataset.mobileDrawerOpen === "true";
-      const hasOpenVaulDrawer = Boolean(
-        document.querySelector(
-          "[data-vaul-overlay][data-state='open'], [data-vaul-drawer][data-state='open']"
-        )
-      );
-      const hasOpenLegacyMobileModal = Boolean(
-        document.querySelector(
-          "#mobile-modal-root .fixed.opacity-100:not(.pointer-events-none)"
-        )
-      );
-      const isBodyScrollLocked = document.body.style.position === "fixed";
-
-      setIsListingMobileOverlayOpen(
-        hasOpenMobileDrawer ||
-          hasOpenVaulDrawer ||
-          hasOpenLegacyMobileModal ||
-          isBodyScrollLocked
-      );
-    };
-
-    detectOpenOverlay();
-
-    const observer = new MutationObserver(detectOpenOverlay);
-    observer.observe(document.body, {
-      subtree: true,
-      childList: true,
-      attributes: true,
-      attributeFilter: [
-        "data-state",
-        "class",
-        "style",
-        "data-mobile-drawer-open",
-        "data-mobile-drawer-open-count",
-      ],
-    });
-
-    window.addEventListener("resize", detectOpenOverlay);
-    window.addEventListener(MOBILE_DRAWER_VISIBILITY_EVENT, detectOpenOverlay);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", detectOpenOverlay);
-      window.removeEventListener(
-        MOBILE_DRAWER_VISIBILITY_EVENT,
-        detectOpenOverlay
-      );
-    };
-  }, [isMobile, pathname]);
 
   // If auth route, render children without layout
   if (isAuthRoute) {
@@ -192,9 +127,8 @@ export const RootLayoutClient = ({
             {/* Mobile Header - hide on Explore/Collections (they use their own); hide while mobile sidebar is open */}
             {!(isTeamMembersPage) &&
               !isMobileSidebarOpen &&
-              !hideDefaultMobileHeader &&
-              !isListingMobileOverlayOpen && (
-              <div className="default-app-mobile-header md:hidden sticky top-0 z-[5000] bg-[var(--surface-color)]">
+              !hideDefaultMobileHeader && (
+              <div className="default-app-mobile-header md:hidden sticky top-0 z-[2000] bg-[var(--surface-color)]">
                 <Header onOpenSidebar={() => setIsMobileSidebarOpen(true)} showScrollProgress={isListingPage} />
               </div>
             )}

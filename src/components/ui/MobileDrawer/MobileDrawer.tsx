@@ -66,6 +66,7 @@ export function MobileDrawer({
     if (isDesktopViewport || !isOpen || !lockTouchMove) return;
 
     const body = document.body;
+    const root = document.documentElement;
     const currentCount = Number(body.dataset.mobileDrawerOpenCount || "0");
     const nextCount = currentCount + 1;
 
@@ -82,6 +83,8 @@ export function MobileDrawer({
       body.style.setProperty("left", "0");
       body.style.setProperty("right", "0");
       body.style.setProperty("width", "100%");
+      body.style.setProperty("overflow", "hidden");
+      root.style.setProperty("overflow", "hidden");
       body.dataset.mobileDrawerScrollY = String(scrollY);
     }
 
@@ -99,9 +102,10 @@ export function MobileDrawer({
         body.style.removeProperty("left");
         body.style.removeProperty("right");
         body.style.removeProperty("width");
+        body.style.removeProperty("overflow");
+        root.style.removeProperty("overflow");
         if (savedScrollY !== undefined) {
           delete body.dataset.mobileDrawerScrollY;
-          const root = document.documentElement;
           const previousScrollBehavior = root.style.scrollBehavior;
           // Prevent the global `scroll-behavior: smooth` from animating close restoration.
           root.style.scrollBehavior = "auto";

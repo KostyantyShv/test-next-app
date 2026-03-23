@@ -109,7 +109,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
     const showReview = Boolean((school as any).review) && Math.random() > 0.5;
 
     return (
-      <div className="school-card mobile-grid-card group relative flex flex-col bg-white md:bg-[var(--surface-secondary)] rounded-[12px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] md:shadow-[0_2px_8px_var(--shadow-color)] border border-[#E5E7EB] md:border-[var(--border-color)] md:transition-[transform,box-shadow] md:duration-300 md:ease-in-out md:hover:-translate-y-1 md:hover:shadow-[0_4px_20px_var(--shadow-color)]">
+      <div className="school-card mobile-grid-card group relative flex flex-col bg-[var(--surface-color)] rounded-[12px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] md:shadow-[0_2px_8px_var(--shadow-color)] border border-[#E5E7EB] md:border-[var(--border-color)] md:transition-[transform,box-shadow] md:duration-300 md:ease-in-out md:hover:-translate-y-1 md:hover:shadow-[0_4px_20px_var(--shadow-color)]">
         {/* Image */}
         <div className="image-container relative w-full h-[140px] md:h-[160px] overflow-hidden">
           <Image src={school.image} alt={school.name} fill sizes="(max-width: 1055px) 33vw, 250px" className="school-image object-cover" />
@@ -289,7 +289,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                 More Info
               </button>
               <button
-                className={`button-like flex-1 py-3 rounded-lg font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                className={`button-like flex-1 py-3 rounded-lg font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? "bg-[var(--success-green)] text-white" : "bg-[var(--apply-button-bg)] text-[var(--header-green)] hover:bg-[var(--apply-button-hover)]"
                   }`}
                 style={{ fontSize: 14 }}
                 onClick={() => setIsLiked((v) => !v)}
@@ -349,25 +349,6 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
           <div className="review-count text-[13px] font-semibold text-[var(--link-text)] mb-4 cursor-pointer hover:text-[var(--verification-blue)] hover:underline">
             Read {school.reviews} reviews
-          </div>
-
-          <div className="hover-buttons flex gap-3 mt-auto">
-            <button type="button" className="hover-button button-info flex-1 py-3 rounded-lg text-[14px] font-medium bg-[var(--surface-secondary)] text-[var(--text-default)] hover:bg-[var(--hover-bg)] transition-colors border border-[var(--border-color)]">
-              More Info
-            </button>
-            <button
-              type="button"
-              className="hover-button button-like flex-1 py-3 rounded-lg text-[14px] font-medium bg-[var(--success-green)] text-white hover:bg-[var(--active-green)] transition-colors flex items-center justify-center gap-2"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsLiked((v) => !v);
-              }}
-            >
-              <span className="[&>svg]:w-4 [&>svg]:h-4">
-                <SchoolCardIcons.Heart filled={false} />
-              </span>
-              {isLiked ? "Liked" : "Like"}
-            </button>
           </div>
         </div>
 
@@ -745,7 +726,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                 More Info
               </button>
               <button
-                className={`hover-button button-like flex-1 py-3 rounded-lg text-sm font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? 'bg-[#298541] text-white' : 'bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]'
+                className={`hover-button button-like flex-1 py-3 rounded-lg text-sm font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? 'bg-[var(--success-green)] text-white' : 'bg-[var(--apply-button-bg)] text-[var(--header-green)] hover:bg-[var(--apply-button-hover)]'
                   }`}
                 onClick={() => setIsLiked((v) => !v)}
                 type="button"
@@ -800,31 +781,6 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
           <div className="review-count text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer hover:underline">
             Read {reviewsCount} reviews
-          </div>
-
-          <div className="hover-buttons flex flex-row gap-2 mt-auto">
-            <button
-              className="hover-button flex-1 py-3 px-3 rounded-lg text-sm font-medium cursor-pointer bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors flex items-center justify-center gap-2"
-              type="button"
-            >
-              More Info
-            </button>
-            <button
-              type="button"
-              className={`hover-button flex-1 py-3 px-3 rounded-lg text-sm font-medium cursor-pointer transition-colors flex items-center justify-center gap-2 ${isLiked
-                ? "bg-[#298541] text-white"
-                : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
-                }`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsLiked((v) => !v);
-              }}
-            >
-              <span className="[&>svg]:w-4 [&>svg]:h-4">
-                <SchoolCardIcons.Heart filled={isLiked} />
-              </span>
-              {isLiked ? "Liked" : "Like"}
-            </button>
           </div>
         </div>
 
@@ -1538,7 +1494,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                 More Info
               </button>
               <button
-                className={`flex-1 py-3 rounded-lg text-sm font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? 'bg-[#298541] text-white' : 'bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]'
+                className={`flex-1 py-3 rounded-lg text-sm font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? 'bg-[var(--success-green)] text-white' : 'bg-[var(--apply-button-bg)] text-[var(--header-green)] hover:bg-[var(--apply-button-hover)]'
                   }`}
                 onClick={() => setIsLiked((v) => !v)}
                 type="button"
@@ -2003,7 +1959,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
                 More Info
               </button>
               <button
-                className={`hover-button button-like flex-1 py-3 rounded-lg text-[14px] font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                className={`hover-button button-like flex-1 py-3 rounded-lg text-[14px] font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? "bg-[var(--success-green)] text-white" : "bg-[var(--apply-button-bg)] text-[var(--header-green)] hover:bg-[var(--apply-button-hover)]"
                   }`}
                 onClick={() => setIsLiked((v) => !v)}
                 type="button"
@@ -2295,7 +2251,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               height={720}
               className="school-image w-full h-[160px] object-cover rounded-lg"
             />
-            <div className="school-type-label absolute bottom-0 left-6 bg-white px-2 pt-1 text-[11px] font-semibold text-[#464646] tracking-[0.02em] rounded-t-[4px] h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
+            <div className="school-type-label absolute bottom-0 left-6 bg-[var(--surface-color)] px-2 pt-1 text-[11px] font-semibold text-[var(--bold-text)] tracking-[0.02em] rounded-t-[4px] h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
               {school.schoolType}
             </div>
           </div>
@@ -2303,7 +2259,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
           {/* Stats */}
           <div className="stats-section grid grid-cols-2 gap-2.5 mx-4 mb-4">
             {stats.map((s: any) => (
-              <div key={s.label} className="stat flex items-center gap-2 p-2.5 bg-[#f0f1f3] rounded-lg">
+              <div key={s.label} className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg">
                 <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
                   {s.icon}
                 </div>
@@ -2417,7 +2373,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               </button>
               <button
                 type="button"
-                className={`hover-button button-like flex-1 py-3 rounded-lg text-[14px] font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
+                className={`hover-button button-like flex-1 py-3 rounded-lg text-[14px] font-medium text-center cursor-pointer transition-colors border-none flex items-center justify-center gap-2 ${isLiked ? "bg-[var(--success-green)] text-white" : "bg-[var(--apply-button-bg)] text-[var(--header-green)] hover:bg-[var(--apply-button-hover)]"
                   }`}
                 onClick={() => setIsLiked((v) => !v)}
               >
@@ -2468,7 +2424,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
               height={720}
               className="school-image w-full h-[140px] object-cover rounded-lg"
             />
-            <div className="school-type-label absolute bottom-0 left-[18px] bg-white px-2 pt-1 text-[11px] font-semibold text-[#464646] tracking-[0.02em] rounded-t-[4px] h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
+            <div className="school-type-label absolute bottom-0 left-[18px] bg-[var(--surface-color)] px-2 pt-1 text-[11px] font-semibold text-[var(--bold-text)] tracking-[0.02em] rounded-t-[4px] h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
               {school.schoolType}
             </div>
           </div>
@@ -2478,7 +2434,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
             {/* Stats grid - left column slightly wider */}
             <div className="stats-section grid grid-cols-[1.15fr_0.85fr] gap-2.5 mb-4">
               {stats.map((s: any) => (
-                <div key={s.label} className="stat flex items-center gap-2 p-2.5 bg-[#ffffff] rounded-lg" data-tooltip={s.label}>
+                <div key={s.label} className="stat flex items-center gap-2 p-2.5 bg-[#f9fafb] rounded-lg" data-tooltip={s.label}>
                   <div className="stat-icon w-4 h-4 text-[#089E68] flex-shrink-0">
                     {s.icon}
                   </div>
@@ -2553,27 +2509,6 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school, layout }) => {
 
             <div className="review-count pointer-events-auto text-[13px] font-semibold text-[#346DC2] mb-4 cursor-pointer">
               Read {reviewsCount || school.reviews || "—"} reviews
-            </div>
-
-            <div className="hover-buttons pointer-events-auto flex flex-col gap-2 mt-auto">
-              <button type="button" className="hover-button button-info w-full py-3 rounded-lg text-[14px] font-medium bg-[#F5F5F7] text-[#464646] hover:bg-[#E8E8EA] transition-colors flex items-center justify-center">
-                More Info
-              </button>
-              <button
-                type="button"
-                className={`hover-button button-like w-full py-3 rounded-lg text-[14px] font-medium transition-colors flex items-center justify-center gap-2 ${isLiked ? "bg-[#298541] text-white" : "bg-[#EBFCF4] text-[#016853] hover:bg-[#D7F7E9]"
-                  }`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsLiked((v) => !v);
-                }}
-                aria-pressed={isLiked}
-              >
-                <span className="[&>svg]:w-4 [&>svg]:h-4">
-                  <SchoolCardIcons.Heart filled={isLiked} />
-                </span>
-                {isLiked ? "Liked" : "Like"}
-              </button>
             </div>
           </div>
         </div>

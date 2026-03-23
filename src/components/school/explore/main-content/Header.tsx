@@ -74,6 +74,8 @@ const Header: React.FC<HeaderProps> = ({
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [isOptionsDrawerOpen, setIsOptionsDrawerOpen] = useState(false);
   const [isMapDrawerOpen, setIsMapDrawerOpen] = useState(false);
+  const [mobileMapType, setMobileMapType] = useState<"roadmap" | "satellite">("roadmap");
+  const [mobileMapShowLabels, setMobileMapShowLabels] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [isDesktopEstablishmentOpen, setIsDesktopEstablishmentOpen] =
     useState(false);
@@ -154,7 +156,7 @@ const Header: React.FC<HeaderProps> = ({
 
   // Shared custom overlay is only for non-Vaul drawers.
   // Vaul drawers render and manage their own overlay + interaction lock.
-  const isOverlayVisible = isFilterDrawerOpen || isOptionsDrawerOpen;
+  const isOverlayVisible = isFilterDrawerOpen;
 
   const closeAllMobileLayers = () => {
     if (Date.now() - drawerOpenedAtRef.current < OVERLAY_CLOSE_GRACE_MS) return;
@@ -976,6 +978,10 @@ const Header: React.FC<HeaderProps> = ({
                 setIsMapDrawerOpen(false);
                 setIsMapActive(false);
               }}
+              mapType={mobileMapType}
+              onMapTypeChange={setMobileMapType}
+              showLabels={mobileMapShowLabels}
+              onToggleLabels={() => setMobileMapShowLabels((v) => !v)}
             >
               <div className="flex min-h-0 flex-1 flex-col bg-[var(--surface-secondary)]">
                 <MapContainer
@@ -983,6 +989,10 @@ const Header: React.FC<HeaderProps> = ({
                   schools={schools}
                   layout={layout}
                   mode="mobileDrawer"
+                  mapType={mobileMapType}
+                  setMapType={setMobileMapType}
+                  showLabels={mobileMapShowLabels}
+                  setShowLabels={setMobileMapShowLabels}
                 />
               </div>
             </MobileMapModal>

@@ -5104,7 +5104,7 @@ input[type="number"] {
    Explore: Theme Tokens (Desktop + Shared)
    =========================== */
 .explore-page .school-card {
-  background: var(--surface-secondary);
+  background: var(--surface-color);
   border-color: var(--border-color);
   box-shadow: 0 2px 8px var(--shadow-color);
 }
@@ -5317,8 +5317,9 @@ input[type="number"] {
 
 [data-theme="midnight"] .explore-page .desktop-hybrid-card .school-type-label,
 [data-theme="midnight"] .explore-page .mobile-hybrid-card .school-type-label {
-  background: var(--apply-button-bg) !important;
-  color: var(--header-green) !important;
+  background: var(--surface-secondary) !important;
+  color: var(--bold-text) !important;
+  border-color: var(--border-color) !important;
 }
 
 [data-theme="midnight"] .explore-page .desktop-hybrid-card .ranking-text,
@@ -5397,8 +5398,9 @@ input[type="number"] {
 
 [data-theme="oceanic"] .explore-page .desktop-hybrid-card .school-type-label,
 [data-theme="oceanic"] .explore-page .mobile-hybrid-card .school-type-label {
-  background: var(--apply-button-bg) !important;
-  color: var(--header-green) !important;
+  background: var(--surface-secondary) !important;
+  color: var(--bold-text) !important;
+  border-color: var(--border-color) !important;
 }
 
 [data-theme="oceanic"] .explore-page .desktop-hybrid-card .ranking-text,
@@ -5411,6 +5413,14 @@ input[type="number"] {
 [data-theme="oceanic"] .explore-page .desktop-hybrid-card .reviewer-type,
 [data-theme="oceanic"] .explore-page .mobile-hybrid-card .reviewer-type {
   color: var(--bold-text) !important;
+}
+
+/* Keep school type labels dark-mode consistent across Explore layouts */
+[data-theme="midnight"] .explore-page .school-type-label,
+[data-theme="oceanic"] .explore-page .school-type-label {
+  background: var(--surface-secondary) !important;
+  color: var(--bold-text) !important;
+  border-color: var(--border-color) !important;
 }
 
 [data-theme="oceanic"] .explore-page .desktop-hybrid-card .stat,
@@ -13572,7 +13582,6 @@ input[type="number"] {
 :is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
   .school-directory-page
   :is(
-    .school-type-label,
     .specialty-badge.no-specialty,
     .specialty-label:not(.hot):not(.instant-book):not(.sponsored),
     .status-dropdown:hover,
@@ -13586,6 +13595,14 @@ input[type="number"] {
   ) {
   background-color: var(--directory-card-neutral) !important;
   border-color: var(--directory-card-border) !important;
+}
+
+:is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])
+  .school-directory-page
+  .school-type-label {
+  background-color: var(--surface-secondary) !important;
+  color: var(--bold-text) !important;
+  border-color: var(--border-color) !important;
 }
 
 :is([data-theme="midnight"], [data-theme="teal"], [data-theme="oceanic"])

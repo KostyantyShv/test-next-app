@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, ReactNode } from "react";
-import { Portal } from "@/components/ui/Portal";
+import React, { useState, ReactNode } from "react";
+import { MobileDrawer } from "@/components/ui/MobileDrawer/MobileDrawer";
 
 const SORT_OPTIONS = [
   { value: "best-match", label: "Best Match" },
@@ -31,31 +31,13 @@ export function MobileActionsDrawer({
   setLayout,
   layouts,
 }: MobileActionsDrawerProps) {
-  const [active, setActive] = useState(false);
   const [sort, setSort] = useState("best-match");
   const [searchType, setSearchType] = useState("trending");
 
   const drawerLayouts = layouts;
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-      const t = requestAnimationFrame(() => {
-        requestAnimationFrame(() => setActive(true));
-      });
-      return () => {
-        cancelAnimationFrame(t);
-        document.body.style.overflow = "";
-      };
-    } else {
-      setActive(false);
-      document.body.style.overflow = "";
-    }
-  }, [isOpen]);
-
   const handleClose = () => {
-    setActive(false);
-    setTimeout(onClose, 300);
+    onClose();
   };
 
   const handleSortSelect = (value: string) => {
@@ -76,16 +58,8 @@ export function MobileActionsDrawer({
   if (!isOpen) return null;
 
   return (
-    <Portal containerId="mobile-modal-root">
-      <div className="md:hidden">
-        {/* No overlay here — Header's shared overlay is used when isOptionsDrawerOpen is true */}
-        <div
-          className="fixed bottom-0 inset-x-0 z-[1001] flex max-h-[85vh] w-full flex-col overflow-hidden rounded-t-[20px] bg-white shadow-[0_-8px_18px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-out"
-          style={{
-            transform: active ? "translateY(0)" : "translateY(100%)",
-            visibility: active ? "visible" : "hidden",
-          }}
-        >
+    <MobileDrawer isOpen={isOpen} onClose={onClose} title="Options" showPullIndicator={false}>
+      <div className="flex max-h-[85vh] w-full flex-col overflow-hidden rounded-t-[20px] bg-white shadow-[0_-8px_18px_rgba(0,0,0,0.12)]">
           <div className="flex shrink-0 items-center justify-between border-b border-[rgba(0,0,0,0.1)] px-4 py-4">
             <h2 className="text-lg font-semibold text-[#1B1B1B]">Options</h2>
             <button
@@ -212,8 +186,7 @@ export function MobileActionsDrawer({
               </div>
             </div>
           </div>
-        </div>
       </div>
-    </Portal>
+    </MobileDrawer>
   );
 }

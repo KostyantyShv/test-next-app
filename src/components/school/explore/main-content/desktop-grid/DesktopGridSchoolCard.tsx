@@ -79,7 +79,7 @@ export const DesktopGridSchoolCard: React.FC<{
   }, [establishment, school]);
 
   return (
-    <div className="group relative flex flex-col bg-white rounded-[12px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#E5E7EB] transition-[transform,box-shadow] duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
+    <div className="school-card group relative flex flex-col bg-[var(--surface-color)] rounded-[12px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#E5E7EB] transition-[transform,box-shadow] duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
       {/* Image */}
       <div className="relative w-full h-[160px] overflow-hidden">
         <Image src={school.image} alt={school.name} fill sizes="(max-width: 1055px) 33vw, 250px" className="object-cover" />
@@ -112,7 +112,7 @@ export const DesktopGridSchoolCard: React.FC<{
           </div>
         ) : null}
 
-        <div className="absolute bottom-0 left-[10px] bg-white px-2 pt-1 text-[11px] font-semibold text-[#464646] tracking-[0.02em] rounded-t-md h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
+        <div className="absolute bottom-0 left-[10px] bg-[var(--surface-color)] px-2 pt-1 text-[11px] font-semibold text-[var(--bold-text)] tracking-[0.02em] rounded-t-md h-6 flex items-center z-[2] uppercase shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
           {school.schoolType}
         </div>
       </div>

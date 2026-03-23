@@ -7,13 +7,10 @@ interface HeaderProps {
   isFooterVisible: boolean;
 }
 
-const MOBILE_DRAWER_VISIBILITY_EVENT = "mobile-drawer-visibility-change";
-
 const Header: React.FC<HeaderProps> = ({ isFooterVisible }) => {
   const [activeTab, setActiveTab] = useState<string>(
     Object.values(SIDE_TABS_MOBILE)[0]
   );
-  const [isBlockingOverlayOpen, setIsBlockingOverlayOpen] = useState(false);
 
   const checkActiveSection = useCallback(() => {
     // Get all section elements
@@ -51,63 +48,9 @@ const Header: React.FC<HeaderProps> = ({ isFooterVisible }) => {
     };
   }, [checkActiveSection]);
 
-  useEffect(() => {
-    const detectBlockingOverlay = () => {
-      const hasOpenMobileDrawer =
-        document.body.dataset.mobileDrawerOpen === "true";
-      const hasOpenVaulDrawer = Boolean(
-        document.querySelector(
-          "[data-vaul-overlay][data-state='open'], [data-vaul-drawer][data-state='open']"
-        )
-      );
-      const hasOpenLegacyMobileModal = Boolean(
-        document.querySelector(
-          "#mobile-modal-root .fixed.opacity-100:not(.pointer-events-none)"
-        )
-      );
-      const isBodyScrollLocked = document.body.style.position === "fixed";
-
-      setIsBlockingOverlayOpen(
-        hasOpenMobileDrawer ||
-          hasOpenVaulDrawer ||
-          hasOpenLegacyMobileModal ||
-          isBodyScrollLocked
-      );
-    };
-
-    detectBlockingOverlay();
-
-    const observer = new MutationObserver(detectBlockingOverlay);
-    observer.observe(document.body, {
-      subtree: true,
-      childList: true,
-      attributes: true,
-      attributeFilter: [
-        "class",
-        "data-state",
-        "style",
-        "data-mobile-drawer-open",
-        "data-mobile-drawer-open-count",
-      ],
-    });
-
-    window.addEventListener("resize", detectBlockingOverlay);
-    window.addEventListener(MOBILE_DRAWER_VISIBILITY_EVENT, detectBlockingOverlay);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", detectBlockingOverlay);
-      window.removeEventListener(MOBILE_DRAWER_VISIBILITY_EVENT, detectBlockingOverlay);
-    };
-  }, []);
-
   const handleTabClick = (tabId: string) => {
     setActiveTab(tabId);
   };
-
-  if (isBlockingOverlayOpen) {
-    return null;
-  }
 
   const shouldShowHeader = isFooterVisible;
 
