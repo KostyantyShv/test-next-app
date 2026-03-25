@@ -43,7 +43,9 @@ export default function GalleryItem({
   return (
     <li
       className={`flex items-center p-4 ${
-        item.pinned ? "bg-[#EBFCF4] border border-[#D7F7E9]" : "bg-[#f8f9fa]"
+        item.pinned
+          ? "border border-[var(--border-color)] bg-[var(--apply-button-bg)]"
+          : "bg-[var(--surface-secondary)]"
       } rounded-lg transition-all ${isDragging ? "opacity-40" : "opacity-100"}`}
       draggable
       data-id={item.id}
@@ -52,7 +54,7 @@ export default function GalleryItem({
       onDragOver={onDragOver}
       onDrop={handleDrop}
     >
-      <div className="cursor-move text-[#DFDDDB] mr-4">
+      <div className="cursor-move text-[var(--subtle-text)] mr-4 opacity-70">
         <svg width="24" height="24" viewBox="0 0 24 24">
           <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2m-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2m0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2"></path>
         </svg>
@@ -69,13 +71,13 @@ export default function GalleryItem({
       </div>
 
       <div className="flex-1">
-        <div className="text-[#464646] font-semibold mb-1">
+        <div className="text-[var(--bold-text)] font-semibold mb-1">
           <span className="max-md:hidden">{item.title}</span>
           <span className="hidden max-md:inline">
             {item.title.length > 4 ? item.title.substring(0, 4) + '...' : item.title}
           </span>
         </div>
-        <div className="text-[#5F5F5F] text-sm max-md:truncate max-md:max-w-[7ch]">
+        <div className="text-[var(--subtle-text)] text-sm max-md:truncate max-md:max-w-[7ch]">
           <span className="max-md:hidden">{item.altText}</span>
           <span className="hidden max-md:inline">
             {item.altText.length > 7 ? item.altText.substring(0, 7) + '...' : item.altText}
@@ -85,7 +87,8 @@ export default function GalleryItem({
 
       <div className="flex gap-3">
         <button
-          className="w-9 h-9 rounded-full border border-[#DFDDDB] bg-white flex items-center justify-center hover:bg-[#f8f9fa] transition-all"
+          type="button"
+          className="w-9 h-9 rounded-full border border-[var(--border-color)] bg-[var(--surface-color)] text-[var(--text-default)] flex items-center justify-center hover:bg-[var(--hover-bg)] transition-all"
           onClick={() => onPin(item.id)}
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -113,7 +116,8 @@ export default function GalleryItem({
           </svg>
         </button>
         <button
-          className="w-9 h-9 rounded-full border border-[#DFDDDB] bg-white flex items-center justify-center hover:bg-[#f8f9fa] transition-all"
+          type="button"
+          className="w-9 h-9 rounded-full border border-[var(--border-color)] bg-[var(--surface-color)] text-[var(--text-default)] flex items-center justify-center hover:bg-[var(--hover-bg)] transition-all"
           onClick={() => onEdit(item.id)}
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">

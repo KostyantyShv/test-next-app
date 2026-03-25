@@ -89,34 +89,34 @@ export default function EventItem({
 
   return (
     <div
-      className="event-item border border-[#E5E5E5] rounded-xl overflow-hidden group"
+      className="event-item border border-[var(--border-color)] rounded-xl overflow-hidden group bg-[var(--surface-color)]"
       data-id={event.id}
       draggable
       onDragStart={(e) => onDragStart(e, event.id)}
       onDragEnd={onDragEnd}
     >
       {event.pinned && (
-        <div className="bg-[#F8F9FD] p-2 flex items-center gap-1.5 font-medium text-[#1B1B1B] text-[13px] border-b border-[#E0E0E0]">
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 20 20">
+        <div className="bg-[var(--surface-secondary)] p-2 flex items-center gap-1.5 font-medium text-[var(--bold-text)] text-[13px] border-b border-[var(--border-color)]">
+          <svg className="w-3.5 h-3.5 text-[var(--bold-text)]" fill="none" viewBox="0 0 20 20">
             <path
               strokeLinejoin="round"
               strokeLinecap="round"
               strokeWidth="1.5"
-              stroke="#333333"
+              stroke="currentColor"
               d="M12.5007 3.75L9.16732 7.08333L5.83398 8.33333L4.58398 9.58333L10.4173 15.4167L11.6673 14.1667L12.9173 10.8333L16.2507 7.5"
             />
             <path
               strokeLinejoin="round"
               strokeLinecap="round"
               strokeWidth="1.5"
-              stroke="#333333"
+              stroke="currentColor"
               d="M7.5 12.5L3.75 16.25"
             />
             <path
               strokeLinejoin="round"
               strokeLinecap="round"
               strokeWidth="1.5"
-              stroke="#333333"
+              stroke="currentColor"
               d="M12.084 3.33398L16.6673 7.91732"
             />
           </svg>
@@ -124,7 +124,7 @@ export default function EventItem({
         </div>
       )}
       <div className="p-4 flex gap-6 relative max-md:flex-col-reverse">
-        <div className="event-drag w-6 h-6 text-[#A0AEC0] cursor-grab flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:cursor-grabbing">
+        <div className="event-drag w-6 h-6 text-[var(--subtle-text)] cursor-grab flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity active:cursor-grabbing">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
             <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2m-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2m0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2" />
           </svg>
@@ -139,10 +139,10 @@ export default function EventItem({
               {typeDisplay.text}
             </div>
           </div>
-          <h3 className="text-[#1B1B1B] text-lg font-semibold mb-2 leading-tight">
+          <h3 className="text-[var(--bold-text)] text-lg font-semibold mb-2 leading-tight">
             {event.title}
           </h3>
-          <div className="text-[#5F5F5F] text-sm mb-3 flex items-center gap-2">
+          <div className="text-[var(--subtle-text)] text-sm mb-3 flex items-center gap-2">
             <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
               <path
                 d="M8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z"
@@ -165,7 +165,7 @@ export default function EventItem({
               }}
             />
           </div>
-          <p className="text-[#4A4A4A] text-sm leading-6">
+          <p className="text-[var(--text-default)] text-sm leading-6">
             {event.description}
           </p>
         </div>
@@ -178,7 +178,7 @@ export default function EventItem({
         </div>
       </div>
       <div className="relative">
-        <div className="flex items-center justify-between px-4 py-3 border-t">
+        <div className="flex items-center justify-between px-4 py-3 border-t border-[var(--border-color)]">
           <span
             className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 ${statusClass}`}
           >
@@ -186,8 +186,9 @@ export default function EventItem({
           </span>
           <div className="flex gap-3">
             <button
+              type="button"
               onClick={() => togglePin(event.id)}
-              className="w-9 h-9 rounded-full border border-[#E5E5E5] bg-white flex items-center justify-center hover:bg-[#F8F9FA] transition-colors"
+              className="w-9 h-9 rounded-full border border-[var(--border-color)] bg-[var(--surface-color)] text-[var(--subtle-text)] flex items-center justify-center hover:bg-[var(--hover-bg)] transition-colors"
             >
               <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none">
                 <path
@@ -214,8 +215,9 @@ export default function EventItem({
               </svg>
             </button>
             <button
+              type="button"
               onClick={editEvent}
-              className="w-9 h-9 rounded-full border border-[#E5E5E5] bg-white flex items-center justify-center hover:bg-[#F8F9FA] transition-colors"
+              className="w-9 h-9 rounded-full border border-[var(--border-color)] bg-[var(--surface-color)] text-[var(--subtle-text)] flex items-center justify-center hover:bg-[var(--hover-bg)] transition-colors"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24">
                 <path

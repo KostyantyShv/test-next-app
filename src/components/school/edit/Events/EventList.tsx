@@ -96,7 +96,7 @@ export default function EventList({
 
   if (sortedEvents.length === 0) {
     return (
-      <div className="mt-6 py-8 text-center text-[#5F5F5F] text-sm">
+      <div className="mt-6 py-8 text-center text-[var(--subtle-text)] text-sm">
         No events yet. Click "Add Event" to create your first event.
       </div>
     );

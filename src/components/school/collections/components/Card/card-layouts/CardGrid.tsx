@@ -3,6 +3,14 @@ import { createPortal } from "react-dom";
 import { CollectionImage } from "../CollectionImage";
 import { CollectionsSchool, RatingCheckmarks, truncateText, truncateWords } from "../Card";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
+import { CollectionsCreateNoteFooterButton } from "../../CollectionsCreateNoteFooterButton";
+import { NotesModal } from "../../modals/NotesModal";
+import { MetaClockIcon, MetaStarIcon } from "./MetaIcons";
+
+const formatSchoolTypeLabel = (label: string): string => {
+  if (!label) return "";
+  return label.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+};
 
 export const CardGrid: React.FC<{
   school: CollectionsSchool;
@@ -23,6 +31,7 @@ export const CardGrid: React.FC<{
   onDeleteNote,
 }) => {
     const [isStatusOpen, setIsStatusOpen] = useState(false);
+    const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
     const statusRef = useRef<HTMLDivElement | null>(null);
     const triggerRef = useRef<HTMLButtonElement | null>(null);
     const portalRef = useRef<HTMLDivElement | null>(null);
@@ -81,6 +90,16 @@ export const CardGrid: React.FC<{
     const statusColor = STATUS_OPTIONS.find((o) => o.status === school.status)?.color ?? "#787878";
 
     return (
+      <>
+      <NotesModal
+        isOpen={isNotesModalOpen}
+        onClose={() => setIsNotesModalOpen(false)}
+        school={school}
+        index={index}
+        onCreateNote={onCreateNote}
+        onEditNote={onEditNote}
+        onDeleteNote={onDeleteNote}
+      />
       <div className="school-card group">
         <div className="image-container">
           <div className="like-button">
@@ -123,7 +142,6 @@ export const CardGrid: React.FC<{
           ) : null}
 
           <CollectionImage src={school.image} alt={school.name} fill className="school-image" />
-          <div className="school-type-label">{school.schoolType}</div>
         </div>
 
         <div className="school-content">
@@ -134,6 +152,9 @@ export const CardGrid: React.FC<{
           ) : null}
 
           <h3 className="school-name">{truncateWords(school.name, 3)}</h3>
+          {school.schoolType ? (
+            <div className="school-type-meta">{formatSchoolTypeLabel(school.schoolType)}</div>
+          ) : null}
 
           <div className="school-stats">
             <div className="stat">
@@ -145,14 +166,7 @@ export const CardGrid: React.FC<{
             </div>
 
             <div className="stat">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <path
-                  fill="currentColor"
-                  fillRule="evenodd"
-                  d="m12 16.6 4.644 3.105-1.166-5.519 4.255-3.89-5.71-.49L12 4.72 9.978 9.806l-5.71.49 4.254 3.89-1.166 5.519L12 16.599Zm-9.733-6.102c-.513-.527-.257-1.58.512-1.58l6.147-.528 2.306-5.797c.256-.79 1.28-.79 1.536 0l2.306 5.797 6.147.527c.769 0 1.025 1.054.512 1.581l-4.61 4.216 1.28 6.061c.257.79-.512 1.318-1.28 1.054L12 18.404l-5.123 3.425c-.768.527-1.537-.263-1.28-1.054l1.28-6.06z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <MetaStarIcon className="h-4 w-4 text-[#565656]" />
               <span>{school.rating}</span>
             </div>
           </div>
@@ -165,23 +179,11 @@ export const CardGrid: React.FC<{
               onRatingChange={(rating) => onRatingChange(index, rating)}
             />
           </div>
-          <div className="notes-count">
-            <svg
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              fill="none"
-              viewBox="0 0 24 24"
-              height="100%"
-              width="100%"
-            >
-              <path d="M20 17v-12c0 -1.121 -.879 -2 -2 -2s-2 .879 -2 2v12l2 2l2 -2z"></path>
-              <path d="M16 7h4"></path>
-              <path d="M18 19h-13a2 2 0 1 1 0 -4h4a2 2 0 1 0 0 -4h-3"></path>
-            </svg>
-            <span>{school.notes ? school.notes.length : 0}</span>
-          </div>
+          <CollectionsCreateNoteFooterButton
+            noteCount={school.notes?.length ?? 0}
+            onClick={() => setIsNotesModalOpen(true)}
+            className="shrink-0"
+          />
         </div>
 
         <div className="hover-overlay">
@@ -200,14 +202,7 @@ export const CardGrid: React.FC<{
 
           <div className="hover-stats">
             <div className="hover-stat">
-              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M11.0251 3.98957C12.6023 3.33626 14.2928 3 16 3C17.7072 3 19.3977 3.33626 20.9749 3.98957C22.5521 4.64288 23.9852 5.60045 25.1924 6.80761C26.3995 8.01477 27.3571 9.44788 28.0104 11.0251C28.6637 12.6023 29 14.2928 29 16C29 17.7072 28.6637 19.3977 28.0104 20.9749C27.3571 22.5521 26.3995 23.9852 25.1924 25.1924C23.9852 26.3995 22.5521 27.3571 20.9749 28.0104C19.3977 28.6637 17.7072 29 16 29C14.2928 29 12.6023 28.6637 11.0251 28.0104C9.44788 27.3571 8.01477 26.3995 6.80761 25.1924C5.60045 23.9852 4.64288 22.5521 3.98957 20.9749C3.33625 19.3977 3 17.7072 3 16C3 14.2928 3.33625 12.6023 3.98957 11.0251C4.64288 9.44788 5.60045 8.01477 6.80761 6.80761C8.01477 5.60045 9.44788 4.64288 11.0251 3.98957ZM16 5C14.5555 5 13.1251 5.28452 11.7905 5.83733C10.4559 6.39013 9.24327 7.20038 8.22183 8.22183C7.20038 9.24327 6.39013 10.4559 5.83733 11.7905C5.28452 13.1251 5 14.5555 5 16C5 17.4445 5.28452 18.8749 5.83733 20.2095C6.39013 21.5441 7.20038 22.7567 8.22183 23.7782C9.24327 24.7996 10.4559 25.6099 11.7905 26.1627C13.1251 26.7155 14.5555 27 16 27C17.4445 27 18.8749 26.7155 20.2095 26.1627C21.5441 25.6099 22.7567 24.7996 23.7782 23.7782C24.7996 22.7567 25.6099 21.5441 26.1627 20.2095C26.7155 18.8749 27 17.4445 27 16C27 14.5555 26.7155 13.1251 26.1627 11.7905C25.6099 10.4559 24.7996 9.24327 23.7782 8.22183C22.7567 7.20038 21.5441 6.39013 20.2095 5.83733C18.8749 5.28452 17.4445 5 16 5ZM16 8.33333C16.5523 8.33333 17 8.78105 17 9.33333V15.4648L20.5547 17.8346C21.0142 18.141 21.1384 18.7618 20.8321 19.2214C20.5257 19.6809 19.9048 19.8051 19.4453 19.4987L15.4453 16.8321C15.1671 16.6466 15 16.3344 15 16V9.33333C15 8.78105 15.4477 8.33333 16 8.33333Z"
-                  fill="currentColor"
-                ></path>
-              </svg>
+              <MetaClockIcon className="h-4 w-4 text-[#5F5F5F]" />
               <span>{school.dateSaved}</span>
             </div>
 
@@ -404,29 +399,27 @@ export const CardGrid: React.FC<{
           color: #ff9900;
         }
 
-        .school-type-label {
-          position: absolute;
-          bottom: 0;
-          left: 10px;
-          background: white;
-          padding: 4px 8px 0 8px;
-          font-size: 11px;
-          font-weight: 600;
-          color: #464646;
-          letter-spacing: 0.02em;
-          border-radius: 4px 4px 0 0;
-          height: 24px;
-          display: flex;
-          align-items: center;
-          z-index: 2;
-          text-transform: uppercase;
-          font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-          box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
-        }
-
         .school-content {
           padding: 16px;
           flex-grow: 1;
+        }
+
+        .school-type-meta {
+          margin: 6px 0 10px;
+          display: inline-flex;
+          max-width: 100%;
+          align-items: center;
+          border-radius: 6px;
+          background: #f5f5f7;
+          padding: 4px 8px;
+          font-size: 10px;
+          font-weight: 600;
+          letter-spacing: 0.02em;
+          text-transform: uppercase;
+          color: #5f5f5f;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .ranking-row {
@@ -487,7 +480,9 @@ export const CardGrid: React.FC<{
           display: flex;
           align-items: center;
           justify-content: space-between;
-          height: 60px;
+          flex-wrap: wrap;
+          gap: 10px;
+          min-height: 60px;
           position: relative;
           z-index: 20;
           background-color: white;
@@ -496,20 +491,6 @@ export const CardGrid: React.FC<{
         .rating-filter {
           display: flex;
           align-items: center;
-        }
-
-        .notes-count {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 13px;
-          color: #5f5f5f;
-        }
-
-        .notes-count svg {
-          width: 16px;
-          height: 16px;
-          color: #089e68;
         }
 
         .hover-overlay {
@@ -943,5 +924,6 @@ export const CardGrid: React.FC<{
         }
       `}</style>
       </div>
+      </>
     );
   };

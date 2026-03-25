@@ -35,11 +35,10 @@ export function MobileMapModal({
       isOpen={isOpen}
       onClose={onClose}
       title={title}
-      showPullIndicator={false}
-      variant="fullscreen"
-      lockTouchMove={false}
+      showPullIndicator
+      variant="sheet"
     >
-      <div className="flex h-full min-h-0 flex-col bg-white">
+      <div className="flex h-[min(88dvh,100%)] min-h-[70dvh] flex-1 flex-col bg-[var(--surface-color)]">
         <div
           className="flex shrink-0 items-center justify-between border-b border-[#E5E5E5] bg-white px-5 pb-4"
           style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 16px)' }}
@@ -152,7 +151,7 @@ export function MobileMapModal({
             </>
           )}
         </div>
-        <div className="flex min-h-0 flex-1 overflow-hidden bg-[var(--surface-secondary)]">
+        <div className="flex min-h-[55dvh] flex-1 overflow-hidden bg-[var(--surface-secondary)]">
           {children}
         </div>
       </div>

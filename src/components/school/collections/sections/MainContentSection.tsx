@@ -6,14 +6,19 @@ import {
   DROPDOWN_CATEGORIES_ICONS,
   DROPDOWN_ITEMS,
   DROPDOWN_SUBCATEGORIES_ICONS,
-  layouts,
+  collectionsGridLayouts,
 } from "../mock";
 import { useSchoolsCollection } from "@/store/use-schools-collections";
 import { SubcategoryType } from "@/types/schools-collections";
 import ActionsDropdown from "../components/ActionsDropdown/ActionsDropdown";
 import CreateCollectionModal from "../components/CreateCollectionModal/CreateCollectionModal";
 import ContentArea from "./ContentArea";
-
+import SidebarFilters from "../sidebar-filters/SidebarFilters";
+import {
+  FiltersType,
+  SchoolScoutGrade,
+  SchoolScoutGradeEntry,
+} from "@/types/schools-explore";
 interface MainContentSectionProps {
   onContainerExpandChange?: (isExpanded: boolean) => void;
   isContainerExpanded?: boolean;
@@ -23,13 +28,12 @@ const MainContentSection: React.FC<MainContentSectionProps> = ({
   onContainerExpandChange,
   isContainerExpanded = false,
 }) => {
-  const { subcategory, setSubcategory } = useSchoolsCollection(
-    (state) => state
-  );
+  const { subcategory, setSubcategory, collectionsFilters, getActiveFilters, resetFilters } =
+    useSchoolsCollection((state) => state);
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [isMapActive, setIsMapActive] = useState(false);
-  const [layout, setLayout] = useState("classic");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [layout, setLayout] = useState("grid");
 
   const renderDropdownItems = () => (
     <>
@@ -70,6 +74,26 @@ const MainContentSection: React.FC<MainContentSectionProps> = ({
     setIsModalOpen(value);
   };
 
+  const isGradeSelected = (
+    category: string,
+    grade: SchoolScoutGrade
+  ): boolean | undefined => {
+    return (
+      collectionsFilters.schoolScoutGrades &&
+      collectionsFilters.schoolScoutGrades.includes(
+        `${category}: ${grade}` as SchoolScoutGradeEntry
+      )
+    );
+  };
+
+  const isOptionChecked = (
+    optionValue: string,
+    key: keyof FiltersType
+  ): boolean => {
+    const filterValue = collectionsFilters[key];
+    return Array.isArray(filterValue) && filterValue.includes(optionValue as never);
+  };
+
   const renderActionsDropdown = () => (
     <ActionsDropdown handleOpenModal={handleOpenModal} />
   );
@@ -96,10 +120,11 @@ const MainContentSection: React.FC<MainContentSectionProps> = ({
   );
 
   return (
-    <div className="collections-main-shell w-full mx-auto bg-surface rounded-none border-0 shadow-none md:rounded-xl md:border border-theme md:shadow-[0_2px_12px_var(--shadow-color)] overflow-visible">
+    <div className="w-full mx-auto overflow-visible bg-transparent rounded-none border-0 shadow-none">
       <Header
         schools={schools}
-        layouts={layouts}
+        layouts={collectionsGridLayouts}
+        hideLayoutControls
         dropdownValue={subcategory}
         dropdownIcon={DROPDOWN_SUBCATEGORIES_ICONS[subcategory]}
         renderDropdownItems={renderDropdownItems}
@@ -113,6 +138,14 @@ const MainContentSection: React.FC<MainContentSectionProps> = ({
         renderItemsCount={renderItemsCount}
         onContainerExpandChange={onContainerExpandChange}
         isContainerExpanded={isContainerExpanded}
+        customMobileFiltersContent={
+          <SidebarFilters
+            isOptionChecked={isOptionChecked}
+            isGradeSelected={isGradeSelected}
+          />
+        }
+        customFilterActiveCount={getActiveFilters().length}
+        onCustomFiltersReset={resetFilters}
       />
       <ContentArea isMapActive={isMapActive} layout={layout} />
       <CreateCollectionModal

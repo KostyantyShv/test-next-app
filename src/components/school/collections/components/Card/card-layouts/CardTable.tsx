@@ -4,6 +4,7 @@ import { CollectionImage } from "../CollectionImage";
 import { CollectionsSchool, Note, RatingCheckmarks } from "../Card";
 import { NotesModal } from "../../modals/NotesModal";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
+import { MetaClockIcon, MetaStarIcon } from "./MetaIcons";
 
 interface SchoolCardProps {
   school: CollectionsSchool;
@@ -77,6 +78,11 @@ export const CardTable: React.FC<SchoolCardProps> = ({
         : text.substring(0, maxLength);
     }
     return text;
+  };
+
+  const formatSchoolTypeLabel = (label: string): string => {
+    if (!label) return "";
+    return label.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
   };
 
   const handleModalClose = () => setIsModalOpen((prev) => !prev);
@@ -193,13 +199,20 @@ export const CardTable: React.FC<SchoolCardProps> = ({
             </td>
             <td className="p-4 bg-white border-b border-[#e5e7eb]">
               <div className="item-info flex items-center">
-                <CollectionImage
-                  src={school.avatar}
-                  alt={school.name}
-                  width={40}
-                  height={40}
-                  className="item-avatar w-10 h-10 rounded object-cover mr-3 bg-[#f9fafb]"
-                />
+                <div className="relative mr-3 h-10 w-10 shrink-0">
+                  <CollectionImage
+                    src={school.avatar}
+                    alt={school.name}
+                    width={40}
+                    height={40}
+                    className="item-avatar h-10 w-10 rounded object-cover bg-[#f9fafb]"
+                  />
+                  {school.schoolType ? (
+                    <div className="absolute bottom-0 left-0 z-[2] max-w-[96px] truncate rounded-t-[4px] bg-white px-1.5 py-[2px] text-[9px] font-semibold uppercase tracking-[0.02em] text-[#464646] shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
+                      {formatSchoolTypeLabel(school.schoolType)}
+                    </div>
+                  ) : null}
+                </div>
                 <div className="item-details flex flex-col relative overflow-visible">
                   <div
                     className="item-title font-semibold text-[#464646] mb-1 whitespace-nowrap overflow-hidden text-ellipsis max-w-[180px] cursor-pointer relative z-10 group"
@@ -225,24 +238,6 @@ export const CardTable: React.FC<SchoolCardProps> = ({
                   <svg
                     width="16"
                     height="16"
-                    viewBox="0 0 20 20"
-                    className="fill-current text-[#464646] group-hover:text-[#016853]"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M8.33333 3.25C8.31123 3.25 8.29004 3.25878 8.27441 3.27441C8.25878 3.29004 8.25 3.31123 8.25 3.33333V8.02267L11.3637 11.1363C11.5043 11.277 11.5833 11.4678 11.5833 11.6667V16.75H16.75V3.33333C16.75 3.31123 16.7412 3.29003 16.7256 3.27441C16.71 3.25878 16.6888 3.25 16.6667 3.25H8.33333ZM10.0833 16.75V11.9773L6.66667 8.56066L3.25 11.9773V16.75H5.91667V14.1667C5.91667 13.7525 6.25245 13.4167 6.66667 13.4167C7.08088 13.4167 7.41667 13.7525 7.41667 14.1667V16.75H10.0833ZM6.75 6.75462C6.53133 6.73031 6.30401 6.80199 6.13634 6.96967L1.96967 11.1363C1.82902 11.277 1.75 11.4678 1.75 11.6667V17.5C1.75 17.9142 2.08579 18.25 2.5 18.25H17.5C17.9142 18.25 18.25 17.9142 18.25 17.5V3.33333C18.25 2.91341 18.0832 2.51068 17.7863 2.21375C17.4893 1.91681 17.0866 1.75 16.6667 1.75H8.33333C7.91341 1.75 7.51068 1.91681 7.21375 2.21375C6.91682 2.51068 6.75 2.91341 6.75 3.33333V6.75462Z"
-                    />
-                  </svg>
-                  <div className="tooltip absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-[#333] text-white text-xs rounded px-2.5 py-1.5 whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-10">
-                    {school.schoolType}
-                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-6 border-transparent border-t-[#333]" />
-                  </div>
-                </div>
-                <div className="view-link w-8 h-8 rounded-full bg-[#F5F5F7] flex items-center justify-center mr-1 mb-1 border-2 border-white relative group cursor-pointer hover:-translate-y-0.5 hover:bg-[#EBFCF4] transition-all duration-200">
-                  <svg
-                    width="16"
-                    height="16"
                     viewBox="0 0 24 24"
                     className="fill-current text-[#464646] group-hover:text-[#016853]"
                   >
@@ -255,42 +250,14 @@ export const CardTable: React.FC<SchoolCardProps> = ({
                   </div>
                 </div>
                 <div className="view-link w-8 h-8 rounded-full bg-[#F5F5F7] flex items-center justify-center mr-1 mb-1 border-2 border-white relative group cursor-pointer hover:-translate-y-0.5 hover:bg-[#EBFCF4] transition-all duration-200">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 32 32"
-                    className="fill-current text-[#464646] group-hover:text-[#016853]"
-                  >
-                    <path d="M16,5 C17.6740328,5 18.9572798,6.75906773 20.1820293,10.1965199 L20.2957597,10.523 L20.4998436,10.5278711 L21.0507134,10.5494869 C28.1449808,10.9055091 28.960836,14.0701247 23.052575,18.5927146 L22.9507597,18.668 L23.0057546,18.8463323 L23.1690896,19.4119807 C24.3257376,23.5767684 23.9360417,25.9878351 21.4504998,26.0868275 L21.2867597,26.089 L21.1083138,26.0851827 C19.9051473,26.0204373 18.3490735,25.3033501 16.3553435,23.9493995 L15.9977597,23.703 L15.9597677,23.730253 C13.813307,25.2266213 12.1555732,26.0179918 10.8883813,26.0861807 L10.71,26.0910004 C8.07790504,26.0910004 7.64622088,23.6665041 8.82882373,19.4121181 L9.04575967,18.669 L8.94545864,18.5935046 C2.88954892,13.9557014 3.90141196,10.7461499 11.5002374,10.5278713 L11.7017597,10.523 L11.817063,10.1971795 C13.0013762,6.86719608 14.2433134,5.11162438 15.843968,5.00515309 L16,5 Z M16,7 C15.4483404,7 14.4297044,8.57213104 13.3774237,11.8238846 C13.2439049,12.2364838 12.859665,12.516 12.426,12.516 L12.35,12.516 C8.95923652,12.516 7.16962692,12.9974599 7.00801334,13.5103086 C6.84379553,14.0314214 8.03222181,15.4827681 10.8001531,17.4800772 C11.1532939,17.7348997 11.3009239,18.1889596 11.1651678,18.6027389 C9.87644318,22.5307207 9.99002235,24.0910013 10.7105907,24.0910013 C11.5600344,24.0915023 13.1754133,23.2923662 15.4095743,21.6664487 C15.7601989,21.4112806 16.2353263,21.4111745 16.5860648,21.6661862 C18.821557,23.2915468 20.4371881,24.0905021 21.2854083,24.0900002 L21.3423144,24.0867854 C21.9752115,24.0111745 22.076985,22.5959402 21.0271933,19.2106468 L20.8327637,18.60153 C20.6970983,18.1877203 20.8448288,17.7336922 21.1980266,17.4789475 C23.9668282,15.4819435 25.1559237,14.0306914 24.9919187,13.5098428 C24.8359367,13.014474 23.1584346,12.5481273 19.9837548,12.517588 L19.574,12.516 C19.1405769,12.516 18.7564934,12.2367903 18.6227785,11.8245089 L18.4192276,11.2161124 C17.4386617,8.37656197 16.5136056,7 16,7 Z"></path>
-                  </svg>
+                  <MetaStarIcon className="w-4 h-4 text-[#464646] group-hover:text-[#016853]" />
                   <div className="tooltip absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-[#333] text-white text-xs rounded px-2.5 py-1.5 whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-10">
                     {school.rating}
                     <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-6 border-transparent border-t-[#333]" />
                   </div>
                 </div>
                 <div className="view-link w-8 h-8 rounded-full bg-[#F5F5F7] flex items-center justify-center mr-1 mb-1 border-2 border-white relative group cursor-pointer hover:-translate-y-0.5 hover:bg-[#EBFCF4] transition-all duration-200">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 32 32"
-                    fill="none"
-                    className="stroke-current text-[#464646] group-hover:text-[#016853]"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M11.0251 3.98957C12.6023 3.33626 14.2928 3 16 3C17.7072 3 19.3977 3.33626 20.9749 3.98957C22.5521 4.64288 23.9852 5.60045 25.1924 6.80761C26.3995 8.01477 27.3571 9.44788 28.0104 11.0251C28.6637 12.6023 29 14.2928 29 16C29 17.7072 28.6637 19.3977 28.0104 20.9749C27.3571 22.5521 26.3995 23.9852 25.1924 25.1924C23.9852 26.3995 22.5521 27.3571 20.9749 28.0104C19.3977 28.6637 17.7072 29 16 29C14.2928 29 12.6023 28.6637 11.0251 28.0104C9.44788 27.3571 8.01477 26.3995 6.80761 25.1924C5.60045 23.9852 4.64288 22.5521 3.98957 20.9749C3.33625 19.3977 3 17.7072 3 16C3 14.2928 3.33625 12.6023 3.98957 11.0251C4.64288 9.44788 5.60045 8.01477 6.80761 6.80761C8.01477 5.60045 9.44788 4.64288 11.0251 3.98957Z"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M16 8.33333C16.5523 8.33333 17 8.78105 17 9.33333V15.4648L20.5547 17.8346C21.0142 18.141 21.1384 18.7618 20.8321 19.2214C20.5257 19.6809 19.9048 19.8051 19.4453 19.4987L15.4453 16.8321C15.1671 16.6466 15 16.3344 15 16V9.33333C15 8.78105 15.4477 8.33333 16 8.33333Z"
-                      fill="currentColor"
-                    />
-                  </svg>
+                  <MetaClockIcon className="w-4 h-4 text-[#464646] group-hover:text-[#016853]" />
                   <div className="tooltip absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-[#333] text-white text-xs rounded px-2.5 py-1.5 whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-10">
                     {school.dateSaved}
                     <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-6 border-transparent border-t-[#333]" />

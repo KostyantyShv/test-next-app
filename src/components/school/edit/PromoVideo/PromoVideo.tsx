@@ -231,10 +231,10 @@ const PromoVideo: React.FC = () => {
       >
         <div className="flex flex-col p-4">
           <div className="mb-4">
-            <h1 className="mb-2 text-2xl font-semibold text-[var(--dark-text)]">
+            <h1 className="mb-2 text-2xl font-semibold text-[var(--bold-text)]">
               Promotional Video
             </h1>
-            <p className="text-sm leading-[1.5] text-[#5F5F5F]">
+            <p className="text-sm leading-[1.5] text-[var(--subtle-text)]">
               Showcase your school&apos;s unique atmosphere, facilities, and student
               life through an engaging video tour. A compelling promotional video
               helps parents and students visualize the exceptional educational
@@ -243,8 +243,8 @@ const PromoVideo: React.FC = () => {
           </div>
 
           <div
-            className="flex flex-1 flex-col rounded-lg bg-white p-4"
-            style={{ boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}
+            className="flex flex-1 flex-col rounded-lg bg-[var(--surface-color)] p-4"
+            style={{ boxShadow: "0 1px 3px var(--shadow-color)" }}
           >
             <div className="flex flex-col gap-4">
               <div className="relative aspect-video w-full overflow-hidden rounded-md">
@@ -266,13 +266,13 @@ const PromoVideo: React.FC = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-3">
-                <h2 className="text-base font-medium text-[var(--dark-text)]">
+                <h2 className="text-base font-medium text-[var(--bold-text)]">
                   Welcome to Our Academy - Virtual Tour 2024
                 </h2>
                 <button
                   type="button"
                   onClick={toggleExpand}
-                  className="flex items-center justify-between rounded-md border border-[var(--border-color)] bg-white px-4 py-2 text-sm font-medium text-[var(--text-color)]"
+                  className="flex items-center justify-between rounded-md border border-[var(--border-color)] bg-[var(--surface-secondary)] px-4 py-2 text-sm font-medium text-[var(--text-default)]"
                 >
                   Edit Video
                   <svg
@@ -364,7 +364,7 @@ const PromoVideo: React.FC = () => {
                     ref={dropdownButtonRef}
                     type="button"
                     onClick={toggleDropdown}
-                    className="flex items-center gap-1.5 border-none bg-transparent p-1.5 text-[13px] text-[var(--text-color)]"
+                    className="flex items-center gap-1.5 border-none bg-transparent p-1.5 text-[13px] text-[var(--text-default)]"
                   >
                     Video Actions
                     <svg viewBox="0 0 24 24" width="16" height="16">
@@ -377,13 +377,13 @@ const PromoVideo: React.FC = () => {
 
                   <div
                     ref={dropdownRef}
-                    className={`absolute left-0 top-full z-[100] min-w-[150px] rounded-lg border border-[var(--border-color)] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.1)] ${
+                    className={`absolute left-0 top-full z-[100] min-w-[150px] rounded-lg border border-[var(--border-color)] bg-[var(--surface-color)] shadow-[0_4px_12px_var(--shadow-color)] ${
                       isDropdownActive ? "block" : "hidden"
                     }`}
                   >
                     <button
                       type="button"
-                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] text-[var(--text-color)] hover:bg-[var(--hover-bg)]"
+                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] text-[var(--text-default)] hover:bg-[var(--hover-bg)]"
                       onClick={handleReplaceVideo}
                     >
                       Replace Video
@@ -401,7 +401,7 @@ const PromoVideo: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleThumbnailSet}
-                  className="flex w-full items-center gap-1.5 border-none bg-transparent text-left text-[13px] text-[var(--dark-text)]"
+                  className="flex w-full items-center gap-1.5 border-none bg-transparent text-left text-[13px] text-[var(--text-default)]"
                 >
                   <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
                     <path
@@ -420,7 +420,7 @@ const PromoVideo: React.FC = () => {
       </div>
 
       <div
-        className={`pointer-events-none fixed bottom-20 left-1/2 z-[2000] w-[280px] max-w-[calc(100%-40px)] -translate-x-1/2 rounded-lg bg-[var(--hover-bg)] px-4 py-3 text-center text-sm text-[var(--dark-text)] shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-all duration-300 ${
+        className={`pointer-events-none fixed bottom-20 left-1/2 z-[2000] w-[280px] max-w-[calc(100%-40px)] -translate-x-1/2 rounded-lg bg-[var(--surface-secondary)] px-4 py-3 text-center text-sm text-[var(--text-default)] shadow-[0_4px_12px_var(--shadow-color)] transition-all duration-300 ${
           showToast ? "translate-y-0 opacity-100" : "translate-y-[120%] opacity-0"
         }`}
       >

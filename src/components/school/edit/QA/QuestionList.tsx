@@ -37,7 +37,7 @@ export default function QuestionList({
       </div>
 
       <button
-        className="add-question inline-flex max-md:w-full justify-center items-center gap-2 px-5 py-3 mt-4 bg-[#1B1B1B] text-white border-none rounded-md text-base font-medium cursor-pointer transition-all duration-200 hover:bg-[#2D2D2D]"
+        className="add-question inline-flex max-md:w-full justify-center items-center gap-2 px-5 py-3 mt-4 bg-[var(--btn-dark-bg)] text-white border-none rounded-md text-base font-medium cursor-pointer transition-all duration-200 hover:opacity-90"
         onClick={onAddQuestion}
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">

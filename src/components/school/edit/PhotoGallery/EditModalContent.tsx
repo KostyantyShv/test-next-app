@@ -38,11 +38,21 @@ export default function EditModalContent({
       setAltText(item.altText);
       setPinned(item.pinned);
       setImagePreview(item.image);
+      setImageFile(null);
+    } else {
+      setTitle("");
+      setAltText("");
+      setPinned(false);
+      setImagePreview("https://i.ibb.co/qMzqMMcg/upload-image-placeholder.png");
+      setImageFile(null);
     }
   }, [item]);
 
+  const canSubmit = item ? true : Boolean(imageFile);
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    if (!canSubmit) return;
     onSubmit({
       title,
       altText,
@@ -94,7 +104,6 @@ export default function EditModalContent({
             }}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            required
           />
         </div>
 
@@ -118,7 +127,6 @@ export default function EditModalContent({
             }}
             value={altText}
             onChange={(e) => setAltText(e.target.value)}
-            required
           />
         </div>
 
@@ -228,7 +236,10 @@ export default function EditModalContent({
             </button>
             <button
               type="submit"
-              className="px-4 py-2 border text-white rounded-md hover:opacity-90 text-sm font-medium"
+              disabled={!canSubmit}
+              className={`px-4 py-2 border text-white rounded-md text-sm font-medium transition-opacity ${
+                canSubmit ? "hover:opacity-90" : "cursor-not-allowed opacity-50"
+              }`}
               style={{ 
                 backgroundColor: 'var(--header-green)',
                 borderColor: 'var(--header-green)'

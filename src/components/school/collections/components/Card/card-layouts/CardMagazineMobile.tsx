@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { CollectionImage } from "../CollectionImage";
 import {
   CollectionsSchool,
@@ -7,6 +8,9 @@ import {
   truncateText,
 } from "../Card";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
+import { NoteEditorMobileDrawer } from "../../modals/NoteEditorMobileDrawer";
+import { DeleteNoteConfirmMobileDrawer } from "../../modals/DeleteNoteConfirmMobileDrawer";
+import { MetaClockIcon, MetaStarIcon } from "./MetaIcons";
 
 interface CardMagazineMobileProps {
   school: CollectionsSchool;
@@ -81,6 +85,11 @@ const ratingValue = (rating: string) => {
   return match ? match[0] : rating;
 };
 
+const formatSchoolTypeLabel = (label: string): string => {
+  if (!label) return "";
+  return label.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+};
+
 export const CardMagazineMobile: React.FC<CardMagazineMobileProps> = ({
   school,
   index,
@@ -91,6 +100,7 @@ export const CardMagazineMobile: React.FC<CardMagazineMobileProps> = ({
   onDeleteNoteDirect,
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isNotesVisible, setIsNotesVisible] = useState(false);
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -98,6 +108,8 @@ export const CardMagazineMobile: React.FC<CardMagazineMobileProps> = ({
   const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
   const [deletingNoteId, setDeletingNoteId] = useState<number | null>(null);
   const statusRef = useRef<HTMLDivElement | null>(null);
+
+  useBodyScrollLock(isDrawerOpen || isNoteModalOpen || isDeleteModalOpen);
 
   const statusClass = useMemo(() => getStatusClass(school.status), [school.status]);
   const statusColor = useMemo(() => getStatusColor(school.status), [school.status]);
@@ -121,15 +133,35 @@ export const CardMagazineMobile: React.FC<CardMagazineMobileProps> = ({
   }, [isDrawerOpen]);
 
   const openCreateNote = () => {
+    setIsDrawerOpen(false);
+    setIsStatusOpen(false);
     setEditingNoteId(null);
     setNoteText("");
     setIsNoteModalOpen(true);
   };
 
   const openEditNote = (note: Note) => {
+    setIsDrawerOpen(false);
+    setIsStatusOpen(false);
     setEditingNoteId(note.id);
     setNoteText(note.content);
     setIsNoteModalOpen(true);
+  };
+
+  const openDeleteNote = (noteId: number) => {
+    setIsDrawerOpen(false);
+    setIsStatusOpen(false);
+    setDeletingNoteId(noteId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDetailsDrawer = () => {
+    setIsDrawerOpen(false);
+    setIsStatusOpen(false);
+  };
+
+  const toggleInlineNotes = () => {
+    setIsNotesVisible((visible) => !visible);
   };
 
   const saveNote = () => {
@@ -154,10 +186,6 @@ export const CardMagazineMobile: React.FC<CardMagazineMobileProps> = ({
           <CollectionImage src={school.image} alt={school.name} fill className="object-cover" />
         </div>
 
-        <div className="absolute left-0 top-0 z-[3] rounded-br-xl rounded-tl-2xl bg-[rgba(8,58,155,0.9)] px-3 pb-1.5 pt-2 text-[11px] font-semibold uppercase tracking-[0.5px] text-white backdrop-blur-[4px]">
-          {school.schoolType}
-        </div>
-
         {school.specialty ? (
           <div className="absolute right-0 top-0 z-[3] flex items-center gap-1 rounded-bl-md rounded-tr-md bg-[rgba(8,58,155,0.8)] px-2 py-1 text-[11px] font-medium text-white backdrop-blur-[4px]">
             {specialtyIcon(school.specialty)}
@@ -169,13 +197,22 @@ export const CardMagazineMobile: React.FC<CardMagazineMobileProps> = ({
           <div className="mb-1 text-[11px] font-medium uppercase tracking-[0.5px] text-white/90">
             {school.location}
           </div>
+          {school.schoolType ? (
+            <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.04em] text-white/75">
+              {formatSchoolTypeLabel(school.schoolType)}
+            </div>
+          ) : null}
           <h3 className="mb-1 line-clamp-3 text-[18px] font-bold leading-[1.3] text-white">
             {school.name}
           </h3>
           <div className="truncate text-[13px] font-medium text-white/90">{school.ranking}</div>
         </div>
 
-        <footer className="absolute bottom-0 left-0 right-0 z-[2] flex h-[90px] items-center justify-between rounded-b-2xl bg-[rgba(8,65,172,0.95)] px-4 py-3 backdrop-blur-[8px]">
+        <footer
+          className={`absolute bottom-0 left-0 right-0 flex h-[90px] items-center justify-between rounded-b-2xl bg-[rgba(8,65,172,0.95)] px-4 py-3 backdrop-blur-[8px] ${
+            isDrawerOpen ? "z-[1005]" : "z-[2]"
+          }`}
+        >
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-white/20 text-sm font-bold text-white backdrop-blur-[4px]">
               {school.grade}
@@ -183,44 +220,48 @@ export const CardMagazineMobile: React.FC<CardMagazineMobileProps> = ({
 
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-1.5 text-xs font-medium text-white/90">
-                <svg viewBox="0 0 24 24" className="h-[14px] w-[14px]">
-                  <path
-                    fill="currentColor"
-                    fillRule="evenodd"
-                    d="m12 16.6 4.644 3.105-1.166-5.519 4.255-3.89-5.71-.49L12 4.72 9.978 9.806l-5.71.49 4.254 3.89-1.166 5.519L12 16.599Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <MetaStarIcon className="h-[14px] w-[14px]" />
                 <span>{ratingValue(school.rating)} ({school.reviews} reviews)</span>
               </div>
 
               <div className="flex items-center gap-1.5 text-xs font-medium text-white/90">
-                <svg
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  className="h-[14px] w-[14px]"
+                <button
+                  type="button"
+                  className="flex items-center gap-1.5"
+                  aria-expanded={isNotesVisible}
+                  aria-label={
+                    isNotesVisible ? `Hide notes for ${school.name}` : `Show notes for ${school.name}`
+                  }
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    toggleInlineNotes();
+                  }}
                 >
-                  <path d="M20 17v-12c0 -1.121 -.879 -2 -2 -2s-2 .879 -2 2v12l2 2l2 -2z" />
-                  <path d="M16 7h4" />
-                  <path d="M18 19h-13a2 2 0 1 1 0 -4h4a2 2 0 1 0 0 -4h-3" />
-                </svg>
-                <span>
-                  {school.notes.length}
-                  <button
-                    type="button"
-                    className="ml-1 text-xs font-semibold text-white underline underline-offset-2"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      openCreateNote();
-                    }}
+                  <svg
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    className="h-[14px] w-[14px]"
                   >
-                    (Create Note)
-                  </button>
-                </span>
+                    <path d="M20 17v-12c0 -1.121 -.879 -2 -2 -2s-2 .879 -2 2v12l2 2l2 -2z" />
+                    <path d="M16 7h4" />
+                    <path d="M18 19h-13a2 2 0 1 1 0 -4h4a2 2 0 1 0 0 -4h-3" />
+                  </svg>
+                  <span>{school.notes.length}</span>
+                </button>
+                <button
+                  type="button"
+                  className="ml-1 text-xs font-semibold text-white underline underline-offset-2"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    openCreateNote();
+                  }}
+                >
+                  (Create Note)
+                </button>
               </div>
             </div>
           </div>
@@ -229,11 +270,20 @@ export const CardMagazineMobile: React.FC<CardMagazineMobileProps> = ({
             <button
               type="button"
               className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-[4px] transition-colors hover:bg-white/25"
-              onClick={(event) => {
-                event.stopPropagation();
-                setIsDrawerOpen(true);
-              }}
-            >
+              aria-expanded={isDrawerOpen}
+                aria-label={
+                  isDrawerOpen ? `Hide details for ${school.name}` : `Show details for ${school.name}`
+                }
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setIsDrawerOpen((open) => {
+                    if (open) {
+                      setIsStatusOpen(false);
+                    }
+                    return !open;
+                  });
+                }}
+              >
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
                 <path
                   strokeLinejoin="round"
@@ -270,10 +320,64 @@ export const CardMagazineMobile: React.FC<CardMagazineMobileProps> = ({
         </footer>
       </article>
 
+      {isNotesVisible && (
+        <div
+          className="rounded-b-2xl border border-t-0 border-[#E5E7EB] bg-[#F8F9FB] px-4 pb-4 pt-3"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {school.notes.length > 0 ? (
+            school.notes.map((note) => (
+              <div key={note.id} className="mb-3 rounded-lg border border-[#EAEDF2] bg-white p-3">
+                <div className="mb-2 flex justify-between">
+                  <span className="text-[13px] font-medium text-[#464646]">{note.author}</span>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      className="text-xs text-[#346DC2]"
+                      onClick={() => openEditNote(note)}
+                    >
+                      EDIT
+                    </button>
+                    <button
+                      type="button"
+                      className="text-xs text-[#346DC2]"
+                      onClick={() => openDeleteNote(note.id)}
+                    >
+                      DELETE
+                    </button>
+                  </div>
+                </div>
+                <div className="text-sm leading-[1.5] text-[#4A4A4A]">{note.content}</div>
+                <div className="mt-1 text-right text-[11px] text-[#9CA3AF]">
+                  <span className="mr-1 text-xs text-[#5F5F5F]">{note.timestamp}</span>
+                  <span className="text-xs text-[#5F5F5F]">{note.time}</span>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="my-2 text-center text-sm text-[#9CA3AF]">No notes yet</p>
+          )}
+          <button
+            type="button"
+            className="mt-1 flex w-full items-center justify-center gap-2 rounded-lg bg-[#EBFCF4] py-2.5 text-sm font-medium text-[#016853]"
+            onClick={openCreateNote}
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Create Note
+          </button>
+        </div>
+      )}
+
       <div
-        className={`fixed inset-0 z-[1000] bg-black/50 transition-opacity md:hidden ${isDrawerOpen ? "visible opacity-100" : "invisible opacity-0"
-          }`}
-        onClick={() => setIsDrawerOpen(false)}
+        className={`fixed inset-0 z-[1000] bg-black/50 transition-opacity md:hidden ${
+          isDrawerOpen
+            ? "pointer-events-auto visible opacity-100"
+            : "pointer-events-none invisible opacity-0"
+        }`}
+        onClick={closeDetailsDrawer}
+        aria-hidden={!isDrawerOpen}
       />
 
       <div
@@ -305,7 +409,7 @@ export const CardMagazineMobile: React.FC<CardMagazineMobileProps> = ({
           <button
             type="button"
             className="absolute right-4 top-3 flex h-8 w-8 items-center justify-center rounded-full text-[#5F5F5F]"
-            onClick={() => setIsDrawerOpen(false)}
+            onClick={closeDetailsDrawer}
           >
             <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none">
               <path
@@ -322,14 +426,7 @@ export const CardMagazineMobile: React.FC<CardMagazineMobileProps> = ({
         <div className="max-h-[calc(80vh-140px)] overflow-y-auto p-4">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-[#F0F0F0] pb-4">
             <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-              <svg viewBox="0 0 32 32" className="h-4 w-4">
-                <path
-                  fill="currentColor"
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M11.0251 3.98957C12.6023 3.33626 14.2928 3 16 3C17.7072 3 19.3977 3.33626 20.9749 3.98957C22.5521 4.64288 23.9852 5.60045 25.1924 6.80761C26.3995 8.01477 27.3571 9.44788 28.0104 11.0251C28.6637 12.6023 29 14.2928 29 16C29 17.7072 28.6637 19.3977 28.0104 20.9749C27.3571 22.5521 26.3995 23.9852 25.1924 25.1924C23.9852 26.3995 22.5521 27.3571 20.9749 28.0104C19.3977 28.6637 17.7072 29 16 29C14.2928 29 12.6023 28.6637 11.0251 28.0104C9.44788 27.3571 8.01477 26.3995 6.80761 25.1924C5.60045 23.9852 4.64288 22.5521 3.98957 20.9749C3.33625 19.3977 3 17.7072 3 16C3 14.2928 3.33625 12.6023 3.98957 11.0251C4.64288 9.44788 5.60045 8.01477 6.80761 6.80761C8.01477 5.60045 9.44788 4.64288 11.0251 3.98957ZM16 8.33333C16.5523 8.33333 17 8.78105 17 9.33333V15.4648L20.5547 17.8346C21.0142 18.141 21.1384 18.7618 20.8321 19.2214C20.5257 19.6809 19.9048 19.8051 19.4453 19.4987L15.4453 16.8321C15.1671 16.6466 15 16.3344 15 16V9.33333C15 8.78105 15.4477 8.33333 16 8.33333Z"
-                />
-              </svg>
+              <MetaClockIcon className="h-4 w-4 text-[#5F5F5F]" />
               <span>{school.dateAdded || school.dateSaved}</span>
             </div>
 
@@ -414,10 +511,7 @@ export const CardMagazineMobile: React.FC<CardMagazineMobileProps> = ({
                       <button
                         type="button"
                         className="text-xs text-[#346DC2]"
-                        onClick={() => {
-                          setDeletingNoteId(note.id);
-                          setIsDeleteModalOpen(true);
-                        }}
+                        onClick={() => openDeleteNote(note.id)}
                       >
                         DELETE
                       </button>
@@ -457,94 +551,29 @@ export const CardMagazineMobile: React.FC<CardMagazineMobileProps> = ({
         </div>
       </div>
 
-      <div
-        className={`fixed inset-0 z-[1200] flex items-center justify-center bg-black/50 transition-all md:hidden ${isNoteModalOpen ? "visible opacity-100" : "invisible opacity-0"
-          }`}
-      >
-        <div className="w-[90%] max-w-[400px] rounded-xl bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-[#1B1B1B]">
-              {editingNoteId ? "Edit Note" : "Create Note"}
-            </h3>
-            <button
-              type="button"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-[#5F5F5F]"
-              onClick={() => setIsNoteModalOpen(false)}
-            >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M15 5L5 15M5 5L15 15"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          </div>
+      <NoteEditorMobileDrawer
+        isOpen={isNoteModalOpen}
+        onClose={() => setIsNoteModalOpen(false)}
+        title={editingNoteId ? "Edit Note" : "Create Note"}
+        noteText={noteText}
+        onChange={setNoteText}
+        onSave={saveNote}
+      />
 
-          <textarea
-            className="mb-4 min-h-[120px] w-full resize-none rounded-lg border border-[#E5E7EB] p-3 text-sm"
-            value={noteText}
-            onChange={(event) => setNoteText(event.target.value)}
-            placeholder="Enter your note here..."
-          />
-
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              className="rounded-md bg-[#F5F5F7] px-4 py-2 text-sm font-medium text-[#464646]"
-              onClick={() => setIsNoteModalOpen(false)}
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              className="rounded-md bg-[#016853] px-4 py-2 text-sm font-medium text-white"
-              onClick={saveNote}
-            >
-              Save Note
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div
-        className={`fixed inset-0 z-[1300] flex items-center justify-center bg-black/50 transition-all md:hidden ${isDeleteModalOpen ? "visible opacity-100" : "invisible opacity-0"
-          }`}
-      >
-        <div className="w-[90%] max-w-[350px] rounded-xl bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
-          <h3 className="mb-4 text-lg font-semibold text-[#1B1B1B]">Delete Note</h3>
-          <p className="mb-6 text-sm leading-[1.5] text-[#4A4A4A]">
-            Are you sure you want to delete this note? This action cannot be undone.
-          </p>
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              className="rounded-md bg-[#F5F5F7] px-4 py-2 text-sm font-medium text-[#464646]"
-              onClick={() => {
-                setIsDeleteModalOpen(false);
-                setDeletingNoteId(null);
-              }}
-            >
-              No, Keep It
-            </button>
-            <button
-              type="button"
-              className="rounded-md bg-[#FF3B30] px-4 py-2 text-sm font-medium text-white"
-              onClick={() => {
-                if (deletingNoteId !== null) {
-                  onDeleteNoteDirect(index, deletingNoteId);
-                }
-                setIsDeleteModalOpen(false);
-                setDeletingNoteId(null);
-              }}
-            >
-              Yes, Delete
-            </button>
-          </div>
-        </div>
-      </div>
+      <DeleteNoteConfirmMobileDrawer
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setDeletingNoteId(null);
+        }}
+        onConfirm={() => {
+          if (deletingNoteId !== null) {
+            onDeleteNoteDirect(index, deletingNoteId);
+          }
+          setIsDeleteModalOpen(false);
+          setDeletingNoteId(null);
+        }}
+      />
 
     </>
   );

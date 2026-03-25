@@ -11,6 +11,7 @@ import { useOpenMobileSidebar } from "@/context/OpenMobileSidebarContext";
 import { MobileActionsDrawer } from "./MobileActionsDrawer";
 import { Drawer } from "vaul";
 import { MobileMapModal } from "@/components/school/shared/MobileMapModal";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import {
   FiltersType,
   SchoolScoutGrade,
@@ -43,6 +44,16 @@ interface HeaderProps {
   renderActionsButton?: () => React.ReactNode;
   /** Optional: used by collections page for custom items count */
   renderItemsCount?: () => React.ReactNode;
+  /** When true, layout switcher (desktop + mobile drawer section) is hidden — e.g. Collections grid-only. */
+  hideLayoutControls?: boolean;
+  /** Mobile filter sheet body — e.g. Collections `SidebarFilters` (Explore uses store-driven K12/College filters when unset). */
+  customMobileFiltersContent?: React.ReactNode;
+  /** When set, mobile filter badge uses this count instead of Explore `useSchoolsExplore` filters. */
+  customFilterActiveCount?: number;
+  /** Clear handler for mobile filter sheet (Explore uses `resetFilters` from explore store when unset). */
+  onCustomFiltersReset?: () => void;
+  /** Extra rows in mobile Options sheet (e.g. Collections actions). */
+  renderMobileOptionsAppend?: (onClose: () => void) => React.ReactNode;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -60,6 +71,13 @@ const Header: React.FC<HeaderProps> = ({
   dropdownIcon: _dropdownIcon,
   renderDropdownItems: _renderDropdownItems,
   layoutToggleWidth: _layoutToggleWidth,
+  renderActionsButton: _renderActionsButton,
+  renderItemsCount: _renderItemsCount,
+  hideLayoutControls = false,
+  customMobileFiltersContent,
+  customFilterActiveCount,
+  onCustomFiltersReset,
+  renderMobileOptionsAppend,
 }) => {
   const {
     setEstablishment,
@@ -87,15 +105,14 @@ const Header: React.FC<HeaderProps> = ({
   const layoutToggleHoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const layoutToggleTooltipTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const openMobileSidebar = useOpenMobileSidebar();
-  /** Ignore overlay clicks for a short time after opening a drawer (prevents same-tap close on touch) */
-  const drawerOpenedAtRef = useRef<number>(0);
-  const OVERLAY_CLOSE_GRACE_MS = 350;
   const desktopEstablishmentRef = useRef<HTMLDivElement>(null);
   const searchTypeRef = useRef<HTMLDivElement>(null);
   const layoutToggleExpandedWidth = useMemo(
     () => _layoutToggleWidth ?? layouts.length * 32 + 6,
     [_layoutToggleWidth, layouts.length]
   );
+
+  useBodyScrollLock(isFilterDrawerOpen);
 
   useEffect(() => {
     return () => {
@@ -122,6 +139,9 @@ const Header: React.FC<HeaderProps> = ({
   }, [establishment, filterK12, filterColleges, filterGraduates, filterDistrict]);
 
   const filterCount = useMemo(() => {
+    if (typeof customFilterActiveCount === "number") {
+      return customFilterActiveCount;
+    }
     const values = currentFilters;
     let count = 0;
 
@@ -144,7 +164,7 @@ const Header: React.FC<HeaderProps> = ({
     }
 
     return count;
-  }, [currentFilters]);
+  }, [currentFilters, customFilterActiveCount]);
 
   const desktopLayouts = useMemo(() => {
     if (layouts.some((item) => item.type === layout)) {
@@ -154,29 +174,29 @@ const Header: React.FC<HeaderProps> = ({
     return current ? [current, ...layouts] : layouts;
   }, [layouts, layout]);
 
-  // Shared custom overlay is only for non-Vaul drawers.
-  // Vaul drawers render and manage their own overlay + interaction lock.
-  const isOverlayVisible = isFilterDrawerOpen;
-
-  const closeAllMobileLayers = () => {
-    if (Date.now() - drawerOpenedAtRef.current < OVERLAY_CLOSE_GRACE_MS) return;
-    setIsEstablishmentDrawerOpen(false);
-    setIsFilterDrawerOpen(false);
-    setIsOptionsDrawerOpen(false);
+  const closeMobileMap = () => {
     setIsMapDrawerOpen(false);
     setIsMapActive(false);
   };
 
+  const dismissOtherMobileSurfaces = (except: "search" | "establishment" | "filter" | "options" | "map") => {
+    if (except !== "search") setIsSearchActive(false);
+    if (except !== "establishment") setIsEstablishmentDrawerOpen(false);
+    if (except !== "filter") setIsFilterDrawerOpen(false);
+    if (except !== "options") setIsOptionsDrawerOpen(false);
+    if (except !== "map") closeMobileMap();
+  };
+
   const openOptionsDrawer = () => {
-    drawerOpenedAtRef.current = Date.now();
+    dismissOtherMobileSurfaces("options");
     setIsOptionsDrawerOpen(true);
   };
   const openEstablishmentDrawer = () => {
-    drawerOpenedAtRef.current = Date.now();
+    dismissOtherMobileSurfaces("establishment");
     setIsEstablishmentDrawerOpen(true);
   };
   const openFilterDrawer = () => {
-    drawerOpenedAtRef.current = Date.now();
+    dismissOtherMobileSurfaces("filter");
     setIsFilterDrawerOpen(true);
   };
 
@@ -223,6 +243,9 @@ const Header: React.FC<HeaderProps> = ({
         return null;
     }
   };
+
+  const renderMobileFiltersBody = () =>
+    customMobileFiltersContent ?? renderFilters();
 
   const getEstablishmentIcon = (type: string) => {
     switch (type) {
@@ -325,14 +348,21 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   const handleMapToggle = () => {
-    if (window.innerWidth < 768) {
-      // Mobile: open map drawer (use ref so overlay doesn't close it on same tap)
-      drawerOpenedAtRef.current = Date.now();
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      dismissOtherMobileSurfaces("map");
       setIsMapDrawerOpen(true);
       setIsMapActive(true);
     } else {
-      // Desktop: toggle map state
       setIsMapActive(!isMapActive);
+    }
+  };
+
+  const toggleMobileSearch = () => {
+    if (!isSearchActive) {
+      dismissOtherMobileSurfaces("search");
+      setIsSearchActive(true);
+    } else {
+      setIsSearchActive(false);
     }
   };
 
@@ -342,7 +372,11 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   const handleClearFilters = () => {
-    resetFilters();
+    if (onCustomFiltersReset) {
+      onCustomFiltersReset();
+    } else {
+      resetFilters();
+    }
   };
 
   const handleShowResults = () => {
@@ -353,6 +387,17 @@ const Header: React.FC<HeaderProps> = ({
     if (!onContainerExpandChange) return;
     onContainerExpandChange(!isContainerExpanded);
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 767px)");
+    if (!isSearchActive || !mq.matches) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isSearchActive]);
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
@@ -530,78 +575,82 @@ const Header: React.FC<HeaderProps> = ({
             </svg>
           </button>
 
-          <div className="w-px h-6 bg-[rgba(0,0,0,0.1)] mx-2" />
+          {!hideLayoutControls ? (
+            <>
+              <div className="w-px h-6 bg-[rgba(0,0,0,0.1)] mx-2" aria-hidden />
 
-          {/* Layout Toggle - matching HTML design */}
-          <div
-            className="layout-toggle flex items-center bg-[#f5f5f7] relative z-[8000]"
-            style={{
-              borderRadius: '6px',
-              padding: '2px',
-              width: isLayoutToggleExpanded ? `${layoutToggleExpandedWidth}px` : '36px',
-              overflow: isLayoutTooltipReady ? 'visible' : 'hidden',
-              transition: 'width 0.3s ease',
-            }}
-            onMouseEnter={() => {
-              if (layoutToggleHoverTimeoutRef.current) clearTimeout(layoutToggleHoverTimeoutRef.current);
-              setIsLayoutToggleExpanded(true);
-              if (layoutToggleTooltipTimeoutRef.current) clearTimeout(layoutToggleTooltipTimeoutRef.current);
-              layoutToggleTooltipTimeoutRef.current = setTimeout(() => {
-                setIsLayoutTooltipReady(true);
-              }, 300);
-            }}
-            onMouseLeave={() => {
-              setIsLayoutTooltipReady(false);
-              setHoveredLayout(null);
-              if (layoutToggleTooltipTimeoutRef.current) clearTimeout(layoutToggleTooltipTimeoutRef.current);
-              layoutToggleHoverTimeoutRef.current = setTimeout(() => {
-                setIsLayoutToggleExpanded(false);
-              }, 300);
-            }}
-          >
-            {desktopLayouts.map((item) => {
-              const isActive = layout === item.type;
-              const shouldShowButton = isActive || isLayoutToggleExpanded;
-              return (
-                <button
-                  key={item.type}
-                  type="button"
-                  onClick={() => handleLayoutChange(item.type)}
-                  onMouseEnter={() => setHoveredLayout(item.type)}
-                  onMouseLeave={() => setHoveredLayout(null)}
-                  style={{
-                    width: '32px',
-                    height: '28px',
-                    borderRadius: '4px',
-                    flexShrink: 0,
-                    display: shouldShowButton ? 'flex' : 'none',
-                  }}
-                  className={`layout-toggle-button relative items-center justify-center cursor-pointer border-none overflow-visible transition-all duration-200 ${isActive
-                      ? "active bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
-                      : "bg-transparent hover:bg-[rgba(0,0,0,0.05)]"
-                    }`}
-                  data-layout={item.type}
-                  aria-label={`Layout ${item.type}`}
-                >
-                  <span
-                    className={`w-4 h-4 flex items-center justify-center ${isActive ? "text-[#0093B0]" : "text-[#4A4A4A]"
-                      }`}
-                  >
-                    {item.icon}
-                  </span>
-                  <span
-                    className={`layout-tooltip absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-[var(--tooltip-bg)] text-[var(--tooltip-text)] px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap pointer-events-none z-[3000] shadow-[0_2px_8px_rgba(0,0,0,0.15)] transition-opacity duration-150 ${isLayoutTooltipReady && hoveredLayout === item.type
-                      ? "opacity-100 visible"
-                      : "opacity-0 invisible"
-                      }`}
-                  >
-                    {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
-                    <span className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-[var(--tooltip-bg)]"></span>
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+              {/* Layout Toggle - matching HTML design */}
+              <div
+                className="layout-toggle flex items-center bg-[#f5f5f7] relative z-[8000]"
+                style={{
+                  borderRadius: '6px',
+                  padding: '2px',
+                  width: isLayoutToggleExpanded ? `${layoutToggleExpandedWidth}px` : '36px',
+                  overflow: isLayoutTooltipReady ? 'visible' : 'hidden',
+                  transition: 'width 0.3s ease',
+                }}
+                onMouseEnter={() => {
+                  if (layoutToggleHoverTimeoutRef.current) clearTimeout(layoutToggleHoverTimeoutRef.current);
+                  setIsLayoutToggleExpanded(true);
+                  if (layoutToggleTooltipTimeoutRef.current) clearTimeout(layoutToggleTooltipTimeoutRef.current);
+                  layoutToggleTooltipTimeoutRef.current = setTimeout(() => {
+                    setIsLayoutTooltipReady(true);
+                  }, 300);
+                }}
+                onMouseLeave={() => {
+                  setIsLayoutTooltipReady(false);
+                  setHoveredLayout(null);
+                  if (layoutToggleTooltipTimeoutRef.current) clearTimeout(layoutToggleTooltipTimeoutRef.current);
+                  layoutToggleHoverTimeoutRef.current = setTimeout(() => {
+                    setIsLayoutToggleExpanded(false);
+                  }, 300);
+                }}
+              >
+                {desktopLayouts.map((item) => {
+                  const isActive = layout === item.type;
+                  const shouldShowButton = isActive || isLayoutToggleExpanded;
+                  return (
+                    <button
+                      key={item.type}
+                      type="button"
+                      onClick={() => handleLayoutChange(item.type)}
+                      onMouseEnter={() => setHoveredLayout(item.type)}
+                      onMouseLeave={() => setHoveredLayout(null)}
+                      style={{
+                        width: '32px',
+                        height: '28px',
+                        borderRadius: '4px',
+                        flexShrink: 0,
+                        display: shouldShowButton ? 'flex' : 'none',
+                      }}
+                      className={`layout-toggle-button relative items-center justify-center cursor-pointer border-none overflow-visible transition-all duration-200 ${isActive
+                          ? "active bg-white shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
+                          : "bg-transparent hover:bg-[rgba(0,0,0,0.05)]"
+                        }`}
+                      data-layout={item.type}
+                      aria-label={`Layout ${item.type}`}
+                    >
+                      <span
+                        className={`w-4 h-4 flex items-center justify-center ${isActive ? "text-[#0093B0]" : "text-[#4A4A4A]"
+                          }`}
+                      >
+                        {item.icon}
+                      </span>
+                      <span
+                        className={`layout-tooltip absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-[var(--tooltip-bg)] text-[var(--tooltip-text)] px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap pointer-events-none z-[3000] shadow-[0_2px_8px_rgba(0,0,0,0.15)] transition-opacity duration-150 ${isLayoutTooltipReady && hoveredLayout === item.type
+                          ? "opacity-100 visible"
+                          : "opacity-0 invisible"
+                          }`}
+                      >
+                        {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
+                        <span className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-[var(--tooltip-bg)]"></span>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          ) : null}
 
           <div ref={searchTypeRef} className="relative">
             <button
@@ -663,6 +712,12 @@ const Header: React.FC<HeaderProps> = ({
               })}
             </div>
           </div>
+          {_renderItemsCount ? (
+            <div className="ml-2 flex shrink-0 items-center">{_renderItemsCount()}</div>
+          ) : null}
+          {_renderActionsButton ? (
+            <div className="ml-2 flex shrink-0 items-center">{_renderActionsButton()}</div>
+          ) : null}
         </div>
       </div>
 
@@ -709,7 +764,7 @@ const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-default)] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
-              onClick={() => setIsSearchActive(!isSearchActive)}
+              onClick={toggleMobileSearch}
               aria-label="Search"
             >
               <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5">
@@ -818,17 +873,13 @@ const Header: React.FC<HeaderProps> = ({
         {/* Mobile overlays/drawers must render via portals */}
         <Portal containerId="mobile-modal-root">
           <div className="md:hidden">
-            {isOverlayVisible && (
-              <div
-                className="fixed inset-0 bg-black/50 z-[900]"
-                onClick={closeAllMobileLayers}
-              />
-            )}
-
             {/* Mobile Establishment Drawer - VAUL for scroll lock */}
             <Drawer.Root
               open={isEstablishmentDrawerOpen}
-              onOpenChange={(open) => setIsEstablishmentDrawerOpen(open)}
+              onOpenChange={(open) => {
+                setIsEstablishmentDrawerOpen(open);
+                if (open) dismissOtherMobileSurfaces("establishment");
+              }}
               modal={true}
             >
               <Drawer.Portal>
@@ -928,39 +979,69 @@ const Header: React.FC<HeaderProps> = ({
               </Drawer.Portal>
             </Drawer.Root>
 
-            {/* Mobile Filter Drawer */}
-            {isFilterDrawerOpen && (
-              <div className="fixed inset-x-0 bottom-0 h-[85vh] bg-[var(--surface-color)] rounded-t-[20px] z-[1001] shadow-[0_-8px_18px_var(--shadow-color)] flex flex-col">
-                <div className="p-4 border-b border-[var(--border-color)] flex justify-between items-center flex-shrink-0">
-                  <h2 className="text-lg font-semibold text-[var(--bold-text)]">Filters</h2>
-                  <button
-                    onClick={() => setIsFilterDrawerOpen(false)}
-                    className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--subtle-text)] hover:bg-[var(--hover-bg)]"
+            {/* Mobile Filter Drawer — Vaul (single overlay, scroll lock) */}
+            <Drawer.Root
+              open={isFilterDrawerOpen}
+              onOpenChange={(open) => {
+                setIsFilterDrawerOpen(open);
+                if (open) dismissOtherMobileSurfaces("filter");
+              }}
+              modal
+            >
+              <Drawer.Portal>
+                <Drawer.Overlay className="fixed inset-0 z-[2500] bg-[rgba(27,27,27,0.4)] backdrop-blur-[4px]" />
+                <Drawer.Content
+                  className="fixed bottom-0 left-0 right-0 z-[3000] flex max-h-[85vh] flex-col rounded-t-[24px] bg-[var(--surface-color)] outline-none"
+                  style={{
+                    boxShadow:
+                      "0 -8px 32px rgba(0, 0, 0, 0.12), 0 -2px 8px rgba(0, 0, 0, 0.04)",
+                  }}
+                  aria-describedby={undefined}
+                >
+                  <div className="mx-auto mt-3 mb-2 h-1 w-9 shrink-0 rounded-full bg-[#DFDDDB]" />
+                  <div className="flex shrink-0 items-center justify-between border-b border-[var(--border-color)] px-4 py-3">
+                    <Drawer.Title className="text-lg font-semibold text-[var(--bold-text)]">
+                      Filters
+                    </Drawer.Title>
+                    <button
+                      type="button"
+                      onClick={() => setIsFilterDrawerOpen(false)}
+                      className="flex h-9 w-9 items-center justify-center rounded-full text-[var(--subtle-text)] hover:bg-[var(--hover-bg)]"
+                      aria-label="Close filters"
+                    >
+                      <svg viewBox="0 0 24 24" className="h-5 w-5">
+                        <path
+                          fill="currentColor"
+                          d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div
+                    className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4"
+                    style={{ WebkitOverflowScrolling: "touch", overscrollBehavior: "contain" }}
                   >
-                    <svg viewBox="0 0 24 24" className="w-5 h-5">
-                      <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                    </svg>
-                  </button>
-                </div>
-                <div className="flex-1 overflow-y-auto">
-                  <div className="p-4">{renderFilters()}</div>
-                </div>
-                <div className="p-4 border-t border-[var(--border-color)] flex gap-3 flex-shrink-0">
-                  <button
-                    onClick={handleClearFilters}
-                    className="flex-1 px-4 py-3 border border-[var(--border-color)] rounded-lg text-[var(--text-default)] font-medium hover:bg-[var(--hover-bg)]"
-                  >
-                    Clear
-                  </button>
-                  <button
-                    onClick={handleShowResults}
-                    className="flex-1 px-4 py-3 bg-[var(--verification-blue)] text-white rounded-lg font-medium hover:opacity-90"
-                  >
-                    Show Results
-                  </button>
-                </div>
-              </div>
-            )}
+                    {renderMobileFiltersBody()}
+                  </div>
+                  <div className="flex shrink-0 gap-3 border-t border-[var(--border-color)] p-4">
+                    <button
+                      type="button"
+                      onClick={handleClearFilters}
+                      className="flex-1 rounded-lg border border-[var(--border-color)] px-4 py-3 font-medium text-[var(--text-default)] hover:bg-[var(--hover-bg)]"
+                    >
+                      Clear
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleShowResults}
+                      className="flex-1 rounded-lg bg-[var(--verification-blue)] px-4 py-3 font-medium text-white hover:opacity-90"
+                    >
+                      Show Results
+                    </button>
+                  </div>
+                </Drawer.Content>
+              </Drawer.Portal>
+            </Drawer.Root>
 
             {/* Mobile Options drawer (Sort, Search Type, Layout — matches HTML) */}
             <MobileActionsDrawer
@@ -969,6 +1050,8 @@ const Header: React.FC<HeaderProps> = ({
               layout={layout}
               setLayout={handleLayoutChange}
               layouts={layouts}
+              hideLayoutControls={hideLayoutControls}
+              appendContent={renderMobileOptionsAppend}
             />
 
             {/* Mobile map modal - full-screen Vaul overlay */}

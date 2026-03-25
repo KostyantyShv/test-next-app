@@ -55,15 +55,21 @@ export const LinksSectionMobile: FC<LinksSectionMobileProps> = ({
   return (
     <div className="flex flex-1 flex-col overflow-hidden max-md:px-3">
       <div className="py-6">
-        <h1 className="mb-2 text-2xl font-semibold text-[#1B1B1B]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
+        <h1 className="mb-2 text-2xl font-semibold text-[var(--bold-text)]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
           Links in Bio
         </h1>
-        <p className="text-sm leading-5 text-[#5F5F5F]">
+        <p className="text-sm leading-5 text-[var(--subtle-text)]">
           Add and manage your important links below.
         </p>
       </div>
-      <div className="mb-4 flex flex-1 flex-col rounded-xl bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
-        <div className="mb-4 text-xs font-medium text-[#5F5F5F]">
+      <div
+        className="mb-4 flex flex-1 flex-col rounded-xl p-4"
+        style={{
+          backgroundColor: "var(--surface-color)",
+          boxShadow: "0 1px 3px var(--shadow-color)",
+        }}
+      >
+        <div className="mb-4 text-xs font-medium text-[var(--subtle-text)]">
           {links.length}/{MAX_LINKS} Links
         </div>
         <div className="mb-4 flex flex-1 flex-col gap-3 overflow-y-auto">
@@ -72,8 +78,8 @@ export const LinksSectionMobile: FC<LinksSectionMobileProps> = ({
               key={link.id}
               className={`link-item flex items-center rounded-lg border-l-4 p-3 transition-all ${
                 link.pinned
-                  ? "border-l-[#02C5AF] bg-[#F8F9FD]"
-                  : "border-l-transparent bg-[#EDF2F7]"
+                  ? "border-l-[var(--header-green)]"
+                  : "border-l-transparent"
               } ${draggedItemId === link.id ? "opacity-40" : "opacity-100"}`}
               style={{ backgroundColor: link.color }}
               draggable
@@ -83,7 +89,7 @@ export const LinksSectionMobile: FC<LinksSectionMobileProps> = ({
               onDragOver={onDragOver}
               onDrop={(e) => handleDrop(e, link.id)}
             >
-              <div className="cursor-move mr-2 text-[#D1D5DB]">
+              <div className="cursor-move mr-2 text-[var(--subtle-text)] opacity-70">
                 <DragHandleIcon />
               </div>
               <div className="mr-3 h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg">
@@ -94,14 +100,14 @@ export const LinksSectionMobile: FC<LinksSectionMobileProps> = ({
                 />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="mb-1 truncate text-sm font-semibold text-[#262B3D]">
+                <div className="mb-1 truncate text-sm font-semibold text-[var(--bold-text)]">
                   {link.title}
                 </div>
-                <div className="mb-1 truncate text-xs text-[#5F5F5F]">
+                <div className="mb-1 truncate text-xs text-[var(--subtle-text)]">
                   {link.url.length > 10 ? link.url.substring(0, 10) + '...' : link.url}
                 </div>
                 {link.pinned && (
-                  <div className="mt-1 inline-flex items-center gap-1 rounded bg-[#F3F4F6] px-1.5 py-0.5 text-xs font-medium text-[#5F5F5F]">
+                  <div className="mt-1 inline-flex items-center gap-1 rounded bg-[var(--apply-button-bg)] px-1.5 py-0.5 text-xs font-medium text-[var(--subtle-text)]">
                     <PinIcon />
                     Pinned
                   </div>
@@ -109,21 +115,24 @@ export const LinksSectionMobile: FC<LinksSectionMobileProps> = ({
               </div>
               <div className="flex gap-2">
                 <button
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] bg-white text-[#5F5F5F] transition hover:bg-[#F3F4F6] hover:text-[#1B1B1B]"
+                  type="button"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-color)] bg-[var(--surface-secondary)] text-[var(--text-default)] transition hover:bg-[var(--hover-bg)]"
                   onClick={() => onTogglePin(link.id)}
                   title={link.pinned ? "Unpin link" : "Pin link"}
                 >
                   <PinIcon />
                 </button>
                 <button
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] bg-white text-[#5F5F5F] transition hover:bg-[#F3F4F6] hover:text-[#1B1B1B]"
+                  type="button"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-color)] bg-[var(--surface-secondary)] text-[var(--text-default)] transition hover:bg-[var(--hover-bg)]"
                   onClick={() => onEditLink(link.id)}
                   title="Edit link"
                 >
                   <EditIcon />
                 </button>
                 <button
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] bg-white text-[#f93a37] transition hover:bg-[#F3F4F6]"
+                  type="button"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-color)] bg-[var(--surface-secondary)] text-[var(--error-color)] transition hover:bg-[var(--hover-bg)]"
                   onClick={() => onDeleteLink(link.id)}
                   title="Delete link"
                 >
@@ -134,7 +143,9 @@ export const LinksSectionMobile: FC<LinksSectionMobileProps> = ({
           ))}
         </div>
         <button
-          className="flex items-center justify-center gap-2 rounded-lg bg-[#1B1B1B] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#2D2D2D]"
+          type="button"
+          className="flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+          style={{ backgroundColor: "var(--btn-primary-bg)" }}
           onClick={onAddLink}
         >
           <svg

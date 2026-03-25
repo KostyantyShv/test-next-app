@@ -19,7 +19,7 @@ const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
   );
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative z-[1100]">
       <Filter.Button
         onDropdownOpen={() => setIsOpened((prev) => !prev)}
         icon={buttonIcon}

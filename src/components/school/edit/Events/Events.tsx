@@ -167,38 +167,38 @@ export default function Events() {
   };
 
   return (
-    <div className="text-[#4A4A4A] font-inter">
+    <div className="text-[var(--text-default)] font-inter">
       <div className="w-full mx-auto flex gap-[25px] max-md:flex-col max-md:px-3">
         <div className="max-w-[350px] max-md:hidden pr-6">
-          <h1 className="text-[#1B1B1B] text-[28px] font-semibold mb-3 tracking-tight" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
+          <h1 className="text-[var(--bold-text)] text-[28px] font-semibold mb-3 tracking-tight" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
             Events
           </h1>
-          <p className="text-[#5F5F5F] text-base leading-6 w-[350px]">
+          <p className="text-[var(--subtle-text)] text-base leading-6 w-[350px]">
             Schedule and manage your upcoming events. Keep your community informed about virtual sessions, meetings, and live sessions.
           </p>
         </div>
 
         <div className="hidden max-md:block pt-[18px] pb-4">
-          <h1 className="text-2xl font-bold mb-2 tracking-[-0.02em] text-[#1B1B1B]">Events</h1>
-          <p className="text-sm leading-[1.5] text-[#5F5F5F]">
+          <h1 className="text-2xl font-bold mb-2 tracking-[-0.02em] text-[var(--bold-text)]">Events</h1>
+          <p className="text-sm leading-[1.5] text-[var(--subtle-text)]">
             Schedule and manage your upcoming events. Keep your community informed about virtual sessions, meetings, and live sessions.
           </p>
         </div>
 
-        <div className="w-auto max-md:w-full bg-white rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative max-md:hidden">
-          <div className="absolute top-6 right-6 text-sm font-semibold text-[#4A4A4A] bg-[#F8F9FA] rounded-full px-3 py-1">
+        <div className="w-auto max-md:w-full bg-[var(--surface-color)] rounded-xl p-6 shadow-[0_1px_3px_var(--shadow-color)] relative max-md:hidden">
+          <div className="absolute top-6 right-6 text-sm font-semibold text-[var(--text-default)] bg-[var(--surface-secondary)] rounded-full px-3 py-1">
             {events.length}/{MAX_EVENTS}
           </div>
 
           <EventList events={events} setEvents={setEvents} openModal={openModal as (id: number) => void} />
-          <button onClick={() => openModal()} className="bg-[#02C5AF] text-white px-6 py-3 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">
+          <button onClick={() => openModal()} className="bg-[var(--brand-teal)] text-white px-6 py-3 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">
             Add Event
           </button>
         </div>
 
         <div className="hidden max-md:block w-full">
-          <div className="rounded-[12px] bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.1)] relative">
-            <div className="absolute right-4 top-4 rounded-2xl bg-[#F8F9FA] px-[10px] py-[3px] text-xs font-semibold text-[#4A4A4A]">
+          <div className="rounded-[12px] bg-[var(--surface-color)] p-4 shadow-[0_1px_3px_var(--shadow-color)] relative">
+            <div className="absolute right-4 top-4 rounded-2xl bg-[var(--surface-secondary)] px-[10px] py-[3px] text-xs font-semibold text-[var(--text-default)]">
               {events.length}/{MAX_EVENTS}
             </div>
 
@@ -215,13 +215,13 @@ export default function Events() {
                   event.status.charAt(0).toUpperCase() + event.status.slice(1);
 
                 return (
-                  <div key={event.id} className="overflow-hidden rounded-[12px] border border-[#E5E5E5]">
+                  <div key={event.id} className="overflow-hidden rounded-[12px] border border-[var(--border-color)]">
                     {event.pinned && (
-                      <div className="flex items-center gap-1.5 border-b border-[#E0E0E0] bg-[#F8F9FD] px-4 py-[6px] text-[13px] font-medium text-[#1B1B1B]">
-                        <svg fill="none" viewBox="0 0 20 20" className="h-[14px] w-[14px]">
-                          <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="#333333" d="M12.5007 3.75L9.16732 7.08333L5.83398 8.33333L4.58398 9.58333L10.4173 15.4167L11.6673 14.1667L12.9173 10.8333L16.2507 7.5"></path>
-                          <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="#333333" d="M7.5 12.5L3.75 16.25"></path>
-                          <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="#333333" d="M12.084 3.33398L16.6673 7.91732"></path>
+                      <div className="flex items-center gap-1.5 border-b border-[var(--border-color)] bg-[var(--surface-secondary)] px-4 py-[6px] text-[13px] font-medium text-[var(--bold-text)]">
+                        <svg fill="none" viewBox="0 0 20 20" className="h-[14px] w-[14px] text-[var(--bold-text)]">
+                          <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M12.5007 3.75L9.16732 7.08333L5.83398 8.33333L4.58398 9.58333L10.4173 15.4167L11.6673 14.1667L12.9173 10.8333L16.2507 7.5"></path>
+                          <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M7.5 12.5L3.75 16.25"></path>
+                          <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" stroke="currentColor" d="M12.084 3.33398L16.6673 7.91732"></path>
                         </svg>
                         Pinned
                       </div>
@@ -237,9 +237,9 @@ export default function Events() {
                         {type.text}
                       </div>
 
-                      <h3 className="text-base font-semibold leading-[1.4] text-[#1B1B1B]">{event.title}</h3>
+                      <h3 className="text-base font-semibold leading-[1.4] text-[var(--bold-text)]">{event.title}</h3>
 
-                      <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
+                      <div className="flex items-center gap-1.5 text-[13px] text-[var(--subtle-text)]">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                           <path d="M8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                           <path d="M8 4.5V8L10.5 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -247,22 +247,22 @@ export default function Events() {
                         {formatEventDate(event.startDate)}
                       </div>
 
-                      <p className="text-[13px] leading-[1.5] text-[#4A4A4A] line-clamp-3">{event.description}</p>
+                      <p className="text-[13px] leading-[1.5] text-[var(--text-default)] line-clamp-3">{event.description}</p>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-[#E5E5E5] px-3 py-2">
+                    <div className="flex items-center justify-between border-t border-[var(--border-color)] px-3 py-2">
                       <span className={`rounded-2xl px-[10px] py-1 text-xs font-semibold ${statusClass}`}>{statusText}</span>
 
                       <div className="flex gap-2">
-                        <button type="button" onClick={() => togglePin(event.id)} className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] bg-white">
-                          <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 text-[#5F5F5F]">
+                        <button type="button" onClick={() => togglePin(event.id)} className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-color)] bg-[var(--surface-color)]">
+                          <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 text-[var(--subtle-text)]">
                             <path d="M12.5007 3.75L9.16732 7.08333L5.83398 8.33333L4.58398 9.58333L10.4173 15.4167L11.6673 14.1667L12.9173 10.8333L16.2507 7.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
                             <path d="M7.5 12.5L3.75 16.25" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
                             <path d="M12.084 3.33398L16.6673 7.91732" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
                           </svg>
                         </button>
-                        <button type="button" onClick={() => openModal(event.id)} className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] bg-white">
-                          <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 text-[#5F5F5F]">
+                        <button type="button" onClick={() => openModal(event.id)} className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-color)] bg-[var(--surface-color)]">
+                          <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 text-[var(--subtle-text)]">
                             <path fill="currentColor" d="M13.2929 4.29291C15.0641 2.52167 17.9359 2.52167 19.7071 4.2929C21.4784 6.06414 21.4784 8.93588 19.7071 10.7071L18.7073 11.7069L11.6135 18.8007C10.8766 19.5376 9.92793 20.0258 8.89999 20.1971L4.16441 20.9864C3.84585 21.0395 3.52127 20.9355 3.29291 20.7071C3.06454 20.4788 2.96053 20.1542 3.01362 19.8356L3.80288 15.1C3.9742 14.0721 4.46243 13.1234 5.19932 12.3865L13.2929 4.29291ZM13 7.41422L6.61353 13.8007C6.1714 14.2428 5.87846 14.8121 5.77567 15.4288L5.21656 18.7835L8.57119 18.2244C9.18795 18.1216 9.75719 17.8286 10.1993 17.3865L16.5858 11L13 7.41422ZM18 9.5858L14.4142 6.00001L14.7071 5.70712C15.6973 4.71693 17.3027 4.71693 18.2929 5.70712C19.2831 6.69731 19.2831 8.30272 18.2929 9.29291L18 9.5858Z" clipRule="evenodd" fillRule="evenodd"></path>
                           </svg>
                         </button>
@@ -273,7 +273,7 @@ export default function Events() {
               })}
             </div>
 
-            <button type="button" onClick={() => openModal()} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#02C5AF] px-4 py-[10px] text-sm font-semibold text-white">
+            <button type="button" onClick={() => openModal()} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--brand-teal)] px-4 py-[10px] text-sm font-semibold text-white">
               <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                 <path d="M10 4V16M4 10H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               </svg>
@@ -292,7 +292,7 @@ export default function Events() {
         maxEvents={MAX_EVENTS}
       />
 
-      <div className={`pointer-events-none fixed bottom-20 left-1/2 z-[2000] w-[280px] max-w-[calc(100%-40px)] -translate-x-1/2 rounded-lg bg-[#EBFCF4] px-4 py-3 text-center text-sm text-[#0B6333] shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-all duration-300 ${showToast ? "translate-y-0 opacity-100" : "translate-y-[120%] opacity-0"}`}>
+      <div className={`pointer-events-none fixed bottom-20 left-1/2 z-[2000] w-[280px] max-w-[calc(100%-40px)] -translate-x-1/2 rounded-lg bg-[var(--apply-button-bg)] px-4 py-3 text-center text-sm text-[var(--header-green)] shadow-[0_4px_12px_var(--shadow-color)] transition-all duration-300 ${showToast ? "translate-y-0 opacity-100" : "translate-y-[120%] opacity-0"}`}>
         {toastMessage}
       </div>
     </div>

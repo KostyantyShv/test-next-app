@@ -206,42 +206,33 @@ const About: React.FC = () => {
       <div
         className="md:hidden"
         style={{
-          backgroundColor: "#E1E7EE",
+          backgroundColor: "var(--background-color)",
           fontFamily:
             '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
         }}
       >
         <form onSubmit={handleSubmit}>
           <div className="px-3 pt-4 pb-0">
-            <h1
-              className="mb-2 text-2xl font-semibold"
-              style={{ color: "#464646" }}
-            >
+            <h1 className="mb-2 text-2xl font-semibold text-[var(--bold-text)]">
               About
             </h1>
-            <p
-              className="mb-4 text-sm leading-[1.6]"
-              style={{ color: "#5F5F5F" }}
-            >
+            <p className="mb-4 text-sm leading-[1.6] text-[var(--subtle-text)]">
               Share information about your institution, qualifications, and
               areas of expertise to establish credibility and build connections
               with your audience.
             </p>
 
             <div
-              className="mb-4 rounded-lg bg-white p-4"
-              style={{ boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}
+              className="mb-4 rounded-lg bg-[var(--surface-color)] p-4"
+              style={{ boxShadow: "0 1px 3px var(--shadow-color)" }}
             >
-              <h2
-                className="mb-3 border-b pb-2 text-base font-semibold"
-                style={{ color: "#464646", borderBottomColor: "#EBFCF4" }}
-              >
+              <h2 className="mb-3 border-b border-[var(--border-color)] pb-2 text-base font-semibold text-[var(--bold-text)]">
                 Profile Avatar
               </h2>
               <div className="flex flex-col items-center gap-4">
                 <div
-                  className="h-[100px] w-[100px] overflow-hidden rounded-full border-4 border-white"
-                  style={{ boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}
+                  className="h-[100px] w-[100px] overflow-hidden rounded-full border-4 border-[var(--surface-secondary)]"
+                  style={{ boxShadow: "0 2px 8px var(--shadow-color)" }}
                 >
                   <Image
                     src={avatarSrc}
@@ -254,22 +245,17 @@ const About: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleAvatarUpload}
-                  className="flex items-center gap-2 rounded border px-4 py-2 text-sm"
-                  style={{
-                    backgroundColor: "#f5f5f5",
-                    borderColor: "#ddd",
-                    color: "#4A4A4A",
-                  }}
+                  className="flex items-center gap-2 rounded border border-[var(--border-color)] bg-[var(--surface-secondary)] px-4 py-2 text-sm text-[var(--text-default)]"
                 >
-                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" className="shrink-0 text-[var(--text-default)]">
                     <path
-                      fill="#4A4A4A"
+                      fill="currentColor"
                       d="M11 14.9861C11 15.5384 11.4477 15.9861 12 15.9861C12.5523 15.9861 13 15.5384 13 14.9861V7.82831L16.2428 11.0711C16.6333 11.4616 17.2665 11.4616 17.657 11.0711C18.0475 10.6806 18.0475 10.0474 17.657 9.65692L12.7071 4.70701C12.3166 4.31649 11.6834 4.31649 11.2929 4.70701L6.34315 9.65692C5.95262 10.0474 5.95262 10.6806 6.34315 11.0711C6.73367 11.4616 7.36684 11.4616 7.75736 11.0711L11 7.82831V14.9861Z"
                       clipRule="evenodd"
                       fillRule="evenodd"
                     ></path>
                     <path
-                      fill="#4A4A4A"
+                      fill="currentColor"
                       d="M3 14C3 13.4477 3.44772 13 4 13C4.55228 13 5 13.4477 5 14V18C5 18.5523 5.44772 19 6 19H18C18.5523 19 19 18.5523 19 18V14C19 13.4477 19.4477 13 20 13C20.5523 13 21 13.4477 21 14V18C21 19.6569 19.6569 21 18 21H6C4.34315 21 3 19.6569 3 18V14Z"
                       clipRule="evenodd"
                       fillRule="evenodd"
@@ -284,35 +270,30 @@ const About: React.FC = () => {
                   className="hidden"
                   accept="image/*"
                 />
-                <div className="text-center text-xs" style={{ color: "#5F5F5F" }}>
+                <div className="text-center text-xs text-[var(--subtle-text)]">
                   Recommended size: 250x250 pixels
                 </div>
               </div>
             </div>
 
             <div
-              className="mb-4 rounded-lg bg-white p-4"
-              style={{ boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}
+              className="mb-4 rounded-lg bg-[var(--surface-color)] p-4"
+              style={{ boxShadow: "0 1px 3px var(--shadow-color)" }}
             >
-              <h2
-                className="mb-3 border-b pb-2 text-base font-semibold"
-                style={{ color: "#464646", borderBottomColor: "#EBFCF4" }}
-              >
+              <h2 className="mb-3 border-b border-[var(--border-color)] pb-2 text-base font-semibold text-[var(--bold-text)]">
                 Achievements/Badges
               </h2>
               <div className="mb-3 flex flex-wrap gap-2">
                 {badges.map((badge, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-1 rounded-[20px] px-[10px] py-1.5 text-xs"
-                    style={{ backgroundColor: "#EBFCF4", color: "#016853" }}
+                    className="flex items-center gap-1 rounded-[20px] bg-[var(--apply-button-bg)] px-[10px] py-1.5 text-xs text-[var(--header-green)]"
                   >
                     <span>{badge.text}</span>
                     <button
                       type="button"
                       onClick={() => handleRemoveBadge(index)}
-                      className="text-sm font-semibold"
-                      style={{ color: "#016853" }}
+                      className="text-sm font-semibold text-[var(--header-green)]"
                     >
                       &times;
                     </button>
@@ -325,14 +306,12 @@ const About: React.FC = () => {
                   value={newBadge}
                   onChange={(e) => setNewBadge(e.target.value)}
                   placeholder="Add new achievement badge"
-                  className="flex-1 rounded border px-3 py-2 text-sm"
-                  style={{ borderColor: "#ddd" }}
+                  className="flex-1 rounded border border-[var(--border-color)] bg-[var(--surface-secondary)] px-3 py-2 text-sm text-[var(--text-default)] placeholder:text-[var(--subtle-text)]"
                 />
                 <button
                   type="button"
                   onClick={handleAddBadge}
-                  className="rounded border-none px-3 py-2 text-sm font-semibold"
-                  style={{ backgroundColor: "#EBFCF4", color: "#016853" }}
+                  className="rounded border-none bg-[var(--apply-button-bg)] px-3 py-2 text-sm font-semibold text-[var(--header-green)]"
                 >
                   Add
                 </button>
@@ -340,20 +319,14 @@ const About: React.FC = () => {
             </div>
 
             <div
-              className="mb-4 rounded-lg bg-white p-4"
-              style={{ boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}
+              className="mb-4 rounded-lg bg-[var(--surface-color)] p-4"
+              style={{ boxShadow: "0 1px 3px var(--shadow-color)" }}
             >
-              <h2
-                className="mb-3 border-b pb-2 text-base font-semibold"
-                style={{ color: "#464646", borderBottomColor: "#EBFCF4" }}
-              >
+              <h2 className="mb-3 border-b border-[var(--border-color)] pb-2 text-base font-semibold text-[var(--bold-text)]">
                 Contact Information
               </h2>
               <div className="mb-[14px]">
-                <label
-                  className="mb-1.5 block text-[13px] font-semibold"
-                  style={{ color: "#5F5F5F" }}
-                >
+                <label className="mb-1.5 block text-[13px] font-semibold text-[var(--subtle-text)]">
                   Joined Date
                 </label>
                 <input
@@ -362,19 +335,11 @@ const About: React.FC = () => {
                   value={contactInfo.joinedDate}
                   readOnly
                   onFocus={(e) => e.target.blur()}
-                  className="w-full rounded border px-3 py-2.5 text-sm"
-                  style={{
-                    borderColor: "#ddd",
-                    backgroundColor: "#f8f9fa",
-                    color: "#5F5F5F",
-                  }}
+                  className="w-full rounded border border-[var(--border-color)] bg-[var(--surface-secondary)] px-3 py-2.5 text-sm text-[var(--subtle-text)]"
                 />
               </div>
               <div className="mb-[14px]">
-                <label
-                  className="mb-1.5 block text-[13px] font-semibold"
-                  style={{ color: "#4A4A4A" }}
-                >
+                <label className="mb-1.5 block text-[13px] font-semibold text-[var(--text-default)]">
                   Location
                 </label>
                 <input
@@ -382,15 +347,11 @@ const About: React.FC = () => {
                   id="location"
                   value={contactInfo.location}
                   onChange={handleContactChange}
-                  className="w-full rounded border px-3 py-2.5 text-sm"
-                  style={{ borderColor: "#ddd" }}
+                  className="w-full rounded border border-[var(--border-color)] bg-[var(--surface-secondary)] px-3 py-2.5 text-sm text-[var(--text-default)]"
                 />
               </div>
               <div className="mb-[14px]">
-                <label
-                  className="mb-1.5 block text-[13px] font-semibold"
-                  style={{ color: "#4A4A4A" }}
-                >
+                <label className="mb-1.5 block text-[13px] font-semibold text-[var(--text-default)]">
                   Website
                 </label>
                 <input
@@ -398,15 +359,11 @@ const About: React.FC = () => {
                   id="website"
                   value={contactInfo.website}
                   onChange={handleContactChange}
-                  className="w-full rounded border px-3 py-2.5 text-sm"
-                  style={{ borderColor: "#ddd" }}
+                  className="w-full rounded border border-[var(--border-color)] bg-[var(--surface-secondary)] px-3 py-2.5 text-sm text-[var(--text-default)]"
                 />
               </div>
               <div>
-                <label
-                  className="mb-1.5 block text-[13px] font-semibold"
-                  style={{ color: "#4A4A4A" }}
-                >
+                <label className="mb-1.5 block text-[13px] font-semibold text-[var(--text-default)]">
                   Phone
                 </label>
                 <input
@@ -414,46 +371,34 @@ const About: React.FC = () => {
                   id="phone"
                   value={contactInfo.phone}
                   onChange={handleContactChange}
-                  className="w-full rounded border px-3 py-2.5 text-sm"
-                  style={{ borderColor: "#ddd" }}
+                  className="w-full rounded border border-[var(--border-color)] bg-[var(--surface-secondary)] px-3 py-2.5 text-sm text-[var(--text-default)]"
                 />
               </div>
             </div>
 
             <div
-              className="mb-4 rounded-lg bg-white p-4"
-              style={{ boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}
+              className="mb-4 rounded-lg bg-[var(--surface-color)] p-4"
+              style={{ boxShadow: "0 1px 3px var(--shadow-color)" }}
             >
-              <h2
-                className="mb-3 border-b pb-2 text-base font-semibold"
-                style={{ color: "#464646", borderBottomColor: "#EBFCF4" }}
-              >
+              <h2 className="mb-3 border-b border-[var(--border-color)] pb-2 text-base font-semibold text-[var(--bold-text)]">
                 Social Media
               </h2>
               <div className="mb-3 flex flex-col gap-2">
                 {socialMedia.map((social, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-2 rounded px-3 py-2 text-[13px]"
-                    style={{ backgroundColor: "#f5f5f5" }}
+                    className="flex items-center gap-2 rounded bg-[var(--surface-secondary)] px-3 py-2 text-[13px]"
                   >
-                    <span
-                      className="shrink-0 font-semibold"
-                      style={{ color: "#4A4A4A" }}
-                    >
+                    <span className="shrink-0 font-semibold text-[var(--text-default)]">
                       {socialLabels[social.type]}
                     </span>
-                    <span
-                      className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
-                      style={{ color: "#346DC2" }}
-                    >
+                    <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[var(--link-text)]">
                       {formatUrl(social.url)}
                     </span>
                     <button
                       type="button"
                       onClick={() => handleRemoveSocial(index)}
-                      className="shrink-0 text-sm"
-                      style={{ color: "#5F5F5F" }}
+                      className="shrink-0 text-sm text-[var(--subtle-text)]"
                     >
                       &times;
                     </button>
@@ -464,9 +409,8 @@ const About: React.FC = () => {
                 <select
                   value={newSocialType}
                   onChange={(e) => setNewSocialType(e.target.value)}
-                  className="w-full appearance-none rounded border bg-no-repeat px-3 py-2 pr-[30px] text-sm"
+                  className="w-full appearance-none rounded border border-[var(--border-color)] bg-[var(--surface-secondary)] bg-no-repeat px-3 py-2 pr-[30px] text-sm text-[var(--text-default)]"
                   style={{
-                    borderColor: "#ddd",
                     backgroundImage:
                       "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235F5F5F' width='18px' height='18px'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E\")",
                     backgroundPosition: "right 10px center",
@@ -485,15 +429,13 @@ const About: React.FC = () => {
                   value={newSocialUrl}
                   onChange={(e) => setNewSocialUrl(e.target.value)}
                   placeholder="Enter profile URL"
-                  className="w-full rounded border px-3 py-2 text-sm"
-                  style={{ borderColor: "#ddd" }}
+                  className="w-full rounded border border-[var(--border-color)] bg-[var(--surface-secondary)] px-3 py-2 text-sm text-[var(--text-default)] placeholder:text-[var(--subtle-text)]"
                 />
                 <div className="flex justify-end">
                   <button
                     type="button"
                     onClick={handleAddSocial}
-                    className="rounded border-none px-3 py-2 text-sm font-semibold"
-                    style={{ backgroundColor: "#EBFCF4", color: "#016853" }}
+                    className="rounded border-none bg-[var(--apply-button-bg)] px-3 py-2 text-sm font-semibold text-[var(--header-green)]"
                   >
                     Add
                   </button>
@@ -502,31 +444,23 @@ const About: React.FC = () => {
             </div>
 
             <div
-              className="mb-0 rounded-lg bg-white p-4"
-              style={{ boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}
+              className="mb-0 rounded-lg bg-[var(--surface-color)] p-4"
+              style={{ boxShadow: "0 1px 3px var(--shadow-color)" }}
             >
-              <h2
-                className="mb-3 border-b pb-2 text-base font-semibold"
-                style={{ color: "#464646", borderBottomColor: "#EBFCF4" }}
-              >
+              <h2 className="mb-3 border-b border-[var(--border-color)] pb-2 text-base font-semibold text-[var(--bold-text)]">
                 Areas of Expertise
               </h2>
-              <div
-                className="mb-5 flex min-h-[44px] flex-wrap gap-2 rounded border p-[10px]"
-                style={{ borderColor: "#ddd" }}
-              >
+              <div className="mb-5 flex min-h-[44px] flex-wrap gap-2 rounded border border-[var(--border-color)] bg-[var(--surface-secondary)] p-[10px]">
                 {expertise.map((tag, index) => (
                   <span
                     key={index}
-                    className="flex items-center gap-1.5 rounded px-[10px] py-1 text-xs"
-                    style={{ backgroundColor: "#EBFCF4", color: "#016853" }}
+                    className="flex items-center gap-1.5 rounded bg-[var(--apply-button-bg)] px-[10px] py-1 text-xs text-[var(--header-green)]"
                   >
                     {tag}
                     <button
                       type="button"
                       onClick={() => handleRemoveTag(index)}
-                      className="text-sm font-semibold"
-                      style={{ color: "#016853" }}
+                      className="text-sm font-semibold text-[var(--header-green)]"
                     >
                       &times;
                     </button>
@@ -538,7 +472,7 @@ const About: React.FC = () => {
                   onChange={(e) => setNewTag(e.target.value)}
                   onKeyDown={handleAddTag}
                   placeholder="Type and press Enter"
-                  className="min-w-[60px] flex-1 border-none bg-transparent py-1 text-[13px] outline-none"
+                  className="min-w-[60px] flex-1 border-none bg-transparent py-1 text-[13px] text-[var(--text-default)] outline-none placeholder:text-[var(--subtle-text)]"
                 />
               </div>
             </div>
@@ -546,12 +480,12 @@ const About: React.FC = () => {
 
           <div
             className="sticky bottom-0 px-3 pb-4 pt-3"
-            style={{ backgroundColor: "#E1E7EE" }}
+            style={{ backgroundColor: "var(--background-color)" }}
           >
             <button
               type="submit"
               className="w-full rounded border-none px-5 py-3 text-sm font-semibold text-white"
-              style={{ backgroundColor: "#016853" }}
+              style={{ backgroundColor: "var(--btn-primary-bg)" }}
             >
               Save Changes
             </button>

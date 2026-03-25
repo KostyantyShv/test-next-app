@@ -156,9 +156,9 @@ export default function ResponsiveHeader({
   }, []);
 
   return (
-    <header className="sticky top-0 z-[200] bg-[#E1E7EE] shadow-[0_1px_0_rgba(0,0,0,0.06)]">
+    <header className="sticky top-0 z-[200] bg-[var(--background-color)] shadow-[0_1px_0_var(--shadow-color)]">
       {/* Mobile Header (md:hidden) — matches HTML reference */}
-      <div className="md:hidden bg-white border-b border-black/10 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+      <div className="md:hidden border-b border-[var(--border-color)] bg-[var(--surface-color)] shadow-[0_1px_2px_var(--shadow-color)]">
         <div className="p-4 flex items-center gap-3">
           <Image
             src="https://i.ibb.co/jJ4GHXP/img1.jpg"
@@ -167,7 +167,7 @@ export default function ResponsiveHeader({
             height={48}
             className="w-12 h-12 rounded-lg object-cover"
           />
-          <h1 className="text-[16px] font-semibold text-[#464646] flex items-center gap-1">
+          <h1 className="text-[16px] font-semibold text-[var(--bold-text)] flex items-center gap-1">
             Stanford University
             <svg
               className="w-4 h-4 ml-1 cursor-pointer opacity-60 hover:opacity-100 transition-opacity duration-200"
@@ -194,14 +194,14 @@ export default function ResponsiveHeader({
                 key={href}
                 href={href}
                 className={`relative pb-2 text-[14px] font-medium transition-colors duration-200 ${isActive
-                  ? "text-[#0B6333] active"
-                  : "text-[#5F5F5F] hover:text-[#464646]"
+                  ? "text-[var(--active-green)] active"
+                  : "text-[var(--subtle-text)] hover:text-[var(--bold-text)]"
                   }`}
                 onClick={(e) => handleNavClick(e, href)}
               >
                 {label}
                 {isActive && (
-                  <span className="absolute -bottom-[9px] left-0 h-0.5 w-full bg-[#0B6333] [clip-path:polygon(4px_0,calc(100%_-_4px)_0,100%_100%,0_100%)]"></span>
+                  <span className="absolute -bottom-[9px] left-0 h-0.5 w-full bg-[var(--active-green)] [clip-path:polygon(4px_0,calc(100%_-_4px)_0,100%_100%,0_100%)]"></span>
                 )}
               </Link>
             ))}

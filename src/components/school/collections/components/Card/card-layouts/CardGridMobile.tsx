@@ -1,7 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { CollectionImage } from "../CollectionImage";
-import { CollectionsSchool, Note, RatingCheckmarks } from "../Card";
+import { CollectionsSchool, Note, RatingCheckmarks, truncateText } from "../Card";
 import { SchoolCardContextMenu } from "../../../../explore/SchoolCardContextMenu";
+import { NoteEditorMobileDrawer } from "../../modals/NoteEditorMobileDrawer";
+import { DeleteNoteConfirmMobileDrawer } from "../../modals/DeleteNoteConfirmMobileDrawer";
+import { MetaClockIcon, MetaStarIcon } from "./MetaIcons";
 
 interface CardGridMobileProps {
   school: CollectionsSchool;
@@ -61,6 +65,11 @@ const specialtyIcon = (type?: string) => {
 const statusClassName = (status: string) =>
   status ? status.toLowerCase().replace(/\s+/g, "-") : "add-status";
 
+const formatSchoolTypeLabel = (label: string): string => {
+  if (!label) return "";
+  return label.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+};
+
 export const CardGridMobile: React.FC<CardGridMobileProps> = ({
   school,
   index,
@@ -71,12 +80,15 @@ export const CardGridMobile: React.FC<CardGridMobileProps> = ({
   onDeleteNoteDirect,
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isStatusOpen, setIsStatusOpen] = useState(false);
+  const [isDrawerStatusOpen, setIsDrawerStatusOpen] = useState(false);
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [noteText, setNoteText] = useState("");
   const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
   const [deletingNoteId, setDeletingNoteId] = useState<number | null>(null);
+  const drawerStatusRef = useRef<HTMLDivElement | null>(null);
+
+  useBodyScrollLock(isDrawerOpen || isNoteModalOpen || isDeleteModalOpen);
 
   const specialtyText = useMemo(() => {
     if (school.specialty === "hot") return "High demand";
@@ -86,15 +98,40 @@ export const CardGridMobile: React.FC<CardGridMobileProps> = ({
   }, [school.specialty]);
 
   const openCreateNote = () => {
+    setIsDrawerOpen(false);
+    setIsDrawerStatusOpen(false);
     setEditingNoteId(null);
     setNoteText("");
     setIsNoteModalOpen(true);
   };
 
   const openEditNote = (note: Note) => {
+    setIsDrawerOpen(false);
+    setIsDrawerStatusOpen(false);
     setEditingNoteId(note.id);
     setNoteText(note.content);
     setIsNoteModalOpen(true);
+  };
+
+  const openDeleteNote = (noteId: number) => {
+    setIsDrawerOpen(false);
+    setIsDrawerStatusOpen(false);
+    setDeletingNoteId(noteId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeNotesDrawer = () => {
+    setIsDrawerOpen(false);
+    setIsDrawerStatusOpen(false);
+  };
+
+  const toggleNotesDrawer = () => {
+    setIsDrawerOpen((open) => {
+      if (open) {
+        setIsDrawerStatusOpen(false);
+      }
+      return !open;
+    });
   };
 
   const saveNote = () => {
@@ -112,142 +149,124 @@ export const CardGridMobile: React.FC<CardGridMobileProps> = ({
     setEditingNoteId(null);
   };
 
-  const openInfoDrawer = () => {
-    setIsDrawerOpen(true);
-  };
+  const displayDate = school.dateAdded || school.dateSaved;
+
+  useEffect(() => {
+    const onDocClick = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (drawerStatusRef.current && !drawerStatusRef.current.contains(target)) {
+        setIsDrawerStatusOpen(false);
+      }
+    };
+    document.addEventListener("click", onDocClick);
+    return () => document.removeEventListener("click", onDocClick);
+  }, []);
+
+  useEffect(() => {
+    if (!isDrawerOpen) {
+      setIsDrawerStatusOpen(false);
+    }
+  }, [isDrawerOpen]);
 
   return (
     <>
-      <article
-        className="school-card collections-grid-mobile-card relative flex flex-col overflow-hidden rounded-[12px] border border-[#E5E7EB] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
-        onClick={() => setIsDrawerOpen(true)}
-      >
-        <div className="relative h-[140px] w-full overflow-hidden">
-          <CollectionImage src={school.image} alt={school.name} fill className="object-cover" />
-
+      <article className="collections-grid-mobile-card school-card relative overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div className="relative h-[140px] w-full bg-[#E8EAED]">
+          <CollectionImage
+            src={school.image}
+            alt={school.name}
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            className="object-cover"
+          />
           {school.specialty ? (
             <div
-              className={`absolute left-3 top-3 z-[2] flex h-8 items-center rounded-2xl bg-white px-3 text-xs font-medium shadow-[0_2px_4px_rgba(0,0,0,0.1)] ${
+              className={`absolute left-2 top-2 z-[5] flex max-w-[min(100%,220px)] items-center gap-1 rounded-md px-2 py-1 text-[11px] font-semibold shadow-md backdrop-blur-sm ${
                 school.specialty === "hot"
-                  ? "text-[#FF4D4D]"
+                  ? "bg-white/95 text-[#FF4D4D]"
                   : school.specialty === "instant-book"
-                  ? "text-[#1D77BD]"
-                  : "text-[#FF9900]"
+                    ? "bg-white/95 text-[#1D77BD]"
+                    : "bg-white/95 text-[#FF9900]"
               }`}
             >
               {specialtyIcon(school.specialty)}
-              <span className="ml-1">{specialtyText}</span>
+              <span className="truncate">{specialtyText}</span>
             </div>
           ) : null}
-
-          <div className="absolute bottom-0 left-[10px] z-[2] flex h-6 items-center rounded-t-[4px] bg-white px-2 pt-1 text-[11px] font-semibold uppercase tracking-[0.02em] text-[#464646] shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
-            {school.schoolType}
-          </div>
-
-          <div
-            className="absolute right-3 top-3 z-10"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
+          <div className="absolute right-2 top-2 z-[5]" onClick={(e) => e.stopPropagation()}>
             <SchoolCardContextMenu
               schoolName={school.name}
-              buttonClassName="more-options flex h-8 w-8 items-center justify-center rounded-full border-none bg-transparent p-0 text-[#5F5F5F] shadow-none transition-colors hover:bg-[#F5F5F7] hover:text-[#464646] active:bg-[#F5F5F7]"
-              iconClassName="h-[16px] w-[16px] rotate-90 fill-current text-current"
+              buttonClassName="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-0 bg-white/95 p-0 text-[#464646] shadow-md backdrop-blur-sm"
+              iconClassName="h-4 w-4 rotate-90 fill-current text-current"
             />
           </div>
         </div>
 
-        <div className="flex-grow p-4">
+        <div className="p-4">
           {school.ranking ? (
-            <div className="mb-2 text-[13px] font-medium text-[#089E68]">
-              {school.ranking}
-            </div>
+            <p className="mb-1.5 line-clamp-2 text-xs font-medium text-[#089E68]">
+              {truncateText(school.ranking, 52)}
+            </p>
           ) : null}
-          <h3 className="mb-[6px] text-base font-semibold leading-[1.4] text-[#464646]">
-            {school.name}
-          </h3>
-          <div className="mb-4 flex flex-wrap gap-3">
-            <div className="flex items-center gap-1.5 text-[13px] font-[450] text-[#5F5F5F]">
-              <svg fill="currentColor" viewBox="0 0 24 24" className="h-4 w-4 text-[#565656]">
-                <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z"></path>
-                <path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8C21.3,8.2,19.9,4.7,17,2.5z"></path>
+          <h3 className="line-clamp-2 text-[17px] font-bold leading-snug text-[#464646]">{school.name}</h3>
+          {school.schoolType ? (
+            <p className="mt-1 truncate text-[10px] font-semibold uppercase tracking-[0.02em] text-[#787878]">
+              {formatSchoolTypeLabel(school.schoolType)}
+            </p>
+          ) : null}
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[13px]">
+            <span className="inline-flex min-w-0 max-w-full items-center gap-1.5 font-medium text-[#464646]">
+              <svg fill="currentColor" viewBox="0 0 24 24" className="h-3.5 w-3.5 shrink-0 text-[#565656]" aria-hidden>
+                <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z" />
+                <path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1C18.6,5.5,19.8,8.4,19.2,11.2z" />
               </svg>
-              <span className="text-[#464646]">{school.location}</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-[13px] font-[450] text-[#5F5F5F]">
-              <svg viewBox="0 0 24 24" className="h-4 w-4 text-[#565656]">
-                <path
-                  fill="currentColor"
-                  fillRule="evenodd"
-                  d="m12 16.6 4.644 3.105-1.166-5.519 4.255-3.89-5.71-.49L12 4.72 9.978 9.806l-5.71.49 4.254 3.89-1.166 5.519L12 16.599Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span className="text-[#464646]">{school.rating}</span>
-            </div>
+              <span className="min-w-0 break-words">{school.location}</span>
+            </span>
+            <span className="inline-flex min-w-0 items-center gap-1 font-semibold text-[#464646]">
+              <MetaStarIcon className="h-3.5 w-3.5 shrink-0 text-[#565656]" />
+              <span className="min-w-0">{school.rating}</span>
+            </span>
           </div>
         </div>
 
-        <footer
-          className="relative z-[3] flex h-[52px] items-center justify-between border-t border-[rgba(1,104,83,0.1)] bg-white px-4 py-3"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <footer className="flex items-center justify-between border-t border-gray-200 px-4 py-3">
           <RatingCheckmarks
             rating={school.myRating}
             onRatingChange={(rating) => onRatingChange(index, rating)}
           />
-          <div className="flex items-center gap-2 text-[13px] text-[#5F5F5F]">
-            <button
-              type="button"
-              aria-label={`Open info for ${school.name}`}
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F5F5F7] text-[#4A4A4A] transition-colors hover:bg-[#EBFCF4] hover:text-[#016853]"
-              onClick={openInfoDrawer}
-            >
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-                <path
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  strokeWidth="1.6"
-                  stroke="currentColor"
-                  d="M10 6V10"
-                />
-                <path
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  strokeWidth="1.6"
-                  stroke="currentColor"
-                  d="M10 13.1094H10.0067"
-                />
-                <path
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  strokeWidth="1.6"
-                  stroke="currentColor"
-                  d="M10 17C13.866 17 17 13.866 17 10C17 6.13401 13.866 3 10 3C6.13401 3 3 6.13401 3 10C3 13.866 6.13401 17 10 17Z"
-                />
-              </svg>
-            </button>
-            <svg stroke="currentColor" fill="none" viewBox="0 0 24 24" className="h-4 w-4 text-[#089E68]">
-              <path d="M20 17v-12c0 -1.121 -.879 -2 -2 -2s-2 .879 -2 2v12l2 2l2 -2z"></path>
-              <path d="M16 7h4"></path>
-              <path d="M18 19h-13a2 2 0 1 1 0 -4h4a2 2 0 1 0 0 -4h-3"></path>
+          <button
+            type="button"
+            className="flex cursor-pointer items-center gap-1.5 text-xs font-medium text-[#5F5F5F]"
+            aria-expanded={isDrawerOpen}
+            aria-label={
+              isDrawerOpen ? `Hide notes for ${school.name}` : `Show notes for ${school.name}`
+            }
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleNotesDrawer();
+            }}
+          >
+            <svg stroke="currentColor" fill="none" viewBox="0 0 24 24" className="h-4 w-4 text-[#089E68]" aria-hidden>
+              <path d="M20 17v-12c0 -1.121 -.879 -2 -2 -2s-2 .879 -2 2v12l2 2l2 -2z" />
+              <path d="M16 7h4" />
+              <path d="M18 19h-13a2 2 0 1 1 0 -4h4a2 2 0 1 0 0 -4h-3" />
             </svg>
             <span>{school.notes?.length || 0}</span>
-          </div>
+          </button>
         </footer>
       </article>
 
       <div
-        className={`fixed inset-0 z-[1000] bg-black/50 transition-opacity ${
-          isDrawerOpen ? "visible opacity-100" : "invisible opacity-0"
-        } md:hidden`}
-        onClick={() => setIsDrawerOpen(false)}
+        className={`fixed inset-0 z-[3100] bg-black/50 transition-opacity md:hidden ${
+          isDrawerOpen ? "pointer-events-auto visible opacity-100" : "pointer-events-none invisible opacity-0"
+        }`}
+        onClick={closeNotesDrawer}
+        aria-hidden={!isDrawerOpen}
       />
       <div
-        className={`fixed bottom-0 left-0 right-0 z-[1001] flex max-h-[80%] w-full translate-y-full flex-col overflow-hidden rounded-t-[20px] bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.15)] transition-transform ${
-          isDrawerOpen ? "translate-y-0" : ""
-        } md:hidden`}
+        className={`fixed bottom-0 left-0 right-0 z-[3200] flex max-h-[85dvh] w-full flex-col overflow-hidden rounded-t-[20px] bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.15)] transition-transform duration-300 ease-out md:hidden ${
+          isDrawerOpen ? "translate-y-0" : "translate-y-full"
+        }`}
       >
         <div className="mx-auto my-3 h-[5px] w-10 rounded-[2.5px] bg-[#E5E7EB]" />
         <div className="flex items-center justify-between border-b border-[#E5E7EB] px-5 pb-4">
@@ -264,7 +283,7 @@ export const CardGridMobile: React.FC<CardGridMobileProps> = ({
           <button
             type="button"
             className="flex h-8 w-8 items-center justify-center rounded-full text-[#5F5F5F]"
-            onClick={() => setIsDrawerOpen(false)}
+            onClick={closeNotesDrawer}
           >
             <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]">
               <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" />
@@ -275,25 +294,18 @@ export const CardGridMobile: React.FC<CardGridMobileProps> = ({
         <div className="flex-grow overflow-y-auto p-5">
           <div className="mb-4 flex flex-wrap gap-3 border-b border-[#F0F0F0] pb-4">
             <div className="flex items-center gap-1.5 text-[13px] text-[#5F5F5F]">
-              <svg viewBox="0 0 32 32" className="h-4 w-4">
-                <path
-                  fill="currentColor"
-                  fillRule="evenodd"
-                  d="M11.0251 3.98957C12.6023 3.33626 14.2928 3 16 3C17.7072 3 19.3977 3.33626 20.9749 3.98957C22.5521 4.64288 23.9852 5.60045 25.1924 6.80761C26.3995 8.01477 27.3571 9.44788 28.0104 11.0251C28.6637 12.6023 29 14.2928 29 16C29 17.7072 28.6637 19.3977 28.0104 20.9749C27.3571 22.5521 26.3995 23.9852 25.1924 25.1924C23.9852 26.3995 22.5521 27.3571 20.9749 28.0104C19.3977 28.6637 17.7072 29 16 29C14.2928 29 12.6023 28.6637 11.0251 28.0104C9.44788 27.3571 8.01477 26.3995 6.80761 25.1924C5.60045 23.9852 4.64288 22.5521 3.98957 20.9749C3.33625 19.3977 3 17.7072 3 16C3 14.2928 3.33625 12.6023 3.98957 11.0251C4.64288 9.44788 5.60045 8.01477 6.80761 6.80761C8.01477 5.60045 9.44788 4.64288 11.0251 3.98957ZM16 8.33333C16.5523 8.33333 17 8.78105 17 9.33333V15.4648L20.5547 17.8346C21.0142 18.141 21.1384 18.7618 20.8321 19.2214C20.5257 19.6809 19.9048 19.8051 19.4453 19.4987L15.4453 16.8321C15.1671 16.6466 15 16.3344 15 16V9.33333C15 8.78105 15.4477 8.33333 16 8.33333Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span>{school.dateSaved}</span>
+              <MetaClockIcon className="h-4 w-4 text-[#5F5F5F]" />
+              <span>{displayDate}</span>
             </div>
-            <div className="relative">
+            <div ref={drawerStatusRef} className="relative">
               <button
                 type="button"
                 className="flex items-center rounded px-2.5 py-1.5 text-[13px]"
-                onClick={() => setIsStatusOpen((prev) => !prev)}
+                onClick={() => setIsDrawerStatusOpen((prev) => !prev)}
               >
                 <svg className={`h-4 w-4 ${statusClassName(school.status)}`} fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path>
-                  <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0Z"></path>
+                  <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
+                  <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0Z" />
                 </svg>
                 <span className={`ml-2 ${statusClassName(school.status)}`}>
                   {school.status || "Add Status"}
@@ -304,7 +316,7 @@ export const CardGridMobile: React.FC<CardGridMobileProps> = ({
               </button>
               <div
                 className={`absolute left-0 top-full z-50 mt-1 w-[200px] rounded-lg bg-white py-2 shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-all ${
-                  isStatusOpen ? "visible opacity-100" : "invisible opacity-0"
+                  isDrawerStatusOpen ? "visible opacity-100" : "invisible opacity-0"
                 }`}
               >
                 {STATUS_OPTIONS.map((opt) => (
@@ -314,7 +326,7 @@ export const CardGridMobile: React.FC<CardGridMobileProps> = ({
                     className="flex w-full items-center px-3 py-2 text-left text-[13px] text-[#4A4A4A]"
                     onClick={() => {
                       onStatusChange(index, opt.value);
-                      setIsStatusOpen(false);
+                      setIsDrawerStatusOpen(false);
                     }}
                   >
                     <span
@@ -337,9 +349,7 @@ export const CardGridMobile: React.FC<CardGridMobileProps> = ({
                   className="mb-3 rounded-lg border border-[#EAEDF2] bg-[#F8F9FB] p-3"
                 >
                   <div className="mb-2 flex justify-between">
-                    <span className="text-[13px] font-medium text-[#464646]">
-                      {note.author}
-                    </span>
+                    <span className="text-[13px] font-medium text-[#464646]">{note.author}</span>
                     <div className="flex gap-2">
                       <button
                         type="button"
@@ -351,10 +361,7 @@ export const CardGridMobile: React.FC<CardGridMobileProps> = ({
                       <button
                         type="button"
                         className="text-xs text-[#346DC2]"
-                        onClick={() => {
-                          setDeletingNoteId(note.id);
-                          setIsDeleteModalOpen(true);
-                        }}
+                        onClick={() => openDeleteNote(note.id)}
                       >
                         DELETE
                       </button>
@@ -384,88 +391,29 @@ export const CardGridMobile: React.FC<CardGridMobileProps> = ({
         </div>
       </div>
 
-      <div
-        className={`fixed inset-0 z-[2000] flex items-center justify-center bg-black/50 transition-all ${
-          isNoteModalOpen ? "visible opacity-100" : "invisible opacity-0"
-        } md:hidden`}
-      >
-        <div className="w-[90%] rounded-xl bg-white p-5 shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-[#1B1B1B]">
-              {editingNoteId ? "Edit Note" : "Create Note"}
-            </h3>
-            <button
-              type="button"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-[#5F5F5F]"
-              onClick={() => setIsNoteModalOpen(false)}
-            >
-              <svg viewBox="0 0 20 20" className="h-5 w-5">
-                <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="1.5" />
-              </svg>
-            </button>
-          </div>
-          <textarea
-            className="mb-4 min-h-[120px] w-full resize-none rounded-lg border border-[#E5E7EB] p-3 text-sm"
-            value={noteText}
-            onChange={(e) => setNoteText(e.target.value)}
-            placeholder="Enter your note here..."
-          />
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              className="rounded-md bg-[#F5F5F7] px-4 py-2 text-sm font-medium text-[#464646]"
-              onClick={() => setIsNoteModalOpen(false)}
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              className="rounded-md bg-[#016853] px-4 py-2 text-sm font-medium text-white"
-              onClick={saveNote}
-            >
-              Save Note
-            </button>
-          </div>
-        </div>
-      </div>
+      <NoteEditorMobileDrawer
+        isOpen={isNoteModalOpen}
+        onClose={() => setIsNoteModalOpen(false)}
+        title={editingNoteId ? "Edit Note" : "Create Note"}
+        noteText={noteText}
+        onChange={setNoteText}
+        onSave={saveNote}
+      />
 
-      <div
-        className={`fixed inset-0 z-[2100] flex items-center justify-center bg-black/50 transition-all ${
-          isDeleteModalOpen ? "visible opacity-100" : "invisible opacity-0"
-        } md:hidden`}
-      >
-        <div className="w-[90%] rounded-xl bg-white p-5 shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
-          <h3 className="mb-4 text-lg font-semibold text-[#1B1B1B]">Delete Note</h3>
-          <p className="mb-6 text-sm leading-[1.5] text-[#4A4A4A]">
-            Are you sure you want to delete this note? This action cannot be undone.
-          </p>
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              className="rounded-md bg-[#F5F5F7] px-4 py-2 text-sm font-medium text-[#464646]"
-              onClick={() => {
-                setIsDeleteModalOpen(false);
-                setDeletingNoteId(null);
-              }}
-            >
-              No, Keep It
-            </button>
-            <button
-              type="button"
-              className="rounded-md bg-[#FF3B30] px-4 py-2 text-sm font-medium text-white"
-              onClick={() => {
-                if (deletingNoteId !== null) {
-                  onDeleteNoteDirect(index, deletingNoteId);
-                }
-                setIsDeleteModalOpen(false);
-                setDeletingNoteId(null);
-              }}
-            >
-              Yes, Delete
-            </button>
-          </div>
-        </div>
-      </div>
+      <DeleteNoteConfirmMobileDrawer
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setDeletingNoteId(null);
+        }}
+        onConfirm={() => {
+          if (deletingNoteId !== null) {
+            onDeleteNoteDirect(index, deletingNoteId);
+          }
+          setIsDeleteModalOpen(false);
+          setDeletingNoteId(null);
+        }}
+      />
     </>
   );
 };

@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { CollectionImage } from "../CollectionImage";
 import { CollectionsSchool, RatingCheckmarks, truncateText } from "../Card";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
+import { MetaClockIcon, MetaStarIcon } from "./MetaIcons";
 
 const STATUS_OPTIONS = [
   { status: "Researching", color: "#395da0" },
@@ -43,6 +44,11 @@ const specialtyIcon = (specialty?: string) => {
 
 const specialtyText = (s?: string) =>
   s === "hot" ? "High demand" : s === "instant-book" ? "Instant book" : s === "sponsored" ? "Sponsored" : "";
+
+const formatSchoolTypeLabel = (label: string): string => {
+  if (!label) return "";
+  return label.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+};
 
 export interface CardTableMobileProps {
   schools: CollectionsSchool[];
@@ -126,13 +132,20 @@ const MobileTableRow: React.FC<{
           </svg>
         </button>
         <div className="school-info flex flex-1 min-w-0">
-          <CollectionImage
-            src={school.avatar}
-            alt={school.name}
-            width={40}
-            height={40}
-            className="school-avatar w-10 h-10 rounded object-cover shrink-0 mr-2.5"
-          />
+          <div className="relative mr-2.5 h-10 w-10 shrink-0">
+            <CollectionImage
+              src={school.avatar}
+              alt={school.name}
+              width={40}
+              height={40}
+              className="school-avatar h-10 w-10 rounded object-cover"
+            />
+            {school.schoolType ? (
+              <div className="absolute bottom-0 left-0 z-[2] max-w-[88px] truncate rounded-t-[4px] bg-white px-1.5 py-[2px] text-[8px] font-semibold uppercase tracking-[0.02em] text-[#464646] shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
+                {formatSchoolTypeLabel(school.schoolType)}
+              </div>
+            ) : null}
+          </div>
           <div className="school-details flex flex-col min-w-0">
             <div className="school-name font-semibold text-[#464646] text-sm whitespace-nowrap overflow-hidden text-ellipsis mb-1">
               {truncateText(school.name, 25)}
@@ -160,15 +173,6 @@ const MobileTableRow: React.FC<{
           </div>
           <div className="view-links flex flex-wrap gap-1">
             <div className="view-link w-8 h-8 rounded-full bg-[#F5F5F7] flex items-center justify-center relative group hover:bg-[#EBFCF4] transition-all">
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" className="text-[#464646]">
-                <path fillRule="evenodd" clipRule="evenodd" d="M8.33333 3.25C8.31123 3.25 8.29004 3.25878 8.27441 3.27441C8.25878 3.29004 8.25 3.31123 8.25 3.33333V8.02267L11.3637 11.1363C11.5043 11.277 11.5833 11.4678 11.5833 11.6667V16.75H16.75V3.33333C16.75 3.31123 16.7412 3.29003 16.7256 3.27441C16.71 3.25878 16.6888 3.25 16.6667 3.25H8.33333ZM10.0833 16.75V11.9773L6.66667 8.56066L3.25 11.9773V16.75H5.91667V14.1667C5.91667 13.7525 6.25245 13.4167 6.66667 13.4167C7.08088 13.4167 7.41667 13.7525 7.41667 14.1667V16.75H10.0833ZM6.75 6.75462C6.53133 6.73031 6.30401 6.80199 6.13634 6.96967L1.96967 11.1363C1.82902 11.277 1.75 11.4678 1.75 11.6667V17.5C1.75 17.9142 2.08579 18.25 2.5 18.25H17.5C17.9142 18.25 18.25 17.9142 18.25 17.5V3.33333C18.25 2.91341 18.0832 2.51068 17.7863 2.21375C17.4893 1.91681 17.0866 1.75 16.6667 1.75H8.33333C7.91341 1.75 7.51068 1.91681 7.21375 2.21375C6.91682 2.51068 6.75 2.91341 6.75 3.33333V6.75462Z" />
-              </svg>
-              <div className="tooltip absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-[#333] text-white py-1.5 px-2 rounded text-[11px] whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 pointer-events-none">
-                {school.schoolType}
-                <span className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-[#333]" />
-              </div>
-            </div>
-            <div className="view-link w-8 h-8 rounded-full bg-[#F5F5F7] flex items-center justify-center relative group hover:bg-[#EBFCF4] transition-all">
               <svg fill="currentColor" viewBox="0 0 24 24" className="w-4 h-4 text-[#464646]">
                 <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z" />
                 <path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8C21.3,8.2,19.9,4.7,17,2.5L17,2.5z" />
@@ -179,18 +183,14 @@ const MobileTableRow: React.FC<{
               </div>
             </div>
             <div className="view-link w-8 h-8 rounded-full bg-[#F5F5F7] flex items-center justify-center relative group hover:bg-[#EBFCF4] transition-all" data-type="rating">
-              <svg viewBox="0 0 32 32" fill="currentColor" className="w-4 h-4 text-[#464646]">
-                <path d="M16,5 C17.6740328,5 18.9572798,6.75906773 20.1820293,10.1965199 L20.2957597,10.523 L20.4998436,10.5278711 L21.0507134,10.5494869 C28.1449808,10.9055091 28.960836,14.0701247 23.052575,18.5927146 L22.9507597,18.668 L23.0057546,18.8463323 L23.1690896,19.4119807 C24.3257376,23.5767684 23.9360417,25.9878351 21.4504998,26.0868275 L21.2867597,26.089 L21.1083138,26.0851827 C19.9051473,26.0204373 18.3490735,25.3033501 16.3553435,23.9493995 L15.9977597,23.703 L15.9597677,23.730253 C13.813307,25.2266213 12.1555732,26.0179918 10.8883813,26.0861807 L10.71,26.0910004 C8.07790504,26.0910004 7.64622088,23.6665041 8.82882373,19.4121181 L9.04575967,18.669 L8.94545864,18.5935046 C2.88954892,13.9557014 3.90141196,10.7461499 11.5002374,10.5278713 L11.7017597,10.523 L11.817063,10.1971795 C13.0013762,6.86719608 14.2433134,5.11162438 15.843968,5.00515309 L16,5 Z M16,7 C15.4483404,7 14.4297044,8.57213104 13.3774237,11.8238846 C13.2439049,12.2364838 12.859665,12.516 12.426,12.516 L12.35,12.516 C8.95923652,12.516 7.16962692,12.9974599 7.00801334,13.5103086 C6.84379553,14.0314214 8.03222181,15.4827681 10.8001531,17.4800772 C11.1532939,17.7348997 11.3009239,18.1889596 11.1651678,18.6027389 C9.87644318,22.5307207 9.99002235,24.0910013 10.7105907,24.0910013 C11.5600344,24.0915023 13.1754133,23.2923662 15.4095743,21.6664487 C15.7601989,21.4112806 16.2353263,21.4111745 16.5860648,21.6661862 C18.821557,23.2915468 20.4371881,24.0905021 21.2854083,24.0900002 L21.3423144,24.0867854 C21.9752115,24.0111745 22.076985,22.5959402 21.0271933,19.2106468 L20.8327637,18.60153 C20.6970983,18.1877203 20.8448288,17.7336922 21.1980266,17.4789475 C23.9668282,15.4819435 25.1559237,14.0306914 24.9919187,13.5098428 C24.8359367,13.014474 23.1584346,12.5481273 19.9837548,12.517588 L19.574,12.516 C19.1405769,12.516 18.7564934,12.2367903 18.6227785,11.8245089 L18.4192276,11.2161124 C17.4386617,8.37656197 16.5136056,7 16,7 Z" />
-              </svg>
+              <MetaStarIcon className="w-4 h-4 text-[#464646]" />
               <div className="tooltip absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-[#333] text-white py-1.5 px-2 rounded text-[11px] whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 pointer-events-none">
                 {school.rating}
                 <span className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-[#333]" />
               </div>
             </div>
             <div className="view-link w-8 h-8 rounded-full bg-[#F5F5F7] flex items-center justify-center relative group hover:bg-[#EBFCF4] transition-all">
-              <svg viewBox="0 0 32 32" width="16" height="16" fill="none" className="text-[#464646]">
-                <path fillRule="evenodd" clipRule="evenodd" d="M11.0251 3.98957C12.6023 3.33626 14.2928 3 16 3C17.7072 3 19.3977 3.33626 20.9749 3.98957C22.5521 4.64288 23.9852 5.60045 25.1924 6.80761C26.3995 8.01477 27.3571 9.44788 28.0104 11.0251C28.6637 12.6023 29 14.2928 29 16C29 17.7072 28.6637 19.3977 28.0104 20.9749C27.3571 22.5521 26.3995 23.9852 25.1924 25.1924C23.9852 26.3995 22.5521 27.3571 20.9749 28.0104C19.3977 28.6637 17.7072 29 16 29C14.2928 29 12.6023 28.6637 11.0251 28.0104C9.44788 27.3571 8.01477 26.3995 6.80761 25.1924C5.60045 23.9852 4.64288 22.5521 3.98957 20.9749C3.33625 19.3977 3 17.7072 3 16C3 14.2928 3.33625 12.6023 3.98957 11.0251C4.64288 9.44788 5.60045 8.01477 6.80761 6.80761C8.01477 5.60045 9.44788 4.64288 11.0251 3.98957ZM16 5C14.5555 5 13.1251 5.28452 11.7905 5.83733C10.4559 6.39013 9.24327 7.20038 8.22183 8.22183C7.20038 9.24327 6.39013 10.4559 5.83733 11.7905C5.28452 13.1251 5 14.5555 5 16C5 17.4445 5.28452 18.8749 5.83733 20.2095C6.39013 21.5441 7.20038 22.7567 8.22183 23.7782C9.24327 24.7996 10.4559 25.6099 11.7905 26.1627C13.1251 26.7155 14.5555 27 16 27C17.4445 27 18.8749 26.7155 20.2095 26.1627C21.5441 25.6099 22.7567 24.7996 23.7782 23.7782C24.7996 22.7567 25.6099 21.5441 26.1627 20.2095C26.7155 18.8749 27 17.4445 27 16C27 14.5555 26.7155 13.1251 26.1627 11.7905C25.6099 10.4559 24.7996 9.24327 23.7782 8.22183C22.7567 7.20038 21.5441 6.39013 20.2095 5.83733C18.8749 5.28452 17.4445 5 16 5ZM16 8.33333C16.5523 8.33333 17 8.78105 17 9.33333V15.4648L20.5547 17.8346C21.0142 18.141 21.1384 18.7618 20.8321 19.2214C20.5257 19.6809 19.9048 19.8051 19.4453 19.4987L15.4453 16.8321C15.1671 16.6466 15 16.3344 15 16V9.33333C15 8.78105 15.4477 8.33333 16 8.33333Z" fill="currentColor" />
-              </svg>
+              <MetaClockIcon className="w-4 h-4 text-[#464646]" />
               <div className="tooltip absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-[#333] text-white py-1.5 px-2 rounded text-[11px] whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 pointer-events-none">
                 {school.dateSaved}
                 <span className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-[#333]" />

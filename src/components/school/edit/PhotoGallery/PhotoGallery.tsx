@@ -161,6 +161,13 @@ export default function PhotoGallery() {
   const handleFormSubmit = (
     formData: Omit<GalleryItemType, "id" | "image" | "order"> & { imageFile?: File }
   ) => {
+    const derivedTitleFromFile = formData.imageFile?.name
+      ?.replace(/\.[^/.]+$/, "")
+      ?.trim();
+    const normalizedTitle =
+      formData.title.trim() || derivedTitleFromFile || "Untitled Photo";
+    const normalizedAltText = formData.altText.trim();
+
     if (currentEditId) {
       setGalleryItems(
         galleryItems.map((item) => {
@@ -172,8 +179,8 @@ export default function PhotoGallery() {
 
             return {
               ...item,
-              title: formData.title,
-              altText: formData.altText,
+              title: normalizedTitle,
+              altText: normalizedAltText,
               pinned: formData.pinned,
               image: imageUrl,
             };
@@ -189,8 +196,8 @@ export default function PhotoGallery() {
 
       const newItem: GalleryItemType = {
         id: Date.now(),
-        title: formData.title,
-        altText: formData.altText,
+        title: normalizedTitle,
+        altText: normalizedAltText,
         pinned: formData.pinned,
         image: imageUrl,
         order: galleryItems.length,
@@ -309,8 +316,8 @@ export default function PhotoGallery() {
   };
 
   const handleMobileSave = () => {
-    if (!mobileForm.title.trim() || !mobileForm.altText.trim()) {
-      showFeedbackToast("Please fill in all required fields");
+    if (!currentEditId && !mobileForm.imageFile) {
+      showFeedbackToast("Please choose an image before saving");
       return;
     }
 
@@ -353,12 +360,12 @@ export default function PhotoGallery() {
         style={style}
         className={`mb-3 flex items-center rounded-lg p-3 transition-all ${
           item.pinned
-            ? "border border-[#D7F7E9] bg-[#EBFCF4]"
-            : "bg-[#F8F9FA]"
+            ? "border border-[var(--border-color)] bg-[var(--apply-button-bg)]"
+            : "bg-[var(--surface-secondary)]"
         } ${isDragging ? "shadow-[0_8px_20px_rgba(0,0,0,0.18)]" : ""}`}
       >
         <div
-          className="mr-3 cursor-grab text-[#DFDDDB]"
+          className="mr-3 cursor-grab text-[var(--subtle-text)] opacity-70"
           style={{ touchAction: "none" }}
           aria-label="Reorder photo"
           {...attributes}
@@ -378,18 +385,18 @@ export default function PhotoGallery() {
         />
 
         <div className="min-w-0 flex-1">
-          <div className="mb-1 truncate text-sm font-semibold text-[#464646]">{item.title}</div>
-          <div className="truncate text-xs text-[#5F5F5F]">{item.altText}</div>
+          <div className="mb-1 truncate text-sm font-semibold text-[var(--bold-text)]">{item.title}</div>
+          <div className="truncate text-xs text-[var(--subtle-text)]">{item.altText}</div>
         </div>
 
         <div className="ml-2 flex gap-2">
           <button
             type="button"
             onClick={() => onTogglePin(item.id)}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-[#DFDDDB] bg-white"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-color)] bg-[var(--surface-color)] text-[var(--text-default)]"
             aria-label="Pin photo"
           >
-            <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 text-[#5F5F5F]">
+            <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 text-[var(--subtle-text)]">
               <path d="M12.5007 3.75L9.16732 7.08333L5.83398 8.33333L4.58398 9.58333L10.4173 15.4167L11.6673 14.1667L12.9173 10.8333L16.2507 7.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
               <path d="M7.5 12.5L3.75 16.25" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
               <path d="M12.084 3.33398L16.6673 7.91732" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
@@ -399,10 +406,10 @@ export default function PhotoGallery() {
           <button
             type="button"
             onClick={() => onEdit(item.id)}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-[#DFDDDB] bg-white"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-color)] bg-[var(--surface-color)] text-[var(--text-default)]"
             aria-label="Edit photo"
           >
-            <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 text-[#5F5F5F]">
+            <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 text-[var(--subtle-text)]">
               <path fill="currentColor" d="M13.2929 4.29291C15.0641 2.52167 17.9359 2.52167 19.7071 4.2929C21.4784 6.06414 21.4784 8.93588 19.7071 10.7071L18.7073 11.7069L11.6135 18.8007C10.8766 19.5376 9.92793 20.0258 8.89999 20.1971L4.16441 20.9864C3.84585 21.0395 3.52127 20.9355 3.29291 20.7071C3.06454 20.4788 2.96053 20.1542 3.01362 19.8356L3.80288 15.1C3.9742 14.0721 4.46243 13.1234 5.19932 12.3865L13.2929 4.29291ZM13 7.41422L6.61353 13.8007C6.1714 14.2428 5.87846 14.8121 5.77567 15.4288L5.21656 18.7835L8.57119 18.2244C9.18795 18.1216 9.75719 17.8286 10.1993 17.3865L16.5858 11L13 7.41422ZM18 9.5858L14.4142 6.00001L14.7071 5.70712C15.6973 4.71693 17.3027 4.71693 18.2929 5.70712C19.2831 6.69731 19.2831 8.30272 18.2929 9.29291L18 9.5858Z" clipRule="evenodd" fillRule="evenodd"></path>
             </svg>
           </button>
@@ -416,23 +423,23 @@ export default function PhotoGallery() {
       <>
         <div
           style={{
-            backgroundColor: "#E1E7EE",
+            backgroundColor: "var(--background-color)",
             fontFamily:
               '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
           }}
         >
           <div className="flex flex-col p-4">
             <div className="mb-4">
-              <h1 className="mb-2 text-2xl font-semibold text-[#1B1B1B]">Photo Gallery</h1>
-              <p className="text-sm leading-[1.5] text-[#5F5F5F]">
+              <h1 className="mb-2 text-2xl font-semibold text-[var(--bold-text)]">Photo Gallery</h1>
+              <p className="text-sm leading-[1.5] text-[var(--subtle-text)]">
                 Create and organize your image gallery. Drag to reorder, pin important images,
                 and customize details for each photo.
               </p>
             </div>
 
             <div
-              className="flex flex-1 flex-col rounded-lg bg-white p-4"
-              style={{ boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}
+              className="flex flex-1 flex-col rounded-lg bg-[var(--surface-color)] p-4"
+              style={{ boxShadow: "0 1px 3px var(--shadow-color)" }}
             >
               <DndContext
                 sensors={sensors}
@@ -459,7 +466,7 @@ export default function PhotoGallery() {
               <button
                 type="button"
                 onClick={openMobileCreateDrawer}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-md border-none bg-[#016853] px-4 py-3 text-sm font-medium text-white"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-md border-none bg-[var(--btn-primary-bg)] px-4 py-3 text-sm font-medium text-white"
               >
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                   <path d="M10 4V16M4 10H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -478,14 +485,14 @@ export default function PhotoGallery() {
             showPullIndicator={true}
           >
             <div className="flex flex-col">
-              <div className="sticky top-0 z-[1] flex flex-shrink-0 items-center justify-between border-b border-[#E5E7EB] bg-white px-5 py-4">
-                <h2 className="text-lg font-semibold text-[#464646]">
+              <div className="sticky top-0 z-[1] flex flex-shrink-0 items-center justify-between border-b border-[var(--border-color)] bg-[var(--surface-color)] px-5 py-4">
+                <h2 className="text-lg font-semibold text-[var(--bold-text)]">
                   {currentEditId ? "Edit Photo Details" : "Add Photo"}
                 </h2>
                 <button
                   type="button"
                   onClick={closeMobileDrawer}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border-none bg-transparent text-[#6B7280]"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border-none bg-transparent text-[var(--subtle-text)]"
                   aria-label="Close"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]">
@@ -495,12 +502,12 @@ export default function PhotoGallery() {
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-5 py-4 min-h-0">
+              <div className="min-h-0 flex-1 overflow-y-auto bg-[var(--surface-color)] px-5 py-4">
                 <div className="mb-4">
-                  <label className="mb-1.5 block text-sm font-medium text-[#464646]">Title</label>
+                  <label className="mb-1.5 block text-sm font-medium text-[var(--bold-text)]">Title</label>
                   <input
                     type="text"
-                    className="w-full rounded-lg border border-[#D1D5DB] px-3 py-3 text-sm text-[#4A4A4A] focus:border-[#016853] focus:outline-none"
+                    className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--surface-color)] px-3 py-3 text-sm text-[var(--text-default)] placeholder:text-[var(--subtle-text)] focus:border-[var(--header-green)] focus:outline-none"
                     value={mobileForm.title}
                     onChange={(event) =>
                       setMobileForm((prev) => ({ ...prev, title: event.target.value }))
@@ -510,10 +517,10 @@ export default function PhotoGallery() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="mb-1.5 block text-sm font-medium text-[#464646]">Alt Text</label>
+                  <label className="mb-1.5 block text-sm font-medium text-[var(--bold-text)]">Alt Text</label>
                   <input
                     type="text"
-                    className="w-full rounded-lg border border-[#D1D5DB] px-3 py-3 text-sm text-[#4A4A4A] focus:border-[#016853] focus:outline-none"
+                    className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--surface-color)] px-3 py-3 text-sm text-[var(--text-default)] placeholder:text-[var(--subtle-text)] focus:border-[var(--header-green)] focus:outline-none"
                     value={mobileForm.altText}
                     onChange={(event) =>
                       setMobileForm((prev) => ({ ...prev, altText: event.target.value }))
@@ -523,10 +530,10 @@ export default function PhotoGallery() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="mb-1.5 block text-sm font-medium text-[#464646]">Thumbnail or Video</label>
-                  <div className="overflow-hidden rounded-lg border border-[#D1D5DB]">
+                  <label className="mb-1.5 block text-sm font-medium text-[var(--bold-text)]">Thumbnail or Video</label>
+                  <div className="overflow-hidden rounded-lg border border-[var(--border-color)]">
                     <div className="flex items-center gap-4 p-3">
-                      <div className="flex h-[60px] w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded bg-[#F7FAFC]">
+                      <div className="flex h-[60px] w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded bg-[var(--surface-secondary)]">
                         <Image
                           src={mobileForm.imagePreview}
                           alt="Image preview"
@@ -537,13 +544,13 @@ export default function PhotoGallery() {
                       </div>
 
                       <div className="flex-1">
-                        <div className="mb-2 text-xs text-[#4F4F4F]">
+                        <div className="mb-2 text-xs text-[var(--subtle-text)]">
                           Recommended dimensions of <strong>1280x720</strong>
                         </div>
                         <button
                           type="button"
                           onClick={() => fileInputRef.current?.click()}
-                          className="inline-flex items-center gap-1.5 rounded-full border border-[#E5E5E5] bg-transparent px-3 py-1.5 text-xs text-[#4F4F4F]"
+                          className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-color)] bg-transparent px-3 py-1.5 text-xs text-[var(--text-default)]"
                         >
                           <svg fill="none" viewBox="0 0 48 48" width="16" height="16">
                             <rect fill="#F0F9FF" rx="24" height="48" width="48"></rect>
@@ -576,11 +583,11 @@ export default function PhotoGallery() {
                     <span className="absolute inset-0 rounded-full bg-[#DFDDDB] transition-all peer-checked:bg-[#0B6333]"></span>
                     <span className="absolute bottom-0.5 left-0.5 h-5 w-5 rounded-full bg-white transition-all peer-checked:translate-x-[26px]"></span>
                   </label>
-                  <span className="text-sm text-[#4A4A4A]">Pin this image</span>
+                  <span className="text-sm text-[var(--text-default)]">Pin this image</span>
                 </div>
               </div>
 
-              <div className="flex flex-shrink-0 items-center justify-between border-t border-[#E5E7EB] bg-white px-5 py-4">
+              <div className="flex flex-shrink-0 items-center justify-between border-t border-[var(--border-color)] bg-[var(--surface-color)] px-5 py-4">
                 {currentEditId ? (
                   <button
                     type="button"
@@ -600,14 +607,14 @@ export default function PhotoGallery() {
                   <button
                     type="button"
                     onClick={closeMobileDrawer}
-                    className="rounded-md border border-[#D1D5DB] bg-[#F3F4F6] px-4 py-2 text-sm font-medium text-[#4B5563]"
+                    className="rounded-md border border-[var(--border-color)] bg-[var(--surface-secondary)] px-4 py-2 text-sm font-medium text-[var(--text-default)]"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
                     onClick={handleMobileSave}
-                    className="rounded-md border border-[#016853] bg-[#016853] px-4 py-2 text-sm font-medium text-white"
+                    className="rounded-md border border-[var(--btn-primary-bg)] bg-[var(--btn-primary-bg)] px-4 py-2 text-sm font-medium text-white"
                   >
                     Save
                   </button>
@@ -618,7 +625,7 @@ export default function PhotoGallery() {
         )}
 
         <div
-          className={`pointer-events-none fixed bottom-20 left-1/2 z-[2000] w-[280px] max-w-[calc(100%-40px)] -translate-x-1/2 rounded-lg bg-[#EBFCF4] px-4 py-3 text-center text-sm text-[#0B6333] shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-all duration-300 ${
+          className={`pointer-events-none fixed bottom-20 left-1/2 z-[2000] w-[280px] max-w-[calc(100%-40px)] -translate-x-1/2 rounded-lg bg-[var(--apply-button-bg)] px-4 py-3 text-center text-sm text-[var(--header-green)] shadow-[0_4px_12px_var(--shadow-color)] transition-all duration-300 ${
             showToast ? "translate-y-0 opacity-100" : "translate-y-[120%] opacity-0"
           }`}
         >
@@ -632,7 +639,7 @@ export default function PhotoGallery() {
     <div className="w-full mx-auto flex gap-6 my-6 max-md:my-0 max-md:flex-col max-md:px-4">
       <div className="max-w-[350px] max-md:hidden pr-6">
         <h1
-          className="text-2xl text-[#1a1a19] font-semibold mb-3"
+          className="text-2xl text-[var(--bold-text)] font-semibold mb-3"
           style={{
             fontFamily:
               '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
@@ -640,13 +647,13 @@ export default function PhotoGallery() {
         >
           Photo Gallery
         </h1>
-        <p className="text-[#5F5F5F] text-base w-[350px]">
+        <p className="text-[var(--subtle-text)] text-base w-[350px]">
           Create and organize your image gallery. Drag to reorder, pin important images,
           and customize details for each photo.
         </p>
       </div>
 
-      <div className="w-full max-w-3xl bg-white rounded-lg p-6 shadow-sm">
+      <div className="w-full max-w-3xl rounded-lg bg-[var(--surface-color)] p-6" style={{ boxShadow: "0 1px 3px var(--shadow-color)" }}>
         <ul className="space-y-3">
           {sortedItems.map((item, index) => (
             <GalleryItem
@@ -663,7 +670,7 @@ export default function PhotoGallery() {
         </ul>
 
         <button
-          className="mt-4 inline-flex items-center gap-2 px-5 py-3 bg-[#016853] text-white rounded-md font-medium hover:bg-[#015744] transition-colors"
+          className="mt-4 inline-flex items-center gap-2 px-5 py-3 bg-[var(--btn-primary-bg)] text-white rounded-md font-medium hover:opacity-90 transition-opacity"
           onClick={() => {
             setCurrentEditId(null);
             setIsModalOpen(true);

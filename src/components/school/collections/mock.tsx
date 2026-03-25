@@ -593,3 +593,9 @@ export const layouts = [
     ),
   },
 ];
+
+/** Layouts shown in mobile Options (and passed to Header) — includes Magazine alongside Grid, List, Hybrid, Classic, Table, Card. */
+const COLLECTION_OPTION_LAYOUTS = ["grid", "list", "magazine", "hybrid", "classic", "table", "card"] as const;
+export const collectionsGridLayouts = COLLECTION_OPTION_LAYOUTS.map((type) =>
+  layouts.find((l) => l.type === type)
+).filter(Boolean) as typeof layouts;

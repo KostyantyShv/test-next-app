@@ -136,6 +136,16 @@ const SearchMapContainer = forwardRef<SearchMapContainerRef, SearchMapContainerP
         markersRef.current = [];
         infoWindowsRef.current = [];
 
+        let openInfoWindow: google.maps.InfoWindow | null = null;
+        const closeAllInfoWindows = () => {
+          infoWindowsRef.current.forEach((iw) => iw.close());
+          openInfoWindow = null;
+        };
+
+        map.addListener("click", () => {
+          closeAllInfoWindows();
+        });
+
         // Convert schools to map format and create markers
         schools.forEach((school, index) => {
           const position = getPositionFromLocation(school.location, index);
@@ -143,6 +153,7 @@ const SearchMapContainer = forwardRef<SearchMapContainerRef, SearchMapContainerP
           const marker = new google.maps.Marker({
             position: position,
             map: map,
+            title: school.name,
             icon: {
               url:
                 "data:image/svg+xml;charset=UTF-8," +
@@ -171,12 +182,15 @@ const SearchMapContainer = forwardRef<SearchMapContainerRef, SearchMapContainerP
             pixelOffset: new google.maps.Size(0, -45),
           });
 
-          marker.addListener("mouseover", () => {
+          marker.addListener("click", () => {
+            if (openInfoWindow === infoWindow) {
+              infoWindow.close();
+              openInfoWindow = null;
+              return;
+            }
+            closeAllInfoWindows();
             infoWindow.open({ anchor: marker, map, shouldFocus: false });
-          });
-
-          marker.addListener("mouseout", () => {
-            infoWindow.close();
+            openInfoWindow = infoWindow;
           });
 
           markersRef.current.push(marker);
@@ -256,7 +270,11 @@ const SearchMapContainer = forwardRef<SearchMapContainerRef, SearchMapContainerP
           {isMapActive && (
             <>
               
-              <div className="relative h-full flex-1" style={{ minHeight: isExpanded ? '600px' : '400px' }}>
+              <div
+                className="relative h-full flex-1"
+                data-vaul-no-drag
+                style={{ minHeight: isExpanded ? '600px' : '400px' }}
+              >
                 <MapControls 
                   mapType={mapType} 
                   setMapType={setMapType}
@@ -276,7 +294,12 @@ const SearchMapContainer = forwardRef<SearchMapContainerRef, SearchMapContainerP
                   }}
                   mapInstanceRef={mapInstanceRef}
                 />
-                <div ref={mapRef} id="searchMap" className="w-full h-full" />
+                <div
+                  ref={mapRef}
+                  id="searchMap"
+                  className="h-full w-full"
+                  data-vaul-no-drag
+                />
               </div>
             </>
           )}

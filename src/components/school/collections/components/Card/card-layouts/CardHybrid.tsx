@@ -9,6 +9,7 @@ import {
 } from "../Card";
 import { NotesModal } from "../../modals/NotesModal";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
+import { MetaClockIcon, MetaStarIcon } from "./MetaIcons";
 
 export const CardHybrid: React.FC<{
   school: CollectionsSchool;
@@ -69,7 +70,7 @@ export const CardHybrid: React.FC<{
       }
     }, [isStatusOpen, updatePortalPosition]);
 
-    const handleModalClose = () => setIsModalOpen((prev) => !prev);
+    const handleModalClose = () => setIsModalOpen(false);
 
     const specialtyText =
       school.specialty === "hot"
@@ -110,25 +111,32 @@ export const CardHybrid: React.FC<{
         </svg>
       ) : null;
 
+    const formatSchoolTypeLabel = (label: string): string => {
+      if (!label) return "";
+      return label.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+    };
+
     const statusClass = school.status
       ? school.status.toLowerCase().replace(/\s+/g, "-")
       : "add-status";
 
     return (
-      <div className="collections-hybrid-card">
-        <div className="school-card flex p-5 border border-gray-200/50 rounded-xl transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:border-green-600/20 relative overflow-visible z-[1]">
+      <div className="collections-hybrid-card w-full">
+        <div className="school-card flex w-full bg-[var(--directory-card-surface)] p-5 border border-[var(--directory-card-border)] rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:border-[var(--directory-card-success)] relative overflow-visible z-[1]">
           <div
             className={`image-container flex flex-col w-[60px] mr-5 flex-shrink-0 ${school.specialty ? "has-specialty" : ""
               }`}
           >
-            <CollectionImage
-              src={school.avatar}
-              alt={school.name}
-              width={60}
-              height={60}
-              className={`school-image rounded-lg object-cover ${school.specialty ? "rounded-b-none" : ""
-                }`}
-            />
+            <div className="relative">
+              <CollectionImage
+                src={school.avatar}
+                alt={school.name}
+                width={60}
+                height={72}
+                className={`school-image rounded-lg object-cover ${school.specialty ? "rounded-b-none" : ""
+                  } h-[72px] w-[60px] md:h-[60px]`}
+              />
+            </div>
             {school.specialty && (
               <div
                 className={`specialty-footer ${school.specialty
@@ -144,64 +152,52 @@ export const CardHybrid: React.FC<{
               </div>
             )}
           </div>
-          <div className="school-content flex flex-col flex-1 overflow-visible">
-            <div className="ranking-text text-green-600 text-sm font-medium mb-2 truncate">
+          <div className="school-content flex min-w-0 flex-col flex-1 overflow-visible">
+            {school.schoolType ? (
+              <div className="school-type-badge mb-1.5 inline-flex max-w-full items-center self-start truncate rounded-md bg-[rgba(1,104,83,0.1)] px-2 py-1 text-[10px] font-semibold uppercase leading-none tracking-[0.02em] text-[#016853]">
+                {formatSchoolTypeLabel(school.schoolType)}
+              </div>
+            ) : null}
+            <div className="ranking-text mb-1.5 truncate text-xs font-medium leading-tight text-[var(--directory-card-success)] md:text-sm">
               {school.ranking}
             </div>
-            <div className="school-name-container flex items-center mb-3">
-              <h3 className="school-name text-base font-semibold text-gray-700 cursor-pointer transition-all duration-200 hover:text-green-700 hover:underline hover:decoration-green-700 flex-1">
+            <div className="school-name-container mb-3 flex min-w-0 items-start">
+              <h3 className="school-name min-w-0 flex-1 cursor-pointer text-base font-semibold leading-[1.3] text-[var(--directory-card-text-primary)] transition-all duration-200 hover:text-[var(--directory-card-heading)] hover:underline hover:decoration-[var(--directory-card-heading)]">
                 {school.name}
               </h3>
               <SchoolCardContextMenu
                 schoolName={school.name}
-                buttonClassName="more-options w-8 h-8 flex items-center justify-center cursor-pointer text-gray-600 rounded-full transition-all duration-200 hover:bg-gray-100 hover:text-gray-700 relative [&_svg]:w-[18px] [&_svg]:h-[18px]"
+                buttonClassName="more-options w-8 h-8 flex items-center justify-center cursor-pointer rounded-full transition-all duration-200 relative text-[var(--directory-card-text-secondary)] hover:bg-[var(--directory-card-neutral)] hover:text-[var(--directory-card-text-primary)] [&_svg]:w-[18px] [&_svg]:h-[18px]"
                 preferredPlacement="bottom"
               />
             </div>
             <div className="stats-section flex flex-wrap gap-4 mb-3">
-              <div className="stat flex items-center gap-1.5 text-sm text-gray-600">
+              <div className="stat flex items-center gap-1.5 text-sm text-[var(--directory-card-text-secondary)]">
                 <svg
                   fill="currentColor"
                   viewBox="0 0 24 24"
-                  className="w-4 h-4 text-gray-600"
+                  className="w-4 h-4 shrink-0 text-[var(--directory-card-text-secondary)]"
                 >
                   <path d="M12,5.5c-2.1,0-3.9,1.7-3.9,3.8c0,2.1,1.7,3.8,3.9,3.8c2.1,0,3.9-1.7,3.9-3.8C15.9,7.2,14.1,5.5,12,5.5z M12,11.7c-1.4,0-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C14.5,10.6,13.4,11.7,12,11.7z"></path>
                   <path d="M17,2.5l-0.1-0.1c-2.7-2-7.2-1.9-9.9,0.1c-2.9,2.1-4.3,5.7-3.6,9c0.2,0.9,0.5,1.8,1,2.8c0.5,0.9,1.1,1.8,1.9,2.9l4.8,5.3c0.2,0.3,0.5,0.4,0.9,0.4h0c0.3,0,0.7-0.2,0.9-0.5c0,0,0,0,0,0l4.6-5.2c0.9-1.1,1.5-1.9,2.1-3c0.5-1,0.8-1.9,1-2.8C21.3,8.2,19.9,4.7,17,2.5L17,2.5z M19.2,11.2c-0.2,0.8-0.5,1.6-0.9,2.4c-0.6,1-1.1,1.7-1.9,2.7L12,21.5l-4.6-5.1c-0.7-0.9-1.3-1.8-1.7-2.6c-0.4-0.9-0.7-1.7-0.9-2.4c-0.6-2.8,0.6-5.8,3-7.6c1.2-0.9,2.7-1.3,4.2-1.3c1.5,0,3,0.4,4.1,1.2l0.1,0.1C18.6,5.5,19.8,8.4,19.2,11.2z"></path>
                 </svg>
-                <span className="text-gray-700 font-medium">
+                <span className="font-medium text-[var(--directory-card-text-primary)]">
                   {school.location}
                 </span>
               </div>
-              <div className="stat flex items-center gap-1.5 text-sm text-gray-600">
-                <svg
-                  viewBox="0 0 256 256"
-                  fill="currentColor"
-                  className="w-4 h-4 text-gray-600"
-                >
-                  <path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Zm-15.34,5.47-48.7,42a8,8,0,0,0-2.56,7.91l14.88,62.8a.37.37,0,0,1-.17.48c-.18.14-.23.11-.38,0l-54.72-33.65a8,8,0,0,0-8.38,0L69.09,215.94c-.15.09-.19.12-.38,0a.37.37,0,0,1-.17-.48l14.88-62.8a8,8,0,0,0-2.56-7.91l-48.7-42c-.12-.1-.23-.19-.13-.50s.18-.27.33-.29l63.92-5.16A8,8,0,0,0,103,91.86l24.62-59.61c.08-.17.11-.25.35-.25s.27.08.35.25L153,91.86a8,8,0,0,0,6.75,4.92l63.92,5.16c.15,0,.24,0,.33.29S224,102.63,223.84,102.73Z"></path>
-                </svg>
-                <span className="text-gray-700 font-medium">
+              <div className="stat flex items-center gap-1.5 text-sm text-[var(--directory-card-text-secondary)]">
+                <MetaStarIcon className="w-4 h-4 shrink-0 text-[var(--directory-card-text-secondary)]" />
+                <span className="font-medium text-[var(--directory-card-text-primary)]">
                   <strong>{school.rating}</strong> ({school.reviews} reviews)
                 </span>
               </div>
-              <div className="stat flex items-center gap-1.5 text-sm text-gray-600">
-                <svg
-                  viewBox="0 0 32 32"
-                  fill="none"
-                  className="w-4 h-4 text-gray-600"
-                >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M11.0251 3.98957C12.6023 3.33626 14.2928 3 16 3C17.7072 3 19.3977 3.33626 20.9749 3.98957C22.5521 4.64288 23.9852 5.60045 25.1924 6.80761C26.3995 8.01477 27.3571 9.44788 28.0104 11.0251C28.6637 12.6023 29 14.2928 29 16C29 17.7072 28.6637 19.3977 28.0104 20.9749C27.3571 22.5521 26.3995 23.9852 25.1924 25.1924C23.9852 26.3995 22.5521 27.3571 20.9749 28.0104C19.3977 28.6637 17.7072 29 16 29C14.2928 29 12.6023 28.6637 11.0251 28.0104C9.44788 27.3571 8.01477 26.3995 6.80761 25.1924C5.60045 23.9852 4.64288 22.5521 3.98957 20.9749C3.33625 19.3977 3 17.7072 3 16C3 14.2928 3.33625 12.6023 3.98957 11.0251C4.64288 9.44788 5.60045 8.01477 6.80761 6.80761C8.01477 5.60045 9.44788 4.64288 11.0251 3.98957ZM16 5C14.5555 5 13.1251 5.28452 11.7905 5.83733C10.4559 6.39013 9.24327 7.20038 8.22183 8.22183C7.20038 9.24327 6.39013 10.4559 5.83733 11.7905C5.28452 13.1251 5 14.5555 5 16C5 17.4445 5.28452 18.8749 5.83733 20.2095C6.39013 21.5441 7.20038 22.7567 8.22183 23.7782C9.24327 24.7996 10.4559 25.6099 11.7905 26.1627C13.1251 26.7155 14.5555 27 16 27C17.4445 27 18.8749 26.7155 20.2095 26.1627C21.5441 25.6099 22.7567 24.7996 23.7782 23.7782C24.7996 22.7567 25.6099 21.5441 26.1627 20.2095C26.7155 18.8749 27 17.4445 27 16C27 14.5555 26.7155 13.1251 26.1627 11.7905C25.6099 10.4559 24.7996 9.24327 23.7782 8.22183C22.7567 7.20038 21.5441 6.39013 20.2095 5.83733C18.8749 5.28452 17.4445 5 16 5ZM16 8.33333C16.5523 8.33333 17 8.78105 17 9.33333V15.4648L20.5547 17.8346C21.0142 18.141 21.1384 18.7618 20.8321 19.2214C20.5257 19.6809 19.9048 19.8051 19.4453 19.4987L15.4453 16.8321C15.1671 16.6466 15 16.3344 15 16V9.33333C15 8.78105 15.4477 8.33333 16 8.33333Z"
-                    fill="currentColor"
-                  ></path>
-                </svg>
-                <span className="text-gray-700 font-medium">
+              <div className="stat flex items-center gap-1.5 text-sm text-[var(--directory-card-text-secondary)]">
+                <MetaClockIcon className="w-4 h-4 shrink-0 text-[var(--directory-card-text-secondary)]" />
+                <span className="font-medium text-[var(--directory-card-text-primary)]">
                   Added {school.dateSaved}
                 </span>
               </div>
-              <div className="stat flex items-center gap-1.5 text-sm text-gray-600">
+              <div className="stat flex items-center gap-1.5 text-sm text-[var(--directory-card-text-secondary)]">
                 <svg
                   onClick={() => setIsModalOpen(true)}
                   strokeLinejoin="round"
@@ -210,18 +206,29 @@ export const CardHybrid: React.FC<{
                   stroke="currentColor"
                   fill="none"
                   viewBox="0 0 24 24"
-                  className="w-4 h-4 text-gray-600"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setIsModalOpen(true);
+                    }
+                  }}
+                  className="w-4 h-4 shrink-0 cursor-pointer text-[var(--directory-card-text-secondary)]"
                 >
                   <path d="M20 17v-12c0 -1.121 -.879 -2 -2 -2s-2 .879 -2 2v12l2 2l2 -2z"></path>
                   <path d="M16 7h4"></path>
                   <path d="M18 19h-13a2 2 0 1 1 0 -4h4a2 2 0 1 0 0 -4h-3"></path>
                 </svg>
-                <span className="text-gray-700 font-medium">
+                <span className="font-medium text-[var(--directory-card-text-primary)]">
                   {school.notes.length}{" "}
                   <span
-                    className="create-note-inline text-blue-600 font-medium cursor-pointer hover:underline"
+                    className="create-note-inline font-medium cursor-pointer hover:underline text-[var(--directory-card-link)]"
                     data-school-id={index}
-                    onClick={() => onCreateNote(index)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onCreateNote(index);
+                    }}
                   >
                     (Create Note)
                   </span>
@@ -239,12 +246,12 @@ export const CardHybrid: React.FC<{
                   />
                 ))
               ) : (
-                <div className="note-placeholder text-gray-500 text-sm text-center py-6">
+                <div className="note-placeholder text-sm text-center py-6 text-[var(--directory-card-text-muted)]">
                   No notes yet
                 </div>
               )}
             </div>
-            <div className="school-footer flex items-center justify-between pt-4 border-t border-gray-200/30">
+            <div className="school-footer flex items-center justify-between pt-4 border-t border-[var(--directory-card-border)]">
               <div className="footer-section flex items-center justify-between w-full">
                 <RatingCheckmarks
                   rating={school.myRating}
@@ -256,7 +263,7 @@ export const CardHybrid: React.FC<{
                   data-school-id={index}
                   onClick={() => setIsStatusOpen(!isStatusOpen)}
                 >
-                  <div className="status-indicator flex items-center gap-2 px-3 py-1.5 rounded-md transition-all duration-200 hover:bg-gray-100">
+                  <div className="status-indicator flex items-center gap-2 px-3 py-1.5 rounded-md transition-all duration-200 hover:bg-[var(--directory-card-neutral)]">
                     <svg
                       className={`status-icon ${statusClass} w-4 h-4`}
                       fill="currentColor"

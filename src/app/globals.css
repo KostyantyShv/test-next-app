@@ -63,6 +63,7 @@
   --event-group: #EE4206;
 
   /* ALERT & STATE PALETTE */
+  --error-color: #ef4444;
   --state-error-bg: #fee2e2;
   --state-error-text: #991b1b;
   --state-warning-bg: #FEF3E2;
@@ -489,6 +490,7 @@ body {
   --scrollbar-thumb-hover: rgba(255, 255, 255, 0.35);
   --btn-primary-bg: #34D399;
   --btn-primary-hover: #22C55E;
+  --error-color: #f87171;
   --badge-bg: #7DD3FC;
   --remove-hover-bg: rgba(255, 255, 255, 0.08);
 
@@ -7483,34 +7485,34 @@ input[type="number"] {
    =========================== */
 @media (max-width: 767px) {
   .school-edit-general .section-title {
-    color: #464646;
+    color: var(--bold-text);
     font-size: 24px;
     font-weight: 600;
     margin-bottom: 8px;
   }
 
   .school-edit-general .section-description {
-    color: #5F5F5F;
+    color: var(--subtle-text);
     font-size: 14px;
     line-height: 1.6;
     margin-bottom: 16px;
   }
 
   .school-edit-general .editor-section {
-    background: white;
+    background: var(--surface-color);
     border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px var(--shadow-color);
     padding: 16px;
     margin-bottom: 16px;
   }
 
   .school-edit-general .editor-section-title {
     font-size: 16px;
-    color: #464646;
+    color: var(--bold-text);
     font-weight: 600;
     margin-bottom: 12px;
     padding-bottom: 8px;
-    border-bottom: 1px solid #EBFCF4;
+    border-bottom: 1px solid var(--border-color);
   }
 
   .school-edit-general .avatar-upload {
@@ -7525,8 +7527,8 @@ input[type="number"] {
     height: 100px;
     border-radius: 50%;
     overflow: hidden;
-    border: 4px solid white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 4px solid var(--surface-secondary);
+    box-shadow: 0 2px 8px var(--shadow-color);
   }
 
   .school-edit-general .avatar-preview img {
@@ -7537,10 +7539,11 @@ input[type="number"] {
 
   .school-edit-general .upload-button {
     padding: 8px 16px;
-    background: #f5f5f5;
-    border: 1px solid #ddd;
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 14px;
+    color: var(--text-default);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -7548,7 +7551,7 @@ input[type="number"] {
 
   .school-edit-general .upload-note {
     margin-top: 8px;
-    color: #5F5F5F;
+    color: var(--subtle-text);
     font-size: 12px;
     text-align: center;
   }
@@ -7564,8 +7567,8 @@ input[type="number"] {
     display: flex;
     align-items: center;
     gap: 4px;
-    background: #EBFCF4;
-    color: #016853;
+    background: var(--apply-button-bg);
+    color: var(--header-green);
     padding: 6px 10px;
     border-radius: 20px;
     font-size: 12px;
@@ -7579,15 +7582,17 @@ input[type="number"] {
   .school-edit-general .add-badge-input {
     flex: 1;
     padding: 8px 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 14px;
+    background: var(--surface-secondary);
+    color: var(--text-default);
   }
 
   .school-edit-general .add-button {
     padding: 8px 12px;
-    background: #EBFCF4;
-    color: #016853;
+    background: var(--apply-button-bg);
+    color: var(--header-green);
     border: none;
     border-radius: 4px;
     font-weight: 600;
@@ -7603,31 +7608,33 @@ input[type="number"] {
     font-weight: 600;
     font-size: 13px;
     margin-bottom: 6px;
-    color: #4A4A4A;
+    color: var(--text-default);
   }
 
   .school-edit-general .form-label-read-only {
-    color: #5F5F5F;
+    color: var(--subtle-text);
   }
 
   .school-edit-general .form-control {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 14px;
+    background: var(--surface-secondary);
+    color: var(--text-default);
   }
 
   .school-edit-general .form-control:focus {
     outline: none;
-    border-color: #016853;
+    border-color: var(--header-green);
     box-shadow: 0 0 0 2px rgba(1, 104, 83, 0.1);
   }
 
   .school-edit-general .form-control-read-only {
-    background-color: #f8f9fa;
+    background-color: var(--surface-secondary);
     cursor: not-allowed;
-    color: #5F5F5F;
+    color: var(--subtle-text);
   }
 
   .school-edit-general .social-container {
@@ -7641,20 +7648,20 @@ input[type="number"] {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: #f5f5f5;
+    background: var(--surface-secondary);
     padding: 8px 12px;
     border-radius: 4px;
     font-size: 13px;
   }
 
   .school-edit-general .social-label {
-    color: #4A4A4A;
+    color: var(--text-default);
     font-weight: 600;
     flex-shrink: 0;
   }
 
   .school-edit-general .social-url {
-    color: #346DC2;
+    color: var(--link-text);
     font-size: 13px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -7665,9 +7672,11 @@ input[type="number"] {
   .school-edit-general .add-social .social-select {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 14px;
+    background-color: var(--surface-secondary);
+    color: var(--text-default);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235F5F5F' width='18px' height='18px'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
@@ -7678,15 +7687,17 @@ input[type="number"] {
   .school-edit-general .social-url-input {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 14px;
+    background: var(--surface-secondary);
+    color: var(--text-default);
   }
 
   .school-edit-general .social-add-btn {
     padding: 8px 12px;
-    background: #EBFCF4;
-    color: #016853;
+    background: var(--apply-button-bg);
+    color: var(--header-green);
     border: none;
     border-radius: 4px;
     font-weight: 600;
@@ -7699,18 +7710,19 @@ input[type="number"] {
     flex-wrap: wrap;
     gap: 8px;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     min-height: 44px;
     margin-bottom: 20px;
+    background: var(--surface-secondary);
   }
 
   .school-edit-general .tag-item {
     display: flex;
     align-items: center;
     gap: 6px;
-    background: #EBFCF4;
-    color: #016853;
+    background: var(--apply-button-bg);
+    color: var(--header-green);
     padding: 4px 10px;
     border-radius: 4px;
     font-size: 12px;
@@ -7723,10 +7735,12 @@ input[type="number"] {
     width: 100%;
     min-width: 60px;
     padding: 4px 0;
+    background: transparent;
+    color: var(--text-default);
   }
 
   .school-edit-general .btn-primary {
-    background: #016853;
+    background: var(--btn-primary-bg);
     border: none;
     color: white;
     padding: 12px 20px;
@@ -7748,14 +7762,14 @@ input[type="number"] {
   }
 
   .school-edit-general .faq-left .section-title {
-    color: #1A1A1A;
+    color: var(--bold-text);
   }
 
   .school-edit-general .faq-right {
-    background: white;
+    background: var(--surface-color);
     border-radius: 8px;
     padding: 16px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px var(--shadow-color);
     display: flex;
     flex-direction: column;
   }
@@ -7766,7 +7780,7 @@ input[type="number"] {
   }
 
   .school-edit-general .question-item {
-    background: #F8F9FA;
+    background: var(--surface-secondary);
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 12px;
@@ -7775,8 +7789,8 @@ input[type="number"] {
   }
 
   .school-edit-general .question-item.pinned {
-    background: #EBFCF4;
-    border: 1px solid #D7F7E9;
+    background: var(--apply-button-bg);
+    border: 1px solid var(--border-color);
   }
 
   .school-edit-general .drag-handle {
@@ -7790,7 +7804,7 @@ input[type="number"] {
   .school-edit-general .question-title {
     font-size: 14px;
     font-weight: 600;
-    color: #1B1B1B;
+    color: var(--bold-text);
     flex: 1;
   }
 
@@ -7804,8 +7818,8 @@ input[type="number"] {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    border: 1px solid #E5E5E5;
-    background: white;
+    border: 1px solid var(--border-color);
+    background: var(--surface-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -7815,7 +7829,7 @@ input[type="number"] {
   .school-edit-general .action-button svg {
     width: 16px;
     height: 16px;
-    color: #5F5F5F;
+    color: var(--subtle-text);
   }
 
   .school-edit-general .add-question {
@@ -7824,7 +7838,7 @@ input[type="number"] {
     justify-content: center;
     gap: 8px;
     padding: 12px 16px;
-    background: #1B1B1B;
+    background: var(--btn-dark-bg);
     color: white;
     border: none;
     border-radius: 6px;
@@ -7845,20 +7859,20 @@ input[type="number"] {
   }
 
   .school-edit-general .bullets-left .section-title {
-    color: #1B1B1B;
+    color: var(--bold-text);
   }
 
   .school-edit-general .bullets-right {
-    background: white;
+    background: var(--surface-color);
     border-radius: 8px;
     padding: 16px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px var(--shadow-color);
     display: flex;
     flex-direction: column;
   }
 
   .school-edit-general .bullets-header {
-    color: #1B1B1B;
+    color: var(--bold-text);
     font-size: 16px;
     font-weight: 500;
     margin-bottom: 16px;
@@ -7880,16 +7894,16 @@ input[type="number"] {
     width: 100%;
     padding: 12px;
     padding-right: 40px;
-    border: 1px solid #E5E5E5;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     font-size: 14px;
-    color: #4A4A4A;
-    background: white;
+    color: var(--text-default);
+    background: var(--surface-secondary);
   }
 
   .school-edit-general .bullet-input:focus {
     outline: none;
-    border-color: #1D77BD;
+    border-color: var(--verification-blue);
     box-shadow: 0 0 0 3px rgba(29, 119, 189, 0.1);
   }
 
@@ -7924,7 +7938,7 @@ input[type="number"] {
     justify-content: center;
     gap: 8px;
     padding: 12px 16px;
-    background: #1B1B1B;
+    background: var(--btn-dark-bg);
     color: white;
     border: none;
     border-radius: 6px;
@@ -7948,14 +7962,11 @@ input[type="number"] {
 /* ===========================
    School Edit: Announcements (pixel-match)
    =========================== */
+/* Announcements: inherit --text-default, --bold-text, --border-color, --background-color from [data-theme] */
 .school-edit-announcements {
-  --primary-color: #02C5AF;
+  --primary-color: var(--brand-teal);
   --secondary-color: #142E53;
-  --accent-color: #13C4CC;
-  --text-color: #4A4A4A;
-  --background-color: #E1E7EE;
-  --dark-text: #262B3D;
-  --border-color: #E5E5E5;
+  --accent-color: var(--accent-cyan);
   --status-live: #00D084;
   --status-scheduled: #db7303;
   --status-paused: #991b1b;
@@ -7983,22 +7994,22 @@ input[type="number"] {
 
 .school-edit-announcements .announcements-right {
   flex: 1;
-  background: white;
+  background: var(--surface-color);
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--shadow-color);
   position: relative;
 }
 
 .school-edit-announcements .section-title {
-  color: #1a1a19;
+  color: var(--bold-text);
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 12px;
 }
 
 .school-edit-announcements .section-description {
-  color: #5F5F5F;
+  color: var(--subtle-text);
   font-size: 16px;
   line-height: 1.6;
 }
@@ -8009,9 +8020,9 @@ input[type="number"] {
   right: 24px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--text-default);
   padding: 4px 12px;
-  background: #F8F9FA;
+  background: var(--surface-secondary);
   border-radius: 16px;
   margin-bottom: 10px;
 }
@@ -8023,7 +8034,7 @@ input[type="number"] {
 
 /* --- Announcement Item (desktop base) --- */
 .school-edit-announcements .announcement-item {
-  background: #F8F9FA;
+  background: var(--surface-secondary);
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 16px;
@@ -8033,8 +8044,8 @@ input[type="number"] {
 }
 
 .school-edit-announcements .announcement-item.pinned {
-  background: #EBFCF4;
-  border: 1px solid #D7F7E9;
+  background: var(--apply-button-bg);
+  border: 1px solid var(--border-color);
 }
 
 /* Desktop: hide mobile-only elements */
@@ -8086,20 +8097,20 @@ input[type="number"] {
 
 .school-edit-announcements .author-name {
   font-weight: 600;
-  color: var(--dark-text);
+  color: var(--bold-text);
   font-size: 16px;
 }
 
 .school-edit-announcements .author-role {
   font-size: 14px;
-  color: #5F5F5F;
+  color: var(--subtle-text);
 }
 
 .school-edit-announcements .author-meta {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #5F5F5F;
+  color: var(--subtle-text);
   font-size: 14px;
 }
 
@@ -8108,7 +8119,7 @@ input[type="number"] {
 }
 
 .school-edit-announcements .scheduled-date {
-  color: #5F5F5F;
+  color: var(--subtle-text);
 }
 
 /* Desktop actions (status + pin + edit) */
@@ -8155,7 +8166,8 @@ input[type="number"] {
   height: 36px;
   border-radius: 50%;
   border: 1px solid var(--border-color);
-  background: white;
+  background: var(--surface-color);
+  color: var(--text-default);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -8164,14 +8176,14 @@ input[type="number"] {
 }
 
 .school-edit-announcements .action-button:hover {
-  background: #f8f9fa;
+  background: var(--hover-bg);
 }
 
 /* Title & text */
 .school-edit-announcements .announcement-title {
   font-size: 18px;
   font-weight: 600;
-  color: var(--dark-text);
+  color: var(--bold-text);
   margin-bottom: 8px;
   display: flex;
   align-items: center;
@@ -8183,14 +8195,14 @@ input[type="number"] {
 }
 
 .school-edit-announcements .announcement-text {
-  color: var(--text-color);
+  color: var(--text-default);
   font-size: 14px;
   line-height: 1.6;
 }
 
 .school-edit-announcements .reviewer-type {
   font-weight: 600;
-  color: #464646;
+  color: var(--bold-text);
   margin-right: 2px;
 }
 
@@ -8206,7 +8218,7 @@ input[type="number"] {
 .school-edit-announcements .modal-title {
   font-size: 24px;
   font-weight: 700;
-  color: var(--dark-text);
+  color: var(--bold-text);
 }
 
 .school-edit-announcements .close-button {
@@ -8235,7 +8247,7 @@ input[type="number"] {
 .school-edit-announcements .form-label {
   display: block;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--text-default);
   margin-bottom: 8px;
   font-size: 14px;
 }
@@ -8253,7 +8265,8 @@ input[type="number"] {
   border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 14px;
-  color: var(--text-color);
+  color: var(--text-default);
+  background: var(--surface-color);
 }
 
 .school-edit-announcements input[type="text"]:focus,
@@ -8267,7 +8280,7 @@ input[type="number"] {
   height: 36px;
   border-radius: 50%;
   border: 1px solid var(--border-color);
-  background: white;
+  background: var(--surface-color);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -8276,7 +8289,7 @@ input[type="number"] {
 }
 
 .school-edit-announcements .emoji-button:hover {
-  background: #f8f9fa;
+  background: var(--hover-bg);
 }
 
 .school-edit-announcements .datetime-group {
@@ -8295,15 +8308,15 @@ input[type="number"] {
   border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 14px;
-  color: var(--text-color);
-  background: white;
+  color: var(--text-default);
+  background: var(--surface-color);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .school-edit-announcements .datetime-field:hover {
   border-color: var(--primary-color);
-  background: #F8F9FA;
+  background: var(--surface-secondary);
 }
 
 .school-edit-announcements .datetime-field:focus {
@@ -8317,7 +8330,7 @@ input[type="number"] {
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: #5F5F5F;
+  color: var(--subtle-text);
   pointer-events: none;
 }
 
@@ -8355,9 +8368,9 @@ input[type="number"] {
 }
 
 .school-edit-announcements .btn-secondary {
-  background: #F8F9FA;
+  background: var(--surface-secondary);
   border: 1px solid var(--border-color);
-  color: var(--text-color);
+  color: var(--text-default);
 }
 
 .school-edit-announcements .btn-primary {
@@ -8386,7 +8399,7 @@ input[type="number"] {
 .school-edit-announcements .upload-thumbnail {
   width: 120px;
   height: 120px;
-  background: #F7FAFC;
+  background: var(--surface-secondary);
   border-radius: 50%;
   overflow: hidden;
   display: flex;
@@ -8406,7 +8419,7 @@ input[type="number"] {
 
 .school-edit-announcements .upload-dimensions {
   font-size: 14px;
-  color: var(--text-color);
+  color: var(--text-default);
   margin-bottom: 8px;
 }
 
@@ -8418,7 +8431,7 @@ input[type="number"] {
   border: 1px solid var(--border-color);
   border-radius: 999px;
   font-size: 14px;
-  color: var(--text-color);
+  color: var(--text-default);
   background: transparent;
   cursor: pointer;
 }
@@ -8459,7 +8472,7 @@ input[type="number"] {
   }
 
   .school-edit-announcements .section-description {
-    color: #5F5F5F;
+    color: var(--subtle-text);
     font-size: 14px;
     line-height: 1.5;
   }
@@ -8479,7 +8492,7 @@ input[type="number"] {
     text-align: right;
     font-size: 14px;
     font-weight: 600;
-    color: var(--text-color);
+    color: var(--text-default);
     margin-bottom: 16px;
     padding: 0;
     background: transparent;
@@ -8498,19 +8511,19 @@ input[type="number"] {
 
   /* --- Announcement item (matches .announcement-item in HTML) --- */
   .school-edit-announcements .announcement-item {
-    background: white;
+    background: var(--surface-color);
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 0;
     display: block;
     position: relative;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 3px var(--shadow-color);
     gap: 0;
   }
 
   .school-edit-announcements .announcement-item.pinned {
-    background: #EBFCF4;
-    border: 1px solid #D7F7E9;
+    background: var(--apply-button-bg);
+    border: 1px solid var(--border-color);
   }
 
   /* Hide desktop-only elements */
@@ -8557,7 +8570,8 @@ input[type="number"] {
     height: 32px;
     border-radius: 50%;
     border: 1px solid var(--border-color);
-    background: white;
+    background: var(--surface-color);
+    color: var(--text-default);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -8566,7 +8580,7 @@ input[type="number"] {
   }
 
   .school-edit-announcements .action-buttons .action-button:active {
-    background: #f8f9fa;
+    background: var(--hover-bg);
   }
 
   /* Content wrapper: no flex, just block */
@@ -8589,7 +8603,7 @@ input[type="number"] {
 
   .school-edit-announcements .author-name {
     font-weight: 600;
-    color: #464646;
+    color: var(--bold-text);
     font-size: 16px;
     display: block;
   }
@@ -8599,7 +8613,7 @@ input[type="number"] {
     align-items: center;
     flex-wrap: wrap;
     gap: 6px;
-    color: #5F5F5F;
+    color: var(--subtle-text);
     font-size: 13px;
   }
 
@@ -8611,7 +8625,7 @@ input[type="number"] {
   .school-edit-announcements .announcement-title {
     font-size: 17px;
     font-weight: 600;
-    color: #1B1B1B;
+    color: var(--bold-text);
     margin-bottom: 6px;
     display: flex;
     align-items: center;
@@ -8624,7 +8638,7 @@ input[type="number"] {
 
   /* Text */
   .school-edit-announcements .announcement-text {
-    color: var(--text-color);
+    color: var(--text-default);
     font-size: 14px;
     line-height: 1.5;
   }
@@ -8649,14 +8663,14 @@ input[type="number"] {
   /* --- Mobile form/content styling (inside Vaul drawer or desktop modal) --- */
   .school-edit-announcements .modal-header {
     padding: 16px 20px;
-    border-bottom: 1px solid #E5E7EB;
+    border-bottom: 1px solid var(--border-color);
     flex-shrink: 0;
   }
 
   .school-edit-announcements .modal-title {
     font-size: 18px;
     font-weight: 600;
-    color: #464646;
+    color: var(--bold-text);
   }
 
   .school-edit-announcements .close-button {
@@ -8667,7 +8681,7 @@ input[type="number"] {
   }
 
   .school-edit-announcements .close-button:active {
-    background-color: #F3F4F6;
+    background-color: var(--hover-bg);
   }
 
   .school-edit-announcements .modal-body {
@@ -8678,13 +8692,13 @@ input[type="number"] {
 
   .school-edit-announcements .modal-footer {
     padding: 16px 20px;
-    border-top: 1px solid #E5E7EB;
+    border-top: 1px solid var(--border-color);
     flex-direction: column;
     gap: 16px;
     flex-shrink: 0;
     position: sticky;
     bottom: 0;
-    background-color: white;
+    background-color: var(--surface-color);
   }
 
   .school-edit-announcements .delete-button {
@@ -8700,7 +8714,7 @@ input[type="number"] {
     font-size: 14px;
     font-weight: 500;
     width: 100%;
-    border-top: 1px solid #E5E7EB;
+    border-top: 1px solid var(--border-color);
     margin-top: -8px;
     order: 2;
   }
@@ -9021,15 +9035,11 @@ input[type="number"] {
    School Edit: Links (pixel-match)
    =========================== */
 .school-edit-links {
-  --primary-color: #02C5AF;
+  --primary-color: var(--brand-teal);
   --secondary-color: #142E53;
-  --accent-color: #13C4CC;
-  --text-color: #4A4A4A;
-  --background-color: #E1E7EE;
-  --dark-text: #262B3D;
-  --border-color: #E5E5E5;
-  --pinned-bg: #F8F9FD;
-  --pinned-border: #E0E0E0;
+  --accent-color: var(--accent-cyan);
+  --pinned-bg: var(--apply-button-bg);
+  --pinned-border: var(--border-color);
 
   /* Ensure consistent spacing from other General sections */
   padding: 20px 0;
@@ -9636,18 +9646,18 @@ input[type="number"] {
   width: 350px;
   min-width: 350px;
   flex: 0 0 350px;
-  background: white;
+  background: var(--surface-color);
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--shadow-color);
 }
 
 .school-edit-links .links-section {
   flex: 1;
-  background: white;
+  background: var(--surface-color);
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--shadow-color);
   position: relative;
 }
 
@@ -9659,14 +9669,14 @@ input[type="number"] {
 }
 
 .school-edit-links .section-title {
-  color: var(--dark-text);
+  color: var(--bold-text);
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 12px;
 }
 
 .school-edit-links .section-description {
-  color: #5F5F5F;
+  color: var(--subtle-text);
   font-size: 16px;
   line-height: 1.6;
   margin-bottom: 24px;
@@ -9682,7 +9692,7 @@ input[type="number"] {
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 16px;
-  background: #F7FAFC;
+  background: var(--surface-secondary);
   position: relative;
 }
 
@@ -9698,10 +9708,10 @@ input[type="number"] {
   border-radius: 50%;
   overflow: hidden;
   margin: -50px auto 16px;
-  background: white;
-  border: 4px solid white;
+  background: var(--surface-color);
+  border: 4px solid var(--surface-color);
   position: relative;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .school-edit-links .avatar-preview img {
@@ -9748,8 +9758,8 @@ input[type="number"] {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #6B7280;
-  background: #F9FAFB;
+  color: var(--subtle-text);
+  background: var(--surface-secondary);
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -9764,7 +9774,7 @@ input[type="number"] {
 }
 
 .school-edit-links .link-row:hover {
-  background-color: #F9FAFB;
+  background-color: var(--hover-bg);
 }
 
 .school-edit-links .link-thumbnail {
@@ -9782,12 +9792,12 @@ input[type="number"] {
 
 .school-edit-links .link-title {
   font-weight: 500;
-  color: var(--dark-text);
+  color: var(--bold-text);
   font-size: 14px;
 }
 
 .school-edit-links .link-url {
-  color: #6B7280;
+  color: var(--subtle-text);
   font-size: 14px;
 }
 
@@ -9818,9 +9828,9 @@ input[type="number"] {
 }
 
 .school-edit-links .btn-secondary {
-  background: white;
+  background: var(--surface-secondary);
   border-color: var(--border-color);
-  color: var(--text-color);
+  color: var(--text-default);
 }
 
 .school-edit-links .btn:hover {
@@ -9836,15 +9846,15 @@ input[type="number"] {
   justify-content: center;
   border-radius: 6px;
   border: 1px solid var(--border-color);
-  background: white;
-  color: #6B7280;
+  background: var(--surface-color);
+  color: var(--subtle-text);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .school-edit-links .btn-icon:hover {
-  background: #F9FAFB;
-  color: var(--dark-text);
+  background: var(--hover-bg);
+  color: var(--bold-text);
 }
 
 .school-edit-links .btn-icon svg {
@@ -9871,7 +9881,7 @@ input[type="number"] {
 }
 
 .school-edit-links .modal-content {
-  background: white;
+  background: var(--surface-color);
   border-radius: 12px;
   width: 100%;
   max-width: 500px;
@@ -9890,7 +9900,7 @@ input[type="number"] {
 .school-edit-links .modal-title {
   font-size: 18px;
   font-weight: 600;
-  color: var(--dark-text);
+  color: var(--bold-text);
 }
 
 .school-edit-links .modal-body {
@@ -9905,7 +9915,7 @@ input[type="number"] {
   display: block;
   font-size: 14px;
   font-weight: 500;
-  color: var(--dark-text);
+  color: var(--bold-text);
   margin-bottom: 8px;
 }
 
@@ -9916,6 +9926,8 @@ input[type="number"] {
   border-radius: 6px;
   font-size: 14px;
   transition: border-color 0.2s;
+  background: var(--surface-color);
+  color: var(--text-default);
 }
 
 .school-edit-links .form-control:focus {
@@ -9995,7 +10007,7 @@ input[type="number"] {
 
 .school-edit-links .upload-preview:hover {
   border-color: var(--primary-color);
-  background: #F9FAFB;
+  background: var(--hover-bg);
 }
 
 .school-edit-links .upload-preview img {
@@ -10023,9 +10035,9 @@ input[type="number"] {
   gap: 4px;
   font-size: 12px;
   font-weight: 500;
-  color: #6B7280;
+  color: var(--subtle-text);
   padding: 4px 12px;
-  background: #F3F4F6;
+  background: var(--surface-secondary);
   border-radius: 4px;
   width: fit-content;
   margin-top: 8px;
@@ -10038,7 +10050,7 @@ input[type="number"] {
 
 .school-edit-links .drag-handle {
   cursor: grab;
-  color: #D1D5DB;
+  color: var(--subtle-text);
 }
 
 .school-edit-links .drag-handle:active {
@@ -10061,10 +10073,10 @@ input[type="number"] {
   position: absolute;
   top: 100%;
   left: 0;
-  background: white;
+  background: var(--surface-color);
   padding: 8px;
   border-radius: 8px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px -1px var(--shadow-color);
   display: none;
   z-index: 100;
 }

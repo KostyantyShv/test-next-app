@@ -3,6 +3,7 @@ import { CollectionsSchool, Note, RatingCheckmarks } from "../Card";
 import { NotesModal } from "../../modals/NotesModal";
 import { CollectionImage } from "../CollectionImage";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
+import { MetaClockIcon, MetaStarIcon } from "./MetaIcons";
 
 interface Props {
   school: CollectionsSchool;
@@ -128,8 +129,17 @@ export const CardClassic: React.FC<Props> = ({
   onStatusChange,
 }) => {
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const statusRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   useEffect(() => {
     const onDocumentClick = (event: MouseEvent) => {
@@ -159,16 +169,7 @@ export const CardClassic: React.FC<Props> = ({
             {specialtyStyles[school.specialty]?.label || ""}
           </div>
         ) : (
-          school.schoolType ? (
-            <div className="absolute left-0 right-0 top-0 z-[2] flex items-center justify-center gap-1.5 rounded-t-[12px] bg-[rgba(107,114,128,0.12)] px-3 py-2 text-[13px] font-medium text-[#6B7280]">
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" clipRule="evenodd" d="M8.33333 3.25C8.31123 3.25 8.29004 3.25878 8.27441 3.27441C8.25878 3.29004 8.25 3.31123 8.25 3.33333V8.02267L11.3637 11.1363C11.5043 11.277 11.5833 11.4678 11.5833 11.6667V16.75H16.75V3.33333C16.75 3.31123 16.7412 3.29003 16.7256 3.27441C16.71 3.25878 16.6888 3.25 16.6667 3.25H8.33333ZM10.0833 16.75V11.9773L6.66667 8.56066L3.25 11.9773V16.75H5.91667V14.1667C5.91667 13.7525 6.25245 13.4167 6.66667 13.4167C7.08088 13.4167 7.41667 13.7525 7.41667 14.1667V16.75H10.0833Z" fill="currentColor" />
-              </svg>
-              {formatSchoolTypeLabel(school.schoolType)}
-            </div>
-          ) : (
-            <div className="absolute left-0 right-0 top-0 z-[1] h-8 rounded-t-[12px] bg-[#F5F5F7]" />
-          )
+          <div className="absolute left-0 right-0 top-0 z-[1] h-8 rounded-t-[12px] bg-[#F5F5F7]" />
         )}
 
         <div className="flex h-[108px] items-start gap-3 px-4 pb-3 pt-10">
@@ -195,9 +196,11 @@ export const CardClassic: React.FC<Props> = ({
             height={280}
             className="h-[140px] w-full rounded-lg object-cover"
           />
-          <div className="absolute bottom-0 left-[18px] z-[2] flex h-6 items-center rounded-t-[4px] bg-white px-2 text-[11px] font-semibold uppercase tracking-[0.02em] text-[#464646] shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
-            {formatSchoolTypeLabel(school.schoolType)}
-          </div>
+          {school.schoolType ? (
+            <div className="absolute bottom-0 left-[18px] z-[2] flex h-6 items-center rounded-t-[4px] bg-white px-2 text-[11px] font-semibold uppercase tracking-[0.02em] text-[#464646] shadow-[0_-1px_4px_rgba(0,0,0,0.1)]">
+              {formatSchoolTypeLabel(school.schoolType)}
+            </div>
+          ) : null}
         </div>
 
         <div className="flex flex-col p-4">
@@ -214,17 +217,7 @@ export const CardClassic: React.FC<Props> = ({
             </div>
 
             <div className="flex items-center gap-2 rounded-lg bg-[#F9FAFB] p-2.5">
-              <svg
-                className="h-4 w-4 shrink-0 text-[#089E68]"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-              </svg>
+              <MetaStarIcon className="h-4 w-4 shrink-0 text-[#089E68]" />
               <div className="flex flex-col">
                 <span className="text-[10px] leading-none text-[#5F5F5F]">Rating</span>
                 <span className="text-xs font-medium leading-[1.3] text-[#464646]">
@@ -239,8 +232,16 @@ export const CardClassic: React.FC<Props> = ({
           <RatingCheckmarks rating={school.myRating || 0} onRatingChange={(rating) => onRatingChange(index, rating)} />
           <button
             type="button"
-            onClick={() => setIsNotesModalOpen(true)}
+            onClick={() => {
+              if (isMobile) {
+                setIsNotesModalOpen((v) => !v);
+              } else {
+                setIsNotesModalOpen(true);
+              }
+            }}
             className="flex items-center gap-1.5 text-sm font-medium text-[#464646]"
+            aria-expanded={isNotesModalOpen}
+            aria-label={isNotesModalOpen ? `Hide notes for ${school.name}` : `Show notes for ${school.name}`}
           >
             <svg
               className="h-4 w-4 text-[#089E68]"
@@ -261,7 +262,7 @@ export const CardClassic: React.FC<Props> = ({
         </div>
 
         <div
-          className="classic-hover-overlay invisible absolute left-0 top-0 z-10 flex w-full flex-col rounded-t-[12px] bg-[rgba(255,255,255,0.98)] p-6 opacity-0 transition-all duration-300 group-hover:visible group-hover:opacity-100"
+          className="classic-hover-overlay hidden md:invisible absolute left-0 top-0 z-10 md:flex w-full flex-col rounded-t-[12px] bg-[rgba(255,255,255,0.98)] p-6 md:opacity-0 transition-all duration-300 md:group-hover:visible md:group-hover:opacity-100"
           style={{ height: "calc(100% - 60px)" }}
         >
           <div className="mb-3 flex w-full items-center gap-3">
@@ -286,14 +287,7 @@ export const CardClassic: React.FC<Props> = ({
 
           <div className="mb-4 flex gap-3">
             <div className="relative flex items-center gap-1.5 text-[13px] text-[#5F5F5F]" title={`Added ${school.dateAdded || school.dateSaved || "Unknown date"}`}>
-              <svg className="h-4 w-4 text-[#089E68]" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M11.0251 3.98957C12.6023 3.33626 14.2928 3 16 3C17.7072 3 19.3977 3.33626 20.9749 3.98957C22.5521 4.64288 23.9852 5.60045 25.1924 6.80761C26.3995 8.01477 27.3571 9.44788 28.0104 11.0251C28.6637 12.6023 29 14.2928 29 16C29 17.7072 28.6637 19.3977 28.0104 20.9749C27.3571 22.5521 26.3995 23.9852 25.1924 25.1924C23.9852 26.3995 22.5521 27.3571 20.9749 28.0104C19.3977 28.6637 17.7072 29 16 29C14.2928 29 12.6023 28.6637 11.0251 28.0104C9.44788 27.3571 8.01477 26.3995 6.80761 25.1924C5.60045 23.9852 4.64288 22.5521 3.98957 20.9749C3.33625 19.3977 3 17.7072 3 16C3 14.2928 3.33625 12.6023 3.98957 11.0251C4.64288 9.44788 5.60045 8.01477 6.80761 6.80761C8.01477 5.60045 9.44788 4.64288 11.0251 3.98957ZM16 5C14.5555 5 13.1251 5.28452 11.7905 5.83733C10.4559 6.39013 9.24327 7.20038 8.22183 8.22183C7.20038 9.24327 6.39013 10.4559 5.83733 11.7905C5.28452 13.1251 5 14.5555 5 16C5 17.4445 5.28452 18.8749 5.83733 20.2095C6.39013 21.5441 7.20038 22.7567 8.22183 23.7782C9.24327 24.7996 10.4559 25.6099 11.7905 26.1627C13.1251 26.7155 14.5555 27 16 27C17.4445 27 18.8749 26.7155 20.2095 26.1627C21.5441 25.6099 22.7567 24.7996 23.7782 23.7782C24.7996 22.7567 25.6099 21.5441 26.1627 20.2095C26.7155 18.8749 27 17.4445 27 16C27 14.5555 26.7155 13.1251 26.1627 11.7905C25.6099 10.4559 24.7996 9.24327 23.7782 8.22183C22.7567 7.20038 21.5441 6.39013 20.2095 5.83733C18.8749 5.28452 17.4445 5 16 5ZM16 8.33333C16.5523 8.33333 17 8.78105 17 9.33333V15.4648L20.5547 17.8346C21.0142 18.141 21.1384 18.7618 20.8321 19.2214C20.5257 19.6809 19.9048 19.8051 19.4453 19.4987L15.4453 16.8321C15.1671 16.6466 15 16.3344 15 16V9.33333C15 8.78105 15.4477 8.33333 16 8.33333Z"
-                  fill="currentColor"
-                />
-              </svg>
+              <MetaClockIcon className="h-4 w-4 text-[#089E68]" />
               <span>{shortDate}</span>
             </div>
 

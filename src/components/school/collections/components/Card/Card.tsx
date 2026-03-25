@@ -1,6 +1,10 @@
+"use client";
+
 import { useState } from "react";
 import { CollectionImage } from "./CollectionImage";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
+import { NoteEditorMobileDrawer } from "../modals/NoteEditorMobileDrawer";
+import { DeleteNoteConfirmMobileDrawer } from "../modals/DeleteNoteConfirmMobileDrawer";
 
 // Types
 export interface Note {
@@ -263,27 +267,31 @@ export const Note: React.FC<{
 }> = ({ note, onEdit, onDelete }) => (
   <div
     key={note.id}
-    className="note bg-gray-50 rounded-lg p-3 mb-3 border border-gray-100"
+    className="note rounded-lg p-3 mb-3 border bg-[var(--directory-card-surface-muted)] border-[var(--directory-card-border)]"
   >
     <div className="flex justify-between mb-2">
-      <span className="note-author text-xs font-medium text-gray-700">{note.author}</span>
+      <span className="note-author text-xs font-medium text-[var(--directory-card-text-primary)]">
+        {note.author}
+      </span>
       <div className="flex gap-2">
         <button
-          className="text-xs text-blue-600 hover:underline"
+          type="button"
+          className="text-xs font-medium text-[var(--directory-card-link)] hover:underline"
           onClick={() => onEdit(note.id)}
         >
           EDIT
         </button>
         <button
-          className="text-xs text-blue-600 hover:underline"
+          type="button"
+          className="text-xs font-medium text-[var(--directory-card-link)] hover:underline"
           onClick={() => onDelete(note.id)}
         >
           DELETE
         </button>
       </div>
     </div>
-    <div className="note-content text-sm text-gray-600">{note.content}</div>
-    <div className="note-timestamp text-right text-[11px] text-gray-400 mt-1">
+    <div className="note-content text-sm text-[var(--directory-card-text-secondary)]">{note.content}</div>
+    <div className="note-timestamp text-right text-[11px] text-[var(--directory-card-text-muted)] mt-1">
       <span className="time-display mr-1">{note.timestamp}</span>
       <span className="time-display">{note.time}</span>
     </div>
@@ -592,7 +600,7 @@ export const SchoolCard: React.FC<{
   );
 };
 
-// Note Modal Component
+// Note Modal: Vaul bottom sheet on mobile; centered dialog on md+
 export const NoteModal: React.FC<{
   isOpen: boolean;
   title: string;
@@ -600,88 +608,122 @@ export const NoteModal: React.FC<{
   onClose: () => void;
   onSave: (text: string) => void;
   onChange: (text: string) => void;
-}> = ({ isOpen, title, noteText, onClose, onSave, onChange }) => (
-  <div
-    className={`modal fixed inset-0 bg-black/50 flex items-center justify-center z-[2001] transition-all duration-300 ${
-      isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-    }`}
-  >
-    <div className="modal-content w-full max-w-[500px] bg-white rounded-xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
-      <div className="modal-header flex justify-between items-center mb-4">
-        <h3 className="modal-title text-lg font-semibold text-gray-900">
-          {title}
-        </h3>
-        <div
-          className="modal-close w-8 h-8 rounded-full flex items-center justify-center cursor-pointer text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-700"
-          onClick={onClose}
-        >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M15 5L5 15M5 5L15 15"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+}> = ({ isOpen, title, noteText, onClose, onSave, onChange }) => {
+  if (!isOpen) return null;
+
+  return (
+    <>
+      <NoteEditorMobileDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        title={title}
+        noteText={noteText}
+        onChange={onChange}
+        onSave={() => onSave(noteText)}
+      />
+      <div className="modal fixed inset-0 z-[2001] hidden bg-black/50 transition-all duration-300 md:flex md:items-center md:justify-center">
+        <div className="modal-content w-full max-w-[500px] rounded-xl bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
+          <div className="modal-header mb-4 flex items-center justify-between">
+            <h3 className="modal-title text-lg font-semibold text-gray-900">{title}</h3>
+            <button
+              type="button"
+              className="modal-close flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-700"
+              onClick={onClose}
+              aria-label="Close"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M15 5L5 15M5 5L15 15"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+          <textarea
+            className="note-textarea mb-4 min-h-[120px] w-full resize-none rounded-lg border border-gray-200 p-3 font-sans text-sm focus:outline-none focus:border-blue-600"
+            placeholder="Enter your note here..."
+            value={noteText}
+            onChange={(e) => onChange(e.target.value)}
+          />
+          <div className="modal-footer flex justify-end gap-3">
+            <button
+              type="button"
+              className="modal-button button-cancel rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-gray-200"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="modal-button button-save rounded-md bg-green-700 px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:bg-green-800"
+              onClick={() => onSave(noteText)}
+            >
+              Save Note
+            </button>
+          </div>
         </div>
       </div>
-      <textarea
-        className="note-textarea w-full min-h-[120px] p-3 border border-gray-200 rounded-lg mb-4 font-sans text-sm resize-none focus:outline-none focus:border-blue-600"
-        placeholder="Enter your note here..."
-        value={noteText}
-        onChange={(e) => onChange(e.target.value)}
-      ></textarea>
-      <div className="modal-footer flex justify-end gap-3">
-        <button
-          className="modal-button button-cancel px-4 py-2 rounded-md text-sm font-medium bg-gray-100 text-gray-700 transition-all duration-200 hover:bg-gray-200"
-          onClick={onClose}
-        >
-          Cancel
-        </button>
-        <button
-          className="modal-button button-save px-4 py-2 rounded-md text-sm font-medium bg-green-700 text-white transition-all duration-200 hover:bg-green-800"
-          onClick={() => onSave(noteText)}
-        >
-          Save Note
-        </button>
-      </div>
-    </div>
-  </div>
-);
+    </>
+  );
+};
 
-// Confirmation Modal Component
+// Delete note: Vaul bottom sheet on mobile; centered dialog on md+ (matches NoteModal pattern).
 export const ConfirmModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-}> = ({ isOpen, onClose, onConfirm }) => (
-  <div
-    className={`confirm-modal fixed inset-0 bg-black/50 flex items-center justify-center z-[2002] transition-all duration-300 ${
-      isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-    }`}
-  >
-    <div className="confirm-content w-full max-w-[400px] bg-white rounded-xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
-      <h3 className="confirm-title text-lg font-semibold text-gray-900 mb-4">
-        Delete Note
-      </h3>
-      <p className="confirm-message text-sm leading-relaxed text-gray-700 mb-6">
-        Are you sure you want to delete this note? This action cannot be undone.
-      </p>
-      <div className="confirm-buttons flex justify-end gap-3">
-        <button
-          className="confirm-button button-no px-4 py-2 rounded-md text-sm font-medium bg-gray-100 text-gray-700 transition-all duration-200 hover:bg-gray-200"
-          onClick={onClose}
+}> = ({ isOpen, onClose, onConfirm }) => {
+  if (!isOpen) return null;
+
+  return (
+    <>
+      <DeleteNoteConfirmMobileDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        onConfirm={onConfirm}
+      />
+      <div
+        className="confirm-modal fixed inset-0 z-[2002] hidden bg-black/50 md:flex md:items-center md:justify-center"
+        onClick={onClose}
+        role="presentation"
+      >
+        <div
+          className="confirm-content mx-4 w-full max-w-[400px] rounded-xl bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.15)]"
+          onClick={(e) => e.stopPropagation()}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-note-desktop-title"
         >
-          No, Keep It
-        </button>
-        <button
-          className="confirm-button button-yes px-4 py-2 rounded-md text-sm font-medium bg-red-600 text-white transition-all duration-200 hover:bg-red-700"
-          onClick={onConfirm}
-        >
-          Yes, Delete
-        </button>
+          <h3
+            id="delete-note-desktop-title"
+            className="confirm-title mb-4 text-lg font-semibold text-gray-900"
+          >
+            Delete Note
+          </h3>
+          <p className="confirm-message mb-6 text-sm leading-relaxed text-gray-700">
+            Are you sure you want to delete this note? This action cannot be undone.
+          </p>
+          <div className="confirm-buttons flex justify-end gap-3">
+            <button
+              type="button"
+              className="confirm-button button-no rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-gray-200"
+              onClick={onClose}
+            >
+              No, Keep It
+            </button>
+            <button
+              type="button"
+              className="confirm-button button-yes rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:bg-red-700"
+              onClick={onConfirm}
+            >
+              Yes, Delete
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-);
+    </>
+  );
+};

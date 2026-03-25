@@ -209,6 +209,16 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
         markersRef.current = [];
         infoWindowsRef.current = [];
 
+        let openInfoWindow: google.maps.InfoWindow | null = null;
+        const closeAllInfoWindows = () => {
+          infoWindowsRef.current.forEach((iw) => iw.close());
+          openInfoWindow = null;
+        };
+
+        map.addListener("click", () => {
+          closeAllInfoWindows();
+        });
+
         // Convert schools to map format and create markers
         schools.forEach((school, index) => {
           const position = getPositionFromLocation(school.location, index);
@@ -216,6 +226,7 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
           const marker = new google.maps.Marker({
             position: position,
             map: map,
+            title: school.name,
             icon: {
               url:
                 "data:image/svg+xml;charset=UTF-8," +
@@ -243,12 +254,15 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
             pixelOffset: new google.maps.Size(0, -5),
           });
 
-          marker.addListener("mouseover", () => {
+          marker.addListener("click", () => {
+            if (openInfoWindow === infoWindow) {
+              infoWindow.close();
+              openInfoWindow = null;
+              return;
+            }
+            closeAllInfoWindows();
             infoWindow.open({ anchor: marker, map, shouldFocus: false });
-          });
-
-          marker.addListener("mouseout", () => {
-            infoWindow.close();
+            openInfoWindow = infoWindow;
           });
 
           markersRef.current.push(marker);
@@ -355,6 +369,7 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
 
               <div
                 className="relative flex-1 min-h-0"
+                data-vaul-no-drag
                 style={{
                   height:
                     mode === "mobileDrawer"
@@ -391,7 +406,12 @@ const MapContainer = forwardRef<MapContainerRef, MapContainerProps>(
                   hidePrimaryControls={mode === "mobileDrawer"}
                   hideExpandControl={mode === "mobileDrawer"}
                 />
-                <div ref={mapRef} id="exploreMap" className="w-full h-full" />
+                <div
+                  ref={mapRef}
+                  id="exploreMap"
+                  className="h-full w-full"
+                  data-vaul-no-drag
+                />
               </div>
             </>
           )}

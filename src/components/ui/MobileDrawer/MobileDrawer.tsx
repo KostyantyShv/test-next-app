@@ -159,6 +159,11 @@ export function MobileDrawer({
         return;
       }
 
+      // Let embedded maps / canvases handle their own gestures (marker tap, pan, pinch).
+      if (target.closest("[data-vaul-no-drag]")) {
+        return;
+      }
+
       const scrollableAncestor = getScrollableAncestor(target, scrollContainer);
       if (!scrollableAncestor) {
         event.preventDefault();
@@ -203,20 +208,24 @@ export function MobileDrawer({
 
   return (
     <Drawer.Root
-      open={true}
+      open={isOpen}
+      modal
+      dismissible
+      fixed={isFullscreen}
+      repositionInputs={false}
       onOpenChange={(open) => {
         if (!open) onClose();
       }}
     >
       <Drawer.Portal>
-        <Drawer.Overlay className="fixed inset-0 bg-[rgba(27,27,27,0.4)] backdrop-blur-[4px] z-[2500]" />
+        <Drawer.Overlay className="fixed inset-0 z-[2500] bg-[rgba(27,27,27,0.5)] backdrop-blur-[4px]" />
         <Drawer.Content
           className={
             isFullscreen
-              ? "fixed inset-0 z-[3000] flex h-[100dvh] w-screen flex-col bg-white outline-none"
+              ? "fixed inset-x-0 bottom-0 top-0 z-[3000] flex h-[100dvh] max-h-[100dvh] w-full flex-col bg-[var(--surface-color)] outline-none"
               : isActionSheet
               ? "fixed inset-x-0 bottom-0 z-[3000] flex flex-col bg-transparent px-2 pb-[calc(env(safe-area-inset-bottom)+8px)] outline-none"
-              : "fixed bottom-0 left-0 right-0 z-[3000] flex max-h-[calc(100dvh-16px)] flex-col rounded-t-[24px] bg-white outline-none"
+              : "fixed bottom-0 left-0 right-0 z-[3000] flex max-h-[calc(100dvh-16px)] min-h-[45dvh] w-full flex-col rounded-t-[24px] bg-[var(--surface-color)] outline-none"
           }
           style={{
             boxShadow: isFullscreen
@@ -232,16 +241,16 @@ export function MobileDrawer({
           </VisuallyHidden.Root>
           {/* Pull indicator */}
           {shouldShowPullIndicator && (
-            <div className="mx-auto mt-3 mb-2 w-9 h-1 rounded-full bg-[#DFDDDB] flex-shrink-0" />
+            <div className="mx-auto mt-3 mb-2 h-1 w-9 shrink-0 rounded-full bg-[var(--border-color)] opacity-80" />
           )}
           <div
             ref={scrollContainerRef}
             className={
               isFullscreen
-                ? "min-h-0 flex-1 overflow-hidden"
+                ? "flex min-h-0 flex-1 flex-col overflow-hidden"
                 : isActionSheet
                 ? "min-h-0 overflow-visible"
-                : "min-h-0 flex-1 overflow-y-auto overscroll-y-contain touch-pan-y"
+                : "flex min-h-[50dvh] flex-1 flex-col overflow-y-auto overscroll-y-contain touch-pan-y"
             }
             style={{ WebkitOverflowScrolling: "touch" }}
           >

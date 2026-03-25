@@ -281,14 +281,14 @@ export default function FAQ() {
         style={style}
         className={`mb-3 flex items-center rounded-lg p-4 ${
           question.pinned
-            ? "border border-[#D7F7E9] bg-[#EBFCF4]"
-            : "bg-[#F8F9FA]"
-        } ${isDragging ? "shadow-[0_12px_28px_rgba(0,0,0,0.2)] ring-1 ring-[#D7F7E9]" : ""}`}
+            ? "border border-[var(--border-color)] bg-[var(--apply-button-bg)]"
+            : "bg-[var(--surface-secondary)]"
+        } ${isDragging ? "shadow-[0_12px_28px_rgba(0,0,0,0.2)] ring-1 ring-[var(--border-color)]" : ""}`}
       >
         <button
           type="button"
           ref={setActivatorNodeRef}
-          className={`mr-3 flex flex-col justify-center rounded-md p-1 text-[#5F5F5F] ${
+          className={`mr-3 flex flex-col justify-center rounded-md p-1 text-[var(--subtle-text)] ${
             isDragging ? "cursor-grabbing" : "cursor-grab"
           }`}
           style={dragHandleStyle}
@@ -302,14 +302,14 @@ export default function FAQ() {
             {Array.from({ length: 6 }).map((_, index) => (
               <span
                 key={`${question.id}-dot-${index}`}
-                className="h-[3px] w-[3px] rounded-full bg-[#5F5F5F]"
+                className="h-[3px] w-[3px] rounded-full bg-[var(--subtle-text)]"
               />
             ))}
           </span>
         </button>
 
         <div
-          className="flex-1 select-none text-sm font-semibold text-[#1B1B1B]"
+          className="flex-1 select-none text-sm font-semibold text-[var(--bold-text)]"
           style={{
             WebkitUserSelect: "none",
             userSelect: "none",
@@ -322,10 +322,10 @@ export default function FAQ() {
         <div className="ml-auto flex gap-2">
           <button
             type="button"
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] bg-white"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-color)] bg-[var(--surface-color)]"
             onClick={() => onTogglePin(question.id)}
           >
-            <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 text-[#5F5F5F]">
+            <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 text-[var(--subtle-text)]">
               <path
                 d="M12.5007 3.75L9.16732 7.08333L5.83398 8.33333L4.58398 9.58333L10.4173 15.4167L11.6673 14.1667L12.9173 10.8333L16.2507 7.5"
                 stroke="currentColor"
@@ -352,10 +352,10 @@ export default function FAQ() {
 
           <button
             type="button"
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] bg-white"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-color)] bg-[var(--surface-color)]"
             onClick={() => onEdit(question.id)}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="h-4 w-4 text-[#5F5F5F]">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="h-4 w-4 text-[var(--subtle-text)]">
               <path
                 fill="currentColor"
                 d="M13.2929 4.29291C15.0641 2.52167 17.9359 2.52167 19.7071 4.2929C21.4784 6.06414 21.4784 8.93588 19.7071 10.7071L18.7073 11.7069L11.6135 18.8007C10.8766 19.5376 9.92793 20.0258 8.89999 20.1971L4.16441 20.9864C3.84585 21.0395 3.52127 20.9355 3.29291 20.7071C3.06454 20.4788 2.96053 20.1542 3.01362 19.8356L3.80288 15.1C3.9742 14.0721 4.46243 13.1234 5.19932 12.3865L13.2929 4.29291ZM13 7.41422L6.61353 13.8007C6.1714 14.2428 5.87846 14.8121 5.77567 15.4288L5.21656 18.7835L8.57119 18.2244C9.18795 18.1216 9.75719 17.8286 10.1993 17.3865L16.5858 11L13 7.41422ZM18 9.5858L14.4142 6.00001L14.7071 5.70712C15.6973 4.71693 17.3027 4.71693 18.2929 5.70712C19.2831 6.69731 19.2831 8.30272 18.2929 9.29291L18 9.5858Z"
@@ -400,16 +400,16 @@ export default function FAQ() {
       >
         <div className="px-3 py-4">
           <div className="mb-4">
-            <h1 className="mb-2 text-2xl font-semibold text-[#1A1A1A]">FAQ</h1>
-            <p className="text-sm text-[#5F5F5F]">
+            <h1 className="mb-2 text-2xl font-semibold text-[var(--bold-text)]">FAQ</h1>
+            <p className="text-sm text-[var(--subtle-text)]">
               Add frequently asked questions and their answers to help students
               better understand your school.
             </p>
           </div>
 
           <div
-            className="flex flex-col rounded-lg bg-white p-4"
-            style={{ boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}
+            className="flex flex-col rounded-lg bg-[var(--surface-color)] p-4"
+            style={{ boxShadow: "0 1px 3px var(--shadow-color)" }}
           >
             <DndContext
               sensors={sensors}
@@ -433,7 +433,7 @@ export default function FAQ() {
             <button
               type="button"
               onClick={openMobileDrawerForCreate}
-              className="flex w-full items-center justify-center gap-2 rounded-md bg-[#1B1B1B] px-4 py-3 text-sm font-medium text-white"
+              className="flex w-full items-center justify-center gap-2 rounded-md bg-[var(--btn-dark-bg)] px-4 py-3 text-sm font-medium text-white"
             >
               <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                 <path
@@ -457,14 +457,14 @@ export default function FAQ() {
           showPullIndicator={true}
         >
           <div className="flex flex-col">
-            <div className="sticky top-0 z-[1] flex items-center justify-between border-b border-[#E5E5E5] bg-white px-5 py-4 flex-shrink-0">
-              <h2 className="text-lg font-semibold text-[#464646]">
+            <div className="sticky top-0 z-[1] flex flex-shrink-0 items-center justify-between border-b border-[var(--border-color)] bg-[var(--surface-color)] px-5 py-4">
+              <h2 className="text-lg font-semibold text-[var(--bold-text)]">
                 {mobileEditingQuestion ? "Edit Question" : "Create Question"}
               </h2>
               <button
                 type="button"
                 onClick={closeMobileDrawer}
-                className="flex h-8 w-8 items-center justify-center rounded-full text-[#5F5F5F]"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-[var(--subtle-text)]"
                 aria-label="Close"
               >
                 <svg viewBox="0 0 24 24" fill="none" className="h-[18px] w-[18px]">
@@ -475,9 +475,9 @@ export default function FAQ() {
             </div>
 
             <form onSubmit={handleSaveMobileQuestion} className="flex flex-1 flex-col min-h-0">
-              <div className="flex-1 overflow-y-auto px-5 py-4 min-h-0">
+              <div className="min-h-0 flex-1 overflow-y-auto bg-[var(--surface-color)] px-5 py-4">
                 <div className="mb-4">
-                  <label htmlFor="mobileQuestionTitle" className="mb-2 block text-sm font-semibold text-[#4A4A4A]">
+                  <label htmlFor="mobileQuestionTitle" className="mb-2 block text-sm font-semibold text-[var(--bold-text)]">
                     Question
                   </label>
                   <input
@@ -487,27 +487,27 @@ export default function FAQ() {
                     onChange={(e) => setMobileQuestionTitle(e.target.value)}
                     placeholder="Enter question title"
                     required
-                    className="w-full rounded-lg border border-[#E5E5E5] px-3 py-3 text-sm text-[#4A4A4A] outline-none focus:border-[#02C5AF]"
+                    className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--surface-secondary)] px-3 py-3 text-sm text-[var(--text-default)] placeholder:text-[var(--subtle-text)] outline-none focus:border-[var(--brand-teal)]"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-[#4A4A4A]">Answer</label>
-                  <div className="flex gap-2 rounded-t-lg border border-b-0 border-[#E5E5E5] bg-[#F8F9FA] p-2">
-                    <button type="button" className="rounded p-1.5 text-[#4A4A4A]" onMouseDown={(e) => { e.preventDefault(); handleMobileEditorCommand("bold"); }}>B</button>
-                    <button type="button" className="rounded p-1.5 text-[#4A4A4A]" onMouseDown={(e) => { e.preventDefault(); handleMobileEditorCommand("italic"); }}>I</button>
-                    <button type="button" className="rounded p-1.5 text-[#4A4A4A]" onMouseDown={(e) => { e.preventDefault(); handleMobileEditorCommand("underline"); }}>U</button>
-                    <button type="button" className="rounded p-1.5 text-[#4A4A4A]" onMouseDown={(e) => { e.preventDefault(); handleMobileEditorCommand("link"); }}>🔗</button>
+                  <label className="mb-2 block text-sm font-semibold text-[var(--bold-text)]">Answer</label>
+                  <div className="flex gap-2 rounded-t-lg border border-b-0 border-[var(--border-color)] bg-[var(--surface-secondary)] p-2">
+                    <button type="button" className="rounded p-1.5 text-[var(--text-default)]" onMouseDown={(e) => { e.preventDefault(); handleMobileEditorCommand("bold"); }}>B</button>
+                    <button type="button" className="rounded p-1.5 text-[var(--text-default)]" onMouseDown={(e) => { e.preventDefault(); handleMobileEditorCommand("italic"); }}>I</button>
+                    <button type="button" className="rounded p-1.5 text-[var(--text-default)]" onMouseDown={(e) => { e.preventDefault(); handleMobileEditorCommand("underline"); }}>U</button>
+                    <button type="button" className="rounded p-1.5 text-[var(--text-default)]" onMouseDown={(e) => { e.preventDefault(); handleMobileEditorCommand("link"); }}>🔗</button>
                   </div>
                   <div
                     ref={answerEditorRef}
                     contentEditable
-                    className="min-h-[180px] rounded-b-lg border border-[#E5E5E5] p-3 text-sm text-[#4A4A4A] outline-none"
+                    className="min-h-[180px] rounded-b-lg border border-[var(--border-color)] bg-[var(--surface-secondary)] p-3 text-sm text-[var(--text-default)] outline-none"
                   />
                 </div>
               </div>
 
-              <div className="flex flex-shrink-0 items-center justify-between border-t border-[#E5E5E5] bg-white px-5 py-4">
+              <div className="flex flex-shrink-0 items-center justify-between border-t border-[var(--border-color)] bg-[var(--surface-color)] px-5 py-4">
                 <button
                   type="button"
                   onClick={handleDeleteMobileQuestion}
@@ -525,13 +525,13 @@ export default function FAQ() {
                   <button
                     type="button"
                     onClick={closeMobileDrawer}
-                    className="rounded-lg border border-[#E5E5E5] bg-[#F8F9FA] px-4 py-3 text-sm font-semibold text-[#4A4A4A]"
+                    className="rounded-lg border border-[var(--border-color)] bg-[var(--surface-secondary)] px-4 py-3 text-sm font-semibold text-[var(--text-default)]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="rounded-lg bg-[#02C5AF] px-4 py-3 text-sm font-semibold text-white"
+                    className="rounded-lg bg-[var(--brand-teal)] px-4 py-3 text-sm font-semibold text-white"
                   >
                     Save
                   </button>
@@ -543,7 +543,7 @@ export default function FAQ() {
       )}
 
       <div
-        className={`pointer-events-none fixed bottom-20 left-1/2 z-[2000] w-[280px] max-w-[calc(100%-40px)] -translate-x-1/2 rounded-lg bg-[#EBFCF4] px-4 py-3 text-center text-sm text-[#0B6333] shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-all duration-300 ${
+        className={`pointer-events-none fixed bottom-20 left-1/2 z-[2000] w-[280px] max-w-[calc(100%-40px)] -translate-x-1/2 rounded-lg bg-[var(--apply-button-bg)] px-4 py-3 text-center text-sm text-[var(--header-green)] shadow-[0_4px_12px_var(--shadow-color)] transition-all duration-300 ${
           showToast ? "translate-y-0 opacity-100" : "translate-y-[120%] opacity-0"
         }`}
       >

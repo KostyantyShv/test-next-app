@@ -3,6 +3,9 @@ import { createPortal } from "react-dom";
 import { CollectionsSchool, Note, RatingCheckmarks, truncateText } from "../Card";
 import { CollectionImage } from "../CollectionImage";
 import { SchoolCardContextMenu } from "@/components/school/explore/SchoolCardContextMenu";
+import { CollectionsCreateNoteFooterButton } from "../../CollectionsCreateNoteFooterButton";
+import { NotesModal } from "../../modals/NotesModal";
+import { MetaClockIcon, MetaStarIcon } from "./MetaIcons";
 
 const STATUS_OPTIONS = [
   { status: "Researching", color: "#395da0" },
@@ -61,6 +64,11 @@ const specialtyText = (specialty?: string) => {
   return "";
 };
 
+const formatSchoolTypeLabel = (label: string): string => {
+  if (!label) return "";
+  return label.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+};
+
 export const CardList: React.FC<{
   school: CollectionsSchool;
   index: number;
@@ -81,6 +89,7 @@ export const CardList: React.FC<{
   onDeleteNote,
 }) => {
     const [isStatusOpen, setIsStatusOpen] = useState(false);
+    const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
     const statusDropdownRef = useRef<HTMLDivElement | null>(null);
     const triggerRef = useRef<HTMLButtonElement | null>(null);
     const portalRef = useRef<HTMLDivElement | null>(null);
@@ -125,6 +134,16 @@ export const CardList: React.FC<{
     const statusColor = getStatusColor(school.status);
 
     return (
+      <>
+      <NotesModal
+        isOpen={isNotesModalOpen}
+        onClose={() => setIsNotesModalOpen(false)}
+        school={school}
+        index={index}
+        onCreateNote={onCreateNote}
+        onEditNote={onEditNote}
+        onDeleteNote={onDeleteNote}
+      />
       <div className="collections-list-card relative z-[1]" data-layout={_layout}>
         <div className="flex w-full rounded-xl border border-[#E5E7EB] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] overflow-visible max-[1024px]:flex-col">
           <div className="relative flex w-[280px] shrink-0 flex-col pt-6 pr-6 max-[1024px]:w-full max-[1024px]:p-6">
@@ -142,13 +161,15 @@ export const CardList: React.FC<{
               </div>
             ) : null}
 
-            <CollectionImage
-              src={school.image}
-              alt={school.name}
-              width={280}
-              height={148}
-              className="ml-3 h-[9.25rem] w-full rounded-lg object-cover max-[1024px]:ml-0 max-[1024px]:h-[200px]"
-            />
+            <div className="relative ml-3 w-full max-[1024px]:ml-0">
+              <CollectionImage
+                src={school.image}
+                alt={school.name}
+                width={280}
+                height={148}
+                className="h-[9.25rem] w-full rounded-lg object-cover max-[1024px]:h-[200px]"
+              />
+            </div>
 
             <div className="ml-3 flex w-full gap-2 bg-transparent py-3 max-[1024px]:ml-0">
               <button
@@ -180,6 +201,11 @@ export const CardList: React.FC<{
                 preferredPlacement="bottom"
               />
             </div>
+            {school.schoolType ? (
+              <div className="mb-3 inline-flex max-w-fit items-center rounded-md bg-[#F5F5F7] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.02em] text-[#5F5F5F]">
+                {formatSchoolTypeLabel(school.schoolType)}
+              </div>
+            ) : null}
 
             <div className="mb-4 flex flex-wrap gap-6">
               <div className="flex items-center gap-2 text-sm text-[#5F5F5F]">
@@ -191,21 +217,12 @@ export const CardList: React.FC<{
               </div>
 
               <div className="flex items-center gap-2 text-sm text-[#5F5F5F]">
-                <svg viewBox="0 0 32 32" fill="none" className="h-4 w-4 text-[#565656]">
-                  <path
-                    fill="currentColor"
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M11.0251 3.98957C12.6023 3.33626 14.2928 3 16 3C17.7072 3 19.3977 3.33626 20.9749 3.98957C22.5521 4.64288 23.9852 5.60045 25.1924 6.80761C26.3995 8.01477 27.3571 9.44788 28.0104 11.0251C28.6637 12.6023 29 14.2928 29 16C29 17.7072 28.6637 19.3977 28.0104 20.9749C27.3571 22.5521 26.3995 23.9852 25.1924 25.1924C23.9852 26.3995 22.5521 27.3571 20.9749 28.0104C19.3977 28.6637 17.7072 29 16 29C14.2928 29 12.6023 28.6637 11.0251 28.0104C9.44788 27.3571 8.01477 26.3995 6.80761 25.1924C5.60045 23.9852 4.64288 22.5521 3.98957 20.9749C3.33625 19.3977 3 17.7072 3 16C3 14.2928 3.33625 12.6023 3.98957 11.0251C4.64288 9.44788 5.60045 8.01477 6.80761 6.80761C8.01477 5.60045 9.44788 4.64288 11.0251 3.98957ZM16 8.33333C16.5523 8.33333 17 8.78105 17 9.33333V15.4648L20.5547 17.8346C21.0142 18.141 21.1384 18.7618 20.8321 19.2214C20.5257 19.6809 19.9048 19.8051 19.4453 19.4987L15.4453 16.8321C15.1671 16.6466 15 16.3344 15 16V9.33333C15 8.78105 15.4477 8.33333 16 8.33333Z"
-                  />
-                </svg>
+                <MetaClockIcon className="h-4 w-4 text-[#565656]" />
                 <span className="font-medium text-[#464646]">Added {school.dateSaved}</span>
               </div>
 
               <div className="flex items-center gap-2 text-sm text-[#5F5F5F]">
-                <svg viewBox="0 0 256 256" fill="currentColor" className="h-4 w-4 text-[#565656]">
-                  <path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Z" />
-                </svg>
+                <MetaStarIcon className="h-4 w-4 text-[#565656]" />
                 <span className="font-medium text-[#464646]">
                   <strong>{school.rating.split(" ")[0]}</strong> ({school.reviews} reviews)
                 </span>
@@ -225,16 +242,7 @@ export const CardList: React.FC<{
                   <path d="M16 7h4" />
                   <path d="M18 19h-13a2 2 0 1 1 0 -4h4a2 2 0 1 0 0 -4h-3" />
                 </svg>
-                <span className="font-medium text-[#464646]">
-                  {school.notes.length}
-                  <button
-                    type="button"
-                    className="ml-1 text-[13px] font-medium text-[#346DC2] transition-colors hover:underline"
-                    onClick={() => onCreateNote(index)}
-                  >
-                    (Create Note)
-                  </button>
-                </span>
+                <span className="font-medium text-[#464646]">{school.notes.length}</span>
               </div>
             </div>
 
@@ -367,12 +375,13 @@ export const CardList: React.FC<{
                   onRatingChange={(rating) => onRatingChange(index, rating)}
                 />
 
-                <div className="flex items-center rounded-md bg-[#F5F5F7] px-3 py-1 text-sm font-medium text-[#464646]">
-                  {school.schoolType}
-                </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center justify-end gap-3">
+                <CollectionsCreateNoteFooterButton
+                  noteCount={school.notes?.length ?? 0}
+                  onClick={() => setIsNotesModalOpen(true)}
+                />
                 <button
                   type="button"
                   className="flex items-center gap-2 rounded-lg bg-[#EBFCF4] px-4 py-2 text-sm font-medium text-[#016853] transition-colors hover:bg-[#D7F7E9]"
@@ -388,5 +397,6 @@ export const CardList: React.FC<{
           </div>
         </div>
       </div>
+      </>
     );
   };

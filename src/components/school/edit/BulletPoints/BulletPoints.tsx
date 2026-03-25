@@ -139,7 +139,7 @@ export default function BulletPoints() {
               style={{ backgroundColor: "var(--btn-dark-bg)" }}
               onClick={addBullet}
             >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="shrink-0 text-white">
                 <path d="M10 4V16M4 10H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               </svg>
               Add more to your response
@@ -158,7 +158,7 @@ export default function BulletPoints() {
       >
         <div className="flex flex-col p-4">
           <div className="mb-4">
-            <h1 className="mb-2 text-2xl font-semibold text-[var(--dark-text)]">Bullet Points</h1>
+            <h1 className="mb-2 text-2xl font-semibold text-[var(--bold-text)]">Bullet Points</h1>
             <p className="text-sm leading-[1.5] text-[var(--subtle-text)]">
               Highlight key features and achievements of your school to help
               parents and students understand what makes your institution unique.
@@ -166,10 +166,10 @@ export default function BulletPoints() {
           </div>
 
           <div
-            className="flex flex-1 flex-col rounded-lg bg-white p-4"
-            style={{ boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}
+            className="flex flex-1 flex-col rounded-lg bg-[var(--surface-color)] p-4"
+              style={{ boxShadow: "0 1px 3px var(--shadow-color)" }}
           >
-            <h2 className="mb-4 text-base font-medium text-[var(--dark-text)]">
+            <h2 className="mb-4 text-base font-medium text-[var(--bold-text)]">
               What makes your school stand out?
             </h2>
 
@@ -179,7 +179,7 @@ export default function BulletPoints() {
                   <div className="relative">
                     <input
                       type="text"
-                      className={`w-full rounded-lg border bg-white px-3 py-3 pr-10 text-sm text-[var(--text-color)] transition-all duration-200 placeholder:text-[var(--placeholder-color)] focus:outline-none ${
+                      className={`w-full rounded-lg border border-[var(--border-color)] bg-[var(--surface-secondary)] px-3 py-3 pr-10 text-sm text-[var(--text-default)] transition-all duration-200 placeholder:text-[var(--subtle-text)] focus:outline-none ${
                         bullet.error ? "border-[var(--error-color)]" : "border-[var(--border-color)]"
                       }`}
                       placeholder={`Bullet Point ${index + 1}`}
@@ -227,15 +227,9 @@ export default function BulletPoints() {
               type="button"
               onClick={addBullet}
               className="inline-flex w-full items-center justify-center gap-2 rounded-md border-none px-4 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-[#2D2D2D]"
-              style={{ backgroundColor: "#1B1B1B" }}
+              style={{ backgroundColor: "var(--btn-dark-bg)" }}
             >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 20 20"
-                fill="none"
-                className="text-[#f93a37]"
-              >
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" className="shrink-0 text-white">
                 <path d="M10 4V16M4 10H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               </svg>
               Add more to your response
