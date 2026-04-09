@@ -121,6 +121,11 @@ const Listing: React.FC<ListingProps> = ({
           setIsDesktopStickyHeaderVisible((prev) => {
             if (prev === nextVisible) return prev;
             lastStickyVisibleRef.current = nextVisible;
+            // Update the global store in the same frame so RootLayoutClient
+            // hides the main app header at the exact same render as the
+            // listing header becomes visible — eliminates the one-frame
+            // window where both headers overlap.
+            setIsDesktopListingStickyHeaderVisible(nextVisible);
             return nextVisible;
           });
         });
@@ -141,10 +146,6 @@ const Listing: React.FC<ListingProps> = ({
       rafRef.current = null;
     };
   }, []);
-
-  useEffect(() => {
-    setIsDesktopListingStickyHeaderVisible(isDesktopStickyHeaderVisible);
-  }, [isDesktopStickyHeaderVisible, setIsDesktopListingStickyHeaderVisible]);
 
   useEffect(() => {
     return () => {
@@ -203,7 +204,7 @@ const Listing: React.FC<ListingProps> = ({
           left: isLeftSidebarCollapsed ? 80 : 256,
           width: `calc(100% - ${isLeftSidebarCollapsed ? 80 : 256}px)`,
           // Keep below the main (left) sidebar so it never covers it.
-          zIndex: 900,
+          zIndex: 1001,
         }}
       >
         <Header position="fixed" topOffsetPx={0} classes="transition-none" />

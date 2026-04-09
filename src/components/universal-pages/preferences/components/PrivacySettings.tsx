@@ -16,14 +16,14 @@ export const PrivacySettings: FC<PrivacySettingsProps> = ({
 
   return (
     <div className="flex flex-col md:flex-row gap-5 md:gap-6 mb-[30px] md:mb-12 items-start">
-      <div className="flex-[0_0_100%] md:flex-[0_0_30%]">
+      <div className="w-full flex-[0_0_100%] md:flex-[0_0_30%]">
         <h2 className="text-[18px] md:text-xl font-semibold mb-2 md:mb-3" style={{ color: 'var(--bold-text)' }}>Privacy Settings</h2>
         <p className="text-[14px] leading-[1.5] mb-5 md:mb-0" style={{ color: 'var(--subtle-text)' }}>
           Control who can view your profile and what information is visible to different types of users on the platform.
         </p>
       </div>
 
-      <div className="flex-[0_0_100%] md:flex-[0_0_70%]">
+      <div className="w-full flex-[0_0_100%] md:flex-[0_0_70%]">
         <div 
           className="rounded-xl md:rounded-lg p-5 md:p-6 mb-[15px] md:mb-5" 
           style={{ 

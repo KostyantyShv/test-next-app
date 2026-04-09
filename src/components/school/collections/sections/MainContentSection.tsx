@@ -120,11 +120,10 @@ const MainContentSection: React.FC<MainContentSectionProps> = ({
   );
 
   return (
-    <div className="w-full mx-auto overflow-visible bg-transparent rounded-none border-0 shadow-none">
+    <div className="w-full mx-auto overflow-visible bg-transparent rounded-none border-0 shadow-none md:bg-white md:rounded-xl md:border md:border-[rgba(0,0,0,0.1)] md:shadow-[0_1px_3px_rgba(0,0,0,0.08)] md:overflow-hidden">
       <Header
         schools={schools}
         layouts={collectionsGridLayouts}
-        hideLayoutControls
         dropdownValue={subcategory}
         dropdownIcon={DROPDOWN_SUBCATEGORIES_ICONS[subcategory]}
         renderDropdownItems={renderDropdownItems}
