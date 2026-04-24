@@ -188,7 +188,16 @@ export const Avatar: React.FC<AvatarProps> = ({
     }
   };
 
+  const closeDropdown = () => {
+    if (onDropdownToggle) {
+      onDropdownToggle(false);
+    } else {
+      setInternalIsDropdownOpen(false);
+    }
+  };
+
   const handleLogout = async () => {
+    closeDropdown();
     await supabase.auth.signOut();
     router.push('/login');
     router.refresh();
@@ -244,8 +253,12 @@ export const Avatar: React.FC<AvatarProps> = ({
     const rawTop = buttonCenterY - menuHeight / 2;
     const top = Math.max(8, Math.min(window.innerHeight - menuHeight - 8, rawTop));
 
-    // Menu should appear to the right of the collapsed sidebar icon.
-    const rawLeft = buttonRect.right + 8;
+    // Menu should appear exactly 2px to the right of the sidebar's right edge.
+    const sidebar = button.closest('.left-sidebar');
+    const sidebarRight = sidebar
+      ? sidebar.getBoundingClientRect().right
+      : sidebarCollapsed ? 80 : 250;
+    const rawLeft = sidebarRight + 2;
     const left = Math.max(8, Math.min(window.innerWidth - menuWidth - 8, rawLeft));
 
     menu.style.top = `${top}px`;
@@ -340,21 +353,21 @@ export const Avatar: React.FC<AvatarProps> = ({
 
           {/* Menu Section */}
           <div className="py-2 border-t border-[#DFDDDB]" style={{ padding: '8px 0' }}>
-            <Link href="/account-details" className="menu-item flex items-center px-4 py-2 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all duration-200 group">
+            <Link href="/account-details" onClick={closeDropdown} className="menu-item flex items-center px-4 py-2 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all duration-200 group">
               <svg className="w-6 h-6 mr-3 text-[#5F5F5F] group-hover:text-[#016853] transition-colors" fill="none" viewBox="0 0 48 48">
                 <path fill="currentColor" d="M15.408 21.669a4.959 4.959 0 1 0 0-9.918 4.959 4.959 0 0 0 0 9.918zm0 3a7.959 7.959 0 1 0 0-15.918 7.959 7.959 0 0 0 0 15.918zM15.41 30.5c-5.417 0-9.808 4.39-9.808 9.808a1.5 1.5 0 1 1-3 0c0-7.074 5.734-12.808 12.808-12.808s12.808 5.734 12.808 12.808a1.5 1.5 0 1 1-3 0c0-5.417-4.391-9.808-9.808-9.808z" clipRule="evenodd" fillRule="evenodd"></path>
               </svg>
               <span className="text-sm font-normal" style={{ fontSize: '14px', fontWeight: 400, lineHeight: 1.4 }}>My Profile</span>
             </Link>
 
-            <Link href="/preferences" className="menu-item flex items-center px-4 py-2 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all duration-200 group">
+            <Link href="/preferences" onClick={closeDropdown} className="menu-item flex items-center px-4 py-2 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all duration-200 group">
               <svg className="w-6 h-6 mr-3 text-[#5F5F5F] group-hover:text-[#016853] transition-colors" fill="none" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M12 4C10.3431 4 9 5.34315 9 7C9 8.65685 10.3431 10 12 10C13.6569 10 15 8.65685 15 7C15 5.34315 13.6569 4 12 4ZM7 7C7 4.23858 9.23858 2 12 2C14.7614 2 17 4.23858 17 7C17 9.76142 14.7614 12 12 12C9.23858 12 7 9.76142 7 7ZM19.0277 15.6255C18.6859 15.5646 18.1941 15.6534 17.682 16.1829C17.4936 16.3777 17.2342 16.4877 16.9632 16.4877C16.6922 16.4877 16.4328 16.3777 16.2444 16.1829C15.7322 15.6534 15.2405 15.5646 14.8987 15.6255C14.5381 15.6897 14.2179 15.9384 14.0623 16.3275C13.8048 16.9713 13.9014 18.662 16.9632 20.4617C20.0249 18.662 20.1216 16.9713 19.864 16.3275C19.7084 15.9384 19.3882 15.6897 19.0277 15.6255ZM21.721 15.5847C22.5748 17.7191 21.2654 20.429 17.437 22.4892C17.1412 22.6484 16.7852 22.6484 16.4893 22.4892C12.6609 20.4291 11.3516 17.7191 12.2053 15.5847C12.6117 14.5689 13.4917 13.8446 14.5481 13.6565C15.3567 13.5125 16.2032 13.6915 16.9632 14.1924C17.7232 13.6915 18.5697 13.5125 19.3783 13.6565C20.4347 13.8446 21.3147 14.5689 21.721 15.5847ZM9.92597 14.2049C10.1345 14.7163 9.889 15.2999 9.3776 15.5084C7.06131 16.453 5.5 18.5813 5.5 20.9999C5.5 21.5522 5.05228 21.9999 4.5 21.9999C3.94772 21.9999 3.5 21.5522 3.5 20.9999C3.5 17.6777 5.641 14.8723 8.6224 13.6565C9.1338 13.448 9.71743 13.6935 9.92597 14.2049Z" clipRule="evenodd" fillRule="evenodd"/>
               </svg>
               <span className="text-sm font-normal" style={{ fontSize: '14px', fontWeight: 400, lineHeight: 1.4 }}>Preferences</span>
             </Link>
 
-            <Link href="/account-details" className="menu-item flex items-center px-4 py-2 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all duration-200 group">
+            <Link href="/account-details" onClick={closeDropdown} className="menu-item flex items-center px-4 py-2 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all duration-200 group">
               <svg className="w-6 h-6 mr-3 text-[#5F5F5F] group-hover:text-[#016853] transition-colors" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M14 12.5C14 13.6046 13.1046 14.5 12 14.5C10.8954 14.5 10 13.6046 10 12.5C10 11.3954 10.8954 10.5 12 10.5C13.1046 10.5 14 11.3954 14 12.5Z"/>
                 <path fill="currentColor" d="M12 17.25C11.7265 17.25 11.3186 17.3871 10.6823 17.9811C10.2786 18.3579 9.64578 18.3361 9.26894 17.9323C8.89211 17.5286 8.91393 16.8958 9.31768 16.5189C10.1099 15.7795 10.9878 15.25 12 15.25C13.0122 15.25 13.8901 15.7795 14.6823 16.5189C15.0861 16.8958 15.1079 17.5286 14.7311 17.9323C14.3542 18.3361 13.7214 18.3579 13.3177 17.9811C12.6814 17.3871 12.2735 17.25 12 17.25Z" clipRule="evenodd" fillRule="evenodd"/>
@@ -364,14 +377,14 @@ export const Avatar: React.FC<AvatarProps> = ({
               <span className="text-sm font-normal" style={{ fontSize: '14px', fontWeight: 400, lineHeight: 1.4 }}>Account Details</span>
             </Link>
 
-            <Link href="/billing" className="menu-item flex items-center px-4 py-2 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all duration-200 group">
+            <Link href="/billing" onClick={closeDropdown} className="menu-item flex items-center px-4 py-2 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all duration-200 group">
               <svg className="w-6 h-6 mr-3 text-[#5F5F5F] group-hover:text-[#016853] transition-colors" viewBox="0 0 256 256" fill="currentColor">
                 <path d="M224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Zm0,16V88H32V64Zm0,128H32V104H224v88Zm-16-24a8,8,0,0,1-8,8H168a8,8,0,0,1,0-16h32A8,8,0,0,1,208,168Zm-64,0a8,8,0,0,1-8,8H120a8,8,0,0,1,0-16h16A8,8,0,0,1,144,168Z"></path>
               </svg>
               <span className="text-sm font-normal" style={{ fontSize: '14px', fontWeight: 400, lineHeight: 1.4 }}>Billing</span>
             </Link>
 
-            <Link href="/sign-in-and-security" className="menu-item flex items-center px-4 py-2 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all duration-200 group">
+            <Link href="/sign-in-and-security" onClick={closeDropdown} className="menu-item flex items-center px-4 py-2 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all duration-200 group">
               <svg className="w-6 h-6 mr-3 text-[#5F5F5F] group-hover:text-[#016853] transition-colors" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M12 2C9.23858 2 7 4.23858 7 7V9C5.89543 9 5 9.89543 5 11V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V11C19 9.89543 18.1046 9 17 9V7C17 4.23858 14.7614 2 12 2ZM9 7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7V9H9V7Z"/>
                 <circle cx="12" cy="15" r="2" fill="white"/>
@@ -382,11 +395,7 @@ export const Avatar: React.FC<AvatarProps> = ({
             <button
               onClick={() => {
                 setIsSupportOpen(true);
-                if (onDropdownToggle) {
-                  onDropdownToggle(false);
-                } else {
-                  setInternalIsDropdownOpen(false);
-                }
+                closeDropdown();
               }}
               className="menu-item flex items-center w-full px-4 py-2 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all duration-200 group"
             >
@@ -399,11 +408,7 @@ export const Avatar: React.FC<AvatarProps> = ({
             <button
               onClick={() => {
                 setIsRequestContentOpen(true);
-                if (onDropdownToggle) {
-                  onDropdownToggle(false);
-                } else {
-                  setInternalIsDropdownOpen(false);
-                }
+                closeDropdown();
               }}
               className="menu-item flex items-center w-full px-4 py-2 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all duration-200 group"
             >
@@ -416,7 +421,7 @@ export const Avatar: React.FC<AvatarProps> = ({
               <span className="text-sm font-normal text-left" style={{ fontSize: '14px', fontWeight: 400, lineHeight: 1.4 }}>Request New Content</span>
             </button>
 
-            <Link href="/team-members-dashboard" className="menu-item flex items-center px-4 py-2 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all duration-200 group">
+            <Link href="/team-members-dashboard" onClick={closeDropdown} className="menu-item flex items-center px-4 py-2 text-[#4A4A4A] hover:bg-[#EBFCF4] hover:text-[#016853] transition-all duration-200 group">
               <svg className="w-6 h-6 mr-3 text-[#5F5F5F] group-hover:text-[#016853] transition-colors" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                 <path fill="currentColor" d="M256 464c-114.69 0-208-93.31-208-208S141.31 48 256 48s208 93.31 208 208-93.31 208-208 208zm0-384c-97 0-176 79-176 176s79 176 176 176 176-78.95 176-176S353.05 80 256 80z"/>
                 <path fill="currentColor" d="M323.67 292c-17.4 0-34.21-7.72-47.34-21.73a83.76 83.76 0 01-22-51.32c-1.47-20.7 4.88-39.75 17.88-53.62S303.38 144 323.67 144c20.14 0 38.37 7.62 51.33 21.46s19.47 33 18 53.51a84 84 0 01-22 51.3C357.86 284.28 341.06 292 323.67 292zm55.81-74zm-215.66 77.36c-29.76 0-55.93-27.51-58.33-61.33-1.23-17.32 4.15-33.33 15.17-45.08s26.22-18 43.15-18 32.12 6.44 43.07 18.14 16.5 27.82 15.25 45c-2.44 33.77-28.6 61.27-58.31 61.27zm256.55 59.92c-1.59-4.7-5.46-9.71-13.22-14.46-23.46-14.33-52.32-21.91-83.48-21.91-30.57 0-60.23 7.9-83.53 22.25-26.25 16.17-43.89 39.75-51 68.18-1.68 6.69-4.13 19.14-1.51 26.11a192.18 192.18 0 00232.75-80.17zm-256.74 46.09c7.07-28.21 22.12-51.73 45.47-70.75a8 8 0 00-2.59-13.77c-12-3.83-25.7-5.88-42.69-5.88-23.82 0-49.11 6.45-68.14 18.17-5.4 3.33-10.7 4.61-14.78 5.75a192.84 192.84 0 0077.78 86.64l1.79-.14a102.82 102.82 0 013.16-20.02z"/>

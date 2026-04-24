@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 interface DesktopModalProps {
   children: ReactNode;
@@ -9,6 +10,11 @@ interface DesktopModalProps {
 
 export function DesktopModal({ children, isOpen, onClose, className = "" }: DesktopModalProps) {
   const [isDesktopViewport, setIsDesktopViewport] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
@@ -29,9 +35,9 @@ export function DesktopModal({ children, isOpen, onClose, className = "" }: Desk
     };
   }, [shouldRender]);
 
-  if (!shouldRender) return null;
+  if (!mounted || !shouldRender) return null;
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 bg-black/50 flex justify-center items-center z-[6000]"
       onClick={onClose}
@@ -43,6 +49,7 @@ export function DesktopModal({ children, isOpen, onClose, className = "" }: Desk
       >
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

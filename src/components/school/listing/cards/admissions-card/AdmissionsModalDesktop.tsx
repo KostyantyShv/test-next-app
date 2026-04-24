@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import AcceptanceRateSection from "./AcceptanceRateSection";
 import AdmissionsStatsSection from "./AdmissionsStatsSection";
 import DeadlinesSection from "./DeadlinesSection";
@@ -15,6 +16,12 @@ export default function AdmissionsModalDesktop({
   isOpen,
   onClose,
 }: PopupProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -23,11 +30,11 @@ export default function AdmissionsModalDesktop({
     return () => document.removeEventListener("keydown", handleEscape);
   }, [onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-[6000]"
       onClick={onClose}
     >
       <div
@@ -55,6 +62,7 @@ export default function AdmissionsModalDesktop({
         <DeadlinesSection />
         <RequirementsSection />
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { FC, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 
 // Types
@@ -150,12 +151,28 @@ const Modal: FC<{ isOpen: boolean; onClose: () => void; title: string; children:
   children,
   onSave,
 }) => {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
 
-  return (
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (!isOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [isOpen]);
+
+  if (!isOpen || !mounted) return null;
+
+  return createPortal(
     <div
       className={cn(
-        "hidden md:flex fixed inset-0 bg-black/60 items-center justify-center z-[1000] transition-opacity duration-300",
+        "hidden md:flex fixed inset-0 bg-black/60 items-center justify-center z-[6000] transition-opacity duration-300",
         isOpen ? "opacity-100 visible" : "opacity-0 invisible"
       )}
       onClick={onClose}
@@ -192,7 +209,8 @@ const Modal: FC<{ isOpen: boolean; onClose: () => void; title: string; children:
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

@@ -106,6 +106,27 @@ export const Search: FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Lock body scroll when search dropdown is open
+  useEffect(() => {
+    if (!isFocused) return;
+    const scrollY = window.scrollY;
+    const prev = document.body.style.overflow;
+    const prevPosition = document.body.style.position;
+    const prevTop = document.body.style.top;
+    const prevWidth = document.body.style.width;
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = '100%';
+    return () => {
+      document.body.style.overflow = prev;
+      document.body.style.position = prevPosition;
+      document.body.style.top = prevTop;
+      document.body.style.width = prevWidth;
+      window.scrollTo(0, scrollY);
+    };
+  }, [isFocused]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
   };
@@ -469,8 +490,10 @@ export const Search: FC = () => {
           style={{
             top: 'calc(100% + 12px)',
             boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
-            maxHeight: '600px',
+            maxHeight: 'min(600px, calc(100vh - 80px))',
             overflowY: 'auto',
+            overscrollBehavior: 'contain',
+            WebkitOverflowScrolling: 'touch',
             padding: '16px'
           }}
         >

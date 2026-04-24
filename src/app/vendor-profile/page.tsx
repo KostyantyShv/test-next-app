@@ -4,7 +4,7 @@ import { Suspense } from "react";
 export default function VendorPage() {
   return (
     <main>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={null}>
         <VendorProfile />
       </Suspense>
     </main>

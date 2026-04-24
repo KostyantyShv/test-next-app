@@ -7959,6 +7959,157 @@ input[type="number"] {
   }
 }
 
+@media (min-width: 768px) {
+  .school-edit-general .section-title {
+    color: #1B1B1B;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .school-edit-general .section-description {
+    color: #5F5F5F;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .school-edit-general .faq-container {
+    max-width: 1150px;
+    margin: 0 auto;
+    display: flex;
+    gap: 25px;
+  }
+
+  .school-edit-general .faq-left {
+    width: 350px;
+    flex: 0 0 350px;
+  }
+
+  .school-edit-general .faq-right {
+    width: 775px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .school-edit-general .question-list {
+    margin-top: 24px;
+  }
+
+  .school-edit-general .question-item {
+    background: #F8F9FA;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .school-edit-general .question-item.pinned {
+    background: #EBFCF4;
+    border: 1px solid #D7F7E9;
+  }
+
+  .school-edit-general .question-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #262B3D;
+    flex: 1;
+  }
+
+  .school-edit-general .question-actions {
+    display: flex;
+    gap: 12px;
+    margin-left: 12px;
+  }
+
+  .school-edit-general .action-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #E5E5E5;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .school-edit-general .action-button svg {
+    width: 20px;
+    height: 20px;
+    color: #5F5F5F;
+  }
+
+  .school-edit-general .add-question {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .school-edit-general .add-question svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .school-edit-general .bullets-container {
+    max-width: 1150px;
+    margin: 0 auto;
+    display: flex;
+    gap: 25px;
+  }
+
+  .school-edit-general .bullets-left {
+    width: 350px;
+    flex: 0 0 350px;
+  }
+
+  .school-edit-general .bullets-right {
+    width: 775px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .school-edit-general .bullets-header {
+    color: #1B1B1B;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+
+  .school-edit-general .bullet-list {
+    margin-bottom: 20px;
+  }
+
+  .school-edit-general .bullet-input:focus {
+    border-color: #1D77BD;
+    box-shadow: 0 0 0 3px rgba(29, 119, 189, 0.1);
+  }
+
+  .school-edit-general .add-bullet {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .school-edit-general .add-bullet svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .school-edit-general .error-message {
+    font-size: 14px;
+  }
+}
+
 /* ===========================
    School Edit: Announcements (pixel-match)
    =========================== */

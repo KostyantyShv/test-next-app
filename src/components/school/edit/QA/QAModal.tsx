@@ -56,7 +56,7 @@ const QAModal: React.FC<QAModalProps> = ({
   }
 
   return (
-    <DesktopModal isOpen={true} onClose={onClose} className="w-full max-w-[600px]">
+    <DesktopModal isOpen={true} onClose={onClose} className="w-full max-w-[600px] rounded-lg">
       {content}
     </DesktopModal>
   );

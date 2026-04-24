@@ -179,7 +179,7 @@ export default function QAModalContent({
           </svg>
         </button>
       </div>
-      <form onSubmit={handleSubmit} className="p-6">
+      <form id="qaForm" onSubmit={handleSubmit} className="p-6">
         <div className="mb-6">
           <label
             className="block font-semibold text-default mb-2 text-sm"

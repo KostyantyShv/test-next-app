@@ -170,7 +170,12 @@ export const CartMobile: React.FC<CartMobileProps> = ({
                           </div>
                         </div>
                         <button
-                          onClick={() => removeItem(item.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            removeItem(item.id);
+                          }}
+                          onPointerDown={(e) => e.stopPropagation()}
                           className="absolute top-3 right-3 cursor-pointer p-2 rounded-full transition-all text-[var(--subtle-text)] hover:bg-[var(--hover-bg)] flex items-center justify-center"
                           title="Remove item"
                         >

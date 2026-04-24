@@ -5,7 +5,7 @@ const page = async ({ params }: { params: Promise<{ username: string }> }) => {
   const { username } = await params;
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={null}>
         <VendorProfile />
       </Suspense>
     </>

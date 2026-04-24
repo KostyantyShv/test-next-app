@@ -34,7 +34,7 @@ import ArticlesCard from "../cards/articles-card/ArticlesCard";
 import ComparisonCard from "../cards/comparison-card/ComparisonCard";
 import SocialMediaCard from "../cards/social-media-card/SocialMediaCard";
 const DynamicMapCard = dynamic(() => import("../cards/map-card/MapCard"), {
-  loading: () => <p>Loading...</p>,
+  loading: () => null,
 });
 
 type SchoolType = "k12" | "college" | "grad";

@@ -3,7 +3,7 @@ import Listing from "@/components/school/listing/Listing";
 
 export default function ListingPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={null}>
       <Listing />
     </Suspense>
   );
